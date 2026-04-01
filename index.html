@@ -1,0 +1,3144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Fishing Buddy</title>
+<meta name="theme-color" content="#2D4A35">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fishing Buddy">
+<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Fishing%20Buddy%22%2C%22short_name%22%3A%22Fishing%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23F8F5EF%22%2C%22theme_color%22%3A%22%232D4A35%22%7D">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232D4A35' rx='20'/><text y='72' x='50' font-size='60' text-anchor='middle'>🎣</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --cream:#F8F5EF;--cream-dark:#EDE8DC;
+  --green-deep:#2D4A35;--green-mid:#4A7C59;--green-light:#7BAE8A;
+  --green-pale:#C8DDD0;--green-mist:#EAF2ED;
+  --beige:#F2EDE3;--text-dark:#1A2B20;--text-mid:#4A5C4F;--text-light:#8A9A8F;
+  --gold:#C4963A;--gold-l:#F5E8CC;--gold-d:#8B6420;
+  --red:#B45A46;--rose:#FADADD;--rose-b:#F0AABB;--rose-t:#8B3A4A;
+  --yellow:#FFF8E7;--yellow-b:#F0D890;--yellow-t:#7A5C10;
+  --blue:#E6F1FB;--blue-t:#0C447C;
+  --purple:#EEEDFE;--purple-t:#3C3489;
+  --teal:#E1F5EE;--teal-t:#085041;
+  --sh-sm:0 2px 8px rgba(45,74,53,.08);--sh-md:0 4px 20px rgba(45,74,53,.14);
+  --r:16px;--rs:10px;
+  --fa:'DM Sans',system-ui,sans-serif;
+  --fs:'Playfair Display',Georgia,serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:var(--fa);background:#ddd8cc;color:var(--text-dark);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:30px 20px;}
+.phone{width:390px;min-height:844px;background:var(--cream);border-radius:44px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.08);position:relative;display:flex;flex-direction:column;}
+
+/* STATUS */
+.sbar{background:var(--green-deep);padding:14px 28px 10px;display:flex;justify-content:space-between;align-items:center;color:#fff;font-size:12px;font-weight:500;flex-shrink:0;}
+.sbar .t{font-size:15px;font-weight:600;}
+
+/* HEADER – Burger | Logo | Plus */
+.hdr{background:var(--green-deep);padding:0 16px;flex-shrink:0;}
+.hdr-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 0 10px;}
+.hbtn{width:38px;height:38px;background:rgba(255,255,255,.15);border:none;border-radius:10px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0;}
+.hbtn:hover{background:rgba(255,255,255,.25);}
+.hlogo{text-align:center;flex:1;}
+.hlogo-n{font-family:var(--fs);font-size:20px;font-weight:600;color:#fff;letter-spacing:.3px;}
+.hlogo-s{font-size:10px;color:rgba(255,255,255,.55);margin-top:1px;}
+.hplus{background:var(--gold);font-size:20px;font-weight:700;}
+.hplus:hover{background:#d4a640;}
+
+/* TABS */
+.tabs{display:flex;background:rgba(255,255,255,.1);border-radius:10px 10px 0 0;padding:3px 3px 0;}
+.tab{flex:1;padding:8px 0;text-align:center;font-size:11px;font-weight:500;color:rgba(255,255,255,.65);border-radius:8px 8px 0 0;cursor:pointer;transition:all .2s;border:none;background:transparent;font-family:var(--fa);}
+.tab.on{background:var(--cream);color:var(--green-deep);font-weight:700;}
+
+/* ── FANGBUCH: Ansicht-Header & Toggle ── */
+.fb-view-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.fb-view-title{
+  font-family:var(--fs);font-size:20px;font-weight:600;
+  color:var(--text-dark);letter-spacing:-.2px;
+}
+.fb-view-toggle{
+  background:var(--green-mist);border:1.5px solid var(--green-pale);
+  border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;
+  color:var(--green-deep);cursor:pointer;font-family:var(--fa);
+  transition:background .15s,border-color .15s;white-space:nowrap;
+}
+.fb-view-toggle:hover{background:var(--green-pale);}
+
+/* ── FANGBUCH: Kalender-Grid-Ansicht ── */
+.fb-cal-month{margin-bottom:24px;}
+.fb-cal-month-hdr{
+  font-size:13px;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;color:var(--green-mid);
+  margin-bottom:10px;
+}
+.fb-cal-dow-row{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  gap:3px;margin-bottom:4px;
+}
+.fb-cal-dow{
+  font-size:10px;font-weight:700;color:var(--text-light);
+  text-align:center;padding:2px 0;
+  letter-spacing:.3px;text-transform:uppercase;
+}
+.fb-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.fb-cal-day{
+  aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-size:13px;font-weight:600;
+  cursor:default;transition:transform .1s;position:relative;
+}
+.fb-cal-day.active{cursor:pointer;}
+.fb-cal-day.active:hover{transform:scale(1.08);}
+.fb-cal-day.active:active{transform:scale(.95);}
+.fb-cal-day-num{line-height:1;}
+.fb-cal-dot{
+  width:5px;height:5px;border-radius:50%;margin-top:3px;
+}
+/* Zustände */
+.fb-cal-day.empty{background:transparent;cursor:default;}
+.fb-cal-day.today{box-shadow:0 0 0 2px var(--green-mid);}
+.fb-cal-day.success{background:rgba(74,124,89,.14);color:var(--green-deep);}
+.fb-cal-day.success .fb-cal-dot{background:var(--green-mid);}
+.fb-cal-day.skunked{background:rgba(180,90,70,.07);color:var(--text-mid);}
+.fb-cal-day.skunked .fb-cal-dot{background:#C4A89A;}
+.fb-cal-day.no-session{background:transparent;color:var(--text-light);}
+
+/* ── STATISTIK: Dashboard v9.3 ── */
+.st-headline{
+  display:flex;align-items:baseline;justify-content:space-between;
+  margin-bottom:16px;
+}
+.st-headline-title{
+  font-family:var(--fs);font-size:22px;font-weight:600;
+  color:var(--text-dark);letter-spacing:-.3px;
+}
+.st-headline-sub{font-size:12px;color:var(--text-light);font-weight:500;}
+
+/* Kachel-Grid 2×2 */
+.st-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.st-tile{
+  background:#fff;border-radius:var(--r);padding:16px;
+  box-shadow:var(--sh-sm);border:1px solid rgba(200,221,208,.4);
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+}
+.st-tile:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
+.st-tile:active{transform:scale(.98);}
+.st-tile.no-click{cursor:default;}
+.st-tile.no-click:hover{transform:none;box-shadow:var(--sh-sm);}
+.st-tile.span2{grid-column:1/-1;}       /* volle Breite */
+.st-tile.dark{background:var(--green-deep);border:none;}
+.st-tile-ico{font-size:20px;margin-bottom:8px;}
+.st-tile-val{font-size:30px;font-weight:700;color:var(--text-dark);letter-spacing:-.5px;line-height:1;}
+.st-tile.dark .st-tile-val{color:#fff;}
+.st-tile-lbl{font-size:11px;color:var(--text-light);font-weight:600;margin-top:4px;
+  text-transform:uppercase;letter-spacing:.5px;}
+.st-tile.dark .st-tile-lbl{color:rgba(255,255,255,.6);}
+.st-tile-hint{font-size:10px;color:var(--green-mid);font-weight:600;margin-top:6px;}
+.st-tile.dark .st-tile-hint{color:rgba(255,255,255,.55);}
+
+/* Erfolgsquote Progress-Bar */
+.st-rate-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.st-rate-num{font-size:32px;font-weight:700;color:var(--green-deep);}
+.st-rate-sub{font-size:12px;color:var(--text-light);}
+.st-pbar{background:var(--cream-dark);border-radius:6px;height:8px;overflow:hidden;}
+.st-pbar-fill{background:var(--green-mid);height:100%;border-radius:6px;transition:width .6s ease;}
+
+/* Wetter-Einfluss Kachel */
+.st-wx-row{display:flex;align-items:center;gap:8px;padding:6px 0;
+  border-bottom:1px solid rgba(200,221,208,.3);}
+.st-wx-row:last-child{border-bottom:none;}
+.st-wx-lbl{font-size:12px;color:var(--text-dark);flex:1;font-weight:500;}
+.st-wx-bar-bg{width:72px;height:6px;background:var(--cream-dark);border-radius:3px;overflow:hidden;}
+.st-wx-bar-fill{height:100%;border-radius:3px;background:var(--green-mid);}
+.st-wx-cnt{font-size:12px;font-weight:700;color:var(--green-deep);min-width:22px;text-align:right;}
+
+/* Fischarten-Liste */
+.st-fish-row{
+  display:flex;align-items:center;gap:10px;padding:10px 0;
+  border-bottom:1px solid rgba(200,221,208,.3);cursor:pointer;
+  border-radius:8px;transition:background .15s;
+}
+.st-fish-row:last-child{border-bottom:none;}
+.st-fish-row:hover{background:var(--green-mist);}
+.st-fish-ico{font-size:20px;width:32px;text-align:center;flex-shrink:0;}
+.st-fish-name{font-size:14px;font-weight:600;color:var(--text-dark);flex:1;}
+.st-fish-bar{height:6px;border-radius:3px;background:var(--green-mid);min-width:6px;}
+.st-fish-cnt{font-size:14px;font-weight:700;color:var(--green-deep);min-width:28px;text-align:right;}
+
+/* Rekord-Banner */
+.st-rekord{
+  background:linear-gradient(135deg,var(--green-deep) 0%,var(--green-mid) 100%);
+  border-radius:var(--r);padding:16px 18px;margin-bottom:14px;
+  display:flex;align-items:center;gap:14px;box-shadow:var(--sh-md);
+}
+.st-rekord-ico{font-size:36px;flex-shrink:0;}
+.st-rekord-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:3px;}
+.st-rekord-fish{font-family:var(--fs);font-size:20px;font-weight:600;color:#fff;}
+.st-rekord-len{font-size:26px;font-weight:700;color:var(--gold);}
+
+/* Chart-Wrapper */
+.st-chart-card{background:#fff;border-radius:var(--r);padding:16px;
+  box-shadow:var(--sh-sm);margin-bottom:14px;border:1px solid rgba(200,221,208,.4);}
+.st-chart-lbl{font-size:11px;font-weight:700;color:var(--text-light);
+  text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;}
+
+.btabs{display:flex;background:var(--cream);border-top:1px solid var(--cream-dark);padding:6px 0 8px;flex-shrink:0;}
+
+/* ── AP4: Forecast clickable days + Detail Overlay ── */
+.fc-day{cursor:pointer;border-radius:var(--rs);transition:background .15s;}
+.fc-day:hover{background:var(--green-mist);}
+.fc-day:active{background:var(--green-pale);}
+.wind-arrow{display:inline-block;font-size:14px;line-height:1;vertical-align:middle;}
+.bite-ring{position:relative;width:52px;height:52px;flex-shrink:0;}
+.bite-ring svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
+.bite-ring-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--green-deep);}
+.fc-hourly-wrap{overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+.fc-hourly-wrap::-webkit-scrollbar{display:none;}
+.fc-hourly-row{display:flex;gap:4px;min-width:max-content;}
+.fc-hcol{display:flex;flex-direction:column;align-items:center;gap:2px;width:38px;}
+.fc-htime{font-size:9px;font-weight:700;color:var(--text-light);}
+.fc-hbar-bg{width:20px;height:72px;background:var(--cream-dark);border-radius:4px;display:flex;align-items:flex-end;overflow:hidden;}
+.fc-hbar{width:100%;border-radius:4px 4px 0 0;}
+.fc-htemp{font-size:9px;font-weight:600;color:var(--text-dark);}
+.fc-hrain{font-size:8px;color:var(--blue-t);min-height:11px;}
+.fc-insight-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(200,221,208,.3);}
+.fc-insight-row:last-child{border-bottom:none;}
+.fc-insight-name{font-size:13px;font-weight:600;flex:1;}
+.fc-insight-pct{font-size:12px;font-weight:700;color:var(--green-mid);min-width:34px;text-align:right;}
+.fc-insight-bar{flex:2;height:6px;background:var(--green-mist);border-radius:3px;overflow:hidden;}
+.fc-insight-fill{height:100%;background:var(--green-mid);border-radius:3px;}
+.btab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 4px 2px;border:none;background:transparent;font-family:var(--fa);transition:transform .1s;-webkit-tap-highlight-color:transparent;}
+.btab:active{transform:scale(.9);}
+.btab-ico{width:24px;height:24px;color:var(--text-light);transition:color .2s;}
+.btab-lbl{font-size:10px;font-weight:500;color:var(--text-light);letter-spacing:.2px;transition:color .2s;}
+.btab.on .btab-ico,.btab.on .btab-lbl{color:var(--green-deep);}
+.btab.on .btab-lbl{font-weight:700;}
+
+/* SCROLL PADDING für Bottom-Tab-Bar */
+.sc{flex:1;overflow-y:auto;padding:18px 18px 90px;scrollbar-width:none;}
+.sc::-webkit-scrollbar{display:none;}
+.slbl{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green-mid);margin:18px 0 8px 2px;}
+.slbl:first-child{margin-top:0;}
+.card{background:#fff;border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);}
+
+/* INPUTS */
+.ig{display:flex;flex-direction:column;gap:5px;position:relative;}
+.il{font-size:10px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--text-light);}
+.if{background:var(--beige);border:1.5px solid var(--cream-dark);border-radius:var(--rs);padding:13px 14px;font-size:15px;font-family:var(--fa);color:var(--text-dark);font-weight:500;width:100%;transition:border-color .2s,background .2s;-webkit-appearance:none;appearance:none;}
+.if:focus{outline:none;border-color:var(--green-mid);background:#fff;}
+.if::placeholder{color:var(--text-light);font-weight:400;}
+.if.warn{border-color:var(--red);background:#fff8f7;}
+select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234A7C59' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.mmw{font-size:11px;color:var(--red);font-weight:600;margin-top:4px;display:none;}
+.mmw.on{display:block;}
+
+/* CHIPS */
+.crow{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;}
+.chip{background:var(--green-pale);color:var(--green-deep);font-size:12px;font-weight:600;padding:5px 11px;border-radius:20px;border:none;cursor:pointer;font-family:var(--fa);transition:background .15s,transform .1s;white-space:nowrap;}
+.chip:hover{background:var(--green-light);color:#fff;transform:scale(1.03);}
+.chip:active{transform:scale(.97);}
+.chip.cw{background:var(--blue);color:var(--blue-t);}
+.chip.cw:hover{background:#b5d4f4;}
+.chip.cc{background:var(--purple);color:var(--purple-t);}
+.chip.cc:hover{background:#afa9ec;color:#fff;}
+.chip.cf{background:var(--cream-dark);color:var(--text-mid);}
+.chip.cf.on{background:var(--green-deep);color:#fff;}
+.chip.ct{background:var(--teal);color:var(--teal-t);}
+
+/* ENV */
+.erow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+.ec{background:var(--green-mist);border:1px solid var(--green-pale);border-radius:var(--rs);padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .15s;}
+.ec:hover{background:var(--green-pale);}
+.ei{font-size:24px;flex-shrink:0;}
+.elbl{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);}
+.ev{font-size:13px;font-weight:600;color:var(--text-dark);margin-top:1px;}
+.esub{font-size:11px;color:var(--text-light);margin-top:1px;}
+
+/* BANNERS */
+.sz-banner{background:var(--gold-l);border:1px solid #e8d4a0;border-radius:var(--rs);padding:11px 14px;display:flex;gap:10px;align-items:flex-start;margin-top:10px;position:relative;}
+.sz-text{font-size:12px;color:var(--gold-d);line-height:1.5;font-weight:500;flex:1;}
+.sz-close{background:none;border:none;cursor:pointer;color:var(--gold-d);opacity:.6;font-size:16px;padding:0 0 0 4px;flex-shrink:0;}
+.sz-close:hover{opacity:1;}
+.warn-banner{background:var(--rose);border:1.5px solid var(--rose-b);border-radius:var(--rs);padding:12px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;max-height:160px;transition:max-height .35s ease,opacity .3s,padding .3s,margin .3s;position:relative;}
+.warn-banner.hide{max-height:0;padding:0 14px;margin-bottom:0;opacity:0;overflow:hidden;}
+.wbt{font-size:12px;color:var(--rose-t);line-height:1.5;font-weight:600;}
+.wbd{font-size:10px;color:var(--rose-t);opacity:.6;margin-top:4px;font-style:italic;}
+.wclose{background:none;border:none;cursor:pointer;color:var(--rose-t);opacity:.6;font-size:16px;padding:0 0 0 6px;flex-shrink:0;}
+.wclose:hover{opacity:1;}
+.prev-banner{background:var(--yellow);border:1.5px solid var(--yellow-b);border-radius:var(--rs);padding:11px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+.sk-banner{background:var(--purple);border:1.5px solid #afa9ec;border-radius:var(--rs);padding:11px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+.gps-strip{display:flex;align-items:center;gap:10px;background:var(--blue);border-radius:var(--rs);padding:8px 12px;margin-top:10px;font-size:12px;color:var(--blue-t);font-weight:600;transition:all .3s;}
+.gps-strip.ok{background:var(--green-mist);color:var(--green-deep);}
+
+/* CATCH/SKUNKED */
+.ssbtn{display:flex;gap:8px;margin-top:2px;}
+.ssb{flex:1;padding:15px 10px;border-radius:var(--rs);border:2px solid var(--cream-dark);background:#fff;font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;transition:all .2s;text-align:center;color:var(--text-light);}
+.ssb.sc2{border-color:var(--green-mid);background:var(--green-mist);color:var(--green-deep);}
+.ssb.ss2{border-color:#aaa;background:#f5f3f0;color:#666;}
+.cc{background:var(--green-mist);border:1.5px solid var(--green-pale);border-radius:var(--r);padding:16px;margin-bottom:10px;}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.cn{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green-mid);}
+.rm{width:32px;height:32px;background:rgba(180,90,70,.1);border:none;border-radius:8px;color:var(--red);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.rm:hover{background:rgba(180,90,70,.2);}
+.crr{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:var(--rs);padding:13px 14px;margin-top:10px;border:1px solid var(--cream-dark);}
+.crl{display:flex;flex-direction:column;}
+.crm{font-size:14px;font-weight:600;color:var(--text-dark);}
+.crs{font-size:11px;color:var(--text-light);margin-top:2px;}
+.tw{position:relative;display:inline-block;width:54px;height:32px;flex-shrink:0;}
+.tw input{opacity:0;width:0;height:0;position:absolute;}
+.tsl{position:absolute;inset:0;background:#D0CBC0;border-radius:16px;cursor:pointer;transition:background .25s;}
+.tsl:before{content:'';position:absolute;width:26px;height:26px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .25s;box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.tw input:checked+.tsl{background:var(--green-mid);}
+.tw input:checked+.tsl:before{transform:translateX(22px);}
+.crr.tk .crm{color:var(--green-deep);}
+.phpr{width:56px;height:56px;border-radius:10px;object-fit:cover;border:2px solid var(--green-pale);cursor:pointer;}
+.phadd{width:56px;height:56px;border-radius:10px;border:1.5px dashed var(--green-light);background:var(--green-mist);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:18px;gap:2px;color:var(--green-mid);}
+.phlbl{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+
+/* BUTTONS */
+.addcatch{width:100%;padding:16px;background:transparent;border:1.5px dashed var(--green-light);border-radius:var(--r);color:var(--green-mid);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,border-color .15s;margin-bottom:12px;}
+.addcatch:hover{background:var(--green-mist);border-color:var(--green-mid);}
+.aplus{width:24px;height:24px;background:var(--green-mid);border-radius:6px;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.btn{width:100%;padding:18px;background:var(--green-deep);border:none;border-radius:var(--r);color:#fff;font-size:16px;font-weight:600;font-family:var(--fa);cursor:pointer;transition:background .2s,transform .1s;box-shadow:0 4px 16px rgba(45,74,53,.35);}
+.btn:hover{background:#3d6047;}
+.btn:active{transform:scale(.98);}
+.btn.danger{background:var(--red);box-shadow:0 4px 16px rgba(180,90,70,.3);}
+.bshare{width:100%;padding:14px;border:2px solid var(--gold);background:transparent;color:var(--gold-d);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;border-radius:var(--rs);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+.bshare:hover{background:var(--gold-l);}
+.sk-card{background:#f5f3f0;border:1.5px solid #ddd;border-radius:var(--r);padding:24px;text-align:center;margin-bottom:12px;}
+.bico{background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;font-size:18px;transition:background .15s;color:var(--text-light);}
+.bico:hover{background:var(--cream-dark);}
+
+/* ── FANGBUCH: Sortier-Leiste ausblenden (v9.1) ── */
+.fb-sort-bar{display:none;}
+
+/* ── FANGBUCH: Headline-Leiste mit View-Toggle ── */
+.fb-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 18px 10px;background:#fff;
+  border-bottom:1px solid var(--cream-dark);
+  flex-shrink:0;
+}
+.fb-header-title{
+  font-family:var(--fs);font-size:19px;font-weight:600;
+  color:var(--text-dark);letter-spacing:-.2px;
+}
+.fb-view-toggle{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--green-mist);border:1px solid var(--green-pale);
+  border-radius:20px;padding:6px 12px;
+  font-size:12px;font-weight:600;color:var(--green-deep);
+  font-family:var(--fa);cursor:pointer;transition:background .15s;
+  white-space:nowrap;
+}
+.fb-view-toggle:hover{background:var(--green-pale);}
+
+/* ── FANGBUCH: Kalender-Grid ── */
+.fb-cal-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;
+}
+.fb-cal-nav-title{
+  font-family:var(--fs);font-size:17px;font-weight:600;
+  color:var(--text-dark);
+}
+.fb-cal-nav-btn{
+  background:none;border:1px solid var(--cream-dark);border-radius:8px;
+  width:32px;height:32px;cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-mid);transition:background .15s;
+}
+.fb-cal-nav-btn:hover{background:var(--cream-dark);}
+.fb-cal-dow{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  margin-bottom:4px;
+}
+.fb-cal-dow-cell{
+  text-align:center;font-size:10px;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;
+  color:var(--text-light);padding:4px 0;
+}
+.fb-cal-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  gap:3px;
+}
+.fb-cal-day{
+  aspect-ratio:1;border-radius:8px;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .15s,transform .1s;
+  position:relative;font-size:13px;font-weight:500;
+  color:var(--text-dark);
+}
+.fb-cal-day:hover{background:var(--green-mist);transform:scale(1.05);}
+.fb-cal-day.empty{cursor:default;color:transparent;}
+.fb-cal-day.empty:hover{background:none;transform:none;}
+.fb-cal-day.today{font-weight:700;color:var(--green-deep);}
+.fb-cal-day.today::after{
+  content:'';position:absolute;bottom:3px;
+  width:4px;height:4px;border-radius:50%;
+  background:var(--green-mid);
+}
+.fb-cal-day.has-catch{
+  background:rgba(74,124,89,.12);color:var(--green-deep);font-weight:700;
+}
+.fb-cal-day.has-catch:hover{background:rgba(74,124,89,.22);}
+.fb-cal-day.skunked{
+  background:rgba(200,200,200,.15);color:var(--text-light);
+}
+.fb-cal-day.skunked:hover{background:rgba(200,200,200,.28);}
+.fb-cal-day.has-catch .fb-cal-dot{background:var(--green-mid);}
+.fb-cal-day.skunked .fb-cal-dot{background:#bbb;}
+.fb-cal-dot{
+  width:5px;height:5px;border-radius:50%;
+  margin-top:1px;flex-shrink:0;
+  display:none;
+}
+.fb-cal-day.has-catch .fb-cal-dot,
+.fb-cal-day.skunked .fb-cal-dot{display:block;}
+.fb-cal-num{line-height:1;}
+/* Monat-Trennlinie */
+.fb-cal-month-block{margin-bottom:20px;}
+
+/* ── FANGBUCH: Monats-Trennlinie ── */
+.fb-month-sep{
+  display:flex;align-items:center;gap:10px;
+  margin:20px 0 10px;
+}
+.fb-month-sep:first-child{margin-top:0;}
+.fb-month-label{
+  font-size:12px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;color:var(--green-mid);
+  white-space:nowrap;
+}
+.fb-month-line{
+  flex:1;height:1px;background:var(--green-pale);
+}
+.fb-month-count{
+  font-size:11px;font-weight:600;color:var(--text-light);
+  white-space:nowrap;
+}
+
+/* ── FANGBUCH: Kachel mit Erfolgs-Indikator (linker Balken) ── */
+.fb-card{
+  background:#fff;border-radius:var(--r);box-shadow:var(--sh-sm);
+  margin-bottom:10px;border:1px solid rgba(200,221,208,.35);
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+  overflow:hidden;
+  display:flex; /* Flex für Indikator-Spalte */
+}
+.fb-card:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
+.fb-card:active{transform:scale(.99);}
+
+/* Farbiger Balken links */
+.fb-indicator{
+  width:4px;flex-shrink:0;border-radius:0;
+}
+.fb-indicator.success{background:var(--green-mid);}
+.fb-indicator.skunked{background:#CBD5D0;}/* dezentes Grau */
+
+/* Karteninhalt nimmt den Rest */
+.fb-card-content{flex:1;min-width:0;}
+
+/* Bestehende Body/Footer-Klassen unverändert behalten */
+.fb-card-body{padding:14px 16px 10px;}
+.fb-date{font-family:var(--fs);font-size:19px;font-weight:600;color:var(--text-dark);letter-spacing:-.2px;}
+.fb-water{font-size:13px;font-weight:600;color:var(--text-mid);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fb-chips{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.fb-chip{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;letter-spacing:.1px;}
+.fb-chip-green{background:rgba(74,124,89,.1);color:var(--green-deep);}
+.fb-chip-blue{background:var(--blue);color:var(--blue-t);}
+.fb-chip-gray{background:var(--cream-dark);color:var(--text-mid);}
+.fb-chip-gold{background:var(--gold-l);color:var(--gold-d);}
+.fb-chip-teal{background:var(--teal);color:var(--teal-t);}
+.fb-card-footer{border-top:1px solid rgba(200,221,208,.3);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;}
+.fb-cnt{font-size:28px;font-weight:700;color:var(--green-deep);line-height:1;}
+.fb-cnt-lbl{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-top:2px;}
+.fb-moon-area{text-align:right;}
+.fb-moon{font-size:22px;line-height:1;}
+.fb-pressure{font-size:11px;color:var(--text-light);margin-top:3px;}
+
+/* ── DAY DETAIL OVERLAY ── */
+#fs-day-detail{z-index:115;}/* stacked above regular fsov (105) */
+.dd-hero{background:var(--green-deep);padding:16px 20px 20px;color:#fff;flex-shrink:0;}
+.dd-hero-back{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:13px;font-weight:500;font-family:var(--fa);padding:6px 12px;border-radius:8px;cursor:pointer;margin-bottom:14px;}
+.dd-hero-back:hover{background:rgba(255,255,255,.25);}
+.dd-hero-meta{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:2px;}
+.dd-hero-date{font-family:var(--fs);font-size:22px;font-weight:600;margin-bottom:2px;}
+.dd-hero-water{font-size:14px;color:rgba(255,255,255,.75);margin-bottom:12px;}
+.dd-hero-cnt{font-size:38px;font-weight:700;color:var(--gold);line-height:1;}
+.dd-hero-cnt-lbl{font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;text-transform:uppercase;letter-spacing:.6px;}
+/* Stat tiles im Hero */
+.dd-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+.dd-tile{background:rgba(255,255,255,.12);border-radius:10px;padding:10px;text-align:center;}
+.dd-tile-val{font-size:16px;font-weight:700;color:#fff;line-height:1.1;}
+.dd-tile-lbl{font-size:9px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;margin-top:3px;}
+/* Wetter-Kacheln im Body */
+.dd-wx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.dd-wx-tile{background:#fff;border-radius:var(--rs);padding:10px;box-shadow:var(--sh-sm);text-align:center;border:1px solid rgba(200,221,208,.3);}
+.dd-wx-ico{font-size:20px;margin-bottom:4px;}
+.dd-wx-val{font-size:14px;font-weight:700;color:var(--text-dark);}
+.dd-wx-lbl{font-size:10px;color:var(--text-light);margin-top:2px;}
+/* Session-Trennlinie im Overlay */
+.dd-sess-sep{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--green-mid);padding:10px 0 6px;border-top:1px solid rgba(200,221,208,.4);margin-top:12px;}
+.dd-sess-sep:first-child{border-top:none;margin-top:0;}
+/* Catch-Zeile im Overlay */
+.dd-catch-row{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid rgba(200,221,208,.3);gap:10px;}
+.dd-catch-row:last-child{border-bottom:none;}
+.dd-catch-photo{width:40px;height:40px;border-radius:9px;background:var(--green-mist);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;}
+.dd-catch-photo img{width:100%;height:100%;object-fit:cover;}
+.dd-catch-info{flex:1;min-width:0;}
+.dd-catch-name{font-size:14px;font-weight:600;color:var(--text-dark);}
+.dd-catch-meta{font-size:11px;color:var(--text-light);margin-top:2px;}
+.dd-catch-right{text-align:right;flex-shrink:0;}
+.dd-catch-len{font-size:17px;font-weight:700;color:var(--green-deep);}
+.dd-catch-unit{font-size:10px;color:var(--text-light);}
+/* loading-state für Wetter-Nachladen */
+.wx-loading{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-light);padding:6px 0;}
+
+/* Alte HISTORY-Klassen behalten (werden von showDetail noch genutzt) */
+.scard{background:#fff;border-radius:var(--r);padding:15px 16px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);cursor:pointer;transition:transform .15s,box-shadow .15s;display:flex;align-items:center;gap:12px;}
+.scard:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
+.smoon{font-size:22px;flex-shrink:0;}
+.sinfo{flex:1;min-width:0;}
+.sdate{font-family:var(--fs);font-size:16px;font-weight:500;}
+.swat{font-size:12px;color:var(--text-mid);font-weight:500;margin-top:2px;}
+.sbadge{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+.badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.bg{background:var(--green-pale);color:var(--green-deep);}
+.bgr{background:#e8e5e0;color:#777;}
+.bgo{background:var(--gold-l);color:var(--gold-d);}
+.bbl{background:var(--blue);color:var(--blue-t);}
+.btl{background:var(--teal);color:var(--teal-t);}
+.cntb{background:var(--green-deep);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;}
+.cntb.sk{background:#bbb;}
+
+/* DETAIL */
+.dhdr{background:var(--green-deep);padding:16px 24px 22px;color:#fff;flex-shrink:0;}
+.bback{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:13px;font-weight:500;font-family:var(--fa);padding:7px 12px;border-radius:8px;cursor:pointer;margin-bottom:14px;}
+.bback:hover{background:rgba(255,255,255,.25);}
+.dtitle{font-family:var(--fs);font-size:24px;font-weight:600;margin-bottom:3px;}
+.dmeta{font-size:13px;color:rgba(255,255,255,.65);}
+.sg3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+.sm{background:rgba(255,255,255,.12);border-radius:10px;padding:10px;text-align:center;}
+.sv{font-size:19px;font-weight:700;color:#fff;}
+.sl{font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.6px;margin-top:2px;}
+
+/* FISH ROWS */
+.fr{display:flex;align-items:center;padding:13px 0;border-bottom:1px solid rgba(200,221,208,.4);gap:12px;}
+.fr:last-child{border-bottom:none;}
+.fa2{width:42px;height:42px;background:var(--green-mist);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden;}
+.fa2 img{width:100%;height:100%;object-fit:cover;}
+.fn{font-weight:600;font-size:15px;}
+.fme{font-size:12px;color:var(--text-light);margin-top:2px;}
+.frt{margin-left:auto;text-align:right;flex-shrink:0;}
+.flv{font-size:18px;font-weight:700;color:var(--green-deep);}
+.flu{font-size:11px;color:var(--text-light);}
+.crp{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:3px;display:inline-block;}
+.crp.rel{background:#E0F2E8;color:#2D7A4F;}
+.crp.tak{background:#F9EDDA;color:var(--gold-d);}
+.frc{cursor:pointer;border-radius:8px;padding-left:8px;padding-right:8px;margin:0 -8px;transition:background .15s;}
+.frc:hover{background:var(--green-mist);}
+
+/* STATS */
+.sg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.stc{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--sh-sm);border:1px solid rgba(200,221,208,.4);cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.stc:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
+.stc .v{font-size:28px;font-weight:700;color:var(--green-deep);}
+.stc .l{font-size:12px;color:var(--text-light);font-weight:500;margin-top:2px;}
+.stc .lh{font-size:10px;color:var(--green-mid);font-weight:600;margin-top:4px;}
+.pbg{background:var(--cream-dark);border-radius:8px;height:10px;margin:8px 0 4px;overflow:hidden;}
+.pbf{background:var(--green-mid);height:100%;border-radius:8px;transition:width .6s;}
+.cwrap{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);}
+.ctitle{font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase;}
+.mcard{background:linear-gradient(135deg,#fff 0%,var(--gold-l) 100%);border:1px solid #e8d4a0;border-radius:var(--r);padding:14px 16px;margin-bottom:10px;}
+.mrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(196,150,58,.15);}
+.mrow:last-child{border-bottom:none;padding-bottom:0;}
+.mi{font-size:26px;flex-shrink:0;width:34px;text-align:center;}
+.minfo{flex:1;}
+.mn{font-weight:600;font-size:15px;color:var(--text-dark);}
+.md{font-size:12px;color:var(--text-mid);margin-top:2px;}
+.msc{text-align:right;flex-shrink:0;}
+.msv{font-size:17px;font-weight:700;color:var(--gold);}
+.msl{font-size:10px;color:var(--text-light);}
+.baitcard{background:#fff;border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);}
+.brow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(200,221,208,.4);cursor:pointer;border-radius:8px;transition:background .15s;}
+.brow:last-child{border-bottom:none;}
+.brow:hover{background:var(--green-mist);}
+/* Size classes simplified */
+.scrow{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid rgba(200,221,208,.3);gap:10px;}
+.scrow:last-child{border-bottom:none;}
+.sclbl{font-size:14px;font-weight:700;color:var(--green-deep);width:44px;flex-shrink:0;}
+.scbar{flex:1;height:10px;background:var(--green-mist);border-radius:5px;overflow:hidden;}
+.scfill{height:100%;background:var(--green-mid);border-radius:5px;transition:width .5s;}
+.sccnt{font-size:13px;font-weight:700;color:var(--green-deep);width:30px;text-align:right;flex-shrink:0;}
+
+/* WEATHER CORRELATION */
+.corr-card{background:#fff;border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);}
+.corr-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(200,221,208,.3);}
+.corr-row:last-child{border-bottom:none;}
+.corr-lbl{font-size:12px;color:var(--text-mid);flex:1;}
+.corr-bar{width:80px;height:8px;background:var(--green-mist);border-radius:4px;overflow:hidden;}
+.corr-fill{height:100%;border-radius:4px;}
+.corr-val{font-size:12px;font-weight:700;color:var(--green-deep);min-width:24px;text-align:right;}
+
+/* FORECAST */
+.fc-card{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);}
+.fc-day{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(200,221,208,.3);}
+.fc-day:last-child{border-bottom:none;}
+.fc-date{font-size:13px;font-weight:600;color:var(--text-dark);width:56px;flex-shrink:0;}
+.fc-ico{font-size:22px;flex-shrink:0;}
+.fc-info{flex:1;}
+.fc-tmp{font-size:12px;color:var(--text-mid);}
+.fc-fishes{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;}
+.fc-fish{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--green-pale);color:var(--green-deep);}
+.fc-prob{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0;}
+.fc-bar{width:44px;height:8px;background:var(--green-mist);border-radius:4px;overflow:hidden;}
+.fc-fill{height:100%;border-radius:4px;background:var(--green-mid);}
+.fc-pct{font-size:13px;font-weight:700;color:var(--green-deep);min-width:32px;text-align:right;}
+.fc-empty{text-align:center;padding:40px 20px;color:var(--text-light);}
+.fc-empty-icon{font-size:48px;margin-bottom:12px;opacity:.4;}
+.fc-btn{width:100%;padding:16px;background:var(--green-deep);border:none;border-radius:var(--r);color:#fff;font-size:15px;font-weight:600;font-family:var(--fa);cursor:pointer;margin-bottom:10px;}
+
+/* FULLSCREEN OVERLAYS */
+.fsov{position:absolute;inset:0;z-index:105;display:flex;flex-direction:column;background:var(--cream);transform:translateY(100%);transition:transform .3s cubic-bezier(.22,1,.36,1);}
+.fsov.on{transform:translateY(0);}
+.fshdr{background:var(--green-deep);padding:16px 20px;color:#fff;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.fstitle{font-family:var(--fs);font-size:20px;font-weight:600;flex:1;}
+.fsmeta{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;}
+.xbtn{background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.xbtn:hover{background:rgba(255,255,255,.25);}
+.fbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;background:#fff;border-bottom:1px solid var(--cream-dark);}
+
+/* BURGER MENU */
+.burg-ov{position:absolute;inset:0;z-index:220;display:flex;}
+.burg-ov.hidden{display:none;}
+.burg-back{flex:1;background:rgba(15,25,18,.55);}
+.burg-panel{width:272px;background:var(--cream);display:flex;flex-direction:column;overflow-y:auto;}
+.burg-hdr{background:var(--green-deep);padding:40px 22px 20px;color:#fff;}
+.burg-n{font-family:var(--fs);font-size:19px;font-weight:600;color:#fff;}
+.burg-s{font-size:12px;color:rgba(255,255,255,.65);margin-top:4px;}
+.burg-body{flex:1;padding:14px;}
+.burg-sec{margin-bottom:18px;}
+.burg-slbl{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-light);margin-bottom:8px;padding-left:4px;}
+.bitem{display:flex;align-items:center;gap:12px;padding:13px 10px;border-radius:var(--rs);cursor:pointer;transition:background .15s;border:none;background:transparent;width:100%;font-family:var(--fa);text-align:left;}
+.bitem:hover{background:var(--green-mist);}
+.bitem-ico{font-size:20px;width:26px;text-align:center;flex-shrink:0;}
+.bitem-txt{font-size:14px;font-weight:600;color:var(--text-dark);}
+.bitem-sub{font-size:11px;color:var(--text-light);margin-top:1px;}
+.burg-ver{padding:12px;font-size:11px;color:var(--text-light);text-align:center;}
+
+/* ONBOARDING */
+.obov{position:absolute;inset:0;background:var(--green-deep);z-index:200;display:flex;flex-direction:column;overflow:hidden;}
+.obov.hidden{display:none;}
+.obhdr{padding:40px 30px 20px;color:#fff;flex-shrink:0;}
+.obdots{display:flex;gap:6px;margin-bottom:24px;}
+.oddot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s;}
+.oddot.on{background:var(--gold);width:24px;border-radius:4px;}
+.obtit{font-family:var(--fs);font-size:28px;font-weight:600;color:#fff;line-height:1.25;margin-bottom:8px;}
+.obsub{font-size:14px;color:rgba(255,255,255,.65);line-height:1.6;}
+.obbody{flex:1;background:var(--cream);border-radius:28px 28px 0 0;padding:28px 24px 36px;overflow-y:auto;}
+.obig{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
+.oblbl{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);}
+.obif{background:var(--beige);border:1.5px solid var(--cream-dark);border-radius:var(--rs);padding:15px 16px;font-size:16px;font-family:var(--fa);color:var(--text-dark);font-weight:500;width:100%;-webkit-appearance:none;appearance:none;transition:border-color .2s;}
+.obif:focus{outline:none;border-color:var(--green-mid);}
+select.obif{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234A7C59' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+.obtgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:2px;}
+.obtbtn{padding:18px 6px;border-radius:var(--rs);border:2.5px solid var(--cream-dark);background:#fff;font-size:12px;font-weight:600;font-family:var(--fa);cursor:pointer;text-align:center;color:var(--text-light);transition:all .2s;position:relative;}
+.obtbtn .ico{font-size:26px;display:block;margin-bottom:6px;}
+.obtbtn.sel{border-color:var(--green-mid);background:var(--green-mist);color:var(--green-deep);box-shadow:0 0 0 3px rgba(74,124,89,.18);}
+.obtbtn.sel::after{content:'✓';position:absolute;top:6px;right:8px;font-size:12px;font-weight:700;color:var(--green-mid);}
+@keyframes pulse{0%,100%{box-shadow:0 4px 16px rgba(45,74,53,.35);}50%{box-shadow:0 4px 24px rgba(45,74,53,.6),0 0 0 4px rgba(74,124,89,.18);}}
+.obBtn{width:100%;padding:18px;border:none;border-radius:var(--r);font-size:16px;font-weight:600;font-family:var(--fa);cursor:pointer;margin-top:12px;transition:all .25s;}
+.obBtn:not(:disabled){background:var(--green-deep);color:#fff;box-shadow:0 4px 16px rgba(45,74,53,.35);}
+.obBtn:not(:disabled):active{transform:scale(.98);}
+.obBtn.pulse{animation:pulse 1.4s ease-in-out infinite;}
+.obBtn:disabled{background:#ccc;color:#aaa;cursor:not-allowed;box-shadow:none;}
+
+/* SUCCESS */
+.sucov{position:absolute;inset:0;z-index:150;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(15,30,20,.9);opacity:0;pointer-events:none;transition:opacity .4s;}
+.sucov.on{opacity:1;pointer-events:all;}
+.kcanvas{position:absolute;inset:0;pointer-events:none;}
+.succard{background:#fff;border-radius:24px;padding:28px 24px;width:316px;text-align:center;position:relative;z-index:2;overflow:hidden;}
+.suchdr{background:var(--green-deep);margin:-28px -24px 20px;padding:20px 24px 16px;}
+.sucico{font-size:44px;margin-bottom:6px;}
+.suchl{font-family:var(--fs);font-size:18px;font-weight:600;color:#fff;}
+.cntwrap{position:relative;height:100px;display:flex;align-items:center;justify-content:center;margin:8px 0;}
+.cntnum{font-size:72px;font-weight:700;color:var(--gold);font-family:var(--fs);line-height:1;}
+.cntnum.pulse{animation:pnum .35s ease;}
+@keyframes pnum{0%{transform:scale(1);}40%{transform:scale(1.22);color:#E8B54A;}100%{transform:scale(1);}}
+.p1{position:absolute;bottom:0;left:50%;transform:translateX(-50%) translateY(0);font-size:22px;font-weight:700;color:var(--green-mid);opacity:0;pointer-events:none;}
+.p1.fly{animation:flyup .55s cubic-bezier(.22,1,.36,1) forwards;}
+@keyframes flyup{0%{opacity:1;transform:translateX(-50%) translateY(0);}100%{opacity:0;transform:translateX(-50%) translateY(-72px);}}
+.cntlbl{font-size:13px;color:var(--text-light);margin-bottom:6px;}
+.suclist{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:14px;}
+.succhip{background:var(--green-pale);color:var(--green-deep);font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;}
+.sucdis{width:100%;padding:15px;background:var(--green-deep);border:none;border-radius:var(--rs);color:#fff;font-size:15px;font-weight:600;font-family:var(--fa);cursor:pointer;}
+
+/* EXPORT */
+.expov{position:absolute;inset:0;z-index:120;display:flex;flex-direction:column;background:rgba(20,40,25,.7);opacity:0;pointer-events:none;transition:opacity .3s;justify-content:flex-end;}
+.expov.on{opacity:1;pointer-events:all;}
+.expsh{background:var(--cream);border-radius:24px 24px 0 0;padding:24px 22px 40px;max-height:85vh;overflow-y:auto;}
+.exph{width:40px;height:4px;background:var(--cream-dark);border-radius:2px;margin:0 auto 20px;}
+.exptit{font-family:var(--fs);font-size:20px;font-weight:600;margin-bottom:6px;}
+.expsub{font-size:12px;color:var(--text-light);margin-bottom:16px;}
+.expdiv{display:flex;align-items:center;gap:10px;margin:16px 0 12px;}
+.expdiv span{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-light);white-space:nowrap;}
+.expdiv::before,.expdiv::after{content:'';flex:1;height:1px;background:var(--cream-dark);}
+.expopt{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#fff;border-radius:var(--rs);margin-bottom:10px;cursor:pointer;border:1.5px solid var(--cream-dark);transition:border-color .15s,background .15s;}
+.expopt:hover{border-color:var(--green-mid);background:var(--green-mist);}
+.expopt.imp{border-color:var(--gold);background:var(--gold-l);}
+.expico{font-size:24px;flex-shrink:0;}
+.exptitle{font-weight:600;font-size:14px;}
+.expsub2{font-size:12px;color:var(--text-light);margin-top:2px;}
+.expcan{width:100%;padding:16px;background:transparent;border:none;color:var(--text-light);font-size:15px;font-weight:600;font-family:var(--fa);cursor:pointer;margin-top:4px;}
+
+/* CONFIRM */
+.confov{position:absolute;inset:0;z-index:250;display:flex;align-items:center;justify-content:center;background:rgba(15,25,18,.82);opacity:0;pointer-events:none;transition:opacity .25s;}
+.confov.on{opacity:1;pointer-events:all;}
+.confcard{background:#fff;border-radius:20px;padding:28px 24px;width:300px;text-align:center;}
+.conficon{font-size:40px;margin-bottom:12px;}
+.conftit{font-family:var(--fs);font-size:18px;font-weight:600;margin-bottom:8px;}
+.conftext{font-size:13px;color:var(--text-mid);line-height:1.6;margin-bottom:24px;white-space:pre-line;}
+.confbtns{display:flex;gap:10px;}
+.confbtns button{flex:1;padding:14px;border-radius:var(--rs);border:none;font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;}
+.confcan{background:var(--cream-dark);color:var(--text-mid);}
+.confok{background:var(--green-deep);color:#fff;}
+.confok.dng{background:var(--red);}
+
+/* INFO SECTION BUTTONS */
+.info-btn{display:flex;align-items:center;gap:14px;padding:16px;background:#fff;border-radius:var(--rs);margin-bottom:10px;cursor:pointer;border:1.5px solid var(--cream-dark);transition:border-color .15s,background .15s;}
+.info-btn:hover{border-color:var(--green-mid);background:var(--green-mist);}
+.info-btn-ico{font-size:24px;flex-shrink:0;}
+.info-btn-txt{font-weight:600;font-size:14px;}
+.info-btn-sub{font-size:12px;color:var(--text-light);margin-top:2px;}
+
+/* MISC */
+.offbanner{position:absolute;top:0;left:0;right:0;background:var(--red);color:#fff;text-align:center;font-size:12px;font-weight:600;padding:6px;z-index:300;transform:translateY(-100%);transition:transform .3s;}
+.offbanner.on{transform:translateY(0);}
+
+/* FAVORITEN-BUTTONS & permanente Chips (v11) */
+.fav-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.fav-btn{background:var(--green-pale);color:var(--green-deep);font-size:12px;font-weight:600;padding:5px 10px;border-radius:20px;border:none;cursor:pointer;font-family:var(--fa);transition:background .15s;white-space:nowrap;}
+.fav-btn:hover{background:var(--green-light);color:#fff;}
+.fav-btn:active{transform:scale(.95);}
+.fav-btn-bait{background:var(--purple);color:var(--purple-t);}
+.fav-btn-bait:hover{background:#afa9ec;color:#fff;}
+.fav-btn-note{background:var(--teal);color:var(--teal-t);font-size:11px;padding:4px 9px;}
+.fav-btn-note:hover{background:#aee0d3;}
+.toast{position:absolute;bottom:92px;left:18px;right:18px;background:var(--green-deep);color:#fff;padding:13px 16px;border-radius:12px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(45,74,53,.4);transform:translateY(20px);opacity:0;transition:all .3s ease;z-index:90;}
+.toast.on{transform:translateY(0);opacity:1;}
+.toast.err{background:var(--red);}
+.pages{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+.page{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+.page.on{display:flex;}
+:focus-visible{outline:3px solid var(--green-mid);outline-offset:2px;}
+input[type=file]{display:none;}
+.empty{text-align:center;padding:50px 20px;}
+.empty-ico{font-size:52px;margin-bottom:14px;opacity:.45;}
+.empty-t{font-size:16px;font-weight:600;color:var(--text-mid);margin-bottom:6px;}
+.empty-s{font-size:13px;color:var(--text-light);line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="phone" id="frame">
+<div class="offbanner" id="off-banner">📡 Kein Internet – alle Funktionen laufen weiter</div>
+<div class="sbar"><span class="t" id="live-time">09:41</span><div style="display:flex;gap:6px;align-items:center;"><span>●●●</span><span id="netind" style="font-size:11px;">Offline</span><span>🔋</span></div></div>
+
+<!-- ONBOARDING -->
+<div class="obov hidden" id="onboarding" role="dialog" aria-modal="true">
+  <div class="obhdr">
+    <div class="obdots"><div class="oddot on" id="d0"></div><div class="oddot" id="d1"></div><div class="oddot" id="d2"></div></div>
+    <div class="obtit" id="ob-title">Willkommen beim<br>Fishing Buddy 🎣</div>
+    <div class="obsub" id="ob-sub">Dein persönliches Angelbuch – 100% offline.</div>
+  </div>
+  <div class="obbody">
+    <div id="obs0">
+      <div class="obig"><label class="oblbl" for="ob-name">Dein Name</label><input type="text" class="obif" id="ob-name" placeholder="z.B. Klaus Fischer" oninput="obChk()" autocomplete="given-name"></div>
+    </div>
+    <div id="obs1" style="display:none;">
+      <div class="oblbl" style="margin-bottom:12px;">Dein Angelstil</div>
+      <div class="obtgrid">
+        <button class="obtbtn" id="ot-Friedfisch" onclick="selTyp('Friedfisch')"><span class="ico">🐠</span>Friedfisch</button>
+        <button class="obtbtn" id="ot-Raubfisch" onclick="selTyp('Raubfisch')"><span class="ico">🦈</span>Raubfisch</button>
+        <button class="obtbtn" id="ot-Allround" onclick="selTyp('Allround')"><span class="ico">🎣</span>Allround</button>
+      </div>
+    </div>
+    <div id="obs2" style="display:none;">
+      <div class="obig">
+        <label class="oblbl" for="ob-plz">Postleitzahl (PLZ)</label>
+        <input type="text" class="obif" id="ob-plz" placeholder="z.B. 49377"
+          inputmode="numeric" maxlength="5" pattern="[0-9]{5}"
+          oninput="obChk()" autocomplete="postal-code">
+        <p style="font-size:11px;color:var(--text-light);margin-top:8px;line-height:1.6;">
+          Dient als Basis für automatische Wetterabfragen. Keine Standortfreigabe nötig.
+        </p>
+      </div>
+    </div>
+    <button class="obBtn" id="ob-btn" onclick="obNext()" disabled>Weiter →</button>
+    <p style="font-size:11px;color:var(--text-light);margin-top:16px;line-height:1.6;text-align:center;">Alle Daten bleiben lokal auf deinem Gerät. <a href="#" onclick="showBurgSec('legal');finOb();return false;" style="color:var(--green-mid);">Datenschutz</a></p>
+  </div>
+</div>
+
+<!-- BURGER MENU -->
+<div class="burg-ov hidden" id="burg-ov">
+  <div class="burg-panel">
+    <div class="burg-hdr">
+      <div style="font-size:32px;margin-bottom:8px;">🎣</div>
+      <div class="burg-n" id="burg-name">Fishing Buddy</div>
+      <div class="burg-s" id="burg-sub">v9 · Local-First PWA</div>
+    </div>
+    <div class="burg-body">
+      <div class="burg-sec">
+        <div class="burg-slbl">Profil</div>
+        <button class="bitem" onclick="openProfileEdit();closeBurg()"><span class="bitem-ico">👤</span><div><div class="bitem-txt" id="burg-pname">–</div><div class="bitem-sub" id="burg-psub">Profil bearbeiten</div></div></button>
+      </div>
+      <div class="burg-sec">
+        <div class="burg-slbl">Daten</div>
+        <button class="bitem" onclick="openExp();closeBurg()"><span class="bitem-ico">📦</span><div><div class="bitem-txt">Backup &amp; Export</div><div class="bitem-sub">JSON exportieren / importieren</div></div></button>
+        <button class="bitem" onclick="showBurgSec('storage');closeBurg()"><span class="bitem-ico">💾</span><div><div class="bitem-txt">Speicher-Info</div><div class="bitem-sub" id="burg-storasub">IndexedDB</div></div></button>
+      </div>
+      <div class="burg-sec">
+        <div class="burg-slbl">Info &amp; Rechtliches</div>
+        <button class="bitem" onclick="showBurgSec('schonzeiten');closeBurg()"><span class="bitem-ico">📋</span><div><div class="bitem-txt">Schonzeiten &amp; Verbände</div><div class="bitem-sub">Links zu Fischereibehörden</div></div></button>
+        <button class="bitem" onclick="showBurgSec('legal');closeBurg()"><span class="bitem-ico">⚖️</span><div><div class="bitem-txt">Impressum &amp; Datenschutz</div><div class="bitem-sub">DSGVO-konform</div></div></button>
+        <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
+      </div>
+      <div class="burg-sec">
+        <div class="burg-slbl">Gefährlich</div>
+        <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
+      </div>
+    </div>
+    <div class="burg-ver">Fishing Buddy v11 · IndexedDB · PWA</div>
+  </div>
+  <div class="burg-back" onclick="closeBurg()"></div>
+</div>
+
+<!-- PROFIL BEARBEITEN OVERLAY (v11) -->
+<div class="fsov" id="fs-profile-edit" role="dialog" aria-modal="true">
+  <div class="fshdr">
+    <div><div class="fstitle">Profil bearbeiten</div></div>
+    <button class="xbtn" onclick="closeFs('profile-edit')">✕</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:20px 18px 80px;">
+    <div class="ig" style="margin-bottom:14px;">
+      <label class="il" for="pe-name">Name</label>
+      <input type="text" class="if" id="pe-name" placeholder="Dein Name" autocomplete="given-name">
+    </div>
+    <div style="margin-bottom:14px;">
+      <div class="il" style="margin-bottom:10px;">Angelstil</div>
+      <div class="obtgrid">
+        <button class="obtbtn" id="pe-Friedfisch" onclick="peSel('Friedfisch')"><span class="ico">🐠</span>Friedfisch</button>
+        <button class="obtbtn" id="pe-Raubfisch" onclick="peSel('Raubfisch')"><span class="ico">🦈</span>Raubfisch</button>
+        <button class="obtbtn" id="pe-Allround" onclick="peSel('Allround')"><span class="ico">🎣</span>Allround</button>
+      </div>
+    </div>
+    <div class="ig" style="margin-bottom:20px;">
+      <label class="il" for="pe-plz">PLZ (für Wetter)</label>
+      <input type="text" class="if" id="pe-plz" placeholder="z.B. 49377" inputmode="numeric" maxlength="5">
+    </div>
+    <button class="btn" onclick="saveProfileEdit()">Änderungen speichern ✓</button>
+  </div>
+</div>
+<div class="fsov" id="fs-catches" role="dialog">
+  <div class="fshdr"><div><div class="fstitle">Alle Fänge</div><div class="fsmeta" id="fs-catches-meta"></div></div><button class="xbtn" onclick="closeFs('catches')">✕</button></div>
+  <div class="fbar" id="fs-catches-filter"></div>
+  <div class="fbar" style="gap:6px;">
+    <button class="chip cf on" id="fcs-new" onclick="setFcSort('new')">Neueste</button>
+    <button class="chip cf" id="fcs-big" onclick="setFcSort('big')">Größte</button>
+    <button class="chip cf" id="fcs-az" onclick="setFcSort('az')">A–Z</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:0 16px 80px;"><div id="fs-catches-list"></div></div>
+</div>
+
+<div class="fsov" id="fs-sessions" role="dialog">
+  <div class="fshdr"><div><div class="fstitle">Sessions</div><div class="fsmeta" id="fs-sessions-meta"></div></div><button class="xbtn" onclick="closeFs('sessions')">✕</button></div>
+  <div class="fbar" style="gap:6px;">
+    <button class="chip cf on" id="fss-new" onclick="setFsSort('new')">Neueste</button>
+    <button class="chip cf" id="fss-most" onclick="setFsSort('most')">Meiste Fänge</button>
+    <button class="chip cf" id="fss-long" onclick="setFsSort('long')">Längste</button>
+    <button class="chip cf" id="fss-sk" onclick="setFsSort('sk')">Schneider</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:12px 16px 80px;"><div id="fs-sessions-list"></div></div>
+</div>
+
+<div class="fsov" id="fs-hours" role="dialog">
+  <div class="fshdr"><div><div class="fstitle">Angelstunden</div><div class="fsmeta" id="fs-hours-meta"></div></div><button class="xbtn" onclick="closeFs('hours')">✕</button></div>
+  <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;"><div id="fs-hours-content"></div></div>
+</div>
+
+<div class="fsov" id="fs-fish" role="dialog">
+  <div class="fshdr"><div><div class="fstitle" id="fs-fish-title">Fischart</div><div class="fsmeta" id="fs-fish-meta"></div></div><button class="xbtn" onclick="closeFs('fish')">✕</button></div>
+  <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;"><div id="fs-fish-content"></div></div>
+</div>
+
+<div class="fsov" id="fs-bait" role="dialog">
+  <div class="fshdr"><div><div class="fstitle" id="fs-bait-title">Köder-Detail</div><div class="fsmeta" id="fs-bait-meta"></div></div><button class="xbtn" onclick="closeFs('bait')">✕</button></div>
+  <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;"><div id="fs-bait-content"></div></div>
+</div>
+
+<div class="fsov" id="fs-info" role="dialog">
+  <div class="fshdr"><div><div class="fstitle" id="fs-info-title">Info</div></div><button class="xbtn" onclick="closeFs('info')">✕</button></div>
+  <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;"><div id="fs-info-body"></div></div>
+</div>
+
+<!-- WETTER-ANALYSE DEEP-DIVE (v11) -->
+<div class="fsov" id="fs-wx-corr" role="dialog">
+  <div class="fshdr">
+    <div><div class="fstitle">🌡 Wetter-Analyse</div><div class="fsmeta" id="fs-wx-corr-meta"></div></div>
+    <button class="xbtn" onclick="closeFs('fs-wx-corr')">✕</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;" id="fs-wx-corr-body"></div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="sucov" id="sucov" role="dialog" aria-modal="true">
+  <canvas class="kcanvas" id="kcanvas"></canvas>
+  <div class="succard">
+    <div class="suchdr">
+      <div class="sucico" id="suc-ico">🐟</div>
+      <div class="suchl" id="suc-hl">Toller Fang!</div>
+    </div>
+    <div class="cntwrap" aria-live="polite">
+      <div class="cntnum" id="cnt-num">1</div>
+      <div class="p1" id="p1">+1</div>
+    </div>
+    <div class="cntlbl" id="cnt-lbl">Hecht insgesamt</div>
+    <div class="suclist" id="suc-list"></div>
+    <button class="sucdis" onclick="disSuc()">Weiter →</button>
+    <button class="bshare" id="share-btn" onclick="doShare()" style="display:none;">📤 Erfolg teilen</button>
+  </div>
+</div>
+
+<!-- EXPORT OVERLAY -->
+<div class="expov" id="expov" role="dialog" aria-modal="true">
+  <div style="flex:1;" onclick="closeExp()"></div>
+  <div class="expsh">
+    <div class="exph"></div>
+    <div class="exptit">Daten &amp; Backup</div>
+    <div class="expsub">IndexedDB · nahezu unbegrenzte Kapazität</div>
+    <div class="expdiv"><span>Export</span></div>
+    <div class="expopt" onclick="doExp('all')"><div class="expico">📦</div><div><div class="exptitle">Komplettes Backup (JSON)</div><div class="expsub2">Alle Sessions, Profil, Favoriten</div></div></div>
+    <div class="expopt" onclick="doExp('taken')"><div class="expico">🐟</div><div><div class="exptitle">Fangliste entnommene Fische</div><div class="expsub2">Für Fangstatistik-Meldungen</div></div></div>
+    <div class="expopt" onclick="doExp('text')"><div class="expico">📋</div><div><div class="exptitle">Angelbuch als Text</div><div class="expsub2">Mit Wetter &amp; Köder-Details</div></div></div>
+    <div class="expdiv"><span>Import</span></div>
+    <div class="expopt imp" onclick="trigImp()"><div class="expico">📥</div><div><div class="exptitle">Backup importieren</div><div class="expsub2">JSON-Backup wiederherstellen</div></div></div>
+    <input type="file" id="imp-inp" accept=".json" onchange="handleImp(event)">
+    <input type="file" id="photo-inp" accept="image/*" capture="environment" onchange="handlePhoto(event)">
+    <button class="expcan" onclick="closeExp()">Abbrechen</button>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div class="confov" id="confov" role="alertdialog" aria-modal="true">
+  <div class="confcard">
+    <div class="conficon" id="conf-ico">⚠️</div>
+    <div class="conftit" id="conf-tit">Bestätigung</div>
+    <div class="conftext" id="conf-txt">Sicher?</div>
+    <div class="confbtns">
+      <button class="confcan" onclick="confRes(false)">Abbrechen</button>
+      <button class="confok" id="conf-ok" onclick="confRes(true)">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP HEADER (single, shared) -->
+<div class="hdr">
+  <div class="hdr-bar">
+    <button class="hbtn" onclick="openBurg()" aria-label="Menü">
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
+        <rect y="0" width="18" height="2" rx="1" fill="white"/>
+        <rect y="6" width="18" height="2" rx="1" fill="white"/>
+        <rect y="12" width="18" height="2" rx="1" fill="white"/>
+      </svg>
+    </button>
+    <div class="hlogo">
+      <div class="hlogo-n">Fishing Buddy</div>
+      <div class="hlogo-s" id="hdr-sub">100% Offline · v9</div>
+    </div>
+    <button class="hbtn hplus" onclick="showPage('new')" aria-label="Neue Session erfassen">+</button>
+  </div>
+</div>
+
+<div class="pages">
+
+<!-- PAGE: NEU -->
+<div class="page on" id="page-new">
+  <div class="sc">
+    <div id="warn-wrap" aria-live="polite"></div>
+    <div id="skunk-wrap"></div>
+
+    <div class="slbl">Datum &amp; Bedingungen</div>
+    <div class="card">
+      <div class="ig" style="margin-bottom:10px;">
+        <label class="il" for="s-date">Datum</label>
+        <input type="date" class="if" id="s-date" oninput="updMoon();chkAutoSk()">
+      </div>
+      <div class="erow">
+        <div class="ec" onclick="showPage('stats')" role="button" tabindex="0">
+          <div class="ei" id="moon-ico">🌕</div>
+          <div><div class="elbl">Mondphase</div><div class="ev" id="moon-txt">Vollmond</div><div class="esub" id="moon-pct">100%</div></div>
+        </div>
+        <div class="ec" onclick="fetchWx()" role="button" tabindex="0" id="wx-card">
+          <div class="ei" id="wx-ico">🌡️</div>
+          <div><div class="elbl">Wetter</div><div class="ev" id="wx-val" style="font-size:11px;color:var(--text-light);line-height:1.5;">Tippen zum Laden</div></div>
+        </div>
+      </div>
+      <!-- GPS: hidden after load -->
+      <div id="gps-strip" class="gps-strip" style="display:none;">
+        <span id="gps-ico">📍</span><span id="gps-txt">GPS wird ermittelt…</span>
+      </div>
+      <!-- Schonzeit static banner (closeable, persistent) -->
+      <div id="sz-hint" style="display:none;" class="sz-banner">
+        <div style="font-size:18px;flex-shrink:0;">📋</div>
+        <div class="sz-text" id="sz-text"></div>
+        <button class="sz-close" onclick="disSzHint()" aria-label="Schließen">✕</button>
+      </div>
+    </div>
+
+    <div class="slbl">Session-Details</div>
+    <div class="card">
+      <div class="ig" style="margin-bottom:10px;">
+        <label class="il" for="s-water">Gewässer</label>
+        <input type="text" class="if" id="s-water" placeholder="z.B. Dümmer See"
+          onfocus="rndrWChips('')" oninput="rndrWChips(this.value);chkAutoSk()" onblur="dHide('w-chips')" autocomplete="off">
+        <div class="crow" id="w-chips" style="display:none;" role="listbox"></div>
+      </div>
+      <div class="g2" style="margin-bottom:10px;">
+        <div class="ig">
+          <label class="il" for="s-start">Startzeit</label>
+          <input type="time" class="if" id="s-start" onfocus="rndrStartChips()" onblur="dHide('start-chips')">
+          <div class="crow" id="start-chips" style="display:none;" role="listbox"></div>
+        </div>
+        <div class="ig">
+          <label class="il" for="s-end">Endzeit</label>
+          <input type="time" class="if" id="s-end">
+        </div>
+      </div>
+      <!-- Manual weather – fallback (hidden when GPS loaded) -->
+      <div id="manual-wx">
+        <div class="g2" style="margin-bottom:10px;">
+          <div class="ig">
+            <label class="il" for="s-wx">Wetter</label>
+            <select class="if" id="s-wx">
+              <option>☀️ Sonnig</option><option>⛅ Bewölkt</option><option>🌧 Regen</option><option>🌫 Nebel</option><option>💨 Windig</option>
+            </select>
+          </div>
+          <div class="ig">
+            <label class="il" for="s-temp">Temp. (°C)</label>
+            <input type="number" class="if" id="s-temp" placeholder="15" min="-20" max="45">
+          </div>
+        </div>
+      </div>
+      <!-- Sichttiefe / Trübung -->
+      <div class="ig">
+        <label class="il" for="s-clarity">Sichttiefe / Trübung</label>
+        <input type="text" class="if" id="s-clarity" placeholder="z.B. Klar · optional"
+          onfocus="rndrClarityChips()" onblur="dHide('clarity-chips')" autocomplete="off">
+        <div class="crow" id="clarity-chips" style="display:none;" role="listbox"></div>
+      </div>
+    </div>
+
+    <div class="slbl">Erfolgreich gewesen?</div>
+    <div class="card" style="padding:14px 16px;">
+      <div class="ssbtn" role="group">
+        <button class="ssb sc2" id="btn-catch" onclick="setSuc('catch')" aria-pressed="true">🐟 Fisch gefangen</button>
+        <button class="ssb" id="btn-sk" onclick="setSuc('sk')" aria-pressed="false">🪝 Schneider</button>
+      </div>
+    </div>
+
+    <div id="catches-area">
+      <div class="slbl">Fänge</div>
+      <div id="catches-con"></div>
+      <button class="addcatch" onclick="addCatch()"><div class="aplus">+</div>Fang hinzufügen</button>
+    </div>
+    <div id="sk-placeholder" style="display:none;">
+      <div class="sk-card"><div style="font-size:44px;margin-bottom:10px;">🪝</div><div style="font-size:15px;font-weight:600;color:#888;">Schneider</div><div style="font-size:12px;color:#aaa;margin-top:5px;">Session wird trotzdem gespeichert</div></div>
+    </div>
+    <button class="btn" onclick="saveSess()">Session speichern ✓</button>
+  </div>
+</div>
+
+<!-- PAGE: FANGBUCH (ehemals Verlauf) – v9.1 Kalender + Liste -->
+<div class="page" id="page-fangbuch">
+  <!-- Headline-Leiste -->
+  <div class="fb-header">
+    <span class="fb-header-title" id="fb-view-title">Fangbuch</span>
+    <button class="fb-view-toggle" id="fb-view-btn" onclick="toggleFbView()" aria-label="Ansicht wechseln">
+      <span id="fb-toggle-ico">📅</span>
+      <span id="fb-toggle-lbl">Kalender</span>
+    </button>
+  </div>
+  <div class="sc" id="fangbuch-sc">
+    <div id="fangbuch-list"></div>
+  </div>
+</div>
+
+<!-- DAY DETAIL OVERLAY (AP2) -->
+<div class="fsov" id="fs-day-detail" role="dialog" aria-modal="true" aria-label="Tages-Details">
+  <!-- Hero-Header wird per JS befüllt -->
+  <div id="dd-hero-wrap"></div>
+  <!-- Body -->
+  <div style="flex:1;overflow-y:auto;padding:16px 16px 90px;scrollbar-width:none;" id="dd-body"></div>
+</div>
+
+<!-- AP4: FORECAST DAY DETAIL OVERLAY -->
+<div class="fsov" id="fs-fc-day" role="dialog" aria-modal="true" aria-label="Vorhersage-Detail" style="z-index:115;">
+  <div id="fc-day-hero"></div>
+  <div style="flex:1;overflow-y:auto;padding:16px 16px 90px;scrollbar-width:none;" id="fc-day-body"></div>
+</div>
+
+<!-- PAGE: DETAIL -->
+<div class="page" id="page-detail">
+  <div id="detail-hdr"></div>
+  <div class="sc" id="detail-body"></div>
+</div>
+
+<!-- PAGE: STATISTIK -->
+<div class="page" id="page-stats">
+  <div class="sc"><div id="stats-con"></div></div>
+</div>
+
+<!-- PAGE: VORHERSAGE -->
+<div class="page" id="page-forecast">
+  <div class="sc"><div id="fc-con"></div></div>
+</div>
+
+</div><!-- /pages -->
+
+<!-- BOTTOM TAB BAR -->
+<div class="btabs" role="tablist" aria-label="Hauptnavigation">
+  <button class="btab on" id="btab-fangbuch" role="tab" aria-selected="true" onclick="showPage('fangbuch')">
+    <svg class="btab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h20M2 12h20M2 18h20"/><circle cx="20" cy="6" r="3" fill="currentColor" stroke="none"/></svg>
+    <span class="btab-lbl">Fangbuch</span>
+  </button>
+  <button class="btab" id="btab-forecast" role="tab" aria-selected="false" onclick="showPage('forecast')">
+    <svg class="btab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    <span class="btab-lbl">Vorhersage</span>
+  </button>
+  <button class="btab" id="btab-stats" role="tab" aria-selected="false" onclick="showPage('stats')">
+    <svg class="btab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+    <span class="btab-lbl">Statistik</span>
+  </button>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="assertive">
+  <span id="toast-ico" style="font-size:18px;">✅</span>
+  <span id="toast-msg">OK</span>
+</div>
+</div><!-- /phone -->
+<script>
+// ═══════════════════════════════════════════════════════════
+// SERVICE WORKER
+// ═══════════════════════════════════════════════════════════
+if('serviceWorker'in navigator){const sw=`const C='fb-v8';const A=['https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+
+// ═══════════════════════════════════════════════════════════
+// INDEXEDDB
+// ═══════════════════════════════════════════════════════════
+const DB='FishingBuddyV8';let _db=null;
+async function dbO(){if(_db)return _db;return new Promise((r,j)=>{const q=indexedDB.open(DB,1);q.onupgradeneeded=e=>{const d=e.target.result;['sessions','profile','favs','photos'].forEach(s=>{if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'key'});});};q.onsuccess=e=>{_db=e.target.result;r(_db);};q.onerror=()=>j(q.error);});}
+async function idbP(store,key,val){try{const d=await dbO();return new Promise((r,j)=>{const tx=d.transaction(store,'readwrite');tx.objectStore(store).put({key,...(typeof val==='object'&&val!==null?val:{value:val})}).onsuccess=()=>r(true);tx.onerror=()=>j(tx.error);});}catch(e){return false;}}
+async function idbG(store,key){try{const d=await dbO();return new Promise((r,j)=>{const tx=d.transaction(store,'readonly');const q=tx.objectStore(store).get(key);q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error);});}catch(e){return null;}}
+async function idbGA(store){try{const d=await dbO();return new Promise((r,j)=>{const tx=d.transaction(store,'readonly');const q=tx.objectStore(store).getAll();q.onsuccess=()=>r(q.result||[]);q.onerror=()=>j(q.error);});}catch(e){return[];}}
+async function idbD(store,key){try{const d=await dbO();return new Promise((r,j)=>{const tx=d.transaction(store,'readwrite');tx.objectStore(store).delete(key).onsuccess=()=>r(true);tx.onerror=()=>j(tx.error);});}catch(e){return false;}}
+async function idbC(store){try{const d=await dbO();return new Promise((r,j)=>{const tx=d.transaction(store,'readwrite');tx.objectStore(store).clear().onsuccess=()=>r(true);tx.onerror=()=>j(tx.error);});}catch(e){return false;}}
+async function saveSessions(){for(const s of sessions)await idbP('sessions',String(s.id),s);}
+async function saveOneSess(s){await idbP('sessions',String(s.id),s);}
+async function saveProfile(){await idbP('profile','profile',profile);}
+async function saveFavs(){await idbP('favs','favs',favs);}
+async function savePhoto(k,b64){await idbP('photos',k,{data:b64});}
+async function getPhoto(k){if(!k)return null;const r=await idbG('photos',k);return r?.data||null;}
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let sessions=[],profile=null,favs={waters:[],fish:[],bait:[],baitKeywords:{}};
+let catchCount=0,sucMode='catch',obStep=0,obData={name:'',angeltyp:'',plz:''};
+let _shareData={},gpsCoords=null,kAF=null,cAF=null,_confRes=null,_curPhotoId=null;
+let _fcCatchSort='new',_fsSessSort='new',_fcFilter='';
+let _lastWx=null;
+// PLZ-Koordinaten-Cache (wird nach Onboarding oder beim ersten Wetterladen befüllt)
+let _plzCoords=null;
+
+// ═══════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════
+const FISH=['Hecht','Zander','Barsch','Karpfen','Forelle','Bachforelle','Regenbogenforelle','Aal','Schleie','Brachse','Rotauge','Rotfeder','Wels','Döbel','Ukelei','Güster','Flussbarsch','Brassen','Äsche'];
+const FICONS={Hecht:'🐟',Zander:'🐠',Barsch:'🐡',Karpfen:'🦈',Forelle:'🐟',Bachforelle:'🐟',Regenbogenforelle:'🐟',Aal:'🐍',Schleie:'🐠',Brachse:'🐡',Wels:'🦈',Äsche:'🐟'};
+const FMULT={Barsch:2.0,Zander:1.3,Hecht:1.0};
+const MMM={Hecht:50,Zander:45,Barsch:20,Karpfen:35,Forelle:25,Bachforelle:25,Regenbogenforelle:25,Aal:45,Schleie:25,Äsche:30,Wels:60};
+const ATYP={Friedfisch:['Karpfen','Brachse','Schleie','Rotauge','Brassen'],Raubfisch:['Hecht','Zander','Barsch','Wels','Aal'],Allround:['Hecht','Zander','Barsch','Karpfen','Forelle']};
+const CLARITY=['Klar','Leicht trüb','Milchig-trüb','Dreckig-trüb','Kaffeebraun','Grünlich'];
+const STOPWORDS=new Set(['auf','mit','den','dem','die','das','der','und','oder','bei','am','an','im','in','zu','zum','zur','ein','eine','aus','von','ich','es','er','sie','wir','für','ist','hat','war','einen','einem','einer','nach','über','unter','durch','gegen','ohne','trotz']);
+const SZ_DISC='Angaben ohne Gewähr – stets beim zuständigen Fischereiverband prüfen.';
+const KONF=['#C4963A','#E8B54A','#7BAE8A','#2D4A35','#C8DDD0','#F5E8CC','#4A7C59','#F8F5EF'];
+
+function fIco(n){for(const k of Object.keys(FICONS))if(n&&n.toLowerCase().includes(k.toLowerCase()))return FICONS[k];return'🐟';}
+function fScore(t,l){return Math.round((FMULT[t]||1.0)*l*10)/10;}
+function chkMM(type,len){const mm=MMM[type];if(!mm||!len||len<=0)return null;if(len<mm)return{ok:false,mm,msg:`⚠️ Unter Mindestmaß (${mm}cm) – C&R empfohlen`};return{ok:true,mm};}
+
+// ═══════════════════════════════════════════════════════════
+// SCHONZEITEN – all 16 BL
+// ═══════════════════════════════════════════════════════════
+const SZ={
+  'Bayern':{text:'Hecht: 1.Mär–30.Apr · Zander: 1.Apr–31.Mai · Bachforelle: 1.Okt–28.Feb',link:'https://www.lfv-bayern.de',periods:[{f:'Hecht',s:[3,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]},{f:'Bachforelle',s:[10,1],e:[2,28]}]},
+  'Niedersachsen':{text:'Hecht: 1.Nov–31.Mär · Zander: 1.Apr–31.Mai',link:'https://www.angeln-in-niedersachsen.de',periods:[{f:'Hecht',s:[11,1],e:[3,31]},{f:'Zander',s:[4,1],e:[5,31]}]},
+  'Nordrhein-Westfalen':{text:'Hecht: 1.Feb–30.Apr · Zander: 1.Apr–31.Mai',link:'https://www.fischereiverband.de',periods:[{f:'Hecht',s:[2,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]}]},
+  'Baden-Württemberg':{text:'Hecht: 1.Feb–30.Apr · Zander: 1.Apr–31.Mai · Bachforelle: 1.Okt–28.Feb',link:'https://www.lfvbw.de',periods:[{f:'Hecht',s:[2,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]},{f:'Bachforelle',s:[10,1],e:[2,28]}]},
+  'Brandenburg':{text:'Hecht: 1.Feb–30.Apr · Zander: 1.Apr–31.Mai · Äsche: 1.Feb–30.Apr',link:'https://www.landesanglerverband-berlin.de',periods:[{f:'Hecht',s:[2,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]},{f:'Äsche',s:[2,1],e:[4,30]}]},
+  'Bremen':{text:'Zander: 1.Apr–31.Mai · Hecht: 1.Feb–30.Apr',link:'https://www.anglerverband-bremen.de',periods:[{f:'Zander',s:[4,1],e:[5,31]},{f:'Hecht',s:[2,1],e:[4,30]}]},
+  'Mecklenburg-Vorpommern':{text:'Hecht: 1.Feb–30.Apr · Zander: 1.Apr–31.Mai',link:'https://www.lfv-mv.de',periods:[{f:'Hecht',s:[2,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]}]},
+  'Schleswig-Holstein':{text:'Hecht: 1.Feb–31.Mär · Zander: 1.Apr–31.Mai',link:'https://www.lfv-sh.de',periods:[{f:'Hecht',s:[2,1],e:[3,31]},{f:'Zander',s:[4,1],e:[5,31]}]},
+  'Sachsen':{text:'Hecht: 1.Jan–30.Apr · Äsche: 1.Feb–30.Apr · Zander: 1.Apr–31.Mai',link:'https://www.landesanglerverband-sachsen.de',periods:[{f:'Hecht',s:[1,1],e:[4,30]},{f:'Äsche',s:[2,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]}]},
+  'Hessen':{text:'Hecht: 1.Feb–30.Apr · Zander: 1.Apr–31.Mai',link:'https://www.anglerverband-hessen.de',periods:[{f:'Hecht',s:[2,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]}]},
+  'Rheinland-Pfalz':{text:'Hecht: 1.Feb–30.Apr · Zander: 1.Apr–31.Mai · Äsche: 1.Feb–30.Apr',link:'https://www.lfv-rlp.de',periods:[{f:'Hecht',s:[2,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]},{f:'Äsche',s:[2,1],e:[4,30]}]},
+  'Thüringen':{text:'Hecht: 1.Feb–30.Apr · Bachforelle: 1.Okt–28.Feb · Äsche: 1.Feb–30.Apr',link:'https://www.thueringer-anglerverband.de',periods:[{f:'Hecht',s:[2,1],e:[4,30]},{f:'Bachforelle',s:[10,1],e:[2,28]},{f:'Äsche',s:[2,1],e:[4,30]}]},
+  'Berlin':{text:'Hecht: 1.Feb–30.Apr · Zander: 1.Apr–31.Mai – Bitte beim LAGeSo prüfen.',link:'https://www.berlin.de/lageso',periods:[{f:'Hecht',s:[2,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]}]},
+  'Hamburg':{text:'Hecht: 1.Feb–30.Apr · Zander: 1.Apr–31.Mai – Bitte bei BUE Hamburg prüfen.',link:'https://www.hamburg.de/bue',periods:[{f:'Hecht',s:[2,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]}]},
+  'Sachsen-Anhalt':{text:'Hecht: 1.Feb–30.Apr · Zander: 1.Apr–31.Mai · Äsche: 1.Feb–30.Apr',link:'https://www.landesanglerverband-sa.de',periods:[{f:'Hecht',s:[2,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]},{f:'Äsche',s:[2,1],e:[4,30]}]},
+  'Saarland':{text:'Hecht: 1.Feb–30.Apr · Zander: 1.Apr–31.Mai · Äsche: 1.Feb–30.Apr',link:'https://www.anglerverband-saar.de',periods:[{f:'Hecht',s:[2,1],e:[4,30]},{f:'Zander',s:[4,1],e:[5,31]},{f:'Äsche',s:[2,1],e:[4,30]}]},
+};
+const GBL={
+  'Bayern':['Chiemsee','Ammersee','Starnberger See','Isar','Inn','Walchensee','Tegernsee'],
+  'Niedersachsen':['Dümmer See','Zwischenahner Meer','Steinhuder Meer','Elbe','Weser','Aller'],
+  'Nordrhein-Westfalen':['Biggesee','Möhnesee','Baldeneysee','Sorpesee','Rhein','Ruhr'],
+  'Baden-Württemberg':['Bodensee','Neckar','Rhein','Schluchsee','Titisee'],
+  'Brandenburg':['Scharmützelsee','Schwielochsee','Stechlinsee','Havel','Spree'],
+  'Mecklenburg-Vorpommern':['Müritz','Plauer See','Tollensesee','Schweriner See','Warnow'],
+  'Schleswig-Holstein':['Plöner See','Selenter See','Dieksee','Elbe','Schlei'],
+  'Bremen':['Weser','Lesum','Wümme','Baggersee Mahndorf'],
+  'Hamburg':['Alster','Elbe','Außenalster','Dove-Elbe'],
+  'Hessen':['Edersee','Main','Lahn','Fulda'],
+  'Rheinland-Pfalz':['Rhein','Mosel','Nahe','Laacher See'],
+  'Saarland':['Bostalsee','Saar','Blies','Nonnweiler Stausee'],
+  'Sachsen':['Elbe','Mulde','Talsperre Eibenstock','Talsperre Kriebstein'],
+  'Sachsen-Anhalt':['Elbe','Saale','Mansfelder See','Arendsee'],
+  'Thüringen':['Saale','Talsperre Hohenwarte','Bleilochtalsperre'],
+  'Berlin':['Müggelsee','Wannsee','Havel','Spree','Tegeler See'],
+};
+
+function pdHas(p,d){const m=d.getMonth()+1,day=d.getDate();const[sm,sd]=p.s,[em,ed]=p.e;const cur=m*100+day,sv=sm*100+sd,ev=em*100+ed;return sv<=ev?cur>=sv&&cur<=ev:cur>=sv||cur<=ev;}
+function daysTo(m,d){const now=new Date();now.setHours(0,0,0,0);let t=new Date(now.getFullYear(),m-1,d);t.setHours(0,0,0,0);if(t<now)t=new Date(now.getFullYear()+1,m-1,d);return Math.round((t-now)/86400000);}
+
+function chkSz(){
+  const el=document.getElementById('warn-wrap');
+  if(!profile?.bundesland){el.innerHTML='';return;}
+  const data=SZ[profile.bundesland];if(!data){el.innerHTML='';return;}
+  const now=new Date();now.setHours(12,0,0,0);
+  const active=[],preview=[];
+  data.periods.forEach(p=>{
+    if(pdHas(p,now)){const de=daysTo(p.e[0],p.e[1]);active.push({f:p.f,ei:de<=7?de:null});}
+    else{const ds=daysTo(p.s[0],p.s[1]);if(ds>=0&&ds<=7)preview.push({f:p.f,si:ds});}
+  });
+  if(active.length){let noP=false;for(let i=1;i<=catchCount;i++){const te=document.getElementById('ft-'+i);if(!te||!te.value)continue;if(!active.some(w=>te.value.toLowerCase().includes(w.f.toLowerCase())))noP=true;}if(noP){const ex=el.querySelector('.warn-banner');if(ex&&!ex.classList.contains('hide')){ex.classList.add('hide');setTimeout(()=>rebuildBanners(el,[],preview),360);return;}}}
+  rebuildBanners(el,active,preview);
+}
+function rebuildBanners(el,active,preview){
+  let h='';
+  if(active.length){const names=active.map(w=>{let s=w.f;if(w.ei===0)s+=' (endet heute!)';else if(w.ei===1)s+=' (endet morgen)';else if(w.ei!==null)s+=` (noch ${w.ei}d)`;return s;}).join(', ');h+=`<div class="warn-banner"><div style="font-size:18px;flex-shrink:0;">⚠️</div><div style="flex:1;"><div class="wbt">Schonzeit: ${names}</div><div class="wbd">${SZ_DISC}</div></div><button class="wclose" onclick="this.closest('.warn-banner').classList.add('hide')">✕</button></div>`;}
+  if(preview.length){const pn=preview.map(p=>p.si===0?`${p.f} (heute)`:p.si===1?`${p.f} (morgen)`:`${p.f} (in ${p.si}d)`).join(', ');h+=`<div class="prev-banner"><div style="font-size:17px;flex-shrink:0;">🗓️</div><div style="flex:1;"><div style="font-size:12px;color:var(--yellow-t);font-weight:600;">Bald Schonzeit: ${pn}</div><div style="font-size:10px;color:var(--yellow-t);opacity:.8;margin-top:2px;font-style:italic;">${SZ_DISC}</div></div></div>`;}
+  el.innerHTML=h;
+}
+function chkAutoSk(){
+  const el=document.getElementById('skunk-wrap');
+  if(sucMode==='sk'){el.innerHTML='';return;}
+  let fc=0;for(let i=1;i<=catchCount;i++){const te=document.getElementById('ft-'+i),le=document.getElementById('fl-'+i);if(te?.value?.trim()&&parseFloat(le?.value)>0)fc++;}
+  const hasTime=document.getElementById('s-start').value&&document.getElementById('s-end').value;
+  if(hasTime&&fc===0){el.innerHTML=`<div class="sk-banner"><div style="font-size:18px;flex-shrink:0;">💡</div><div><div style="font-size:12px;color:var(--purple-t);font-weight:600;">Kein Fang eingetragen</div><div style="font-size:11px;color:var(--purple-t);opacity:.8;margin-top:2px;">Als Schneider speichern?</div><button onclick="setSuc('sk')" style="margin-top:8px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--purple-t);background:transparent;color:var(--purple-t);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--fa);">Als Schneider markieren</button></div></div>`;}
+  else el.innerHTML='';
+}
+function disSzHint(){_szDismissed=true;if(profile){profile.szDismissed=true;saveProfile();}document.getElementById('sz-hint').style.display='none';}
+
+// ═══════════════════════════════════════════════════════════
+// CLOCK / NETWORK
+// ═══════════════════════════════════════════════════════════
+function updClock(){const n=new Date();document.getElementById('live-time').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}
+updClock();setInterval(updClock,30000);
+function updNet(){const on=navigator.onLine;document.getElementById('netind').textContent=on?'Online':'Offline';const b=document.getElementById('off-banner');if(!on)b.classList.add('on');else b.classList.remove('on');}
+window.addEventListener('online',updNet);window.addEventListener('offline',updNet);updNet();
+
+// ═══════════════════════════════════════════════════════════
+// MOON
+// ═══════════════════════════════════════════════════════════
+function getMoon(ds){
+  const d=ds?new Date(ds+'T12:00:00'):new Date();
+  const ref=new Date('2000-01-06T18:14:00Z');const syn=29.53058867;
+  const age=(((d-ref)/86400000)%syn+syn)%syn;const f=age/syn;
+  const illum=Math.round((1-Math.cos(f*2*Math.PI))/2*100);
+  let icon,name;
+  if(f<0.033||f>=0.967){icon='🌑';name='Neumond';}else if(f<0.183){icon='🌒';name='Zunehmende Sichel';}else if(f<0.283){icon='🌓';name='Erstes Viertel';}else if(f<0.450){icon='🌔';name='Zunehmend';}else if(f<0.550){icon='🌕';name='Vollmond';}else if(f<0.716){icon='🌖';name='Abnehmend';}else if(f<0.816){icon='🌗';name='Letztes Viertel';}else{icon='🌘';name='Abnehmende Sichel';}
+  return{icon,name,illum};
+}
+function updMoon(){const v=document.getElementById('s-date').value;const m=getMoon(v||null);document.getElementById('moon-ico').textContent=m.icon;document.getElementById('moon-txt').textContent=m.name;document.getElementById('moon-pct').textContent=m.illum+'% beleuchtet';}
+
+// ═══════════════════════════════════════════════════════════
+// WEATHER API (v9: PLZ-primär, GPS als Fallback)
+// ═══════════════════════════════════════════════════════════
+function applyWxData(c,sourceLabel){
+  const wc=c.weathercode||0;
+  const wIcon=wc<=1?'☀️':wc<=3?'⛅':wc<=67?'🌧':wc<=77?'🌨':'🌫';
+  _lastWx={temp:c.temperature_2m,windSpeed:c.windspeed_10m,windDir:c.winddirection_10m,pressure:c.surface_pressure,humidity:c.relativehumidity_2m,clouds:c.cloudcover,precip:c.precipitation,code:wc};
+  document.getElementById('wx-ico').textContent=wIcon;
+  document.getElementById('wx-val').textContent=`${c.temperature_2m}°C · ${c.windspeed_10m}km/h · ${Math.round(c.surface_pressure||0)}hPa`;
+  const tempEl=document.getElementById('s-temp');if(tempEl)tempEl.value=Math.round(c.temperature_2m);
+  const wi=document.getElementById('s-wx');
+  if(wi){if(wc<=1)wi.value='☀️ Sonnig';else if(wc<=3)wi.value='⛅ Bewölkt';else if(wc<=67)wi.value='🌧 Regen';else if(wc<=77)wi.value='🌫 Nebel';else wi.value='💨 Windig';}
+  // F4: manual-wx bleibt sichtbar und bearbeitbar – wird nur mit Daten befüllt
+  // (kein display:none mehr)
+  const strip=document.getElementById('gps-strip');
+  if(strip){document.getElementById('gps-txt').textContent=sourceLabel;strip.classList.add('ok');setTimeout(()=>strip.style.display='none',2000);}
+}
+
+async function fetchWx(){
+  const strip=document.getElementById('gps-strip');
+  strip.style.display='flex';
+  document.getElementById('gps-txt').textContent='Wetter wird geladen…';
+  document.getElementById('wx-val').textContent='Lädt…';
+
+  // Strategie 1: PLZ-Koordinaten (kein GPS-Prompt nötig)
+  if(_plzCoords){
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${_plzCoords.lat}&longitude=${_plzCoords.lon}&current=temperature_2m,weathercode,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation&timezone=auto`;
+    try{
+      const r=await fetch(url);const data=await r.json();const c=data.current||{};
+      applyWxData(c,`${_plzCoords.city} ✓`);
+      return;
+    }catch(e){}
+  }
+
+  // Strategie 2: GPS (Fallback)
+  if(!navigator.geolocation){
+    strip.style.display='none';
+    document.getElementById('wx-val').textContent='PLZ ungültig – manuell eintragen';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(pos=>{
+    gpsCoords={lat:pos.coords.latitude.toFixed(4),lon:pos.coords.longitude.toFixed(4)};
+    document.getElementById('gps-txt').textContent='GPS geladen ✓';
+    strip.classList.add('ok');
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${gpsCoords.lat}&longitude=${gpsCoords.lon}&current=temperature_2m,weathercode,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation&timezone=auto`;
+    fetch(url).then(r=>r.json()).then(data=>{
+      const c=data.current||{};
+      applyWxData(c,'GPS ✓');
+    }).catch(()=>{document.getElementById('wx-val').textContent='Fehler – manuell eintragen';});
+  },()=>{
+    strip.style.display='none';
+    document.getElementById('wx-val').textContent='Manuell eintragen';
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// ONBOARDING (v9: Name → Angeltyp → PLZ)
+// ═══════════════════════════════════════════════════════════
+const OB_T=['Wie heißt du?','Dein Angelstil','Dein Standort'];
+const OB_S=['Damit wir dich persönlich begrüßen können.','Wir passen Vorschläge an deinen Stil an.','Für automatische Wetterabfragen ohne GPS-Pflicht.'];
+function obChk(){
+  const btn=document.getElementById('ob-btn');
+  let ok=false;
+  if(obStep===0)ok=!!document.getElementById('ob-name').value.trim();
+  else if(obStep===1)ok=!!obData.angeltyp;
+  else if(obStep===2){const plzVal=document.getElementById('ob-plz').value.trim();ok=plzVal.length===5&&/^\d{5}$/.test(plzVal);}
+  btn.disabled=!ok;
+  btn.setAttribute('aria-disabled',String(!ok));
+  if(ok)btn.classList.add('pulse');else btn.classList.remove('pulse');
+}
+function obNext(){
+  const btn=document.getElementById('ob-btn');if(btn.disabled)return;
+  if(obStep===0)obData.name=document.getElementById('ob-name').value.trim();
+  else if(obStep===2){
+    obData.plz=document.getElementById('ob-plz').value.trim();
+    profile={...obData};
+    saveProfile();
+    finOb();
+    return;
+  }
+  obStep++;
+  document.querySelectorAll('[id^=obs]').forEach(el=>el.style.display='none');
+  document.getElementById('obs'+obStep).style.display='';
+  document.getElementById('ob-title').textContent=OB_T[obStep];
+  document.getElementById('ob-sub').textContent=OB_S[obStep];
+  document.querySelectorAll('.oddot').forEach((d,i)=>d.classList.toggle('on',i===obStep));
+  if(obStep===2)document.getElementById('ob-btn').textContent='Loslegen 🎣';
+  obData.angeltyp=obStep===1?'':obData.angeltyp;
+  obChk();
+  setTimeout(()=>document.getElementById('obs'+obStep)?.querySelector('input,select')?.focus(),100);
+}
+function selTyp(t){obData.angeltyp=t;document.querySelectorAll('.obtbtn').forEach(b=>{b.classList.toggle('sel',b.id==='ot-'+t);b.setAttribute('aria-pressed',String(b.id==='ot-'+t));});obChk();}
+function finOb(){document.getElementById('onboarding').classList.add('hidden');applyProf();}
+function applyProf(){
+  if(!profile)return;
+  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v11`;
+  document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
+  document.getElementById('burg-pname').textContent=profile.name||'–';
+  document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
+  const hint=document.getElementById('sz-hint');if(hint)hint.style.display='none';
+  const ww=document.getElementById('warn-wrap');if(ww)ww.innerHTML='';
+  // PLZ-Koordinaten auflösen + Wetter automatisch laden (F4)
+  if(profile.plz){
+    resolvePlzCoords(profile.plz).then(()=>{
+      // F4: Wetter automatisch beim App-Start aus PLZ laden
+      if(_plzCoords&&!_lastWx)fetchWxFromPlz().catch(()=>{});
+    });
+  }
+  seedWaters();updBurgStor();
+}
+
+// ── Profil-Edit (v11) ──────────────────────────────────────
+let _peTyp='';
+function openProfileEdit(){
+  if(!profile)return;
+  document.getElementById('pe-name').value=profile.name||'';
+  document.getElementById('pe-plz').value=profile.plz||'';
+  _peTyp=profile.angeltyp||'';
+  ['Friedfisch','Raubfisch','Allround'].forEach(t=>{
+    document.getElementById('pe-'+t)?.classList.toggle('sel',t===_peTyp);
+  });
+  openFs('profile-edit');
+}
+function peSel(t){
+  _peTyp=t;
+  ['Friedfisch','Raubfisch','Allround'].forEach(x=>{
+    document.getElementById('pe-'+x)?.classList.toggle('sel',x===t);
+  });
+}
+async function saveProfileEdit(){
+  const name=document.getElementById('pe-name').value.trim();
+  const plz=document.getElementById('pe-plz').value.trim();
+  if(!name){showToast('⚠️','Name darf nicht leer sein.');return;}
+  const plzChanged=plz&&plz!==profile?.plz;
+  profile={...profile,name,angeltyp:_peTyp||profile.angeltyp,plz:plz||profile.plz};
+  await saveProfile();
+  if(plzChanged){_plzCoords=null;_lastWx=null;_fcData=null;_fcHourlyData=null;} // Caches leeren
+  applyProf();
+  closeFs('profile-edit');
+  showToast('✅','Profil gespeichert!');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PLZ → KOORDINATEN (OpenStreetMap Nominatim)
+// Vorbereitung für Auto-Wetter via PLZ (Paket 4 Logik)
+// ═══════════════════════════════════════════════════════════
+async function resolvePlzCoords(plz){
+  if(!plz||_plzCoords)return;
+  try{
+    const r=await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(plz)}&country=DE&format=json&limit=1`,{headers:{'User-Agent':'FishingBuddyApp/9'}});
+    if(!r.ok)return;
+    const data=await r.json();
+    if(data&&data[0]){
+      _plzCoords={lat:parseFloat(data[0].lat).toFixed(4),lon:parseFloat(data[0].lon).toFixed(4),city:data[0].display_name.split(',')[0]||plz};
+      // Wetter-Card aktualisieren: PLZ-Stadt anzeigen
+      const wxVal=document.getElementById('wx-val');
+      if(wxVal&&wxVal.textContent==='Tippen zum Laden'){
+        wxVal.textContent=`${_plzCoords.city} · Tippen zum Laden`;
+      }
+    }
+  }catch(e){/* Offline oder Fehler – ignorieren */}
+}
+
+// Auto-Wetter via PLZ (Fallback wenn GPS abgelehnt)
+async function fetchWxFromPlz(){
+  if(!_plzCoords)return false;
+  const strip=document.getElementById('gps-strip');
+  if(strip){strip.style.display='flex';document.getElementById('gps-txt').textContent=`${_plzCoords.city} (PLZ ${profile?.plz||''})…`;}
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${_plzCoords.lat}&longitude=${_plzCoords.lon}&current=temperature_2m,weathercode,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation&timezone=auto`;
+  try{
+    const r=await fetch(url);const d=await r.json();const c=d.current||{};
+    applyWxData(c,`${_plzCoords.city} ✓`);
+    return true;
+  }catch(e){return false;}
+}
+// seedWaters: v9 nutzt PLZ statt Bundesland – keine regionalen Startlisten mehr nötig
+// (Gewässer werden allein über Nutzungslernfavoriten gepflegt)
+function seedWaters(){
+  // Leerimplementierung: Gewässer-Chips kommen aus gelernten Favoriten (favs.waters)
+  // PLZ-basierte Gewässerlisten folgen in späteren Arbeitspaketen
+}
+async function updBurgStor(){const el=document.getElementById('burg-storasub');if(!el)return;try{const q=navigator.storage?.estimate?await navigator.storage.estimate():null;if(q){el.textContent=`${(q.usage/1024/1024).toFixed(1)}MB von ~${Math.round(q.quota/1024/1024)}MB genutzt`;}else el.textContent=`${sessions.length} Sessions · IndexedDB`;}catch(e){}}
+
+// ═══════════════════════════════════════════════════════════
+// SMART INPUT 3.0 – Keyword tokenization with stopword filter
+// ═══════════════════════════════════════════════════════════
+function tokenize(note){
+  if(!note)return[];
+  return note.split(/[\s,;\/\-]+/)
+    .map(w=>w.replace(/[.!?()"""]+/g,'').trim())
+    .filter(w=>{
+      if(!w)return false;
+      if(/^[A-Z]\d{2,3}$/i.test(w))return true; // C04, C05 etc
+      if(/^\d+(cm|mm|g|m)$/i.test(w))return true; // 12cm, 10g
+      if(w.length<3)return false;
+      if(STOPWORDS.has(w.toLowerCase()))return false;
+      return true;
+    });
+}
+function ctxIdx(){
+  const wF={},fB={},bKw={};
+  sessions.forEach(s=>{
+    s.catches.forEach(c=>{
+      if(s.water&&c.type){wF[s.water]=wF[s.water]||{};wF[s.water][c.type]=(wF[s.water][c.type]||0)+1;}
+      if(c.type&&c.bait){fB[c.type]=fB[c.type]||{};fB[c.type][c.bait]=(fB[c.type][c.bait]||0)+1;}
+      if(c.bait&&c.baitNote){const kws=tokenize(c.baitNote);kws.forEach(kw=>{bKw[c.bait]=bKw[c.bait]||{};bKw[c.bait][kw]=(bKw[c.bait][kw]||0)+1;});}
+    });
+  });
+  return{wF,fB,bKw};
+}
+function topN(map,n=5){return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0]);}
+function topFavs(k,n=5){const c={};(favs[k]||[]).forEach(v=>{c[v]=(c[v]||0)+1;});return Object.entries(c).sort((a,b)=>b[1]-a[1]).map(e=>e[0]).slice(0,n);}
+function addFav(k,v){if(!v||v.trim().length<2)return;favs[k]=favs[k]||[];favs[k].push(v.trim());if(favs[k].length>400)favs[k]=favs[k].slice(-400);saveFavs();}
+function addBaitKw(bait,note){if(!bait||!note)return;const kws=tokenize(note);if(!favs.baitKeywords)favs.baitKeywords={};kws.forEach(kw=>{favs.baitKeywords[bait]=favs.baitKeywords[bait]||{};favs.baitKeywords[bait][kw]=(favs.baitKeywords[bait][kw]||0)+1;});saveFavs();}
+function dHide(id){setTimeout(()=>{const el=document.getElementById(id);if(el)el.style.display='none';},200);}
+
+// Time-of-day bait color suggestions
+function tofKws(){const h=parseInt((document.getElementById('ft-1')?.value||'12').split(':')[0]);if(h>=5&&h<=7)return['dunkel/schwarz','naturfarben','silber'];if(h>=20&&h<=22)return['orange','rot','chartreuse'];if(h>=0&&h<=4)return['UV-aktiv','weiß/glow','chartreuse'];return['naturfarben','gelbgrün','weiß'];}
+
+// WATER CHIPS
+function rndrWChips(fv){
+  const el=document.getElementById('w-chips');if(!el)return;
+  const rg=(GBL[profile?.bundesland]||[]).slice(0,5);
+  const learned=topFavs('waters',5);
+  let all=[...new Set([...learned,...rg])].slice(0,7);
+  if(fv)all=all.filter(w=>w.toLowerCase().includes(fv.toLowerCase()));
+  if(!all.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=all.map(w=>{const s=w.replace(/'/g,"\\'");const isRg=rg.includes(w)&&!learned.includes(w);return`<button class="chip${isRg?' cw':''}" onmousedown="wSel('${s}')">${w}</button>`;}).join('');
+}
+function wSel(v){document.getElementById('s-water').value=v;document.getElementById('w-chips').style.display='none';for(let i=1;i<=catchCount;i++)rndrFChips(i,'');}
+
+// SMART START TIME CHIPS
+function rndrStartChips(){
+  const el=document.getElementById('start-chips');if(!el)return;
+  const times={};sessions.forEach(s=>{if(s.start){const h=s.start.split(':')[0]+':00';times[h]=(times[h]||0)+1;}});
+  const top=Object.entries(times).sort((a,b)=>b[1]-a[1]).map(e=>e[0]).slice(0,4);
+  if(!top.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=top.map(t=>`<button class="chip" onmousedown="startSel('${t}')">${t}</button>`).join('');
+}
+function startSel(v){document.getElementById('s-start').value=v;document.getElementById('start-chips').style.display='none';}
+
+// FISH CHIPS (no label shown – cleaner UX)
+function rndrFChips(id,fv){
+  const el=document.getElementById('fc-'+id);if(!el)return;
+  const ctx=ctxIdx();const water=document.getElementById('s-water').value.trim();
+  let chips=[],isCtx=false;
+  if(water&&ctx.wF[water]&&Object.keys(ctx.wF[water]).length){chips=topN(ctx.wF[water],5);isCtx=true;}
+  else{const tf=ATYP[profile?.angeltyp||'Allround']||[];chips=[...new Set([...topFavs('fish',3),...tf])].slice(0,5);}
+  if(fv)chips=chips.filter(f=>f.toLowerCase().includes(fv.toLowerCase()));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(f=>{const s=f.replace(/'/g,"\\'");return`<button class="chip${isCtx?' cc':''}" onmousedown="fSel(${id},'${s}')">${fIco(f)} ${f}</button>`;}).join('');
+}
+function fSel(id,v){document.getElementById('ft-'+id).value=v;document.getElementById('fc-'+id).style.display='none';chkMMF(id);rndrBChips(id,'');}
+
+// BAIT CHIPS
+function rndrBChips(id,fv){
+  const el=document.getElementById('bc-'+id);if(!el)return;
+  const ctx=ctxIdx();const ft=document.getElementById('ft-'+id)?.value?.trim();
+  let chips=[],isCtx=false;
+  if(ft&&ctx.fB[ft]&&Object.keys(ctx.fB[ft]).length){chips=topN(ctx.fB[ft],5);isCtx=true;}
+  else chips=topFavs('bait',5);
+  if(fv)chips=chips.filter(b=>b.toLowerCase().includes(fv.toLowerCase()));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(b=>{const s=b.replace(/'/g,"\\'");return`<button class="chip${isCtx?' cc':''}" onmousedown="bSel(${id},'${s}')">🪝 ${b}</button>`;}).join('');
+}
+function bSel(id,v){document.getElementById('fb-'+id).value=v;document.getElementById('bc-'+id).style.display='none';rndrNChips(id,'');}
+
+// BAIT NOTE CHIPS – keyword-based (Smart-Input 3.0)
+function rndrNChips(id,fv){
+  const el=document.getElementById('nc-'+id);if(!el)return;
+  const bait=document.getElementById('fb-'+id)?.value?.trim();
+  const ctx=ctxIdx();
+  const tofC=tofKws();
+  let chips=[];
+  // Priority: co-occurring keywords from history
+  const histKw=(ctx.bKw[bait]&&Object.keys(ctx.bKw[bait]).length)?topN(ctx.bKw[bait],4):[];
+  const favsKw=(bait&&favs.baitKeywords?.[bait]&&Object.keys(favs.baitKeywords[bait]).length)?topN(favs.baitKeywords[bait],4):[];
+  const allKw=[...new Set([...histKw,...favsKw])].slice(0,4);
+  if(allKw.length){chips=allKw;tofC.forEach(c=>{if(!chips.some(x=>x.toLowerCase()===c.toLowerCase())&&chips.length<6)chips.push(c);});}
+  else chips=tofC.slice(0,3);
+  if(fv)chips=chips.filter(c=>c.toLowerCase().includes(fv.toLowerCase()));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(n=>{const s=n.replace(/'/g,"\\'");return`<button class="chip cc" onmousedown="nSel(${id},'${s}')">${n}</button>`;}).join('');
+}
+function nSel(id,v){const el=document.getElementById('fn-'+id);if(!el)return;el.value=el.value?(el.value+' '+v):v;document.getElementById('nc-'+id).style.display='none';}
+
+// CLARITY CHIPS
+function rndrClarityChips(){
+  const el=document.getElementById('clarity-chips');if(!el)return;
+  el.style.display='flex';
+  el.innerHTML=CLARITY.map(c=>{const s=c.replace(/'/g,"\\'");return`<button class="chip ct" onmousedown="clarSel('${s}')">${c}</button>`;}).join('');
+}
+function clarSel(v){document.getElementById('s-clarity').value=v;document.getElementById('clarity-chips').style.display='none';}
+
+// MINDESTMASS
+function chkMMF(id){const type=document.getElementById('ft-'+id)?.value?.trim();const len=parseFloat(document.getElementById('fl-'+id)?.value);const we=document.getElementById('mm-'+id);const le=document.getElementById('fl-'+id);if(!we)return;const r=chkMM(type,len);if(r&&!r.ok){we.textContent=r.msg;we.classList.add('on');le.classList.add('warn');}else{we.classList.remove('on');le?.classList.remove('warn');}}
+
+// SUCCESS TOGGLE
+function setSuc(mode){sucMode=mode;document.getElementById('btn-catch').className='ssb'+(mode==='catch'?' sc2':'');document.getElementById('btn-sk').className='ssb'+(mode==='sk'?' ss2':'');document.getElementById('btn-catch').setAttribute('aria-pressed',String(mode==='catch'));document.getElementById('btn-sk').setAttribute('aria-pressed',String(mode==='sk'));document.getElementById('catches-area').style.display=mode==='catch'?'':'none';document.getElementById('sk-placeholder').style.display=mode==='sk'?'':'none';document.getElementById('skunk-wrap').innerHTML='';}
+
+// PHOTO
+function trigPhoto(id){_curPhotoId=id;document.getElementById('photo-inp').click();}
+function handlePhoto(e){const file=e.target.files[0];if(!file||!_curPhotoId)return;const reader=new FileReader();reader.onload=async ev=>{const b64=ev.target.result;const pk='photo_'+Date.now()+'_'+_curPhotoId;await savePhoto(pk,b64);window._pm=window._pm||{};window._pm[_curPhotoId]=pk;const pr=document.getElementById('pp-'+_curPhotoId);const ab=document.getElementById('pa-'+_curPhotoId);if(pr){pr.src=b64;pr.style.display='block';}if(ab)ab.style.display='none';showToast('📷','Foto gespeichert');_curPhotoId=null;};reader.readAsDataURL(file);e.target.value='';}
+
+// ═══════════════════════════════════════════════════════════
+// ADD CATCH – v11: Memory, Auto-Focus, Permanent Chips, Favs
+// ═══════════════════════════════════════════════════════════
+// Permanente Action-Chips für Notizfeld
+const NOTE_CHIPS_STATIC=['gejiggt','geleiert','faulenzt','UV-aktiv','10g','14g','20g','Pause'];
+
+function _firstCatchFish(){
+  const el=document.getElementById('ft-1');
+  return el?.value?.trim()||'';
+}
+function _firstCatchBait(){
+  const el=document.getElementById('fb-1');
+  return el?.value?.trim()||'';
+}
+
+function addCatch(){
+  catchCount++;const id=catchCount;
+  const n=new Date();const t=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+
+  // Memory: Fang #2+ bekommt Fischart/Köder des ersten Fangs vorausgefüllt
+  const presetFish=id>1?_firstCatchFish():'';
+  const presetBait=id>1?_firstCatchBait():'';
+
+  // Top-3 Fischarten aus favs als permanente Buttons
+  const topFish=topFavs('fish',3);
+  const topBait=topFavs('bait',3);
+  const ctx=ctxIdx();
+  const water=document.getElementById('s-water')?.value?.trim()||'';
+
+  // Kontext-Fischarten (aus Gewässer-History)
+  let ctxFish=[];
+  if(water&&ctx.wF[water])ctxFish=topN(ctx.wF[water],3);
+  const fishFavBtns=[...new Set([...ctxFish,...topFish])].slice(0,3).map(f=>{
+    const safe=f.replace(/'/g,"\\'");
+    return`<button class="fav-btn" onmousedown="favFishSel(${id},'${safe}')">${fIco(f)} ${f}</button>`;
+  }).join('');
+
+  // Kontext-Köder (aus Fischart-History)
+  let ctxBait=[];
+  if(presetFish&&ctx.fB[presetFish])ctxBait=topN(ctx.fB[presetFish],3);
+  const baitFavBtns=[...new Set([...ctxBait,...topBait])].slice(0,3).map(b=>{
+    const safe=b.replace(/'/g,"\\'");
+    return`<button class="fav-btn fav-btn-bait" onmousedown="favBaitSel(${id},'${safe}')">🪝 ${b}</button>`;
+  }).join('');
+
+  // Permanente Notiz-Chips (statisch + gelernte Keywords)
+  const learnedKws=presetBait&&favs.baitKeywords?.[presetBait]?topN(favs.baitKeywords[presetBait],4):[];
+  const noteChips=[...new Set([...learnedKws,...NOTE_CHIPS_STATIC])].slice(0,8);
+  const noteChipsHtml=noteChips.map(c=>{
+    const safe=c.replace(/'/g,"\\'");
+    return`<button class="fav-btn fav-btn-note" onmousedown="addNoteChip(${id},'${safe}')">${c}</button>`;
+  }).join('');
+
+  const div=document.createElement('div');div.className='cc';div.id='catch-'+id;
+  div.innerHTML=`
+    <div class="ch">
+      <span class="cn">🐟 Fang #${id}</span>
+      ${id>1?`<button class="rm" onclick="rmCatch(${id})" aria-label="Fang ${id} entfernen">×</button>`:'<div style="width:32px"></div>'}
+    </div>
+
+    <!-- Fischart -->
+    <div class="ig" style="margin-bottom:6px;">
+      <label class="il" for="ft-${id}">Fischart</label>
+      <input type="text" list="fdl-${id}" class="if" id="ft-${id}" placeholder="z.B. Zander"
+        value="${presetFish}"
+        onfocus="rndrFChips(${id},this.value)" oninput="rndrFChips(${id},this.value);chkMMF(${id});chkAutoSk()" onblur="dHide('fc-${id}')" autocomplete="off">
+      <datalist id="fdl-${id}">${FISH.map(f=>`<option value="${f}">`).join('')}</datalist>
+      ${fishFavBtns?`<div class="fav-row">${fishFavBtns}</div>`:''}
+      <div class="crow" id="fc-${id}" style="display:none;" role="listbox"></div>
+    </div>
+
+    <!-- Länge + Uhrzeit -->
+    <div class="g2" style="margin-bottom:6px;">
+      <div class="ig">
+        <label class="il" for="fl-${id}">Länge (cm)</label>
+        <input type="number" class="if" id="fl-${id}" placeholder="65" min="1" max="300" step="0.5"
+          oninput="chkMMF(${id});chkAutoSk()">
+      </div>
+      <div class="ig">
+        <label class="il" for="ftime-${id}">Uhrzeit</label>
+        <input type="time" class="if" id="ftime-${id}" value="${t}">
+      </div>
+    </div>
+    <div class="mmw" id="mm-${id}" role="alert"></div>
+
+    <!-- Köder -->
+    <div class="ig" style="margin-bottom:6px;margin-top:8px;">
+      <label class="il" for="fb-${id}">Köder</label>
+      <input type="text" class="if" id="fb-${id}" placeholder="z.B. Gummifisch"
+        value="${presetBait}"
+        onfocus="rndrBChips(${id},this.value)" oninput="rndrBChips(${id},this.value);updNoteChips(${id})" onblur="dHide('bc-${id}')" autocomplete="off">
+      ${baitFavBtns?`<div class="fav-row">${baitFavBtns}</div>`:''}
+      <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
+    </div>
+
+    <!-- Notiz – Tastatur nur bei Klick, Chips dauerhaft sichtbar -->
+    <div class="ig" style="margin-bottom:10px;">
+      <label class="il" for="fn-${id}">Notiz · Keywords</label>
+      <div class="fav-row" id="nc-${id}" style="margin-bottom:6px;">${noteChipsHtml}</div>
+      <input type="text" class="if" id="fn-${id}" placeholder='z.B. Buhne 6 · Strömungsrinne'
+        autocomplete="off" autocorrect="off" autocapitalize="none"
+        style="font-size:15px;">
+    </div>
+
+    <!-- Foto + C&R -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+      <div id="pa-${id}" class="phadd" onclick="trigPhoto(${id})" role="button" tabindex="0"><span>📷</span><span class="phlbl">Foto</span></div>
+      <img id="pp-${id}" class="phpr" src="" alt="Fangfoto" style="display:none;" onclick="trigPhoto(${id})">
+      <div style="flex:1;font-size:11px;color:var(--text-light);line-height:1.5;">Foto direkt aufnehmen oder Galerie</div>
+    </div>
+    <div class="crr" id="crr-${id}">
+      <div class="crl"><span class="crm" id="crm-${id}">Catch &amp; Release</span><span class="crs" id="crs-${id}">Fisch zurückgesetzt</span></div>
+      <label class="tw" aria-label="Fisch entnommen?">
+        <input type="checkbox" id="ftak-${id}" onchange="updCR(${id})" role="switch" aria-checked="false">
+        <span class="tsl"></span>
+      </label>
+    </div>`;
+
+  document.getElementById('catches-con').appendChild(div);
+  div.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  // Auto-Focus: bei Fang #1 → Fischart; bei Fang #2+ (Memory) → Länge
+  setTimeout(()=>{
+    if(presetFish){
+      document.getElementById('fl-'+id)?.focus();
+    } else {
+      document.getElementById('ft-'+id)?.focus();
+    }
+  },150);
+
+  // Mindestmaß-Check wenn Memory-Fischart gesetzt
+  if(presetFish)chkMMF(id);
+}
+
+// Favoriten-Auswahl Fischart → Auto-Focus auf Länge
+function favFishSel(id,v){
+  document.getElementById('ft-'+id).value=v;
+  document.getElementById('fc-'+id).style.display='none';
+  chkMMF(id);
+  // Köder-Kontext aktualisieren
+  rndrBChips(id,'');
+  // Auto-Focus auf Länge
+  setTimeout(()=>document.getElementById('fl-'+id)?.focus(),50);
+}
+// fSel überschreiben für Auto-Focus
+function fSel(id,v){
+  document.getElementById('ft-'+id).value=v;
+  document.getElementById('fc-'+id).style.display='none';
+  chkMMF(id);rndrBChips(id,'');
+  setTimeout(()=>document.getElementById('fl-'+id)?.focus(),50);
+}
+
+// Favoriten-Auswahl Köder
+function favBaitSel(id,v){
+  document.getElementById('fb-'+id).value=v;
+  document.getElementById('bc-'+id).style.display='none';
+  updNoteChips(id);
+}
+function bSel(id,v){
+  document.getElementById('fb-'+id).value=v;
+  document.getElementById('bc-'+id).style.display='none';
+  updNoteChips(id);
+}
+
+// Notiz-Chip anhängen (permanente Chips onmousedown)
+function addNoteChip(id,val){
+  const el=document.getElementById('fn-'+id);if(!el)return;
+  el.value=el.value?el.value.trimEnd()+' '+val:val;
+}
+
+// Notiz-Chips aktualisieren wenn Köder gewechselt wird
+function updNoteChips(id){
+  const el=document.getElementById('nc-'+id);if(!el)return;
+  const bait=document.getElementById('fb-'+id)?.value?.trim()||'';
+  const learnedKws=bait&&favs.baitKeywords?.[bait]?topN(favs.baitKeywords[bait],4):[];
+  const allChips=[...new Set([...learnedKws,...NOTE_CHIPS_STATIC])].slice(0,8);
+  el.innerHTML=allChips.map(c=>{
+    const safe=c.replace(/'/g,"\\'");
+    return`<button class="fav-btn fav-btn-note" onmousedown="addNoteChip(${id},'${safe}')">${c}</button>`;
+  }).join('');
+}
+
+function updCR(id){const taken=document.getElementById('ftak-'+id).checked;document.getElementById('ftak-'+id).setAttribute('aria-checked',String(taken));document.getElementById('crm-'+id).textContent=taken?'Fisch entnommen':'Catch & Release';document.getElementById('crs-'+id).textContent=taken?'Fisch mitgenommen':'Fisch zurückgesetzt';document.getElementById('crr-'+id).classList.toggle('tk',taken);}
+function rmCatch(id){const el=document.getElementById('catch-'+id);el.style.cssText='opacity:0;transform:scale(.95);transition:all .2s;';setTimeout(()=>{el.remove();chkAutoSk();},200);}
+
+// ═══════════════════════════════════════════════════════════
+// SAVE SESSION
+// ═══════════════════════════════════════════════════════════
+async function saveSess(){
+  const date=document.getElementById('s-date').value;
+  const start=document.getElementById('s-start').value;
+  const end=document.getElementById('s-end').value;
+  const water=document.getElementById('s-water').value.trim()||'Unbekanntes Gewässer';
+  const wx=document.getElementById('s-wx').value;
+  const temp=document.getElementById('s-temp').value;
+  const clarity=document.getElementById('s-clarity').value.trim();
+  if(!date||!start){showToast('⚠️','Datum und Startzeit erforderlich!');return;}
+  const moon=getMoon(date);const sk=sucMode==='sk';const catches=[];
+  if(!sk){
+    for(let i=1;i<=catchCount;i++){
+      const te=document.getElementById('ft-'+i),le=document.getElementById('fl-'+i),ti=document.getElementById('ftime-'+i),tk=document.getElementById('ftak-'+i),tb=document.getElementById('fb-'+i),tn=document.getElementById('fn-'+i);
+      if(!te)continue;const type=te.value.trim(),len=parseFloat(le.value);
+      if(type&&!isNaN(len)&&len>0){
+        const bait=tb?.value.trim()||'',note=tn?.value.trim()||'';
+        const pk=(window._pm||{})[i]||null;
+        catches.push({type,length:len,time:ti.value,taken:tk.checked,bait,baitNote:note,score:fScore(type,len),photoKey:pk});
+        addFav('fish',type);if(bait)addFav('bait',bait);if(bait&&note)addBaitKw(bait,note);
+      }
+    }
+  }
+  addFav('waters',water);window._pm={};
+  const effSk=sk||(catches.length===0&&sucMode==='catch');
+  const sess={
+    id:Date.now(),date,start,end,water,weather:wx,
+    temp:temp?parseFloat(temp):(_lastWx?.temp||null),
+    lat:gpsCoords?.lat||null,lon:gpsCoords?.lon||null,
+    moonIcon:moon.icon,moonName:moon.name,moonIllum:moon.illum,
+    skunked:effSk,autoSkunked:!sk&&effSk,clarity:clarity||null,
+    pressure:_lastWx?.pressure||null,windSpeed:_lastWx?.windSpeed||null,
+    windDir:_lastWx?.windDir||null,humidity:_lastWx?.humidity||null,
+    clouds:_lastWx?.clouds||null,precip:_lastWx?.precip||null,
+    catches,saved:new Date().toISOString()
+  };
+  sessions.unshift(sess);await saveOneSess(sess);
+  _lastWx=null;
+  if(effSk&&!sk){showToast('🪝','Als Schneider gespeichert');resetForm();}
+  else if(sk){showToast('🪝','Schneider-Session gespeichert');resetForm();}
+  else if(catches.length>0)showSuc(catches,water);
+  else{showToast('✅','Session gespeichert!');resetForm();}
+}
+function resetForm(){
+  document.getElementById('catches-con').innerHTML='';
+  document.getElementById('s-water').value='';document.getElementById('w-chips').style.display='none';
+  document.getElementById('s-temp').value='';document.getElementById('s-clarity').value='';
+  document.getElementById('clarity-chips').style.display='none';document.getElementById('start-chips').style.display='none';
+  document.getElementById('skunk-wrap').innerHTML='';document.getElementById('manual-wx').style.display='';
+  gpsCoords=null;_lastWx=null;
+  const gs=document.getElementById('gps-strip');gs.style.display='none';gs.classList.remove('ok');
+  document.getElementById('wx-ico').textContent='🌡️';document.getElementById('wx-val').textContent='Tippen zum Laden';
+  catchCount=0;sucMode='catch';setSuc('catch');window._pm={};
+  const n=new Date();
+  document.getElementById('s-date').value=n.toISOString().split('T')[0];
+  document.getElementById('s-start').value=n.getHours().toString().padStart(2,'0')+':00';
+  document.getElementById('s-end').value=Math.min(n.getHours()+3,23).toString().padStart(2,'0')+':00';
+  updMoon();addCatch();
+  // v9: Kein chkSz() mehr – Schonzeiten nur noch im Burger-Menü
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUCCESS OVERLAY – v8: "Weiter" → Verlauf
+// ═══════════════════════════════════════════════════════════
+function showSuc(catches,water){
+  const freq={};catches.forEach(c=>{freq[c.type]=(freq[c.type]||0)+1;});
+  const mf=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];const ft=mf[0];
+  const allC=sessions.slice(1).flatMap(s=>s.catches);
+  const prev=allC.filter(c=>c.type===ft).length;
+  const fin=prev+catches.filter(c=>c.type===ft).length;
+  _shareData={ft,total:fin,water:water||'',count:catches.length};
+  document.getElementById('suc-ico').textContent=fIco(ft);
+  document.getElementById('suc-hl').textContent=`${profile?profile.name.split(' ')[0]+' – ':''}Toller Fang!`;
+  document.getElementById('cnt-lbl').textContent=`${ft} insgesamt`;
+  document.getElementById('cnt-num').textContent=prev;
+  document.getElementById('suc-list').innerHTML=Object.entries(freq).map(([f,c])=>`<span class="succhip">${fIco(f)} ${f} ×${c}</span>`).join('');
+  document.getElementById('share-btn').style.display=navigator.share?'flex':'none';
+  document.getElementById('sucov').classList.add('on');launchK();
+  setTimeout(()=>animCnt(prev,fin),600);
+}
+function doShare(){const{ft,total,water,count}=_shareData;const name=profile?profile.name.split(' ')[0]+'s':'Mein';const wt=water&&water!=='Unbekanntes Gewässer'?` am ${water}`:'';navigator.share({title:'Fishing Buddy',text:`Petri Heil! 🎣 Gerade ${count} ${ft}${count!==1?'e':''}${wt} geloggt. ${name} ${ft}-Counter: ${total}! – Fishing Buddy 🎣`}).catch(()=>{});}
+function animCnt(cur,tgt){if(cur>=tgt){const n=document.getElementById('cnt-num');n.textContent=tgt;n.classList.add('pulse');setTimeout(()=>n.classList.remove('pulse'),400);return;}const p=document.getElementById('p1');p.textContent='+1';p.style.animation='none';void p.offsetWidth;p.classList.add('fly');setTimeout(()=>{p.classList.remove('fly');const n=document.getElementById('cnt-num');n.textContent=cur+1;n.classList.add('pulse');setTimeout(()=>n.classList.remove('pulse'),350);cAF=setTimeout(()=>animCnt(cur+1,tgt),tgt-cur>5?200:350);},440);}
+function disSuc(){document.getElementById('sucov').classList.remove('on');stopK();if(cAF)clearTimeout(cAF);resetForm();showPage('fangbuch');} // v9: → Fangbuch
+function launchK(){const c=document.getElementById('kcanvas'),ctx=c.getContext('2d');c.width=390;c.height=844;const ps=Array.from({length:130},()=>({x:Math.random()*390,y:-30-Math.random()*300,w:4+Math.random()*8,h:4+Math.random()*8,col:KONF[Math.floor(Math.random()*KONF.length)],sp:1.8+Math.random()*3.5,si:Math.random()*.25-.125,an:Math.random()*Math.PI*2,vx:(Math.random()-.5)*1.5,gv:.04+Math.random()*.06}));function draw(){ctx.clearRect(0,0,390,844);let any=false;ps.forEach(p=>{p.y+=p.sp;p.sp+=p.gv;p.an+=p.si;p.x+=p.vx;if(p.y<920)any=true;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.an);ctx.fillStyle=p.col;ctx.globalAlpha=Math.max(0,1-p.y/750);if(p.w>8){ctx.beginPath();ctx.arc(0,0,p.w/2,0,Math.PI*2);ctx.fill();}else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(any)kAF=requestAnimationFrame(draw);}draw();}
+function stopK(){if(kAF)cancelAnimationFrame(kAF);document.getElementById('kcanvas').getContext('2d').clearRect(0,0,390,844);}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE NAV (v9: 3 Bottom-Tabs + Neu/Detail als interne Pages)
+// ═══════════════════════════════════════════════════════════
+// Tab-Mapping: welcher btab wird bei welcher page aktiv
+const TAB_PAGE_MAP={fangbuch:'fangbuch',history:'fangbuch',forecast:'forecast',stats:'stats'};
+function showPage(p){
+  // Alle Pages deaktivieren
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  const pageEl=document.getElementById('page-'+p);
+  if(pageEl)pageEl.classList.add('on');
+
+  // Bottom-Tabs: aktiv setzen
+  const activeTab=TAB_PAGE_MAP[p]||null;
+  document.querySelectorAll('.btab').forEach(b=>{
+    const isActive=b.id==='btab-'+activeTab;
+    b.classList.toggle('on',isActive);
+    b.setAttribute('aria-selected',String(isActive));
+  });
+
+  // Seiten-spezifische Aktionen
+  if(p==='history'||p==='fangbuch'){rndrHistory();}
+  if(p==='stats')rndrStats();
+  if(p==='forecast')rndrForecast();
+  if(p==='new'){
+    // Neue Session: Datum/Zeiten aktualisieren
+    const n=new Date();
+    const dateEl=document.getElementById('s-date');
+    if(dateEl&&!dateEl.value)dateEl.value=n.toISOString().split('T')[0];
+    updMoon();
+  }
+}
+
+// BURGER
+function openBurg(){document.getElementById('burg-ov').classList.remove('hidden');}
+function closeBurg(){document.getElementById('burg-ov').classList.add('hidden');}
+function showBurgSec(sec){
+  closeBurg();
+  const titles={legal:'Impressum & Datenschutz',schonzeiten:'Schonzeiten & Verbände',disclaimer:'Haftungsausschluss',storage:'Speicher-Info'};
+  document.getElementById('fs-info-title').textContent=titles[sec]||'Info';
+  let html='';
+  if(sec==='legal'){html=`<div class="card"><h3 style="font-family:var(--fs);font-size:16px;font-weight:600;margin-bottom:10px;">Datenschutz</h3><p style="font-size:12px;color:var(--text-mid);line-height:1.7;">Alle Daten verbleiben ausschließlich im Gerätespeicher (IndexedDB). Keine Übertragung außer bei optionaler Wetter-API (Open-Meteo, DSGVO-konform) und Web Share.</p></div><div class="card" style="margin-top:8px;"><h3 style="font-family:var(--fs);font-size:16px;font-weight:600;margin-bottom:10px;">Impressum</h3><p style="font-size:12px;color:var(--text-mid);">Prototyp ohne kommerziellen Betrieb. Bei Veröffentlichung: vollständiges Impressum gem. § 5 TMG erforderlich.</p></div>`;}
+  else if(sec==='schonzeiten'){
+    html=`<div style="margin-bottom:12px;font-size:13px;color:var(--text-mid);background:var(--gold-l);border:1px solid #e8d4a0;border-radius:var(--rs);padding:12px 14px;">⚠️ <strong>Alle Angaben ohne Gewähr.</strong> Schonzeiten können sich jährlich ändern. Stets beim Landesfischereiverband prüfen.</div>`;
+    html+=Object.entries(SZ).map(([bl,d])=>`<div class="info-btn" onclick="window.open('${d.link}','_blank')"><div class="info-btn-ico">🏛️</div><div><div class="info-btn-txt">${bl}</div><div class="info-btn-sub">${d.text.split('·')[0].trim()} · <span style="color:var(--blue-t);">${new URL(d.link).hostname}</span></div></div></div>`).join('');
+  }
+  else if(sec==='disclaimer'){html=`<div class="card" style="background:var(--rose);border:1.5px solid var(--rose-b);"><h3 style="font-family:var(--fs);font-size:16px;font-weight:600;margin-bottom:10px;color:var(--rose-t);">Schonzeit-Angaben ohne Gewähr</h3><p style="font-size:12px;color:var(--rose-t);line-height:1.7;">Die Schonzeit-Hinweise sind Richtwerte ohne Gewähr und ersetzen nicht die verbindlichen Regelungen der Fischereibehörden. Informiere dich vor jedem Angelausflug beim zuständigen Landesfischereiverband.</p></div>`;}
+  else if(sec==='storage'){html=`<div class="card"><div id="fs-stor-inf">Lädt…</div></div>`;navigator.storage?.estimate().then(q=>{if(q){const mb=(q.usage/1024/1024).toFixed(1);document.getElementById('fs-stor-inf').innerHTML=`<p style="font-size:14px;font-weight:600;margin-bottom:6px;">${mb} MB genutzt</p><p style="font-size:12px;color:var(--text-mid);">~${Math.round(q.quota/1024/1024)} MB verfügbar · ${sessions.length} Sessions</p>`;}});}
+  document.getElementById('fs-info-body').innerHTML=html;
+  openFs('info');
+}
+
+// FULLSCREEN OVERLAYS
+function openFs(n){document.getElementById('fs-'+n)?.classList.add('on');}
+function closeFs(n){document.getElementById('fs-'+n)?.classList.remove('on');}
+
+
+// ═══════════════════════════════════════════════════════════
+// FANGBUCH VIEW TOGGLE – Liste ↔ Kalender (v9.3)
+// ═══════════════════════════════════════════════════════════
+let _fbView='list'; // 'list' | 'cal'
+
+function toggleFbView(){
+  _fbView=_fbView==='list'?'cal':'list';
+  const ico=document.getElementById('fb-toggle-ico');
+  const lbl=document.getElementById('fb-toggle-lbl');
+  if(_fbView==='cal'){
+    if(ico)ico.textContent='☰';
+    if(lbl)lbl.textContent='Liste';
+    rndrCalendar();
+  } else {
+    if(ico)ico.textContent='📅';
+    if(lbl)lbl.textContent='Kalender';
+    rndrFangbuch();
+  }
+}
+
+
+// ── Fangbuch: Monats-gruppierte Kachel-Listenansicht (v10 Bugfix) ──
+let _fbScrollY = 0;
+const DOW_FB = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+function fmtDow(ds){return DOW_FB[new Date(ds+'T12:00:00').getDay()];}
+
+function rndrFangbuch(){
+  const el=document.getElementById('fangbuch-list');if(!el)return;
+  if(!sessions.length){
+    el.innerHTML='<div class="empty"><div class="empty-ico">🎣</div><div class="empty-t">Noch keine Sessions</div><div class="empty-s">Tippe auf + um deine erste Session zu erfassen.</div></div>';
+    return;
+  }
+  const byDate={};
+  sessions.forEach(s=>{const k=String(s.date||'');if(!k)return;if(!byDate[k])byDate[k]=[];byDate[k].push(s);});
+  const dateKeys=Object.keys(byDate).filter(Boolean).sort((a,b)=>b.localeCompare(a));
+  const byMonth={};
+  dateKeys.forEach(dk=>{const ym=dk.substring(0,7);if(!byMonth[ym])byMonth[ym]=[];byMonth[ym].push(dk);});
+  const monthKeys=Object.keys(byMonth).sort((a,b)=>b.localeCompare(a));
+  const MNAMES=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  let html='';
+  monthKeys.forEach(ym=>{
+    const[yr,mo]=ym.split('-').map(Number);
+    const mCatches=byMonth[ym].flatMap(dk=>byDate[dk].flatMap(s=>s.catches)).length;
+    html+='<div class="fb-month-sep"><span class="fb-month-label">'+MNAMES[mo-1]+' '+yr+'</span><span class="fb-month-line"></span><span class="fb-month-count">'+mCatches+' Fang'+(mCatches!==1?'e':'')+'</span></div>';
+    byMonth[ym].forEach(dateKey=>{
+      const daySess=byDate[dateKey];
+      const allCatches=daySess.flatMap(s=>s.catches);
+      const totalCnt=allCatches.length;
+      const isSkunked=totalCnt===0&&daySess.every(s=>s.skunked||!s.catches.length);
+      const waters=[...new Set(daySess.map(s=>s.water).filter(Boolean))];
+      const waterLabel=waters.length===1?waters[0]:waters.length>1?waters[0]+' +'+(waters.length-1)+' weitere':'–';
+      const starts=daySess.map(s=>s.start).filter(Boolean).sort();
+      const ends=daySess.map(s=>s.end).filter(Boolean).sort();
+      const timeSpan=starts.length&&ends.length?starts[0]+'–'+ends[ends.length-1]:'–';
+      const pSess=daySess.find(s=>s.pressure);
+      const pressure=pSess?.pressure;
+      const moon=daySess[0]?.moonIcon||'🌕';
+      let chips='';
+      if(isSkunked){chips+='<span class="fb-chip fb-chip-gray">🪝 Schneider</span>';}
+      else{
+        chips+='<span class="fb-chip fb-chip-green">🐟 '+totalCnt+' Fang'+(totalCnt!==1?'e':'')+'</span>';
+        const freq={};allCatches.forEach(c=>{if(c.type)freq[c.type]=(freq[c.type]||0)+1;});
+        const top=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
+        if(top)chips+='<span class="fb-chip fb-chip-blue">'+fIco(top[0])+' '+top[0]+'</span>';
+      }
+      chips+='<span class="fb-chip fb-chip-gray">⏱ '+timeSpan+'</span>';
+      if(pressure)chips+='<span class="fb-chip fb-chip-teal">'+Math.round(pressure)+' hPa</span>';
+      const indClass=isSkunked?'skunked':'success';
+      html+='<div class="fb-card" onclick="openDayDetail(\''+dateKey+'\')" role="button" tabindex="0">'+
+        '<div class="fb-indicator '+indClass+'"></div>'+
+        '<div class="fb-card-content">'+
+          '<div class="fb-card-body">'+
+            '<div class="fb-date">'+fmtDow(dateKey)+', '+fmtDate(dateKey)+'</div>'+
+            '<div class="fb-water">'+waterLabel+'</div>'+
+            '<div class="fb-chips">'+chips+'</div>'+
+          '</div>'+
+          '<div class="fb-card-footer">'+
+            '<div><div class="fb-cnt">'+(isSkunked?'–':totalCnt)+'</div><div class="fb-cnt-lbl">'+(isSkunked?'Schneider':'Fänge')+'</div></div>'+
+            '<div class="fb-moon-area"><div class="fb-moon">'+moon+'</div>'+(pressure?'<div class="fb-pressure">'+Math.round(pressure)+' hPa</div>':'')+'</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    });
+  });
+  el.innerHTML=html;
+  requestAnimationFrame(()=>{const sc=document.getElementById('fangbuch-sc');if(sc&&_fbScrollY>0){sc.scrollTop=_fbScrollY;_fbScrollY=0;}});
+}
+function rndrHistory(){if(_fbView==='cal')rndrCalendar();else rndrFangbuch();}
+function _rndrSessionList(elId){if(elId==='fangbuch-list')rndrFangbuch();}
+
+function rndrCalendar(){
+  const el=document.getElementById('fangbuch-list');if(!el)return;
+
+  // Date-Map aufbauen
+  const byDate={};
+  sessions.forEach(s=>{
+    const k=String(s.date||'');if(!k)return;
+    if(!byDate[k])byDate[k]=[];
+    byDate[k].push(s);
+  });
+
+  const MON_FULL=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const today=new Date();today.setHours(0,0,0,0);
+
+  // Alle Monate mit Sessions (neueste zuerst)
+  const monthSet=new Set();
+  Object.keys(byDate).forEach(dk=>{if(dk.length>=7)monthSet.add(dk.substring(0,7));});
+  if(!monthSet.size){
+    // Kein Session → aktuellen Monat zeigen
+    const n=new Date();
+    monthSet.add(`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`);
+  }
+  const monthList=[...monthSet].sort((a,b)=>b.localeCompare(a));
+  const dowLabels=['Mo','Di','Mi','Do','Fr','Sa','So'];
+
+  let html='';
+  monthList.forEach(ym=>{
+    const[yr,mo]=ym.split('-').map(Number);
+    const lastDay=new Date(yr,mo,0).getDate();
+    const firstDow=(new Date(yr,mo-1,1).getDay()+6)%7; // 0=Mo
+
+    let cells='';
+    for(let i=0;i<firstDow;i++)cells+=`<div class="fb-cal-day empty"></div>`;
+    for(let d=1;d<=lastDay;d++){
+      const dk=`${yr}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dayDate=new Date(yr,mo-1,d);dayDate.setHours(0,0,0,0);
+      const daySess=byDate[dk]||[];
+      const hasCatch=daySess.some(s=>!s.skunked&&s.catches.length>0);
+      const isSkunked=daySess.length>0&&!hasCatch;
+      const isToday=dayDate.getTime()===today.getTime();
+      let cls='fb-cal-day';
+      if(hasCatch)cls+=' has-catch';
+      else if(isSkunked)cls+=' skunked';
+      if(isToday)cls+=' today';
+      const onclick=daySess.length?`onclick="openDayDetail('${dk}')"`:' style="cursor:default;"';
+      cells+=`<div class="${cls}" ${onclick}><span class="fb-cal-num">${d}</span>${daySess.length?'<span class="fb-cal-dot"></span>':''}</div>`;
+    }
+
+    const mCatches=Object.entries(byDate)
+      .filter(([k])=>k.startsWith(ym))
+      .flatMap(([,ss])=>ss.flatMap(s=>s.catches)).length;
+
+    html+=`<div class="fb-cal-month-block">
+      <div class="fb-month-sep">
+        <span class="fb-month-label">${MON_FULL[mo-1]} ${yr}</span>
+        <span class="fb-month-line"></span>
+        <span class="fb-month-count">${mCatches} Fang${mCatches!==1?'e':''}</span>
+      </div>
+      <div class="fb-cal-dow">${dowLabels.map(d=>`<div class="fb-cal-dow-cell">${d}</div>`).join('')}</div>
+      <div class="fb-cal-grid">${cells}</div>
+    </div>`;
+  });
+
+  el.innerHTML=html||`<div class="empty"><div class="empty-ico">🎣</div><div class="empty-t">Noch keine Sessions</div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DAY DETAIL OVERLAY – v9.1
+// ID-sicherer Lookup, Scroll-Position merken, PLZ-Fallback
+// ═══════════════════════════════════════════════════════════
+async function openDayDetail(dateKey){
+  // Scroll-Position des Fangbuchs merken (vor Overlay-Öffnung)
+  const sc=document.getElementById('fangbuch-sc');
+  if(sc)_fbScrollY=sc.scrollTop;
+
+  // ID-sicherer Filter: String-Vergleich für importierte Sessions
+  const daySess=sessions.filter(s=>String(s.date)===String(dateKey));
+  if(!daySess.length)return;
+
+  openFs('day-detail');
+
+  // Alle Fänge chronologisch
+  const allCatches=daySess.flatMap(s=>s.catches.map(c=>({...c,_sessId:s.id,_sessWater:s.water})));
+  const sortedCatches=[...allCatches].sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+
+  const totalCnt=allCatches.length;
+  const isSkunked=totalCnt===0&&daySess.every(s=>s.skunked||!s.catches.length);
+  const waters=[...new Set(daySess.map(s=>s.water).filter(Boolean))];
+  const waterLabel=waters.length===1?waters[0]:waters.length>1?`${waters[0]} +${waters.length-1}`:'–';
+
+  // Statistiken
+  const lens=allCatches.map(c=>c.length).filter(Boolean);
+  const avgLen=lens.length?(lens.reduce((a,b)=>a+b,0)/lens.length).toFixed(1):'–';
+  const maxLen=lens.length?Math.max(...lens):'–';
+
+  // ── Hero sofort rendern ──
+  document.getElementById('dd-hero-wrap').innerHTML=`
+    <div class="dd-hero">
+      <button class="dd-hero-back" onclick="closeDayDetail()">‹ Zurück</button>
+      <div class="dd-hero-meta">${fmtDow(dateKey)}, ${fmtDate(dateKey)}</div>
+      <div class="dd-hero-date">${waterLabel}</div>
+      <div class="dd-hero-cnt">${isSkunked?'–':totalCnt}</div>
+      <div class="dd-hero-cnt-lbl">${isSkunked?'Schneider':'Fänge gesamt'}</div>
+      ${!isSkunked?`<div class="dd-tiles">
+        <div class="dd-tile"><div class="dd-tile-val">${avgLen}cm</div><div class="dd-tile-lbl">Ø Länge</div></div>
+        <div class="dd-tile"><div class="dd-tile-val">${maxLen}cm</div><div class="dd-tile-lbl">Rekord</div></div>
+        <div class="dd-tile"><div class="dd-tile-val">${allCatches.filter(c=>c.taken).length}</div><div class="dd-tile-lbl">Entnommen</div></div>
+      </div>`:''}
+    </div>`;
+
+  const body=document.getElementById('dd-body');
+
+  // ── Fang-Liste sofort rendern (blockiert nicht auf Wetter) ──
+  const _buildBody=(wxHtml)=>{
+    let catchesHtml='';
+    if(isSkunked){
+      catchesHtml=`<div style="text-align:center;padding:28px;color:var(--text-light);">🪝 Schneider – kein Fang</div>`;
+    } else {
+      daySess.forEach(s=>{
+        // ID-sicherer Vergleich für importierte Sessions
+        const sCatches=sortedCatches.filter(c=>String(c._sessId)===String(s.id));
+        const dur=calcDur(s.start,s.end);
+        catchesHtml+=`<div class="dd-sess-sep">${s.start||'–'}–${s.end||'?'} Uhr · ${dur} · ${s.water||'–'}</div>`;
+        if(s.skunked||!sCatches.length){
+          catchesHtml+=`<div style="padding:10px 0;font-size:12px;color:var(--text-light);">Kein Fang</div>`;
+        } else {
+          catchesHtml+=sCatches.map((c,i)=>{
+            const mm=chkMM(c.type,c.length);
+            return`<div class="dd-catch-row">
+              <div class="dd-catch-photo dd-photo-${String(s.id).replace(/[^a-z0-9]/gi,'_')}-${i}">${fIco(c.type)}</div>
+              <div class="dd-catch-info">
+                <div class="dd-catch-name">${c.type||'–'}</div>
+                <div class="dd-catch-meta">${c.time||'–'} Uhr${c.bait?' · 🪝 '+c.bait:''}${c.baitNote?' · '+c.baitNote:''}</div>
+                <span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>
+                ${mm&&!mm.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ &lt;${mm.mm}cm</span>`:''}
+              </div>
+              <div class="dd-catch-right">
+                <div class="dd-catch-len">${c.length}</div>
+                <div class="dd-catch-unit">cm</div>
+                ${c.score?`<div style="font-size:10px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score}</div>`:''}
+              </div>
+            </div>`;
+          }).join('');
+        }
+      });
+    }
+
+    // Aktions-Buttons je Session
+    const actionsHtml=`<div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
+      ${daySess.map(s=>`
+        <div style="background:#fff;border-radius:var(--rs);padding:12px 14px;box-shadow:var(--sh-sm);border:1px solid rgba(200,221,208,.3);">
+          <div style="font-size:12px;font-weight:600;color:var(--text-mid);margin-bottom:8px;">${s.water||'–'} · ${s.start||'–'}–${s.end||'?'} Uhr</div>
+          <div style="display:flex;gap:8px;">
+            <button onclick="editSess('${s.id}')" style="flex:1;padding:10px;background:var(--green-mist);border:1.5px solid var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);">✏️ Bearbeiten</button>
+            <button onclick="delSessFromDetail('${s.id}','${dateKey}')" style="flex:1;padding:10px;background:var(--rose);border:1.5px solid var(--rose-b);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--rose-t);">🗑️ Löschen</button>
+          </div>
+        </div>`).join('')}
+    </div>`;
+
+    body.innerHTML=`${wxHtml}<div class="slbl">Fänge</div><div class="card" style="padding:0 16px;">${catchesHtml}</div>${actionsHtml}`;
+
+    // Fotos asynchron nachladen
+    daySess.forEach(s=>{
+      const safeId=String(s.id).replace(/[^a-z0-9]/gi,'_');
+      s.catches.forEach(async(c,i)=>{
+        if(!c.photoKey)return;
+        const ph=await getPhoto(c.photoKey);if(!ph)return;
+        const el=body.querySelector(`.dd-photo-${safeId}-${i}`);
+        if(el)el.innerHTML=`<img src="${ph}" alt="Foto">`;
+      });
+    });
+  };
+
+  // ── Wetter-Kacheln: erst ohne Wetterdaten zeigen ──
+  const _buildWxHtml=(sess)=>{
+    if(!sess)return'';
+    return`<div class="slbl">Bedingungen</div>
+    <div class="dd-wx-grid">
+      ${sess.temp!=null?`<div class="dd-wx-tile"><div class="dd-wx-ico">🌡️</div><div class="dd-wx-val">${sess.temp}°C</div><div class="dd-wx-lbl">Temp.</div></div>`:''}
+      ${sess.pressure?`<div class="dd-wx-tile"><div class="dd-wx-ico">🔵</div><div class="dd-wx-val">${Math.round(sess.pressure)}</div><div class="dd-wx-lbl">hPa</div></div>`:''}
+      ${sess.windSpeed!=null?`<div class="dd-wx-tile"><div class="dd-wx-ico">💨</div><div class="dd-wx-val">${sess.windSpeed}<small style="font-size:10px;"> km/h</small></div><div class="dd-wx-lbl">Wind ${_windDir(sess.windDir)}</div></div>`:''}
+      ${sess.humidity!=null?`<div class="dd-wx-tile"><div class="dd-wx-ico">💧</div><div class="dd-wx-val">${sess.humidity}%</div><div class="dd-wx-lbl">Luftf.</div></div>`:''}
+      ${sess.clouds!=null?`<div class="dd-wx-tile"><div class="dd-wx-ico">☁️</div><div class="dd-wx-val">${sess.clouds}%</div><div class="dd-wx-lbl">Bewölk.</div></div>`:''}
+      ${sess.moonIcon?`<div class="dd-wx-tile"><div class="dd-wx-ico">${sess.moonIcon}</div><div class="dd-wx-val" style="font-size:12px;">${sess.moonIllum||''}%</div><div class="dd-wx-lbl">${sess.moonName||'Mond'}</div></div>`:''}
+    </div>`;
+  };
+
+  // Wetter sofort aus vorhandenen Daten anzeigen
+  const wxSessNow=daySess.find(s=>s.pressure||s.temp!=null||s.windSpeed!=null);
+  _buildBody(_buildWxHtml(wxSessNow));
+
+  // PLZ-Fallback: Wenn kein Wetter vorhanden und PLZ konfiguriert, Button anbieten
+  if(!wxSessNow){
+    const noWxHint=document.createElement('div');
+    noWxHint.style.cssText='padding:10px 0 6px;';
+    noWxHint.innerHTML=profile?.plz
+      ?`<button onclick="reloadWeatherForDay('${dateKey}')" style="width:100%;padding:11px;background:var(--blue);color:var(--blue-t);border:1.5px solid rgba(12,68,124,.2);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;">🌡️ Wetter via PLZ ${profile.plz} nachladen</button>`
+      :`<div style="font-size:12px;color:var(--text-light);padding:6px 0;">Keine Wetterdaten – PLZ im Profil hinterlegen für automatisches Nachladen.</div>`;
+    body.insertBefore(noWxHint,body.firstChild);
+  }
+}
+
+// Wetter für einen Tag nachziehen und Overlay aktualisieren
+async function reloadWeatherForDay(dateKey){
+  const daySess=sessions.filter(s=>String(s.date)===String(dateKey));
+  if(!daySess.length)return;
+  showToast('🌡️','Lade Wetterdaten…');
+  await fetchMissingWeather(daySess);
+  openDayDetail(dateKey); // Overlay neu aufbauen
+}
+
+function closeDayDetail(){
+  closeFs('day-detail');
+  // Scroll-Position wird in rndrFangbuch() beim nächsten Render wiederhergestellt
+}
+
+// Löschen aus dem Day-Detail-Overlay heraus
+async function delSessFromDetail(id,dateKey){
+  const ok=await showConf('🗑️','Session löschen','Wirklich löschen?\nKann nicht rückgängig gemacht werden.','Ja, löschen','danger');
+  if(!ok)return;
+  sessions=sessions.filter(s=>String(s.id)!==String(id));
+  await idbD('sessions',String(id));
+  showToast('🗑️','Session gelöscht');
+  const remaining=sessions.filter(s=>String(s.date)===String(dateKey));
+  if(remaining.length){openDayDetail(dateKey);}
+  else{closeDayDetail();rndrFangbuch();}
+}
+
+// ═══════════════════════════════════════════════════════════
+// WETTER NACHZIEHEN – AP2: fehlende Wetterdaten via PLZ laden
+// ═══════════════════════════════════════════════════════════
+async function fetchMissingWeather(sessList){
+  // Nur Sessions ohne Wetterdaten und mit bekanntem Datum
+  const missing=sessList.filter(s=>!s.pressure&&!s.windSpeed&&s.date);
+  if(!missing.length)return;
+
+  // PLZ-Koordinaten müssen vorhanden sein
+  if(!_plzCoords){
+    if(profile?.plz)await resolvePlzCoords(profile.plz);
+    if(!_plzCoords)return; // Offline oder PLZ nicht auflösbar
+  }
+
+  for(const sess of missing){
+    try{
+      // Open-Meteo: historische Daten via „past_days" oder Datum-Range
+      const date=sess.date;
+      const url=`https://api.open-meteo.com/v1/forecast?latitude=${_plzCoords.lat}&longitude=${_plzCoords.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation&start_date=${date}&end_date=${date}&timezone=auto`;
+      const r=await fetch(url);if(!r.ok)continue;
+      const data=await r.json();
+      const h=data.hourly;
+      if(!h||!h.time?.length)continue;
+
+      // Mittelwerte über den gesamten Tag berechnen
+      const avg=arr=>arr?.filter(v=>v!=null).reduce((a,b)=>a+b,0)/(arr?.filter(v=>v!=null).length||1);
+      sess.pressure=Math.round(avg(h.surface_pressure));
+      sess.temp=Math.round(avg(h.temperature_2m));
+      sess.windSpeed=Math.round(avg(h.windspeed_10m));
+      sess.windDir=Math.round(avg(h.winddirection_10m));
+      sess.humidity=Math.round(avg(h.relativehumidity_2m));
+      sess.clouds=Math.round(avg(h.cloudcover));
+      sess.precip=parseFloat((h.precipitation?.reduce((a,b)=>a+(b||0),0)||0).toFixed(1));
+
+      // Persistent speichern
+      await idbP('sessions',String(sess.id),sess);
+    }catch(e){/* Einzelfehler ignorieren */}
+  }
+}
+
+// Windrichtung in Buchstaben umrechnen
+function _windDir(deg){
+  if(deg==null)return'';
+  const dirs=['N','NO','O','SO','S','SW','W','NW'];
+  return dirs[Math.round(deg/45)%8];
+}
+
+// ═══════════════════════════════════════════════════════════
+// DETAIL – BugFix: fully synchronous, photos async after
+// ═══════════════════════════════════════════════════════════
+function showDetail(id){
+  const s=sessions.find(x=>x.id===id);if(!s)return;
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('page-detail').classList.add('on');
+  const dur=calcDur(s.start,s.end);
+  const lens=s.catches.map(c=>c.length);
+  const maxL=lens.length?Math.max(...lens):0;
+  const avgL=lens.length?(lens.reduce((a,b)=>a+b,0)/lens.length).toFixed(1):'–';
+  document.getElementById('detail-hdr').innerHTML=`
+    <div class="dhdr">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <button class="bback" onclick="showPage('fangbuch')">‹ Zurück</button>
+        <button class="bico" style="color:rgba(255,255,255,.7);" onclick="editSess('${s.id}')" aria-label="Bearbeiten">✏️</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+        <span style="font-size:28px;">${s.moonIcon||'🌕'}</span>
+        <div><div class="dtitle">${fmtDate(s.date)}</div><div class="dmeta">${s.moonName||''} · ${s.moonIllum!==undefined?s.moonIllum+'% bel.':''}</div></div>
+      </div>
+      <div class="dmeta">${s.water} · ${s.weather}${s.temp!=null?' · '+s.temp+'°C':''}${s.pressure?` · ${Math.round(s.pressure)}hPa`:''}${s.lat?' · 📍':''}</div>
+      <div class="dmeta">${s.start}–${s.end||'?'} Uhr · ${dur}${s.clarity?` · ${s.clarity}`:''}</div>
+      ${s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:12px;font-weight:600;">💡 Automatisch als Schneider erkannt</div>`:''}
+      ${s.skunked&&!s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:14px;font-weight:600;">🪝 Schneider</div>`:!s.skunked?`<div class="sg3"><div class="sm"><div class="sv">${s.catches.length}</div><div class="sl">Fänge</div></div><div class="sm"><div class="sv">${avgL}cm</div><div class="sl">Ø Länge</div></div><div class="sm"><div class="sv">${maxL}cm</div><div class="sl">Rekord</div></div></div>`:''}
+    </div>`;
+  const body=document.getElementById('detail-body');
+  if(s.skunked||!s.catches.length){body.innerHTML=`<div class="empty"><div class="empty-ico">🪝</div><div class="empty-t">Kein Fang</div></div><div style="padding:0 2px;display:flex;flex-direction:column;gap:10px;"><button class="btn" onclick="editSess('${s.id}')">✏️ Bearbeiten</button><button class="btn danger" onclick="delSess('${s.id}')">Löschen</button></div>`;return;}
+  const sorted=[...s.catches].sort((a,b)=>b.length-a.length);
+  // v8 BUGFIX: pure synchronous HTML – no await in template, photos loaded after
+  body.innerHTML=`<div class="slbl">Fänge</div><div class="card">
+    ${sorted.map((c,i)=>{const mm=chkMM(c.type,c.length);return`<div class="fr">
+      <div class="fa2 fa2-${i}" style="${i===0?'background:var(--gold-l);':''}">${i===0?'🏆':fIco(c.type)}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="fn">${c.type}</div>
+        <div class="fme">${c.time} Uhr${i===0?' · 🏆':''}</div>
+        ${c.bait?`<div class="fme" style="color:var(--green-mid);">🪝 ${c.bait}${c.baitNote?' – '+c.baitNote:''}</div>`:''}
+        <span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>
+        ${mm&&!mm.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ unter ${mm.mm}cm</span>`:''}
+      </div>
+      <div class="frt"><div class="flv">${c.length}</div><div class="flu">cm</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score}</div></div>
+    </div>`;}).join('')}
+  </div>
+  <div style="display:flex;gap:10px;margin-top:4px;">
+    <button class="btn" onclick="editSess('${s.id}')" style="flex:1;">✏️ Bearbeiten</button>
+    <button class="btn danger" onclick="delSess('${s.id}')" style="flex:1;">Löschen</button>
+  </div>`;
+  // Load photos async AFTER DOM rendered
+  sorted.forEach(async(c,i)=>{
+    if(!c.photoKey)return;
+    const ph=await getPhoto(c.photoKey);if(!ph)return;
+    const av=body.querySelector('.fa2-'+i);
+    if(av)av.innerHTML=`<img src="${ph}" alt="Fangfoto" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">`;
+  });
+}
+async function delSess(id){const ok=await showConf('🗑️','Session löschen','Wirklich löschen?\nKann nicht rückgängig gemacht werden.','Ja, löschen','danger');if(!ok)return;sessions=sessions.filter(s=>String(s.id)!==String(id));await idbD('sessions',String(id));showToast('🗑️','Session gelöscht');showPage('fangbuch');}
+async function editSess(id){
+  // ID-sicherer Lookup (importierte Sessions können String-IDs haben)
+  const numId=typeof id==='string'?Number(id):id;
+  const s=sessions.find(x=>x.id===numId||String(x.id)===String(id));
+  if(!s)return;
+
+  // Overlay schließen bevor wir navigieren
+  closeDayDetail();
+  closeFs('info');
+
+  // Zur Neu-Seite navigieren – nutzt showPage um Bottom-Tabs korrekt zu setzen
+  // page-new existiert im DOM aber hat keinen btab-Eintrag, daher direkt:
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('page-new')?.classList.add('on');
+  // Bottom-Tabs: alle deaktivieren (kein Tab ist für "Neu" zuständig)
+  document.querySelectorAll('.btab').forEach(b=>{b.classList.remove('on');b.setAttribute('aria-selected','false');});
+
+  // Felder befüllen
+  const fv=v=>document.getElementById(v);
+  if(fv('s-date'))fv('s-date').value=s.date||'';
+  if(fv('s-start'))fv('s-start').value=s.start||'';
+  if(fv('s-end'))fv('s-end').value=s.end||'';
+  if(fv('s-water'))fv('s-water').value=s.water||'';
+  if(fv('s-temp'))fv('s-temp').value=s.temp!=null?s.temp:'';
+  if(fv('s-clarity'))fv('s-clarity').value=s.clarity||'';
+  // Wetter-Select
+  if(fv('s-wx')&&s.weather){
+    const opt=[...fv('s-wx').options].find(o=>o.value===s.weather||o.text===s.weather);
+    if(opt)fv('s-wx').value=opt.value;
+  }
+
+  updMoon();
+  setSuc(s.skunked?'sk':'catch');
+  if(fv('catches-con'))fv('catches-con').innerHTML='';
+  catchCount=0;
+
+  if(!s.skunked&&s.catches?.length){
+    for(const c of s.catches){
+      addCatch();
+      const cid=catchCount;
+      const g=k=>document.getElementById(k+'-'+cid);
+      if(g('ft'))g('ft').value=c.type||'';
+      if(g('fl'))g('fl').value=c.length||'';
+      if(g('ftime'))g('ftime').value=c.time||'';
+      if(g('ftak')){g('ftak').checked=!!c.taken;updCR(cid);}
+      if(g('fb'))g('fb').value=c.bait||'';
+      if(g('fn'))g('fn').value=c.baitNote||'';
+      if(c.photoKey){
+        const ph=await getPhoto(c.photoKey);
+        if(ph){
+          const pr=document.getElementById('pp-'+cid);
+          const ab=document.getElementById('pa-'+cid);
+          if(pr){pr.src=ph;pr.style.display='block';}
+          if(ab)ab.style.display='none';
+          window._pm=window._pm||{};
+          window._pm[cid]=c.photoKey;
+        }
+      }
+    }
+  }
+
+  // Session aus Array + IDB entfernen (wird beim Speichern neu angelegt)
+  sessions=sessions.filter(x=>String(x.id)!==String(id));
+  await idbD('sessions',String(id));
+  showToast('✏️','Session geladen – Änderungen speichern');
+}
+
+// ═══════════════════════════════════════════════════════════
+// STATISTIK – Dashboard v11: Saison-Toggle, saubere Kacheln
+// ═══════════════════════════════════════════════════════════
+let _statSeason='year'; // 'year' | 'all'
+function setSeason(s){_statSeason=s;rndrStats();}
+
+function rndrStats(){
+  const el=document.getElementById('stats-con');
+  const curYear=new Date().getFullYear();
+
+  // Gefilterte Sessions je nach Saison-Toggle
+  const filtered=_statSeason==='year'
+    ?sessions.filter(s=>s.date&&s.date.startsWith(String(curYear)))
+    :sessions;
+
+  if(!sessions.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ico">📊</div><div class="empty-t">Noch keine Daten</div><div class="empty-s">Erfasse Sessionen um Statistiken zu sehen.</div></div>`;
+    return;
+  }
+
+  const total=filtered.length;
+  const suSess=filtered.filter(s=>!s.skunked);
+  const skSess=filtered.filter(s=>s.skunked);
+  const autoSk=filtered.filter(s=>s.autoSkunked).length;
+  const rate=total?Math.round(suSess.length/total*100):0;
+  const allC=filtered.flatMap(s=>s.catches);
+  const maxC=allC.length?allC.reduce((a,b)=>b.length>a.length?b:a):null;
+  const hrs=filtered.reduce((s,x)=>s+calcHrs(x.start,x.end),0);
+  const tkN=allC.filter(c=>c.taken).length;
+  const freq={};allC.forEach(c=>{if(c.type)freq[c.type]=(freq[c.type]||0)+1;});
+  const topF=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const scored=allC.map(c=>({...c,fS:fScore(c.type,c.length)})).sort((a,b)=>b.fS-a.fS).slice(0,3);
+  const medals=['🥇','🥈','🥉'];
+  const pCorr=buildPressCorr(filtered);
+  const windCorr=buildWindCorr(filtered);
+
+  // Saison-Toggle Buttons HTML
+  const seasonToggle=`<div style="display:flex;gap:6px;">
+    <button onclick="setSeason('year')" class="chip cf${_statSeason==='year'?' on':''}" style="font-size:11px;padding:5px 12px;">Saison ${curYear}</button>
+    <button onclick="setSeason('all')" class="chip cf${_statSeason==='all'?' on':''}" style="font-size:11px;padding:5px 12px;">Gesamt</button>
+  </div>`;
+
+  el.innerHTML=`
+    <!-- Headline + Toggle -->
+    <div class="st-headline">
+      <div>
+        <div class="st-headline-title">${_statSeason==='year'?'Saison '+curYear:'Gesamt'}</div>
+        <div class="st-headline-sub">${total} Session${total!==1?'s':''} · ${allC.length} Fänge</div>
+      </div>
+      ${seasonToggle}
+    </div>
+
+    <!-- 4 KPI-Kacheln -->
+    <div class="st-grid">
+      <div class="st-tile dark no-click" onclick="openFsCatches()">
+        <div class="st-tile-ico">🐟</div>
+        <div class="st-tile-val">${allC.length}</div>
+        <div class="st-tile-lbl">Fänge gesamt</div>
+        <div class="st-tile-hint">→ Details</div>
+      </div>
+      <div class="st-tile no-click">
+        <div class="st-tile-ico">🪣</div>
+        <div class="st-tile-val" style="color:var(--gold);">${tkN}</div>
+        <div class="st-tile-lbl">Entnommene Fische</div>
+      </div>
+      <div class="st-tile no-click" onclick="openFsHours()">
+        <div class="st-tile-ico">⏱️</div>
+        <div class="st-tile-val">${Math.round(hrs)}<span style="font-size:16px;font-weight:500;">h</span></div>
+        <div class="st-tile-lbl">Angelstunden</div>
+        <div class="st-tile-hint">→ Details</div>
+      </div>
+      <div class="st-tile no-click" onclick="openFsSessions()">
+        <div class="st-tile-ico">📅</div>
+        <div class="st-tile-val">${total}</div>
+        <div class="st-tile-lbl">Sessions</div>
+        <div class="st-tile-hint">→ Alle ansehen</div>
+      </div>
+    </div>
+
+    <!-- Erfolgsquote -->
+    <div class="st-tile span2 no-click" style="margin-bottom:14px;">
+      <div class="st-rate-row">
+        <div>
+          <div class="st-tile-lbl">Erfolgsquote</div>
+          <div class="st-rate-num">${rate}%</div>
+          <div class="st-rate-sub">✅ ${suSess.length} Fangtage &nbsp;·&nbsp; 🪝 ${skSess.length} Schneider${autoSk>0?` · ${autoSk}× auto`:''}</div>
+        </div>
+        <div style="font-size:44px;">${rate>=70?'🎯':rate>=40?'🎣':'🪝'}</div>
+      </div>
+      <div class="st-pbar" role="progressbar" aria-valuenow="${rate}" aria-valuemin="0" aria-valuemax="100" style="margin-top:12px;">
+        <div class="st-pbar-fill" style="width:${rate}%"></div>
+      </div>
+    </div>
+
+    <!-- Größter Fang (prominent) -->
+    ${maxC?`<div class="st-rekord" style="margin-bottom:14px;">
+      <div class="st-rekord-ico">🏆</div>
+      <div>
+        <div class="st-rekord-lbl">Persönlicher Rekord</div>
+        <div class="st-rekord-fish">${maxC.type}</div>
+        <div class="st-rekord-len">${maxC.length} cm</div>
+      </div>
+    </div>`:''}
+
+    <!-- Fair-Ranking -->
+    ${scored.length?`
+    <div class="slbl">🏅 Fair-Ranking <span style="font-size:9px;color:var(--text-light);font-weight:400;text-transform:none;letter-spacing:0;">${Object.entries(FMULT).map(([k,v])=>`${k}×${v}`).join(' · ')}</span></div>
+    <div class="mcard" style="margin-bottom:14px;">
+      ${scored.map((c,i)=>{const sd=filtered.find(s=>s.catches.some(x=>x.type===c.type&&x.length===c.length&&x.time===c.time));return`<div class="mrow"><div class="mi">${medals[i]}</div><div class="minfo"><div class="mn">${c.type} · ${c.length}cm</div><div class="md">${sd?fmtDate(sd.date)+' · '+sd.water:''}</div></div><div class="msc"><div class="msv">${c.fS}</div><div class="msl">Punkte</div></div></div>`;}).join('')}
+    </div>`:''}
+
+    <!-- Fischarten (umbenannt, anklickbar → Overlay) -->
+    ${topF.length?`
+    <div class="slbl">Fischarten <span style="font-size:9px;color:var(--text-light);font-weight:400;text-transform:none;letter-spacing:0;">→ tippen für Details</span></div>
+    <div class="card" style="margin-bottom:14px;">
+      ${topF.map(([fish,count],i)=>`<div class="st-fish-row" onclick="openFsFish('${fish.replace(/'/g,"\\'")}')">
+        <div class="st-fish-ico">${fIco(fish)}</div>
+        <div class="st-fish-name">${fish}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+          <div class="st-fish-bar" style="width:${Math.round(count/topF[0][1]*64)}px;"></div>
+          <div class="st-fish-cnt">${count}×</div>
+          <div style="font-size:13px;color:var(--text-light);">›</div>
+        </div>
+      </div>`).join('')}
+    </div>`:''}
+
+    <!-- Fischart-Donut (anklickbar → Overlay) -->
+    ${topF.length?`
+    <div class="slbl" style="cursor:pointer;" onclick="openFsCatches()">Fischverteilung <span style="font-size:9px;font-weight:400;color:var(--text-light);">→ Details</span></div>
+    <div class="st-chart-card" style="margin-bottom:14px;"><canvas id="chart-species" height="170"></canvas></div>`:''}
+
+    <!-- Wetter-Analyse (anklickbar → Deep-Dive Overlay) -->
+    ${(pCorr.length||windCorr.length)?`
+    <div class="slbl" style="cursor:pointer;" onclick="openFsWxCorr()">🌡 Wetter-Analyse <span style="font-size:9px;font-weight:400;color:var(--blue-t);">→ Deep-Dive</span></div>
+    <div class="card" style="margin-bottom:14px;cursor:pointer;" onclick="openFsWxCorr()">
+      <div style="font-size:13px;font-weight:600;color:var(--text-dark);margin-bottom:8px;">Luftdruck · Wind · Korrelation</div>
+      ${pCorr.slice(0,3).map(r=>`<div class="st-wx-row">
+        <div class="st-wx-lbl">${r.label}</div>
+        <div class="st-wx-bar-bg"><div class="st-wx-bar-fill" style="width:${r.pct}%;background:${r.pct>60?'var(--green-mid)':r.pct>30?'var(--gold)':'var(--red)'}"></div></div>
+        <div class="st-wx-cnt">${r.count}×</div>
+      </div>`).join('')}
+      <div style="font-size:11px;color:var(--text-light);margin-top:8px;text-align:right;">Tippen für vollständige Analyse →</div>
+    </div>`:''}
+
+    <div style="height:8px;"></div>`;
+
+  requestAnimationFrame(()=>rndrChartsSeason(filtered,allC,freq));
+}
+
+// Charts nur noch Donut + optional Bar in Overlays
+let _charts={};
+function rndrChartsSeason(filtered,allC,freq){
+  if(typeof Chart==='undefined')return;
+  Object.values(_charts).forEach(c=>{try{c.destroy()}catch(e){}});_charts={};
+  const c2=document.getElementById('chart-species');
+  if(c2&&Object.keys(freq).length){
+    const top=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    _charts.s=new Chart(c2,{type:'doughnut',data:{labels:top.map(e=>e[0]),datasets:[{data:top.map(e=>e[1]),backgroundColor:['#2D4A35','#4A7C59','#7BAE8A','#C4963A','#B45A46','#C8DDD0'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,cutout:'62%',plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12,padding:8,color:'#4A5C4F'}}}}});
+  }
+}
+
+// buildPressCorr + buildWindCorr mit gefiltertem Array
+function buildPressCorr(src){
+  const s=src||sessions;
+  const allC=s.flatMap(x=>x.catches.map(c=>({...c,pressure:x.pressure})));
+  const hp=allC.filter(c=>c.pressure);if(!hp.length)return[];
+  const b={};hp.forEach(c=>{const bk=Math.floor(c.pressure/5)*5;const k=`${bk}–${bk+4}hPa`;b[k]=(b[k]||0)+1;});
+  const sorted=Object.entries(b).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const mx=sorted[0]?.[1]||1;
+  return sorted.map(([label,count])=>({label,count,pct:Math.round(count/mx*100)}));
+}
+function buildWindCorr(src){
+  const s=src||sessions;
+  const allC=s.flatMap(x=>x.catches.map(c=>({...c,windSpeed:x.windSpeed})));
+  const hw=allC.filter(c=>c.windSpeed!=null);if(!hw.length)return[];
+  const b={};
+  hw.forEach(c=>{const w=c.windSpeed;const k=w<10?'< 10 km/h':w<20?'10–20 km/h':w<30?'20–30 km/h':'> 30 km/h';b[k]=(b[k]||0)+1;});
+  const order=['< 10 km/h','10–20 km/h','20–30 km/h','> 30 km/h'];
+  const sorted=order.filter(k=>b[k]).map(k=>([k,b[k]]));
+  const mx=Math.max(...sorted.map(e=>e[1]),1);
+  return sorted.map(([label,count])=>({label,count,pct:Math.round(count/mx*100)}));
+}
+
+function openFsWxCorr(){
+  const filtered=_statSeason==='year'
+    ?sessions.filter(s=>s.date&&s.date.startsWith(String(new Date().getFullYear())))
+    :sessions;
+  const pCorr=buildPressCorr(filtered);
+  const windCorr=buildWindCorr(filtered);
+  const totalC=filtered.flatMap(s=>s.catches).length;
+  document.getElementById('fs-wx-corr-meta').textContent=`${totalC} Fänge analysiert`;
+  const corrRow=(r)=>`<div class="corr-row">
+    <div class="corr-lbl">${r.label}</div>
+    <div class="corr-bar"><div class="corr-fill" style="width:${r.pct}%;background:${r.pct>60?'var(--green-mid)':r.pct>30?'var(--gold)':'var(--red)'}"></div></div>
+    <div class="corr-val">${r.count}×</div>
+  </div>`;
+  document.getElementById('fs-wx-corr-body').innerHTML=`
+    ${pCorr.length?`<div class="slbl">Luftdruck-Korrelation</div>
+    <div class="card" style="padding:14px 16px;">${pCorr.map(corrRow).join('')}</div>`:''}
+    ${windCorr.length?`<div class="slbl">Windstärke-Korrelation</div>
+    <div class="card" style="padding:14px 16px;">${windCorr.map(corrRow).join('')}</div>`:''}
+    <div class="card" style="font-size:12px;color:var(--text-mid);line-height:1.7;margin-top:4px;">
+      <strong>Interpretation:</strong> Grün = diese Bedingungen führten oft zu Fängen. Rot = selten erfolgreich. Mehr Sessions = genauere Korrelation.
+    </div>`;
+  openFs('fs-wx-corr');
+}
+
+
+// Druck-Korrelation (unverändert)
+function buildPressCorr(){
+  const allC=sessions.flatMap(s=>s.catches.map(c=>({...c,pressure:s.pressure})));
+  const hp=allC.filter(c=>c.pressure);if(!hp.length)return[];
+  const b={};hp.forEach(c=>{const bk=Math.floor(c.pressure/5)*5;const k=`${bk}–${bk+4}hPa`;b[k]=(b[k]||0)+1;});
+  const sorted=Object.entries(b).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const mx=sorted[0]?.[1]||1;
+  return sorted.map(([label,count])=>({label,count,pct:Math.round(count/mx*100)}));
+}
+
+// Wind-Korrelation (neu)
+function buildWindCorr(){
+  const allC=sessions.flatMap(s=>s.catches.map(c=>({...c,windSpeed:s.windSpeed})));
+  const hw=allC.filter(c=>c.windSpeed!=null);if(!hw.length)return[];
+  const b={};
+  hw.forEach(c=>{
+    const w=c.windSpeed;
+    const k=w<10?'< 10 km/h':w<20?'10–20 km/h':w<30?'20–30 km/h':'> 30 km/h';
+    b[k]=(b[k]||0)+1;
+  });
+  const order=['< 10 km/h','10–20 km/h','20–30 km/h','> 30 km/h'];
+  const sorted=order.filter(k=>b[k]).map(k=>([k,b[k]]));
+  const mx=Math.max(...sorted.map(e=>e[1]),1);
+  return sorted.map(([label,count])=>({label,count,pct:Math.round(count/mx*100)}));
+}
+
+// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// FULLSCREEN STATS DETAIL VIEWS
+// ═══════════════════════════════════════════════════════════
+function openFsCatches(){
+  openFs('catches');
+  const allF=[...new Set(sessions.flatMap(s=>s.catches.map(c=>c.type)))];
+  document.getElementById('fs-catches-filter').innerHTML=`<button class="chip cf on" onclick="setFcFilter('')">Alle</button>`+allF.map(f=>`<button class="chip cf" onclick="setFcFilter('${f}')">${fIco(f)} ${f}</button>`).join('');
+  rndrFsCatches();
+}
+function setFcFilter(f){_fcFilter=f;document.querySelectorAll('#fs-catches-filter .chip').forEach(b=>{b.classList.toggle('on',b.textContent.includes(f)||(!f&&b.textContent==='Alle'));});rndrFsCatches();}
+function setFcSort(k){_fcCatchSort=k;['new','big','az'].forEach(x=>document.getElementById('fcs-'+x)?.classList.toggle('on',x===k));rndrFsCatches();}
+function rndrFsCatches(){
+  let allC=sessions.flatMap(s=>s.catches.map(c=>({...c,date:s.date,water:s.water})));
+  if(_fcFilter)allC=allC.filter(c=>c.type===_fcFilter);
+  if(_fcCatchSort==='new')allC.sort((a,b)=>b.date.localeCompare(a.date));
+  else if(_fcCatchSort==='big')allC.sort((a,b)=>b.length-a.length);
+  else allC.sort((a,b)=>a.type.localeCompare(b.type,'de'));
+  document.getElementById('fs-catches-meta').textContent=`${allC.length} Fänge${_fcFilter?' · '+_fcFilter:''}`;
+  const el=document.getElementById('fs-catches-list');
+  if(!allC.length){el.innerHTML='<div style="padding:30px;text-align:center;color:var(--text-light);">Keine Fänge</div>';return;}
+  el.innerHTML=allC.slice(0,60).map(c=>`<div class="fr"><div class="fa2">${fIco(c.type)}</div><div style="flex:1;min-width:0;"><div class="fn">${c.type}</div><div class="fme">${fmtDate(c.date)} · ${c.water}</div><span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span></div><div class="frt"><div class="flv">${c.length}</div><div class="flu">cm</div></div></div>`).join('');
+  if(allC.length>60)el.innerHTML+=`<div style="padding:10px 0;text-align:center;font-size:12px;color:var(--text-light);">+${allC.length-60} weitere</div>`;
+}
+
+function openFsSessions(){openFs('sessions');setFsSort('new');}
+function setFsSort(k){_fsSessSort=k;['new','most','long','sk'].forEach(x=>document.getElementById('fss-'+x)?.classList.toggle('on',x===k));rndrFsSessions();}
+function rndrFsSessions(){
+  let s=[...sessions];
+  if(_fsSessSort==='new')s.sort((a,b)=>b.date.localeCompare(a.date));
+  else if(_fsSessSort==='most')s.sort((a,b)=>b.catches.length-a.catches.length);
+  else if(_fsSessSort==='long')s.sort((a,b)=>calcHrs(b.start,b.end)-calcHrs(a.start,a.end));
+  else s=s.filter(x=>x.skunked);
+  document.getElementById('fs-sessions-meta').textContent=`${s.length} Sessions`;
+  document.getElementById('fs-sessions-list').innerHTML=s.map(x=>`<div class="scard" style="margin-bottom:10px;" onclick="showDetail(${x.id});closeFs('sessions')" role="button" tabindex="0"><div class="smoon">${x.moonIcon||'🌕'}</div><div class="sinfo"><div class="sdate">${fmtDate(x.date)}</div><div class="swat">${x.water} · ${calcDur(x.start,x.end)}</div><div class="sbadge">${x.skunked?`<span class="badge bgr">🪝 Schneider</span>`:`<span class="badge bg">🐟 ${x.catches.length}</span>`}</div></div><div style="font-size:18px;color:var(--text-light);">›</div></div>`).join('');
+}
+
+function openFsHours(){
+  openFs('hours');
+  const hrs=sessions.reduce((s,x)=>s+calcHrs(x.start,x.end),0);
+  document.getElementById('fs-hours-meta').textContent=`${Math.round(hrs)}h gesamt`;
+  // Group by month
+  const byMonth={};sessions.forEach(s=>{if(!s.start||!s.end)return;const m=s.date.substring(0,7);byMonth[m]=(byMonth[m]||0)+calcHrs(s.start,s.end);});
+  const byWater={};sessions.forEach(s=>{if(!s.start||!s.end)return;byWater[s.water]=(byWater[s.water]||0)+calcHrs(s.start,s.end);});
+  const topW=Object.entries(byWater).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxW=topW[0]?.[1]||1;
+  document.getElementById('fs-hours-content').innerHTML=`
+    <div class="cwrap"><div class="ctitle">Stunden pro Monat</div><canvas id="hrchart" height="200"></canvas></div>
+    <div class="slbl" style="margin-top:8px;">Top Gewässer nach Stunden</div>
+    <div class="card">
+      ${topW.map(([w,h])=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(200,221,208,.3);">
+        <div style="font-size:13px;font-weight:600;flex:1;">${w}</div>
+        <div style="background:var(--green-pale);height:8px;border-radius:4px;width:${Math.round(h/maxW*80)}px;min-width:8px;"></div>
+        <div style="font-weight:700;font-size:13px;color:var(--green-deep);min-width:40px;text-align:right;">${h.toFixed(1)}h</div>
+      </div>`).join('')}
+    </div>`;
+  requestAnimationFrame(()=>{
+    const c=document.getElementById('hrchart');if(!c||typeof Chart==='undefined')return;
+    const mLabels=Object.keys(byMonth).sort().slice(-10);
+    new Chart(c,{type:'bar',data:{labels:mLabels.map(m=>{const[y,mo]=m.split('-');return ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'][parseInt(mo)-1]+' '+y.slice(2);}),datasets:[{data:mLabels.map(m=>(byMonth[m]||0).toFixed(1)),backgroundColor:'#4A7C59',borderRadius:4,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9},color:'#8A9A8F'},grid:{display:false}},y:{ticks:{font:{size:10},color:'#8A9A8F'},grid:{color:'rgba(0,0,0,0.05)'}}}}});
+  });
+}
+
+function openFsFish(fish){
+  openFs('fish');
+  document.getElementById('fs-fish-title').textContent=fish;
+  const rows=[];sessions.forEach(s=>{s.catches.filter(c=>c.type===fish).forEach(c=>rows.push({...c,date:s.date,water:s.water}));});
+  rows.sort((a,b)=>b.length-a.length);
+  const maxL=rows.length?rows[0].length:0;
+  const avgL=rows.length?(rows.reduce((s,c)=>s+c.length,0)/rows.length).toFixed(1):'–';
+  const mm=MMM[fish];
+  document.getElementById('fs-fish-meta').textContent=`${rows.length} Fänge · ×${FMULT[fish]||'1.0'}${mm?' · MM:'+mm+'cm':''}`;
+  // Simplified size classes: "50er", "60er" etc
+  const sclasses={};rows.forEach(c=>{const cls=Math.floor(c.length/10)*10;const k=cls+'er';sclasses[k]=(sclasses[k]||0)+1;});
+  const maxSC=Math.max(...Object.values(sclasses),1);
+  const scHTML=Object.entries(sclasses).sort((a,b)=>parseInt(b[0])-parseInt(a[0])).map(([lbl,cnt])=>`<div class="scrow"><div class="sclbl">${lbl}</div><div class="scbar"><div class="scfill" style="width:${Math.round(cnt/maxSC*100)}%"></div></div><div class="sccnt">${cnt}×</div></div>`).join('');
+  document.getElementById('fs-fish-content').innerHTML=`
+    ${scHTML?`<div class="slbl">Größenklassen</div><div class="card" style="padding:14px 18px;">${scHTML}</div>`:''}
+    <div class="slbl">Alle ${fish}-Fänge</div>
+    <div class="card">
+      ${rows.map((c,i)=>{const m2=chkMM(fish,c.length);return`<div class="fr"><div class="fa2" style="${i===0?'background:var(--gold-l);':''}">${i===0?'🏆':fIco(fish)}</div><div style="flex:1;"><div class="fn">${fmtDate(c.date)}</div><div class="fme">${c.water} · ${c.time} Uhr</div>${c.bait?`<div class="fme" style="color:var(--green-mid);">🪝 ${c.bait}${c.baitNote?' – '+c.baitNote:''}</div>`:''}<span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>${m2&&!m2.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ unter MM</span>`:''}</div><div class="frt"><div class="flv">${c.length}</div><div class="flu">cm</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score||fScore(fish,c.length)}</div></div></div>`;}).join('')}
+    </div>`;
+}
+
+function openFsBait(bait){
+  openFs('bait');
+  document.getElementById('fs-bait-title').textContent=bait;
+  const rows=sessions.flatMap(s=>s.catches.filter(c=>c.bait===bait).map(c=>({...c,date:s.date,water:s.water})));
+  document.getElementById('fs-bait-meta').textContent=`${rows.length} Fänge mit ${bait}`;
+  // Keyword analysis from notes
+  const kwCount={};rows.forEach(c=>{if(c.baitNote)tokenize(c.baitNote).forEach(kw=>{kwCount[kw]=(kwCount[kw]||0)+1;});});
+  const topKw=Object.entries(kwCount).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const kwMax=topKw[0]?.[1]||1;
+  document.getElementById('fs-bait-content').innerHTML=`
+    ${topKw.length?`
+    <div class="slbl">Spezifikationen aus Notizen</div>
+    <div class="card" style="padding:14px 18px;">
+      ${topKw.map(([kw,cnt])=>`<div class="scrow"><div class="sclbl" style="width:70px;font-size:12px;">${kw}</div><div class="scbar"><div class="scfill" style="width:${Math.round(cnt/kwMax*100)}%"></div></div><div class="sccnt">${cnt}×</div></div>`).join('')}
+    </div>`:''}
+    <div class="slbl">Fänge mit ${bait}</div>
+    <div class="card">
+      ${rows.sort((a,b)=>b.length-a.length).map(c=>`<div class="fr"><div class="fa2">${fIco(c.type)}</div><div style="flex:1;"><div class="fn">${c.type}</div><div class="fme">${fmtDate(c.date)} · ${c.water}</div>${c.baitNote?`<div class="fme" style="color:var(--green-mid);">${c.baitNote}</div>`:''}</div><div class="frt"><div class="flv">${c.length}</div><div class="flu">cm</div></div></div>`).join('')}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// FORECAST TAB – AP4: Predictive Engine
+// PLZ-primär, anklickbare Tage, stündliches Overlay, Wind-Pfeil
+// ═══════════════════════════════════════════════════════════
+let _fcData=null;
+let _fcHourlyData=null; // stündliche Daten für Detail-Overlay
+
+// Windrichtung → Pfeil (SVG-Rotation basiert auf meteorologischer Richtung)
+function windArrow(deg){
+  if(deg==null)return'';
+  // Meteorologisch: 0°=N (kommt aus N, weht nach S) → Pfeil zeigt Richtung wohin
+  const rot=deg; // Pfeil zeigt wohin der Wind weht
+  return`<span class="wind-arrow" style="transform:rotate(${rot}deg);display:inline-block;">↑</span>`;
+}
+function windLabel(deg){
+  if(deg==null)return'';
+  const d=['N','NO','O','SO','S','SW','W','NW'];
+  return d[Math.round(deg/45)%8];
+}
+function wxIco(wc){if(wc==null)return'🌡️';if(wc<=1)return'☀️';if(wc<=3)return'⛅';if(wc<=67)return'🌧';if(wc<=77)return'🌨';return'🌫';}
+
+function rndrForecast(){
+  const el=document.getElementById('fc-con');
+  const coords=_plzCoords||gpsCoords;
+
+  if(!coords&&!_fcData){
+    el.innerHTML=`<div style="text-align:center;padding:40px 24px;">
+      <div style="font-size:48px;margin-bottom:16px;opacity:.45;">🔮</div>
+      <div style="font-size:16px;font-weight:600;color:var(--text-dark);margin-bottom:8px;">Standort wird benötigt</div>
+      <p style="font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:20px;">Hinterlege deine PLZ im Profil für automatische Vorhersagen.</p>
+      <button class="btn" onclick="rndrForecast()" style="max-width:220px;">🔄 Erneut versuchen</button>
+    </div>`;
+    if(profile?.plz)resolvePlzCoords(profile.plz).then(()=>setTimeout(rndrForecast,1000));
+    return;
+  }
+
+  if(_fcData&&_fcHourlyData){renderFcDays(_fcData);return;}
+
+  el.innerHTML='<div style="text-align:center;padding:50px;color:var(--text-light);">🔄 Lade Vorhersage…</div>';
+  const lat=coords.lat,lon=coords.lon;
+  // Parallel: Daily + Hourly (für Detail-Overlay)
+  Promise.all([
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant,precipitation_sum,surface_pressure_mean&timezone=auto&forecast_days=7`).then(r=>r.json()),
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,precipitation_probability,weathercode&timezone=auto&forecast_days=7`).then(r=>r.json())
+  ])
+  .then(([daily,hourly])=>{_fcData=daily;_fcHourlyData=hourly;renderFcDays(daily);})
+  .catch(()=>{el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">Vorhersage konnte nicht geladen werden.</div>';});
+}
+
+function renderFcDays(data){
+  const el=document.getElementById('fc-con');
+  const d=data.daily;if(!d){el.innerHTML='<div style="text-align:center;padding:40px;">Keine Daten.</div>';return;}
+  const days=d.time.map((t,i)=>({
+    date:t,wc:d.weathercode[i],
+    tmax:d.temperature_2m_max[i],tmin:d.temperature_2m_min[i],
+    wind:d.windspeed_10m_max[i],windDir:d.winddirection_10m_dominant?.[i],
+    precip:d.precipitation_sum[i],pres:d.surface_pressure_mean?.[i]
+  }));
+  const probs=days.map(day=>calcBiteProb(day));
+  const DOW7=['So','Mo','Di','Mi','Do','Fr','Sa'];
+
+  const days_html=days.map((day,i)=>{
+    const p=probs[i];
+    const dow=DOW7[new Date(day.date+'T12:00:00').getDay()];
+    const isToday=i===0;
+    // Bite-Ring SVG
+    const r=22,circ=2*Math.PI*r;
+    const pctColor=p.pct>=70?'#4A7C59':p.pct>=40?'#C4963A':'#CBD5D0';
+    const dashArr=`${(p.pct/100*circ).toFixed(1)} ${circ.toFixed(1)}`;
+    const ringHtml=`<div class="bite-ring">
+      <svg width="52" height="52" viewBox="0 0 52 52">
+        <circle cx="26" cy="26" r="${r}" fill="none" stroke="var(--cream-dark)" stroke-width="4"/>
+        <circle cx="26" cy="26" r="${r}" fill="none" stroke="${pctColor}" stroke-width="4" stroke-dasharray="${dashArr}" stroke-linecap="round"/>
+      </svg>
+      <div class="bite-ring-val" style="color:${pctColor};">${p.pct}%</div>
+    </div>`;
+
+    return`<div class="fc-day" onclick="openFcDayDetail(${i},'${day.date}')" role="button" tabindex="0" aria-label="${dow} ${day.date.slice(5)} – Beißindex ${p.pct}%">
+      <div style="display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid rgba(200,221,208,.3);">
+        <div class="fc-date">
+          <div style="font-weight:700;font-size:13px;">${isToday?'Heute':dow}</div>
+          <div style="font-size:11px;color:var(--text-light);">${day.date.slice(5).replace('-','.')}</div>
+        </div>
+        <div class="fc-ico">${wxIco(day.wc)}</div>
+        <div class="fc-info" style="flex:1;min-width:0;">
+          <div class="fc-tmp" style="font-size:13px;font-weight:500;">
+            ${Math.round(day.tmax)}° / ${Math.round(day.tmin)}°
+            · ${Math.round(day.wind)} km/h ${windArrow(day.windDir)}${windLabel(day.windDir)}
+            ${day.pres?`· ${Math.round(day.pres)}hPa`:''}
+          </div>
+          ${p.topFish.length?`<div style="font-size:11px;color:var(--green-mid);font-weight:600;margin-top:3px;">${p.topFish.slice(0,2).join(' · ')}</div>`:''}
+        </div>
+        ${ringHtml}
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML=`
+    <div class="slbl">7-Tage Vorhersage <span style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-light);">→ Tag antippen für Details</span></div>
+    <div class="card" style="padding:0 16px;">${days_html}</div>
+    <div class="card" style="font-size:12px;color:var(--text-mid);line-height:1.7;margin-top:10px;">
+      <strong>Beißindex-Berechnung</strong><br>
+      Kombiniert 7 Faktoren: Luftdruck (30%), Drucktendenz (25%), Windstärke (15%), Temperatur (15%), Mondphase (10%), Bewölkung (5%). Gewichtet durch deine ${sessions.flatMap(s=>s.catches).length} historischen Fänge.
+    </div>`;
+}
+
+// ── AP4: Stündliches Detail-Overlay ──────────────────────────
+function openFcDayDetail(dayIdx,dateStr){
+  if(!_fcHourlyData)return;
+  openFs('fc-day');
+  const h=_fcHourlyData.hourly;
+  if(!h||!h.time)return;
+
+  // Stunden dieses Tages extrahieren
+  const hoursOfDay=h.time.map((t,i)=>({
+    t,hour:parseInt(t.slice(11,13)),
+    temp:h.temperature_2m?.[i],
+    wind:h.windspeed_10m?.[i],
+    windDir:h.winddirection_10m?.[i],
+    rainProb:h.precipitation_probability?.[i],
+    wc:h.weathercode?.[i]
+  })).filter(x=>x.t.startsWith(dateStr));
+
+  if(!hoursOfDay.length){closeFs('fc-day');return;}
+
+  // Tages-Daten aus _fcData
+  const dayData=_fcData?.daily;
+  const di=dayData?.time?.indexOf(dateStr);
+  const tmax=di>=0?dayData.temperature_2m_max[di]:null;
+  const tmin=di>=0?dayData.temperature_2m_min[di]:null;
+  const windMax=di>=0?dayData.windspeed_10m_max[di]:null;
+  const windDir=di>=0?dayData.winddirection_10m_dominant?.[di]:null;
+  const pres=di>=0?dayData.surface_pressure_mean?.[di]:null;
+  const precip=di>=0?dayData.precipitation_sum[di]:null;
+  const wc=di>=0?dayData.weathercode[di]:null;
+  const bp=calcBiteProb({date:dateStr,wc,tmax,wind:windMax,windDir,pres});
+
+  const DOW7=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const dow=DOW7[new Date(dateStr+'T12:00:00').getDay()];
+  const pctColor=bp.pct>=70?'var(--green-mid)':bp.pct>=40?'var(--gold)':'var(--text-light)';
+
+  // Hero
+  document.getElementById('fc-day-hero').innerHTML=`
+    <div class="dd-hero">
+      <button class="dd-hero-back" onclick="closeFs('fc-day')">‹ Zurück</button>
+      <div class="dd-hero-meta">${dow}, ${fmtDate(dateStr)}</div>
+      <div class="dd-hero-date">${wxIco(wc)} ${tmax!=null?Math.round(tmax)+'° / '+Math.round(tmin)+'°':''}</div>
+      <div style="display:flex;align-items:center;gap:16px;margin-top:10px;">
+        <div>
+          <div style="font-size:36px;font-weight:800;color:${pctColor};line-height:1;">${bp.pct}%</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:2px;text-transform:uppercase;letter-spacing:.6px;">Beißindex</div>
+        </div>
+        <div class="dd-tiles" style="flex:1;grid-template-columns:repeat(3,1fr);">
+          ${windMax!=null?`<div class="dd-tile"><div class="dd-tile-val">${Math.round(windMax)}</div><div class="dd-tile-lbl">km/h ${windLabel(windDir)}</div></div>`:''}
+          ${pres!=null?`<div class="dd-tile"><div class="dd-tile-val">${Math.round(pres)}</div><div class="dd-tile-lbl">hPa</div></div>`:''}
+          ${precip!=null?`<div class="dd-tile"><div class="dd-tile-val">${precip.toFixed(1)}</div><div class="dd-tile-lbl">mm</div></div>`:''}
+        </div>
+      </div>
+    </div>`;
+
+  // Stundenkurve
+  const temps=hoursOfDay.map(h=>h.temp).filter(v=>v!=null);
+  const minT=temps.length?Math.min(...temps):0;
+  const maxT=temps.length?Math.max(...temps):30;
+  const tRange=maxT-minT||1;
+
+  const hourCols=hoursOfDay.filter(h=>h.hour%3===0).map(h=>{
+    const barH=Math.round(((h.temp-minT)/tRange)*60)+8;
+    const tempColor=h.temp>=20?'var(--red)':h.temp>=10?'var(--gold)':'var(--blue-t)';
+    return`<div class="fc-hcol">
+      <div class="fc-htime">${String(h.hour).padStart(2,'0')}h</div>
+      <div class="fc-hbar-bg"><div class="fc-hbar" style="height:${barH}px;background:${tempColor};"></div></div>
+      <div class="fc-htemp">${h.temp!=null?Math.round(h.temp)+'°':''}</div>
+      <div class="fc-hrain">${h.rainProb!=null?h.rainProb+'%':''}</div>
+    </div>`;
+  }).join('');
+
+  // Fisch-Insights
+  const fishInsights=bp.fishInsights||[];
+  const insightsHtml=fishInsights.length?`
+    <div class="slbl" style="margin-top:14px;">Fisch-Wahrscheinlichkeiten</div>
+    <div class="card" style="padding:4px 16px;">
+      ${fishInsights.map(fi=>`<div class="fc-insight-row">
+        <div class="fc-insight-name">${fi.fish}</div>
+        <div class="fc-insight-bar"><div class="fc-insight-fill" style="width:${fi.pct}%;background:${fi.pct>=70?'var(--green-mid)':fi.pct>=40?'var(--gold)':'#CBD5D0'};"></div></div>
+        <div class="fc-insight-pct" style="color:${fi.pct>=70?'var(--green-mid)':fi.pct>=40?'var(--gold-d)':'var(--text-light)'};">${fi.pct}%</div>
+      </div>`).join('')}
+    </div>`:'';
+
+  // Stündlicher Wind-Verlauf
+  const windRows=hoursOfDay.filter(h=>h.hour%3===0).map(h=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(200,221,208,.2);">
+      <div style="font-size:11px;font-weight:700;color:var(--text-light);width:28px;">${String(h.hour).padStart(2,'0')}h</div>
+      <div style="font-size:13px;">${wxIco(h.wc)}</div>
+      <div style="font-size:13px;font-weight:500;flex:1;">${h.wind!=null?Math.round(h.wind)+' km/h':''} ${windArrow(h.windDir)}</div>
+      <div style="font-size:12px;color:var(--blue-t);">${h.rainProb!=null?h.rainProb+'% 🌧':''}</div>
+    </div>`).join('');
+
+  document.getElementById('fc-day-body').innerHTML=`
+    <div class="slbl">Temperaturverlauf</div>
+    <div class="card" style="padding:14px 12px 8px;">
+      <div class="fc-hourly-wrap"><div class="fc-hourly-row">${hourCols}</div></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-light);margin-top:4px;padding:0 2px;">
+        <span>Min ${minT!=null?Math.round(minT)+'°':''}</span><span>Max ${maxT!=null?Math.round(maxT)+'°':''}</span>
+      </div>
+    </div>
+    ${insightsHtml}
+    <div class="slbl" style="margin-top:14px;">Wind &amp; Niederschlag</div>
+    <div class="card" style="padding:4px 16px;">${windRows}</div>`;
+}
+
+// ── AP4: Verfeinerter Beißindex-Algorithmus ───────────────────
+function calcBiteProb(day){
+  const allSess=sessions;
+  const allC=allSess.flatMap(s=>s.catches.map(c=>({...c,_s:s})));
+  const withData=allC.filter(c=>c._s.pressure);
+
+  // ── Fallback wenn keine historischen Daten ──
+  if(!withData.length){
+    const base=day.wc<=3?65:day.wc<=67?45:30;
+    const wPen=day.wind>40?-15:day.wind>25?-8:0;
+    const pPen=day.pres&&(day.pres<1000||day.pres>1025)?-8:0;
+    const pct=Math.max(10,Math.min(90,base+wPen+pPen));
+    return{pct,topFish:['Hecht','Barsch'],fishInsights:[]};
+  }
+
+  // ── Gewichtete Ähnlichkeits-Berechnung (7 Faktoren) ──
+  // Jeder Faktor: Gewicht × Ähnlichkeits-Score [0..1]
+  const WEIGHTS={pres:0.30,presTrajectory:0.25,wind:0.15,temp:0.15,moon:0.10,cloud:0.05};
+
+  // Drucktendenz berechnen (Abfall/Anstieg in letzten 2 Sessions)
+  const recentSessions=[...allSess].filter(s=>s.pressure).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+  const avgRecentPres=recentSessions.length?recentSessions.reduce((s,x)=>s+x.pressure,0)/recentSessions.length:null;
+  const dayPresTrajectory=day.pres&&avgRecentPres?(day.pres-avgRecentPres):0; // + steigend, – fallend
+
+  // Mondphase heute
+  const todayMoon=getMoon(day.date).illum;
+
+  let totalScore=0,totalWeight=0;
+  const fishScores={};
+
+  withData.forEach(c=>{
+    const s=c._s;
+    let sim=0,w=0;
+
+    // Luftdruck-Ähnlichkeit (Gauß-Kurve, ±10hPa = volle Übereinstimmung)
+    if(day.pres&&s.pressure){
+      const pd=Math.abs(day.pres-s.pressure);
+      sim+=WEIGHTS.pres*Math.exp(-pd*pd/200); w+=WEIGHTS.pres;
+    }
+    // Drucktendenz (fallend=schlechter für viele Fische)
+    if(dayPresTrajectory!==0&&s.pressure&&avgRecentPres){
+      const sessTraj=s.pressure-avgRecentPres;
+      const trajSim=1-Math.min(1,Math.abs(dayPresTrajectory-sessTraj)/20);
+      sim+=WEIGHTS.presTrajectory*trajSim; w+=WEIGHTS.presTrajectory;
+    }
+    // Wind-Ähnlichkeit
+    if(day.wind!=null&&s.windSpeed!=null){
+      const wd=Math.abs(day.wind-s.windSpeed);
+      sim+=WEIGHTS.wind*Math.max(0,1-wd/30); w+=WEIGHTS.wind;
+    }
+    // Temperatur-Ähnlichkeit
+    if(day.tmax!=null&&s.temp!=null){
+      const td=Math.abs(day.tmax-s.temp);
+      sim+=WEIGHTS.temp*Math.max(0,1-td/20); w+=WEIGHTS.temp;
+    }
+    // Mondphase (±10% Illumination)
+    if(s.moonIllum!=null){
+      const md=Math.abs(todayMoon-(s.moonIllum||0));
+      sim+=WEIGHTS.moon*Math.max(0,1-md/40); w+=WEIGHTS.moon;
+    }
+    // Bewölkung
+    if(s.clouds!=null&&day.wc!=null){
+      const cloudSess=s.clouds||0;
+      const cloudDay=day.wc<=1?10:day.wc<=3?40:80;
+      sim+=WEIGHTS.cloud*Math.max(0,1-Math.abs(cloudSess-cloudDay)/80); w+=WEIGHTS.cloud;
+    }
+
+    if(w>0){
+      const normSim=sim/w;
+      totalScore+=normSim; totalWeight+=1;
+      if(c.type){fishScores[c.type]=(fishScores[c.type]||0)+normSim;}
+    }
+  });
+
+  const raw=totalWeight>0?totalScore/totalWeight:0.5;
+  const pct=Math.round(Math.min(93,Math.max(8,raw*100)));
+
+  // Top-Fische + Pro-Fisch-Wahrscheinlichkeit
+  const topFishEntries=Object.entries(fishScores).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  const maxFishScore=topFishEntries[0]?.[1]||1;
+  const fishInsights=topFishEntries.map(([fish,score])=>({
+    fish,
+    pct:Math.round(Math.min(95,Math.max(5,(score/maxFishScore)*pct)))
+  }));
+  const topFish=topFishEntries.map(e=>e[0]);
+
+  return{pct,topFish:topFish.length?topFish:['Hecht','Barsch'],fishInsights};
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXPORT / IMPORT
+// ═══════════════════════════════════════════════════════════
+function openExp(){document.getElementById('expov').classList.add('on');}
+function closeExp(){document.getElementById('expov').classList.remove('on');}
+function doExp(type){
+  closeExp();
+  if(type==='all'){dlBlob(new Blob([JSON.stringify({version:8,exportDate:new Date().toISOString(),profile,sessions,favs},null,2)],{type:'application/json'}),'fishing_buddy_v8_backup.json');showToast('📦','Backup heruntergeladen!');}
+  else if(type==='taken'){const lines=['FANGLISTE – Entnommene Fische','Erstellt: '+new Date().toLocaleDateString('de-DE'),'─'.repeat(44)];sessions.forEach(s=>{const tk=s.catches.filter(c=>c.taken);if(!tk.length)return;lines.push('');lines.push(`📅 ${fmtDate(s.date)} | ${s.water}${s.temp!=null?' | '+s.temp+'°C':''}${s.pressure?` | ${Math.round(s.pressure)}hPa`:''}`);tk.forEach(c=>lines.push(`  • ${c.type.padEnd(18)} ${c.length}cm  ${c.time}${c.bait?' | 🪝 '+c.bait:''}${c.baitNote?' ('+c.baitNote+')':''}`));});dlBlob(new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}),'fangliste_entnommen.txt');showToast('🐟','Fangliste heruntergeladen!');}
+  else if(type==='text'){const lines=[`ANGELBUCH – ${profile?.name||'Angler'} (${profile?.angeltyp||''})`, 'Exportiert: '+new Date().toLocaleDateString('de-DE'),'═'.repeat(44)];sessions.forEach(s=>{lines.push('');lines.push(`${s.moonIcon} ${fmtDate(s.date)} | ${s.water}${s.temp!=null?' | '+s.temp+'°C':''}${s.pressure?` | ${Math.round(s.pressure)}hPa`:''}`);lines.push(`   ${s.start}–${s.end||'?'} | ${s.weather} | ${s.moonName||''}`);if(s.skunked)lines.push(`   → ${s.autoSkunked?'Auto-':''}Schneider`);else s.catches.forEach(c=>lines.push(`   • ${c.type.padEnd(16)} ${c.length}cm  ${c.taken?'[Entnommen]':'[C&R]'}  ${c.time}${c.bait?' | '+c.bait:''}`));lines.push('─'.repeat(44));});dlBlob(new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}),'angelbuch_export.txt');showToast('📋','Bericht heruntergeladen!');}
+}
+function dlBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
+function trigImp(){document.getElementById('imp-inp').click();}
+async function handleImp(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async ev=>{closeExp();let data;try{data=JSON.parse(ev.target.result);}catch(err){showToast('❌','Ungültige JSON-Datei!',true);return;}if(!data.sessions||!Array.isArray(data.sessions)){showToast('❌','Kein gültiges Fishing Buddy Backup!',true);return;}const ok=await showConf('📥','Backup importieren',`${data.sessions.length} Sessions gefunden.\n\nBestehende Daten überschreiben?`,'Ja, importieren');if(!ok){e.target.value='';return;}sessions=data.sessions;if(data.profile){profile=data.profile;await saveProfile();}if(data.favs){favs=data.favs;await saveFavs();}await saveSessions();applyProf();showToast('✅',`${sessions.length} Sessions importiert!`);e.target.value='';};reader.readAsText(file);}
+
+// ═══════════════════════════════════════════════════════════
+// CONFIRM
+// ═══════════════════════════════════════════════════════════
+function showConf(ico,tit,txt,okLbl='OK',style=''){return new Promise(r=>{_confRes=r;document.getElementById('conf-ico').textContent=ico;document.getElementById('conf-tit').textContent=tit;document.getElementById('conf-txt').textContent=txt;const btn=document.getElementById('conf-ok');btn.textContent=okLbl;btn.className='confok'+(style==='danger'?' dng':'');document.getElementById('confov').classList.add('on');setTimeout(()=>btn.focus(),100);});}
+function confRes(v){document.getElementById('confov').classList.remove('on');if(_confRes){_confRes(v);_confRes=null;}}
+
+// DELETE ALL
+async function delAllData(){const ok=await showConf('⚠️','Alle Daten löschen','ALLE Daten werden gelöscht!\n\nVorher Backup erstellen!','Alles löschen','danger');if(!ok)return;await idbC('sessions');await idbC('profile');await idbC('favs');await idbC('photos');showToast('🗑️','Alle Daten gelöscht');setTimeout(()=>location.reload(),1000);}
+
+// NOTIFICATIONS
+function reqNotif(){if('Notification'in window&&Notification.permission==='default')Notification.requestPermission().then(p=>{if(p==='granted')showToast('🔔','Benachrichtigungen aktiviert!');});}
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function fmtDate(d){if(!d)return'–';const[y,m,day]=d.split('-');return`${parseInt(day)}. ${['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'][parseInt(m)-1]} ${y}`;}
+function calcDur(s,e){if(!s||!e)return'–';const[sh,sm]=s.split(':').map(Number),[eh,em]=e.split(':').map(Number);const mins=(eh*60+em)-(sh*60+sm);if(mins<=0)return'–';const h=Math.floor(mins/60),min=mins%60;return h>0?`${h}h${min>0?` ${min}min`:''}` :`${min}min`;}
+function calcHrs(s,e){if(!s||!e)return 0;const[sh,sm]=s.split(':').map(Number),[eh,em]=e.split(':').map(Number);return Math.max(0,((eh*60+em)-(sh*60+sm))/60);}
+function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').textContent=ico;document.getElementById('toast-msg').textContent=msg;const t=document.getElementById('toast');t.className='toast'+(isErr?' err':'');t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3200);}
+
+// ═══════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════
+(async function boot(){
+  const n=new Date();
+  document.getElementById('s-date').value=n.toISOString().split('T')[0];
+  document.getElementById('s-start').value=n.getHours().toString().padStart(2,'0')+':00';
+  document.getElementById('s-end').value=Math.min(n.getHours()+3,23).toString().padStart(2,'0')+':00';
+  updMoon();
+
+  // Load from IndexedDB v9, fallback v8→v9 migration
+  try{
+    const allS=await idbGA('sessions');
+    if(allS.length){sessions=allS.sort((a,b)=>b.id-a.id);}
+    else{
+      // Migration: v8 localStorage → v9 IDB
+      const ls=localStorage.getItem('fb_sessions_v8')||localStorage.getItem('fb_sessions_v7');
+      if(ls){try{sessions=JSON.parse(ls);await saveSessions();}catch(e){}}
+    }
+    const pr=await idbG('profile','profile');
+    if(pr){const{key,...p}=pr;profile=p;}
+    else{
+      const lp=localStorage.getItem('fb_profile_v8')||localStorage.getItem('fb_profile_v7');
+      if(lp){try{profile=JSON.parse(lp);await saveProfile();}catch(e){}}
+    }
+    const fv=await idbG('favs','favs');
+    if(fv){const{key,...f}=fv;favs=f;}
+    else{
+      const lf=localStorage.getItem('fb_favs_v8')||localStorage.getItem('fb_favs_v7');
+      if(lf){try{favs=JSON.parse(lf);await saveFavs();}catch(e){}}
+    }
+  }catch(err){console.warn('IDB boot:',err);}
+
+  // Demo data if empty
+  if(!sessions.length){
+    const mk=d=>getMoon(d);
+    sessions=[
+      {id:1,date:'2025-06-14',start:'05:30',end:'11:00',water:'Dümmer See',weather:'☀️ Sonnig',temp:18,lat:'52.5217',lon:'8.3494',pressure:1018,windSpeed:12,windDir:230,humidity:72,clouds:20,precip:0,...mk('2025-06-14'),moonIllum:mk('2025-06-14').illum,skunked:false,autoSkunked:false,clarity:'Klar',
+       catches:[{type:'Hecht',length:72,time:'06:45',taken:true,bait:'Gummifisch',baitNote:'18cm Kopyto weiß/silber',score:fScore('Hecht',72),photoKey:null},{type:'Hecht',length:58,time:'08:20',taken:false,bait:'Wobbler',baitNote:'',score:fScore('Hecht',58),photoKey:null},{type:'Barsch',length:31,time:'09:10',taken:false,bait:'Gummifisch',baitNote:'7cm Grub grün',score:fScore('Barsch',31),photoKey:null}]},
+      {id:2,date:'2025-06-07',start:'06:00',end:'13:30',water:'Zwischenahner Meer',weather:'⛅ Bewölkt',temp:14,lat:null,lon:null,pressure:1012,windSpeed:22,windDir:290,humidity:85,clouds:65,precip:0.5,...mk('2025-06-07'),moonIllum:mk('2025-06-07').illum,skunked:false,autoSkunked:false,clarity:'Leicht trüb',
+       catches:[{type:'Zander',length:65,time:'07:30',taken:true,bait:'Gummifisch',baitNote:'12cm Nays C05',score:fScore('Zander',65),photoKey:null},{type:'Barsch',length:28,time:'09:45',taken:false,bait:'Spinner',baitNote:'',score:fScore('Barsch',28),photoKey:null},{type:'Barsch',length:34,time:'11:00',taken:false,bait:'Spinner',baitNote:'',score:fScore('Barsch',34),photoKey:null},{type:'Karpfen',length:55,time:'12:15',taken:false,bait:'Boilies',baitNote:'20mm Erdbeere',score:fScore('Karpfen',55),photoKey:null}]},
+      {id:3,date:'2025-05-29',start:'07:00',end:'10:00',water:'Baggersee Nord',weather:'🌧 Regen',temp:11,lat:null,lon:null,pressure:1005,windSpeed:35,windDir:180,humidity:95,clouds:90,precip:8,...mk('2025-05-29'),moonIllum:mk('2025-05-29').illum,skunked:true,autoSkunked:false,catches:[]}
+    ];
+    await saveSessions();
+    favs={waters:['Dümmer See','Zwischenahner Meer','Baggersee Nord','Steinhuder Meer'],fish:['Hecht','Hecht','Zander','Barsch','Barsch','Karpfen'],bait:['Gummifisch','Gummifisch','Wobbler','Spinner','Boilies'],baitKeywords:{'Gummifisch':{'Kopyto':2,'weiß/silber':2,'Nays':1,'C05':1,'Grub':1,'grün':1},'Wobbler':{},'Spinner':{}}};
+    await saveFavs();
+  }
+
+  addCatch();
+
+  if(!profile){
+    document.getElementById('onboarding').classList.remove('hidden');
+    document.getElementById('ob-btn').disabled=true;
+    setTimeout(()=>document.getElementById('ob-name')?.focus(),400);
+  } else {
+    document.getElementById('onboarding').classList.add('hidden');
+    applyProf();
+    // v9: Startseite ist Fangbuch statt Neu
+    showPage('fangbuch');
+    setTimeout(reqNotif,3000);
+  }
+})();
+</script>
+</body>
+</html>
