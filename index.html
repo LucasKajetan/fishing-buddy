@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,viewport-fit=cover,interactive-widget=resizes-content">
 <title>Fishing Buddy</title>
 <meta name="theme-color" content="#2D4A35">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -30,14 +30,89 @@
   --fs:'Playfair Display',Georgia,serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:var(--fa);background:#ddd8cc;color:var(--text-dark);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:30px 20px;}
-.phone{width:390px;min-height:844px;background:var(--cream);border-radius:44px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.08);position:relative;display:flex;flex-direction:column;}
 
-/* STATUS */
-.sbar{background:var(--green-deep);padding:14px 28px 10px;display:flex;justify-content:space-between;align-items:center;color:#fff;font-size:12px;font-weight:500;flex-shrink:0;}
+/* ═══════════════════════════════════════════════════════
+   LAYOUT ENGINE – Starres Gehäuse, nur Mitte scrollt
+   Drei Modi:
+   1. Echter Browser (Desktop): zentriertes Phone-Mockup
+   2. Mobiler Browser: füllt 100dvh, kein Rahmen
+   3. Installed PWA: füllt 100dvh + safe-areas
+═══════════════════════════════════════════════════════ */
+
+/* ── Root-Variablen für Keyboard-sicheres Layout ── */
+:root{
+  --header-h: auto;   /* wird per JS gesetzt */
+  --footer-h: 56px;   /* btabs Höhe */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+
+/* ── Body: Desktop = Mockup-Modus ── */
+html,body{
+  height:100%;
+  font-family:var(--fa);
+  background:#ddd8cc;
+  color:var(--text-dark);
+  overscroll-behavior:none;
+}
+body{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:24px 16px 24px;
+  min-height:100vh;
+}
+
+/* ── .phone: Das Gehäuse ── */
+.phone{
+  /* Desktop-Mockup */
+  width:390px;
+  height:844px;
+  min-height:unset;
+  background:var(--cream);
+  border-radius:40px;
+  overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.30), 0 0 0 1px rgba(0,0,0,.08);
+  position:relative;
+  /* Flex-Column: sbar + hdr = fix oben, btabs = fix unten, pages = Mitte */
+  display:flex;
+  flex-direction:column;
+}
+
+/* ── Mobile Browser & PWA: echtes Full-Screen ── */
+@media (max-width:440px),(display-mode:standalone),(display-mode:fullscreen){
+  body{
+    padding:0;
+    background:var(--green-deep);
+    align-items:stretch;
+    justify-content:stretch;
+    min-height:100dvh;
+    height:100dvh;
+  }
+  .phone{
+    width:100%;
+    height:100dvh;
+    border-radius:0;
+    box-shadow:none;
+    /* Safe Areas für Notch/HomeIndicator */
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+}
+
+/* STATUS BAR */
+.sbar{
+  background:var(--green-deep);
+  padding:12px 24px 8px;
+  display:flex;justify-content:space-between;align-items:center;
+  color:#fff;font-size:12px;font-weight:500;
+  flex-shrink:0;
+  /* Safe area top für Notch */
+  padding-top:max(12px, env(safe-area-inset-top, 12px));
+}
 .sbar .t{font-size:15px;font-weight:600;}
 
-/* HEADER – Burger | Logo | Plus */
+/* HEADER – fix, kein Schrumpfen */
 .hdr{background:var(--green-deep);padding:0 16px;flex-shrink:0;}
 .hdr-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 0 10px;}
 .hbtn{width:38px;height:38px;background:rgba(255,255,255,.15);border:none;border-radius:10px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0;}
@@ -48,10 +123,122 @@ body{font-family:var(--fa);background:#ddd8cc;color:var(--text-dark);min-height:
 .hplus{background:var(--gold);font-size:20px;font-weight:700;}
 .hplus:hover{background:#d4a640;}
 
-/* TABS */
-.tabs{display:flex;background:rgba(255,255,255,.1);border-radius:10px 10px 0 0;padding:3px 3px 0;}
-.tab{flex:1;padding:8px 0;text-align:center;font-size:11px;font-weight:500;color:rgba(255,255,255,.65);border-radius:8px 8px 0 0;cursor:pointer;transition:all .2s;border:none;background:transparent;font-family:var(--fa);}
-.tab.on{background:var(--cream);color:var(--green-deep);font-weight:700;}
+/* BOTTOM TAB BAR – fix unten */
+.btabs{
+  display:flex;
+  background:var(--cream);
+  border-top:1px solid var(--cream-dark);
+  flex-shrink:0;
+  /* Safe Area unten (Home Indicator) */
+  padding:6px 0 max(8px, env(safe-area-inset-bottom, 8px));
+}
+.btab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 4px 2px;border:none;background:transparent;font-family:var(--fa);transition:transform .1s;-webkit-tap-highlight-color:transparent;}
+.btab:active{transform:scale(.9);}
+.btab-ico{width:24px;height:24px;color:var(--text-light);transition:color .2s;}
+.btab-lbl{font-size:10px;font-weight:500;color:var(--text-light);letter-spacing:.2px;transition:color .2s;}
+.btab.on .btab-ico,.btab.on .btab-lbl{color:var(--green-deep);}
+.btab.on .btab-lbl{font-weight:700;}
+
+/* PAGES: flex:1 → nimmt genau den Platz zwischen Header und Footer */
+.pages{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  min-height:0;      /* kritisch: erlaubt Flex-Kind kleiner als Inhalt */
+  overflow:hidden;
+}
+.page{
+  display:none;
+  flex-direction:column;
+  flex:1;
+  min-height:0;
+  overflow:hidden;
+}
+.page.on{display:flex;}
+
+/* SCROLL-BEREICH: einziger scrollbarer Bereich, kein padding-bottom-Hack mehr */
+.sc{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  padding:16px 16px 24px;
+  scrollbar-width:none;
+}
+.sc::-webkit-scrollbar{display:none;}
+
+/* FULLSCREEN OVERLAYS: position:absolute über .phone, eigene Scroll-Zone */
+.fsov{
+  position:absolute;
+  inset:0;
+  z-index:105;
+  display:flex;
+  flex-direction:column;
+  background:var(--cream);
+  transform:translateY(100%);
+  transition:transform .32s cubic-bezier(.22,1,.36,1);
+  /* Overflow nur im Body-Teil des Overlays – gesteuert via .fsov-body */
+  overflow:hidden;
+}
+.fsov.on{transform:translateY(0);}
+
+/* Overlay-Header: fix oben im Overlay */
+.fshdr{
+  background:var(--green-deep);
+  padding:16px 20px;
+  color:#fff;
+  display:flex;align-items:center;gap:12px;
+  flex-shrink:0;
+}
+.fstitle{font-family:var(--fs);font-size:20px;font-weight:600;flex:1;}
+.fsmeta{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;}
+.xbtn{background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.xbtn:hover{background:rgba(255,255,255,.25);}
+
+/* Filter-Bar unter Overlay-Header: fix */
+.fbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;background:#fff;border-bottom:1px solid var(--cream-dark);flex-shrink:0;}
+
+/* Overlay-Scroll-Body: scrollt innerhalb des Overlays */
+.fsov > div:not(.fshdr):not(.fbar){
+  flex:1;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  scrollbar-width:none;
+}
+.fsov > div:not(.fshdr):not(.fbar)::-webkit-scrollbar{display:none;}
+
+/* Explizit für inline-style scroll-divs in fsov */
+.fsov-scroll{
+  flex:1;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  padding:16px 16px 24px;
+  scrollbar-width:none;
+}
+.fsov-scroll::-webkit-scrollbar{display:none;}
+
+/* TOAST: immer über Tab-Bar */
+.toast{
+  position:absolute;
+  bottom:calc(var(--footer-h) + 12px);
+  left:16px;right:16px;
+  background:var(--green-deep);color:#fff;
+  padding:13px 16px;border-radius:12px;
+  font-size:14px;font-weight:500;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 8px 24px rgba(45,74,53,.4);
+  transform:translateY(20px);opacity:0;
+  transition:all .3s ease;z-index:300;
+}
+.toast.on{transform:translateY(0);opacity:1;}
+.toast.err{background:var(--red);}
+
+/* TABS (legacy, versteckt) */
+.tabs{display:none;}
+.tab{display:none;}
 
 /* ── FANGBUCH: Ansicht-Header & Toggle ── */
 .fb-view-bar{
@@ -186,43 +373,6 @@ body{font-family:var(--fa);background:#ddd8cc;color:var(--text-dark);min-height:
   box-shadow:var(--sh-sm);margin-bottom:14px;border:1px solid rgba(200,221,208,.4);}
 .st-chart-lbl{font-size:11px;font-weight:700;color:var(--text-light);
   text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;}
-
-.btabs{display:flex;background:var(--cream);border-top:1px solid var(--cream-dark);padding:6px 0 8px;flex-shrink:0;}
-
-/* ── AP4: Forecast clickable days + Detail Overlay ── */
-.fc-day{cursor:pointer;border-radius:var(--rs);transition:background .15s;}
-.fc-day:hover{background:var(--green-mist);}
-.fc-day:active{background:var(--green-pale);}
-.wind-arrow{display:inline-block;font-size:14px;line-height:1;vertical-align:middle;}
-.bite-ring{position:relative;width:52px;height:52px;flex-shrink:0;}
-.bite-ring svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
-.bite-ring-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--green-deep);}
-.fc-hourly-wrap{overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
-.fc-hourly-wrap::-webkit-scrollbar{display:none;}
-.fc-hourly-row{display:flex;gap:4px;min-width:max-content;}
-.fc-hcol{display:flex;flex-direction:column;align-items:center;gap:2px;width:38px;}
-.fc-htime{font-size:9px;font-weight:700;color:var(--text-light);}
-.fc-hbar-bg{width:20px;height:72px;background:var(--cream-dark);border-radius:4px;display:flex;align-items:flex-end;overflow:hidden;}
-.fc-hbar{width:100%;border-radius:4px 4px 0 0;}
-.fc-htemp{font-size:9px;font-weight:600;color:var(--text-dark);}
-.fc-hrain{font-size:8px;color:var(--blue-t);min-height:11px;}
-.fc-insight-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(200,221,208,.3);}
-.fc-insight-row:last-child{border-bottom:none;}
-.fc-insight-name{font-size:13px;font-weight:600;flex:1;}
-.fc-insight-pct{font-size:12px;font-weight:700;color:var(--green-mid);min-width:34px;text-align:right;}
-.fc-insight-bar{flex:2;height:6px;background:var(--green-mist);border-radius:3px;overflow:hidden;}
-.fc-insight-fill{height:100%;background:var(--green-mid);border-radius:3px;}
-.btab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 4px 2px;border:none;background:transparent;font-family:var(--fa);transition:transform .1s;-webkit-tap-highlight-color:transparent;}
-.btab:active{transform:scale(.9);}
-.btab-ico{width:24px;height:24px;color:var(--text-light);transition:color .2s;}
-.btab-lbl{font-size:10px;font-weight:500;color:var(--text-light);letter-spacing:.2px;transition:color .2s;}
-.btab.on .btab-ico,.btab.on .btab-lbl{color:var(--green-deep);}
-.btab.on .btab-lbl{font-weight:700;}
-
-/* SCROLL PADDING für Bottom-Tab-Bar */
-.sc{flex:1;overflow-y:auto;padding:18px 18px 90px;scrollbar-width:none;}
-.sc::-webkit-scrollbar{display:none;}
-.slbl{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--green-mid);margin:18px 0 8px 2px;}
 .slbl:first-child{margin-top:0;}
 .card{background:#fff;border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);}
 
@@ -605,12 +755,6 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fc-empty-icon{font-size:48px;margin-bottom:12px;opacity:.4;}
 .fc-btn{width:100%;padding:16px;background:var(--green-deep);border:none;border-radius:var(--r);color:#fff;font-size:15px;font-weight:600;font-family:var(--fa);cursor:pointer;margin-bottom:10px;}
 
-/* FULLSCREEN OVERLAYS */
-.fsov{position:absolute;inset:0;z-index:105;display:flex;flex-direction:column;background:var(--cream);transform:translateY(100%);transition:transform .3s cubic-bezier(.22,1,.36,1);}
-.fsov.on{transform:translateY(0);}
-.fshdr{background:var(--green-deep);padding:16px 20px;color:#fff;display:flex;align-items:center;gap:12px;flex-shrink:0;}
-.fstitle{font-family:var(--fs);font-size:20px;font-weight:600;flex:1;}
-.fsmeta{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;}
 .xbtn{background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .xbtn:hover{background:rgba(255,255,255,.25);}
 .fbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;background:#fff;border-bottom:1px solid var(--cream-dark);}
@@ -730,14 +874,6 @@ select.obif{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3
 .fav-btn-bait{background:var(--purple);color:var(--purple-t);}
 .fav-btn-bait:hover{background:#afa9ec;color:#fff;}
 .fav-btn-note{background:var(--teal);color:var(--teal-t);font-size:11px;padding:4px 9px;}
-.fav-btn-note:hover{background:#aee0d3;}
-.toast{position:absolute;bottom:92px;left:18px;right:18px;background:var(--green-deep);color:#fff;padding:13px 16px;border-radius:12px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(45,74,53,.4);transform:translateY(20px);opacity:0;transition:all .3s ease;z-index:90;}
-.toast.on{transform:translateY(0);opacity:1;}
-.toast.err{background:var(--red);}
-.pages{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
-.page{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
-.page.on{display:flex;}
-:focus-visible{outline:3px solid var(--green-mid);outline-offset:2px;}
 input[type=file]{display:none;}
 .empty{text-align:center;padding:50px 20px;}
 .empty-ico{font-size:52px;margin-bottom:14px;opacity:.45;}
@@ -825,7 +961,7 @@ input[type=file]{display:none;}
     <div><div class="fstitle">Profil bearbeiten</div></div>
     <button class="xbtn" onclick="closeFs('profile-edit')">✕</button>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:20px 18px 80px;">
+  <div class="fsov-scroll" style="padding:20px 18px 24px;">
     <div class="ig" style="margin-bottom:14px;">
       <label class="il" for="pe-name">Name</label>
       <input type="text" class="if" id="pe-name" placeholder="Dein Name" autocomplete="given-name">
@@ -853,7 +989,7 @@ input[type=file]{display:none;}
     <button class="chip cf" id="fcs-big" onclick="setFcSort('big')">Größte</button>
     <button class="chip cf" id="fcs-az" onclick="setFcSort('az')">A–Z</button>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:0 16px 80px;"><div id="fs-catches-list"></div></div>
+  <div class="fsov-scroll"><div id="fs-catches-list"></div></div>
 </div>
 
 <div class="fsov" id="fs-sessions" role="dialog">
@@ -864,27 +1000,27 @@ input[type=file]{display:none;}
     <button class="chip cf" id="fss-long" onclick="setFsSort('long')">Längste</button>
     <button class="chip cf" id="fss-sk" onclick="setFsSort('sk')">Schneider</button>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:12px 16px 80px;"><div id="fs-sessions-list"></div></div>
+  <div class="fsov-scroll"><div id="fs-sessions-list"></div></div>
 </div>
 
 <div class="fsov" id="fs-hours" role="dialog">
   <div class="fshdr"><div><div class="fstitle">Angelstunden</div><div class="fsmeta" id="fs-hours-meta"></div></div><button class="xbtn" onclick="closeFs('hours')">✕</button></div>
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;"><div id="fs-hours-content"></div></div>
+  <div class="fsov-scroll"><div id="fs-hours-content"></div></div>
 </div>
 
 <div class="fsov" id="fs-fish" role="dialog">
   <div class="fshdr"><div><div class="fstitle" id="fs-fish-title">Fischart</div><div class="fsmeta" id="fs-fish-meta"></div></div><button class="xbtn" onclick="closeFs('fish')">✕</button></div>
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;"><div id="fs-fish-content"></div></div>
+  <div class="fsov-scroll"><div id="fs-fish-content"></div></div>
 </div>
 
 <div class="fsov" id="fs-bait" role="dialog">
   <div class="fshdr"><div><div class="fstitle" id="fs-bait-title">Köder-Detail</div><div class="fsmeta" id="fs-bait-meta"></div></div><button class="xbtn" onclick="closeFs('bait')">✕</button></div>
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;"><div id="fs-bait-content"></div></div>
+  <div class="fsov-scroll"><div id="fs-bait-content"></div></div>
 </div>
 
 <div class="fsov" id="fs-info" role="dialog">
   <div class="fshdr"><div><div class="fstitle" id="fs-info-title">Info</div></div><button class="xbtn" onclick="closeFs('info')">✕</button></div>
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;"><div id="fs-info-body"></div></div>
+  <div class="fsov-scroll"><div id="fs-info-body"></div></div>
 </div>
 
 <!-- WETTER-ANALYSE DEEP-DIVE (v11) -->
@@ -893,7 +1029,7 @@ input[type=file]{display:none;}
     <div><div class="fstitle">🌡 Wetter-Analyse</div><div class="fsmeta" id="fs-wx-corr-meta"></div></div>
     <button class="xbtn" onclick="closeFs('fs-wx-corr')">✕</button>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 80px;" id="fs-wx-corr-body"></div>
+  <div class="fsov-scroll" id="fs-wx-corr-body"></div>
 </div>
 
 <!-- SUCCESS OVERLAY -->
@@ -1084,13 +1220,13 @@ input[type=file]{display:none;}
   <!-- Hero-Header wird per JS befüllt -->
   <div id="dd-hero-wrap"></div>
   <!-- Body -->
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 90px;scrollbar-width:none;" id="dd-body"></div>
+  <div class="fsov-scroll" id="dd-body"></div>
 </div>
 
 <!-- AP4: FORECAST DAY DETAIL OVERLAY -->
 <div class="fsov" id="fs-fc-day" role="dialog" aria-modal="true" aria-label="Vorhersage-Detail" style="z-index:115;">
   <div id="fc-day-hero"></div>
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 90px;scrollbar-width:none;" id="fc-day-body"></div>
+  <div class="fsov-scroll" id="fc-day-body"></div>
 </div>
 
 <!-- PAGE: DETAIL -->
@@ -1262,6 +1398,48 @@ function updClock(){const n=new Date();document.getElementById('live-time').text
 updClock();setInterval(updClock,30000);
 function updNet(){const on=navigator.onLine;document.getElementById('netind').textContent=on?'Online':'Offline';const b=document.getElementById('off-banner');if(!on)b.classList.add('on');else b.classList.remove('on');}
 window.addEventListener('online',updNet);window.addEventListener('offline',updNet);updNet();
+
+// ── Layout-Engine Init (v12) ──────────────────────────────
+(function initLayout(){
+  const root=document.documentElement;
+
+  // 1. Footer-Höhe in CSS-Variable schreiben (für Toast-Positionierung)
+  function measureFooter(){
+    const bt=document.querySelector('.btabs');
+    if(bt)root.style.setProperty('--footer-h', bt.offsetHeight+'px');
+  }
+
+  // 2. dvh-Fallback: --dvh = 1% des echten Viewport-Höhe (ohne Browser-Chrome)
+  function setDvh(){
+    root.style.setProperty('--dvh', (window.innerHeight * 0.01)+'px');
+  }
+
+  // 3. Resize-Handler: Tastatur auf/zu → dvh neu messen, Layout bleibt starr
+  //    (interactive-widget=resizes-content sorgt dafür, dass nur der Inhalt
+  //     schrumpft, nicht das Dokument – deshalb kein Scroll-Jump)
+  function onResize(){
+    setDvh();
+    measureFooter();
+  }
+
+  setDvh();
+  measureFooter();
+  window.addEventListener('resize', onResize, {passive:true});
+
+  // 4. Prevent body scroll – alles läuft in .sc und .fsov-scroll
+  document.body.addEventListener('touchmove', e=>{
+    // Nur blockieren wenn kein scrollbarer Vorfahre
+    let el=e.target;
+    while(el&&el!==document.body){
+      if(el.scrollHeight>el.clientHeight&&
+         ['auto','scroll','overlay'].includes(getComputedStyle(el).overflowY)){
+        return; // scroll innerhalb erlaubt
+      }
+      el=el.parentElement;
+    }
+    e.preventDefault();
+  },{passive:false});
+})();
 
 // ═══════════════════════════════════════════════════════════
 // MOON
