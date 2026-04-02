@@ -122,6 +122,8 @@ body{
 .hlogo-s{font-size:10px;color:rgba(255,255,255,.55);margin-top:1px;}
 .hplus{background:var(--gold);font-size:20px;font-weight:700;}
 .hplus:hover{background:#d4a640;}
+@keyframes plusTap{0%{transform:scale(1);}40%{transform:scale(1.25);background:#e8c44a;}100%{transform:scale(1);background:var(--gold);}}
+.hplus-tap{animation:plusTap .3s ease;}
 
 /* BOTTOM TAB BAR – fix unten */
 .btabs{
@@ -552,6 +554,8 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fb-cal-day.has-catch .fb-cal-dot,
 .fb-cal-day.skunked .fb-cal-dot{display:block;}
 .fb-cal-num{line-height:1;}
+/* Zukünftige Tage: schwach ausgegraut (Fix 15) */
+.fb-cal-day.future{opacity:.35;}
 /* Monat-Trennlinie */
 .fb-cal-month-block{margin-bottom:20px;}
 
@@ -912,7 +916,7 @@ input[type=file]{display:none;}
           inputmode="numeric" maxlength="5" pattern="[0-9]{5}"
           oninput="obChk()" autocomplete="postal-code">
         <p style="font-size:11px;color:var(--text-light);margin-top:8px;line-height:1.6;">
-          Dient als Basis für automatische Wetterabfragen. Keine Standortfreigabe nötig.
+          Deine PLZ ermöglicht automatische Wetter- und Beißindex-Vorhersagen – ohne Standort-Tracking.
         </p>
       </div>
     </div>
@@ -1097,7 +1101,7 @@ input[type=file]{display:none;}
       <div class="hlogo-n">Fishing Buddy</div>
       <div class="hlogo-s" id="hdr-sub">100% Offline · v9</div>
     </div>
-    <button class="hbtn hplus" onclick="showPage('new')" aria-label="Neue Session erfassen">+</button>
+    <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus">+</button>
   </div>
 </div>
 
@@ -1284,8 +1288,19 @@ async function idbG(store,key){try{const d=await dbO();return new Promise((r,j)=
 async function idbGA(store){try{const d=await dbO();return new Promise((r,j)=>{const tx=d.transaction(store,'readonly');const q=tx.objectStore(store).getAll();q.onsuccess=()=>r(q.result||[]);q.onerror=()=>j(q.error);});}catch(e){return[];}}
 async function idbD(store,key){try{const d=await dbO();return new Promise((r,j)=>{const tx=d.transaction(store,'readwrite');tx.objectStore(store).delete(key).onsuccess=()=>r(true);tx.onerror=()=>j(tx.error);});}catch(e){return false;}}
 async function idbC(store){try{const d=await dbO();return new Promise((r,j)=>{const tx=d.transaction(store,'readwrite');tx.objectStore(store).clear().onsuccess=()=>r(true);tx.onerror=()=>j(tx.error);});}catch(e){return false;}}
+// Fix 3: UUID-basierte IDs – keine Kollisionen bei Import oder Doppelklick
+function _newId(){
+  if(typeof crypto!=='undefined'&&crypto.randomUUID)return crypto.randomUUID();
+  // Fallback für ältere Browser
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{
+    const r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);
+  });
+}
+
 async function saveSessions(){for(const s of sessions)await idbP('sessions',String(s.id),s);}
 async function saveOneSess(s){await idbP('sessions',String(s.id),s);}
+// Fix 11: Forecast-Timestamp persistieren
+async function saveFcTimestamp(){await idbP('profile','_fc_timestamp',{value:Date.now()});}
 async function saveProfile(){await idbP('profile','profile',profile);}
 async function saveFavs(){await idbP('favs','favs',favs);}
 async function savePhoto(k,b64){await idbP('photos',k,{data:b64});}
@@ -1724,7 +1739,8 @@ function rndrBChips(id,fv){
   el.style.display='flex';
   el.innerHTML=chips.map(b=>{const s=b.replace(/'/g,"\\'");return`<button class="chip${isCtx?' cc':''}" onmousedown="bSel(${id},'${s}')">🪝 ${b}</button>`;}).join('');
 }
-function bSel(id,v){document.getElementById('fb-'+id).value=v;document.getElementById('bc-'+id).style.display='none';rndrNChips(id,'');}
+// bSel: Köder-Chip gewählt → Notiz-Chips aktualisieren (einzige Definition)
+function bSel(id,v){document.getElementById('fb-'+id).value=v;document.getElementById('bc-'+id).style.display='none';updNoteChips(id);}
 
 // BAIT NOTE CHIPS – keyword-based (Smart-Input 3.0)
 function rndrNChips(id,fv){
@@ -1757,8 +1773,31 @@ function clarSel(v){document.getElementById('s-clarity').value=v;document.getEle
 // MINDESTMASS
 function chkMMF(id){const type=document.getElementById('ft-'+id)?.value?.trim();const len=parseFloat(document.getElementById('fl-'+id)?.value);const we=document.getElementById('mm-'+id);const le=document.getElementById('fl-'+id);if(!we)return;const r=chkMM(type,len);if(r&&!r.ok){we.textContent=r.msg;we.classList.add('on');le.classList.add('warn');}else{we.classList.remove('on');le?.classList.remove('warn');}}
 
-// SUCCESS TOGGLE
-function setSuc(mode){sucMode=mode;document.getElementById('btn-catch').className='ssb'+(mode==='catch'?' sc2':'');document.getElementById('btn-sk').className='ssb'+(mode==='sk'?' ss2':'');document.getElementById('btn-catch').setAttribute('aria-pressed',String(mode==='catch'));document.getElementById('btn-sk').setAttribute('aria-pressed',String(mode==='sk'));document.getElementById('catches-area').style.display=mode==='catch'?'':'none';document.getElementById('sk-placeholder').style.display=mode==='sk'?'':'none';document.getElementById('skunk-wrap').innerHTML='';}
+// SUCCESS TOGGLE – Fix 14: Schneider-Schutz wenn Fänge bereits eingetragen
+async function setSuc(mode){
+  // Warnen wenn auf Schneider gewechselt wird und Fänge vorhanden
+  if(mode==='sk'&&sucMode!=='sk'){
+    let hasCatches=false;
+    for(let i=1;i<=catchCount;i++){
+      const te=document.getElementById('ft-'+i),le=document.getElementById('fl-'+i);
+      if(te?.value?.trim()||parseFloat(le?.value)>0){hasCatches=true;break;}
+    }
+    if(hasCatches){
+      const ok=await showConf('🪝','Als Schneider markieren',
+        'Du hast bereits Fänge eingetragen.\n\nAls Schneider speichern verwirft diese Einträge.',
+        'Ja, Schneider','danger');
+      if(!ok)return;
+    }
+  }
+  sucMode=mode;
+  document.getElementById('btn-catch').className='ssb'+(mode==='catch'?' sc2':'');
+  document.getElementById('btn-sk').className='ssb'+(mode==='sk'?' ss2':'');
+  document.getElementById('btn-catch').setAttribute('aria-pressed',String(mode==='catch'));
+  document.getElementById('btn-sk').setAttribute('aria-pressed',String(mode==='sk'));
+  document.getElementById('catches-area').style.display=mode==='catch'?'':'none';
+  document.getElementById('sk-placeholder').style.display=mode==='sk'?'':'none';
+  document.getElementById('skunk-wrap').innerHTML='';
+}
 
 // PHOTO
 function trigPhoto(id){_curPhotoId=id;document.getElementById('photo-inp').click();}
@@ -1770,22 +1809,29 @@ function handlePhoto(e){const file=e.target.files[0];if(!file||!_curPhotoId)retu
 // Permanente Action-Chips für Notizfeld
 const NOTE_CHIPS_STATIC=['gejiggt','geleiert','faulenzt','UV-aktiv','10g','14g','20g','Pause'];
 
-function _firstCatchFish(){
-  const el=document.getElementById('ft-1');
-  return el?.value?.trim()||'';
+// Fix 7: Memory liest den zuletzt ausgefüllten Fang (nicht immer #1)
+function _lastCatchFish(){
+  for(let i=catchCount;i>=1;i--){
+    const v=document.getElementById('ft-'+i)?.value?.trim();
+    if(v)return v;
+  }
+  return'';
 }
-function _firstCatchBait(){
-  const el=document.getElementById('fb-1');
-  return el?.value?.trim()||'';
+function _lastCatchBait(){
+  for(let i=catchCount;i>=1;i--){
+    const v=document.getElementById('fb-'+i)?.value?.trim();
+    if(v)return v;
+  }
+  return'';
 }
 
 function addCatch(){
   catchCount++;const id=catchCount;
   const n=new Date();const t=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
 
-  // Memory: Fang #2+ bekommt Fischart/Köder des ersten Fangs vorausgefüllt
-  const presetFish=id>1?_firstCatchFish():'';
-  const presetBait=id>1?_firstCatchBait():'';
+  // Memory: Fang #2+ bekommt Fischart/Köder des zuletzt ausgefüllten Fangs (Fix 7)
+  const presetFish=id>1?_lastCatchFish():'';
+  const presetBait=id>1?_lastCatchBait():'';
 
   // Top-3 Fischarten aus favs als permanente Buttons
   const topFish=topFavs('fish',3);
@@ -1922,11 +1968,6 @@ function favBaitSel(id,v){
   document.getElementById('bc-'+id).style.display='none';
   updNoteChips(id);
 }
-function bSel(id,v){
-  document.getElementById('fb-'+id).value=v;
-  document.getElementById('bc-'+id).style.display='none';
-  updNoteChips(id);
-}
 
 // Notiz-Chip anhängen (permanente Chips onmousedown)
 function addNoteChip(id,val){
@@ -1952,47 +1993,91 @@ function rmCatch(id){const el=document.getElementById('catch-'+id);el.style.cssT
 // ═══════════════════════════════════════════════════════════
 // SAVE SESSION
 // ═══════════════════════════════════════════════════════════
+let _saving=false; // Fix 4: Debounce-Flag
+
 async function saveSess(){
-  const date=document.getElementById('s-date').value;
-  const start=document.getElementById('s-start').value;
-  const end=document.getElementById('s-end').value;
-  const water=document.getElementById('s-water').value.trim()||'Unbekanntes Gewässer';
-  const wx=document.getElementById('s-wx').value;
-  const temp=document.getElementById('s-temp').value;
-  const clarity=document.getElementById('s-clarity').value.trim();
-  if(!date||!start){showToast('⚠️','Datum und Startzeit erforderlich!');return;}
-  const moon=getMoon(date);const sk=sucMode==='sk';const catches=[];
-  if(!sk){
-    for(let i=1;i<=catchCount;i++){
-      const te=document.getElementById('ft-'+i),le=document.getElementById('fl-'+i),ti=document.getElementById('ftime-'+i),tk=document.getElementById('ftak-'+i),tb=document.getElementById('fb-'+i),tn=document.getElementById('fn-'+i);
-      if(!te)continue;const type=te.value.trim(),len=parseFloat(le.value);
-      if(type&&!isNaN(len)&&len>0){
-        const bait=tb?.value.trim()||'',note=tn?.value.trim()||'';
-        const pk=(window._pm||{})[i]||null;
-        catches.push({type,length:len,time:ti.value,taken:tk.checked,bait,baitNote:note,score:fScore(type,len),photoKey:pk});
-        addFav('fish',type);if(bait)addFav('bait',bait);if(bait&&note)addBaitKw(bait,note);
+  if(_saving)return; // Fix 4: Doppelklick-Schutz
+  _saving=true;
+  const saveBtn=document.querySelector('#page-new .btn[onclick="saveSess()"]');
+  if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Speichern…';}
+
+  try{
+    const date=document.getElementById('s-date').value;
+    const start=document.getElementById('s-start').value;
+    const end=document.getElementById('s-end').value;
+    const water=document.getElementById('s-water').value.trim()||'Unbekanntes Gewässer';
+    const wx=document.getElementById('s-wx').value;
+    const temp=document.getElementById('s-temp').value;
+    const clarity=document.getElementById('s-clarity').value.trim();
+
+    if(!date||!start){showToast('⚠️','Datum und Startzeit erforderlich!',true);return;}
+
+    // Fix 2: Endzeitvalidierung
+    if(end&&start){
+      const [sh,sm]=start.split(':').map(Number);
+      const [eh,em]=end.split(':').map(Number);
+      const startMins=sh*60+sm, endMins=eh*60+em;
+      if(endMins>0&&endMins<=startMins){
+        // Nacht-Session? Warnen aber nicht blockieren
+        const ok=await showConf('⏰','Zeitangabe prüfen',
+          `Endzeit (${end}) liegt vor oder gleich der Startzeit (${start}).\n\nNacht-Session? Dann einfach fortfahren.`,
+          'Trotzdem speichern');
+        if(!ok)return;
       }
     }
+
+    const moon=getMoon(date);const sk=sucMode==='sk';const catches=[];
+    let skippedCatches=0; // Fix 5: Zähle übersprungene Einträge
+
+    if(!sk){
+      for(let i=1;i<=catchCount;i++){
+        const te=document.getElementById('ft-'+i),le=document.getElementById('fl-'+i),
+              ti=document.getElementById('ftime-'+i),tk=document.getElementById('ftak-'+i),
+              tb=document.getElementById('fb-'+i),tn=document.getElementById('fn-'+i);
+        if(!te)continue;
+        const type=te.value.trim(),len=parseFloat(le?.value);
+        if(type&&!isNaN(len)&&len>0){
+          const bait=tb?.value.trim()||'',note=tn?.value.trim()||'';
+          const pk=(window._pm||{})[i]||null;
+          catches.push({type,length:len,time:ti?.value||'',taken:tk?.checked||false,bait,baitNote:note,score:fScore(type,len),photoKey:pk});
+          addFav('fish',type);if(bait)addFav('bait',bait);if(bait&&note)addBaitKw(bait,note);
+        } else if(te.value.trim()||le?.value){
+          // Teilweise ausgefüllt aber nicht vollständig → zählen
+          skippedCatches++;
+        }
+      }
+    }
+
+    // Fix 5: Hinweis auf übersprungene Fänge
+    if(skippedCatches>0){
+      showToast('⚠️',`${skippedCatches} unvollständiger Fang${skippedCatches>1?'e':''} nicht gespeichert`);
+    }
+
+    addFav('waters',water);window._pm={};
+    const effSk=sk||(catches.length===0&&sucMode==='catch');
+    const sess={
+      id:_newId(), // Fix 3: UUID
+      date,start,end,water,weather:wx,
+      temp:temp?parseFloat(temp):(_lastWx?.temp||null),
+      lat:gpsCoords?.lat||null,lon:gpsCoords?.lon||null,
+      moonIcon:moon.icon,moonName:moon.name,moonIllum:moon.illum,
+      skunked:effSk,autoSkunked:!sk&&effSk,clarity:clarity||null,
+      pressure:_lastWx?.pressure||null,windSpeed:_lastWx?.windSpeed||null,
+      windDir:_lastWx?.windDir||null,humidity:_lastWx?.humidity||null,
+      clouds:_lastWx?.clouds||null,precip:_lastWx?.precip||null,
+      catches,saved:new Date().toISOString()
+    };
+    sessions.unshift(sess);await saveOneSess(sess);
+    // Fix 8: _lastWx erst in resetForm() nullen, nicht hier – verhindert Race-Condition
+    if(effSk&&!sk){showToast('🪝','Als Schneider gespeichert');resetForm();}
+    else if(sk){showToast('🪝','Schneider-Session gespeichert');resetForm();}
+    else if(catches.length>0)showSuc(catches,water);
+    else{showToast('✅','Session gespeichert!');resetForm();}
+  } finally {
+    // Fix 4: Immer entsperren
+    _saving=false;
+    if(saveBtn){saveBtn.disabled=false;saveBtn.textContent='Session speichern ✓';}
   }
-  addFav('waters',water);window._pm={};
-  const effSk=sk||(catches.length===0&&sucMode==='catch');
-  const sess={
-    id:Date.now(),date,start,end,water,weather:wx,
-    temp:temp?parseFloat(temp):(_lastWx?.temp||null),
-    lat:gpsCoords?.lat||null,lon:gpsCoords?.lon||null,
-    moonIcon:moon.icon,moonName:moon.name,moonIllum:moon.illum,
-    skunked:effSk,autoSkunked:!sk&&effSk,clarity:clarity||null,
-    pressure:_lastWx?.pressure||null,windSpeed:_lastWx?.windSpeed||null,
-    windDir:_lastWx?.windDir||null,humidity:_lastWx?.humidity||null,
-    clouds:_lastWx?.clouds||null,precip:_lastWx?.precip||null,
-    catches,saved:new Date().toISOString()
-  };
-  sessions.unshift(sess);await saveOneSess(sess);
-  _lastWx=null;
-  if(effSk&&!sk){showToast('🪝','Als Schneider gespeichert');resetForm();}
-  else if(sk){showToast('🪝','Schneider-Session gespeichert');resetForm();}
-  else if(catches.length>0)showSuc(catches,water);
-  else{showToast('✅','Session gespeichert!');resetForm();}
 }
 function resetForm(){
   document.getElementById('catches-con').innerHTML='';
@@ -2186,7 +2271,6 @@ function _rndrSessionList(elId){if(elId==='fangbuch-list')rndrFangbuch();}
 function rndrCalendar(){
   const el=document.getElementById('fangbuch-list');if(!el)return;
 
-  // Date-Map aufbauen
   const byDate={};
   sessions.forEach(s=>{
     const k=String(s.date||'');if(!k)return;
@@ -2196,15 +2280,27 @@ function rndrCalendar(){
 
   const MON_FULL=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
   const today=new Date();today.setHours(0,0,0,0);
+  const nowYr=today.getFullYear(),nowMo=today.getMonth()+1;
 
-  // Alle Monate mit Sessions (neueste zuerst)
+  // Fix 15: Immer aktuellen Monat + alle Monate mit Sessions zeigen
+  // Zeige bis zu 12 Monate rückwirkend ab heute als Orientierungsrahmen
   const monthSet=new Set();
+  // Aktueller Monat immer
+  monthSet.add(`${nowYr}-${String(nowMo).padStart(2,'0')}`);
+  // Alle Monate mit Sessions
   Object.keys(byDate).forEach(dk=>{if(dk.length>=7)monthSet.add(dk.substring(0,7));});
-  if(!monthSet.size){
-    // Kein Session → aktuellen Monat zeigen
-    const n=new Date();
-    monthSet.add(`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`);
+  // Lückenfüller: alle Monate zwischen ältester Session und heute
+  if(sessions.length){
+    const oldest=sessions.map(s=>s.date).filter(Boolean).sort()[0];
+    if(oldest){
+      let[oy,om]=oldest.split('-').map(Number);
+      while(oy<nowYr||(oy===nowYr&&om<=nowMo)){
+        monthSet.add(`${oy}-${String(om).padStart(2,'0')}`);
+        om++;if(om>12){om=1;oy++;}
+      }
+    }
   }
+
   const monthList=[...monthSet].sort((a,b)=>b.localeCompare(a));
   const dowLabels=['Mo','Di','Mi','Do','Fr','Sa','So'];
 
@@ -2212,7 +2308,7 @@ function rndrCalendar(){
   monthList.forEach(ym=>{
     const[yr,mo]=ym.split('-').map(Number);
     const lastDay=new Date(yr,mo,0).getDate();
-    const firstDow=(new Date(yr,mo-1,1).getDay()+6)%7; // 0=Mo
+    const firstDow=(new Date(yr,mo-1,1).getDay()+6)%7;
 
     let cells='';
     for(let i=0;i<firstDow;i++)cells+=`<div class="fb-cal-day empty"></div>`;
@@ -2223,10 +2319,12 @@ function rndrCalendar(){
       const hasCatch=daySess.some(s=>!s.skunked&&s.catches.length>0);
       const isSkunked=daySess.length>0&&!hasCatch;
       const isToday=dayDate.getTime()===today.getTime();
+      const isFuture=dayDate>today;
       let cls='fb-cal-day';
       if(hasCatch)cls+=' has-catch';
       else if(isSkunked)cls+=' skunked';
       if(isToday)cls+=' today';
+      if(isFuture)cls+=' future'; // schwach ausgegraut
       const onclick=daySess.length?`onclick="openDayDetail('${dk}')"`:' style="cursor:default;"';
       cells+=`<div class="${cls}" ${onclick}><span class="fb-cal-num">${d}</span>${daySess.length?'<span class="fb-cal-dot"></span>':''}</div>`;
     }
@@ -2234,12 +2332,13 @@ function rndrCalendar(){
     const mCatches=Object.entries(byDate)
       .filter(([k])=>k.startsWith(ym))
       .flatMap(([,ss])=>ss.flatMap(s=>s.catches)).length;
+    const mSess=Object.keys(byDate).filter(k=>k.startsWith(ym)).length;
 
     html+=`<div class="fb-cal-month-block">
       <div class="fb-month-sep">
         <span class="fb-month-label">${MON_FULL[mo-1]} ${yr}</span>
         <span class="fb-month-line"></span>
-        <span class="fb-month-count">${mCatches} Fang${mCatches!==1?'e':''}</span>
+        <span class="fb-month-count">${mSess?`${mCatches} Fang${mCatches!==1?'e':''}`:''}</span>
       </div>
       <div class="fb-cal-dow">${dowLabels.map(d=>`<div class="fb-cal-dow-cell">${d}</div>`).join('')}</div>
       <div class="fb-cal-grid">${cells}</div>
@@ -2965,7 +3064,11 @@ function rndrForecast(){
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant,precipitation_sum,surface_pressure_mean&timezone=auto&forecast_days=7`).then(r=>r.json()),
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,precipitation_probability,weathercode&timezone=auto&forecast_days=7`).then(r=>r.json())
   ])
-  .then(([daily,hourly])=>{_fcData=daily;_fcHourlyData=hourly;renderFcDays(daily);})
+  .then(([daily,hourly])=>{
+    _fcData=daily;_fcHourlyData=hourly;
+    saveFcTimestamp(); // Fix 11: TTL-Timestamp
+    renderFcDays(daily);
+  })
   .catch(()=>{el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">Vorhersage konnte nicht geladen werden.</div>';});
 }
 
@@ -3138,12 +3241,19 @@ function calcBiteProb(day){
   const withData=allC.filter(c=>c._s.pressure);
 
   // ── Fallback wenn keine historischen Daten ──
+  // Fix 9: Fallback nach Angeltyp, nicht immer Hecht/Barsch
+  const _fallbackFish=()=>{
+    const t=profile?.angeltyp||'Allround';
+    if(t==='Friedfisch')return['Karpfen','Brasse','Schleie'];
+    if(t==='Raubfisch')return['Hecht','Zander','Barsch'];
+    return['Hecht','Barsch','Karpfen']; // Allround
+  };
   if(!withData.length){
     const base=day.wc<=3?65:day.wc<=67?45:30;
     const wPen=day.wind>40?-15:day.wind>25?-8:0;
     const pPen=day.pres&&(day.pres<1000||day.pres>1025)?-8:0;
     const pct=Math.max(10,Math.min(90,base+wPen+pPen));
-    return{pct,topFish:['Hecht','Barsch'],fishInsights:[]};
+    return{pct,topFish:_fallbackFish(),fishInsights:[]};
   }
 
   // ── Gewichtete Ähnlichkeits-Berechnung (7 Faktoren) ──
@@ -3227,7 +3337,7 @@ function openExp(){document.getElementById('expov').classList.add('on');}
 function closeExp(){document.getElementById('expov').classList.remove('on');}
 function doExp(type){
   closeExp();
-  if(type==='all'){dlBlob(new Blob([JSON.stringify({version:8,exportDate:new Date().toISOString(),profile,sessions,favs},null,2)],{type:'application/json'}),'fishing_buddy_v8_backup.json');showToast('📦','Backup heruntergeladen!');}
+  if(type==='all'){const dateStr=new Date().toISOString().slice(0,10);dlBlob(new Blob([JSON.stringify({version:12,exportDate:new Date().toISOString(),profile,sessions,favs},null,2)],{type:'application/json'}),`fishing_buddy_${dateStr}_backup.json`);showToast('📦','Backup heruntergeladen!');}
   else if(type==='taken'){const lines=['FANGLISTE – Entnommene Fische','Erstellt: '+new Date().toLocaleDateString('de-DE'),'─'.repeat(44)];sessions.forEach(s=>{const tk=s.catches.filter(c=>c.taken);if(!tk.length)return;lines.push('');lines.push(`📅 ${fmtDate(s.date)} | ${s.water}${s.temp!=null?' | '+s.temp+'°C':''}${s.pressure?` | ${Math.round(s.pressure)}hPa`:''}`);tk.forEach(c=>lines.push(`  • ${c.type.padEnd(18)} ${c.length}cm  ${c.time}${c.bait?' | 🪝 '+c.bait:''}${c.baitNote?' ('+c.baitNote+')':''}`));});dlBlob(new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}),'fangliste_entnommen.txt');showToast('🐟','Fangliste heruntergeladen!');}
   else if(type==='text'){const lines=[`ANGELBUCH – ${profile?.name||'Angler'} (${profile?.angeltyp||''})`, 'Exportiert: '+new Date().toLocaleDateString('de-DE'),'═'.repeat(44)];sessions.forEach(s=>{lines.push('');lines.push(`${s.moonIcon} ${fmtDate(s.date)} | ${s.water}${s.temp!=null?' | '+s.temp+'°C':''}${s.pressure?` | ${Math.round(s.pressure)}hPa`:''}`);lines.push(`   ${s.start}–${s.end||'?'} | ${s.weather} | ${s.moonName||''}`);if(s.skunked)lines.push(`   → ${s.autoSkunked?'Auto-':''}Schneider`);else s.catches.forEach(c=>lines.push(`   • ${c.type.padEnd(16)} ${c.length}cm  ${c.taken?'[Entnommen]':'[C&R]'}  ${c.time}${c.bait?' | '+c.bait:''}`));lines.push('─'.repeat(44));});dlBlob(new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}),'angelbuch_export.txt');showToast('📋','Bericht heruntergeladen!');}
 }
@@ -3259,18 +3369,21 @@ function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').tex
 // BOOT
 // ═══════════════════════════════════════════════════════════
 (async function boot(){
+  // Ladeindikator sofort zeigen (Fix 16)
+  const fbList=document.getElementById('fangbuch-list');
+  if(fbList)fbList.innerHTML='<div style="text-align:center;padding:48px 20px;color:var(--text-light);font-size:13px;">⏳ Lade Daten…</div>';
+
   const n=new Date();
   document.getElementById('s-date').value=n.toISOString().split('T')[0];
   document.getElementById('s-start').value=n.getHours().toString().padStart(2,'0')+':00';
   document.getElementById('s-end').value=Math.min(n.getHours()+3,23).toString().padStart(2,'0')+':00';
   updMoon();
 
-  // Load from IndexedDB v9, fallback v8→v9 migration
+  // Load from IndexedDB, fallback v8/v7 migration
   try{
     const allS=await idbGA('sessions');
-    if(allS.length){sessions=allS.sort((a,b)=>b.id-a.id);}
+    if(allS.length){sessions=allS.sort((a,b)=>(b.date||'').localeCompare(a.date||''));}
     else{
-      // Migration: v8 localStorage → v9 IDB
       const ls=localStorage.getItem('fb_sessions_v8')||localStorage.getItem('fb_sessions_v7');
       if(ls){try{sessions=JSON.parse(ls);await saveSessions();}catch(e){}}
     }
@@ -3286,22 +3399,13 @@ function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').tex
       const lf=localStorage.getItem('fb_favs_v8')||localStorage.getItem('fb_favs_v7');
       if(lf){try{favs=JSON.parse(lf);await saveFavs();}catch(e){}}
     }
+    // Forecast-Cache TTL: älter als 6h → verwerfen (Fix 11)
+    const fcTs=await idbG('profile','_fc_timestamp');
+    if(fcTs){
+      const age=Date.now()-(fcTs.value||0);
+      if(age>6*60*60*1000){_fcData=null;_fcHourlyData=null;}
+    }
   }catch(err){console.warn('IDB boot:',err);}
-
-  // Demo data if empty
-  if(!sessions.length){
-    const mk=d=>getMoon(d);
-    sessions=[
-      {id:1,date:'2025-06-14',start:'05:30',end:'11:00',water:'Dümmer See',weather:'☀️ Sonnig',temp:18,lat:'52.5217',lon:'8.3494',pressure:1018,windSpeed:12,windDir:230,humidity:72,clouds:20,precip:0,...mk('2025-06-14'),moonIllum:mk('2025-06-14').illum,skunked:false,autoSkunked:false,clarity:'Klar',
-       catches:[{type:'Hecht',length:72,time:'06:45',taken:true,bait:'Gummifisch',baitNote:'18cm Kopyto weiß/silber',score:fScore('Hecht',72),photoKey:null},{type:'Hecht',length:58,time:'08:20',taken:false,bait:'Wobbler',baitNote:'',score:fScore('Hecht',58),photoKey:null},{type:'Barsch',length:31,time:'09:10',taken:false,bait:'Gummifisch',baitNote:'7cm Grub grün',score:fScore('Barsch',31),photoKey:null}]},
-      {id:2,date:'2025-06-07',start:'06:00',end:'13:30',water:'Zwischenahner Meer',weather:'⛅ Bewölkt',temp:14,lat:null,lon:null,pressure:1012,windSpeed:22,windDir:290,humidity:85,clouds:65,precip:0.5,...mk('2025-06-07'),moonIllum:mk('2025-06-07').illum,skunked:false,autoSkunked:false,clarity:'Leicht trüb',
-       catches:[{type:'Zander',length:65,time:'07:30',taken:true,bait:'Gummifisch',baitNote:'12cm Nays C05',score:fScore('Zander',65),photoKey:null},{type:'Barsch',length:28,time:'09:45',taken:false,bait:'Spinner',baitNote:'',score:fScore('Barsch',28),photoKey:null},{type:'Barsch',length:34,time:'11:00',taken:false,bait:'Spinner',baitNote:'',score:fScore('Barsch',34),photoKey:null},{type:'Karpfen',length:55,time:'12:15',taken:false,bait:'Boilies',baitNote:'20mm Erdbeere',score:fScore('Karpfen',55),photoKey:null}]},
-      {id:3,date:'2025-05-29',start:'07:00',end:'10:00',water:'Baggersee Nord',weather:'🌧 Regen',temp:11,lat:null,lon:null,pressure:1005,windSpeed:35,windDir:180,humidity:95,clouds:90,precip:8,...mk('2025-05-29'),moonIllum:mk('2025-05-29').illum,skunked:true,autoSkunked:false,catches:[]}
-    ];
-    await saveSessions();
-    favs={waters:['Dümmer See','Zwischenahner Meer','Baggersee Nord','Steinhuder Meer'],fish:['Hecht','Hecht','Zander','Barsch','Barsch','Karpfen'],bait:['Gummifisch','Gummifisch','Wobbler','Spinner','Boilies'],baitKeywords:{'Gummifisch':{'Kopyto':2,'weiß/silber':2,'Nays':1,'C05':1,'Grub':1,'grün':1},'Wobbler':{},'Spinner':{}}};
-    await saveFavs();
-  }
 
   addCatch();
 
@@ -3312,11 +3416,32 @@ function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').tex
   } else {
     document.getElementById('onboarding').classList.add('hidden');
     applyProf();
-    // v9: Startseite ist Fangbuch statt Neu
     showPage('fangbuch');
     setTimeout(reqNotif,3000);
   }
+  // Fix 1: Keine stillen Demo-Daten. Leeres Fangbuch = echter Zustand für neue Nutzer.
+  // Demo-Daten sind nur via ?demo=1 URL-Parameter ladbar.
+  if(!sessions.length&&new URLSearchParams(location.search).get('demo')==='1'){
+    _loadDemoData();
+  }
 })();
+
+// Demo-Daten: explizit opt-in, nie automatisch (Fix 1)
+async function _loadDemoData(){
+  const mk=d=>getMoon(d);
+  sessions=[
+    {id:_newId(),date:'2025-06-14',start:'05:30',end:'11:00',water:'Dümmer See',weather:'☀️ Sonnig',temp:18,lat:'52.5217',lon:'8.3494',pressure:1018,windSpeed:12,windDir:230,humidity:72,clouds:20,precip:0,...mk('2025-06-14'),moonIllum:mk('2025-06-14').illum,skunked:false,autoSkunked:false,clarity:'Klar',
+     catches:[{type:'Hecht',length:72,time:'06:45',taken:true,bait:'Gummifisch',baitNote:'18cm Kopyto weiß/silber',score:fScore('Hecht',72),photoKey:null},{type:'Hecht',length:58,time:'08:20',taken:false,bait:'Wobbler',baitNote:'',score:fScore('Hecht',58),photoKey:null},{type:'Barsch',length:31,time:'09:10',taken:false,bait:'Gummifisch',baitNote:'7cm Grub grün',score:fScore('Barsch',31),photoKey:null}]},
+    {id:_newId(),date:'2025-06-07',start:'06:00',end:'13:30',water:'Zwischenahner Meer',weather:'⛅ Bewölkt',temp:14,lat:null,lon:null,pressure:1012,windSpeed:22,windDir:290,humidity:85,clouds:65,precip:0.5,...mk('2025-06-07'),moonIllum:mk('2025-06-07').illum,skunked:false,autoSkunked:false,clarity:'Leicht trüb',
+     catches:[{type:'Zander',length:65,time:'07:30',taken:true,bait:'Gummifisch',baitNote:'12cm Nays C05',score:fScore('Zander',65),photoKey:null},{type:'Barsch',length:28,time:'09:45',taken:false,bait:'Spinner',baitNote:'',score:fScore('Barsch',28),photoKey:null},{type:'Barsch',length:34,time:'11:00',taken:false,bait:'Spinner',baitNote:'',score:fScore('Barsch',34),photoKey:null},{type:'Karpfen',length:55,time:'12:15',taken:false,bait:'Boilies',baitNote:'20mm Erdbeere',score:fScore('Karpfen',55),photoKey:null}]},
+    {id:_newId(),date:'2025-05-29',start:'07:00',end:'10:00',water:'Baggersee Nord',weather:'🌧 Regen',temp:11,lat:null,lon:null,pressure:1005,windSpeed:35,windDir:180,humidity:95,clouds:90,precip:8,...mk('2025-05-29'),moonIllum:mk('2025-05-29').illum,skunked:true,autoSkunked:false,catches:[]}
+  ];
+  await saveSessions();
+  favs={waters:['Dümmer See','Zwischenahner Meer','Baggersee Nord','Steinhuder Meer'],fish:['Hecht','Hecht','Zander','Barsch','Barsch','Karpfen'],bait:['Gummifisch','Gummifisch','Wobbler','Spinner','Boilies'],baitKeywords:{'Gummifisch':{'Kopyto':2,'weiß/silber':2,'Nays':1,'C05':1,'Grub':1,'grün':1},'Wobbler':{},'Spinner':{}}};
+  await saveFavs();
+  showPage('fangbuch');
+  showToast('🎣','Demo-Daten geladen');
+}
 </script>
 </body>
 </html>
