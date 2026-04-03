@@ -1080,7 +1080,8 @@ input[type=file]{display:none;}
     <div class="expdiv"><span>Import</span></div>
     <div class="expopt imp" onclick="trigImp()"><div class="expico">📥</div><div><div class="exptitle">Backup importieren</div><div class="expsub2">JSON-Backup wiederherstellen</div></div></div>
     <input type="file" id="imp-inp" accept=".json" onchange="handleImp(event)">
-    <input type="file" id="photo-inp" accept="image/*" capture="environment" onchange="handlePhoto(event)">
+    <input type="file" id="photo-inp" accept="image/*" onchange="handlePhoto(event)">
+    <input type="file" id="photo-cam" accept="image/*" capture="environment" onchange="handlePhoto(event)">
     <button class="expcan" onclick="closeExp()">Abbrechen</button>
   </div>
 </div>
@@ -1128,7 +1129,9 @@ input[type=file]{display:none;}
     <div class="card">
       <div class="ig" style="margin-bottom:10px;">
         <label class="il" for="s-date">Datum</label>
-        <input type="date" class="if" id="s-date" oninput="updMoon();chkAutoSk()">
+        <input type="date" class="if" id="s-date"
+          oninput="updMoon();chkAutoSk()"
+          onchange="updMoon();chkAutoSk()">
       </div>
       <div class="erow">
         <div class="ec" onclick="showPage('stats')" role="button" tabindex="0">
@@ -1327,26 +1330,6 @@ async function loadFcCache(){
     if(h?.value)_fcHourlyData=JSON.parse(h.value);
   }catch(e){}
 }
-// Fix 6: Forecast-Daten in IDB persistieren für Offline-Nutzung
-async function saveFcCache(daily,hourly){
-  try{
-    await idbP('profile','_fc_daily',{value:JSON.stringify(daily)});
-    await idbP('profile','_fc_hourly',{value:JSON.stringify(hourly)});
-    await saveFcTimestamp();
-  }catch(e){}
-}
-async function loadFcCache(){
-  try{
-    const d=await idbG('profile','_fc_daily');
-    const h=await idbG('profile','_fc_hourly');
-    if(d?.value&&h?.value){
-      _fcData=JSON.parse(d.value);
-      _fcHourlyData=JSON.parse(h.value);
-      return true;
-    }
-  }catch(e){}
-  return false;
-}
 async function saveProfile(){await idbP('profile','profile',profile);}
 async function saveFavs(){await idbP('favs','favs',favs);}
 async function savePhoto(k,b64){await idbP('photos',k,{data:b64});}
@@ -1442,18 +1425,71 @@ function rebuildBanners(el,active,preview){
   if(preview.length){const pn=preview.map(p=>p.si===0?`${p.f} (heute)`:p.si===1?`${p.f} (morgen)`:`${p.f} (in ${p.si}d)`).join(', ');h+=`<div class="prev-banner"><div style="font-size:17px;flex-shrink:0;">🗓️</div><div style="flex:1;"><div style="font-size:12px;color:var(--yellow-t);font-weight:600;">Bald Schonzeit: ${pn}</div><div style="font-size:10px;color:var(--yellow-t);opacity:.8;margin-top:2px;font-style:italic;">${SZ_DISC}</div></div></div>`;}
   el.innerHTML=h;
 }
+// ── Datum-Helper: ist das gewählte Datum heute oder Zukunft? ──
+function _isToday(dateStr){
+  if(!dateStr)return true;
+  const d=new Date(dateStr+'T00:00:00');
+  const t=new Date();t.setHours(0,0,0,0);
+  return d>=t;
+}
+
 function chkAutoSk(){
   const el=document.getElementById('skunk-wrap');
   if(sucMode==='sk'){el.innerHTML='';return;}
-  let fc=0;for(let i=1;i<=catchCount;i++){const te=document.getElementById('ft-'+i),le=document.getElementById('fl-'+i);if(te?.value?.trim()&&parseFloat(le?.value)>0)fc++;}
+  // Fix 1a: Banner nur bei heutigem oder zukünftigem Datum zeigen
+  const dateVal=document.getElementById('s-date').value;
+  if(!_isToday(dateVal)){el.innerHTML='';return;}
+  let fc=0;
+  for(let i=1;i<=catchCount;i++){
+    const te=document.getElementById('ft-'+i),le=document.getElementById('fl-'+i);
+    if(te?.value?.trim()&&parseFloat(le?.value)>0)fc++;
+  }
   const hasTime=document.getElementById('s-start').value&&document.getElementById('s-end').value;
-  if(hasTime&&fc===0){el.innerHTML=`<div class="sk-banner"><div style="font-size:18px;flex-shrink:0;">💡</div><div><div style="font-size:12px;color:var(--purple-t);font-weight:600;">Kein Fang eingetragen</div><div style="font-size:11px;color:var(--purple-t);opacity:.8;margin-top:2px;">Als Schneider speichern?</div><button onclick="setSuc('sk')" style="margin-top:8px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--purple-t);background:transparent;color:var(--purple-t);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--fa);">Als Schneider markieren</button></div></div>`;}
-  else el.innerHTML='';
+  if(hasTime&&fc===0){
+    el.innerHTML=`<div class="sk-banner"><div style="font-size:18px;flex-shrink:0;">💡</div><div><div style="font-size:12px;color:var(--purple-t);font-weight:600;">Kein Fang eingetragen</div><div style="font-size:11px;color:var(--purple-t);opacity:.8;margin-top:2px;">Als Schneider speichern?</div><button onclick="setSuc('sk')" style="margin-top:8px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--purple-t);background:transparent;color:var(--purple-t);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--fa);">Als Schneider markieren</button></div></div>`;
+  } else el.innerHTML='';
 }
-function disSzHint(){_szDismissed=true;if(profile){profile.szDismissed=true;saveProfile();}document.getElementById('sz-hint').style.display='none';}
 
-// ═══════════════════════════════════════════════════════════
-// CLOCK / NETWORK
+// Fix 2c: Historisches Wetter nachladen wenn Datum in Vergangenheit
+function _tryLoadHistoricalWeather(dateStr){
+  if(!dateStr||_isToday(dateStr))return; // nur Vergangenheit
+  if(_lastWx)return; // bereits Wetter vorhanden
+  const coords=_plzCoords||gpsCoords;
+  if(!coords)return;
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation&start_date=${dateStr}&end_date=${dateStr}&timezone=auto`;
+  const strip=document.getElementById('gps-strip');
+  if(strip){strip.style.display='flex';document.getElementById('gps-txt').textContent='Lade historisches Wetter…';}
+  fetch(url).then(r=>r.json()).then(data=>{
+    const h=data.hourly;if(!h||!h.time?.length)return;
+    const avg=arr=>arr?.filter(v=>v!=null).reduce((a,b)=>a+b,0)/(arr?.filter(v=>v!=null).length||1);
+    // Simuliere current-Objekt für applyWxData
+    const c={
+      temperature_2m:parseFloat(avg(h.temperature_2m).toFixed(1)),
+      windspeed_10m:Math.round(avg(h.windspeed_10m)),
+      winddirection_10m:Math.round(avg(h.winddirection_10m)),
+      surface_pressure:Math.round(avg(h.surface_pressure)),
+      relativehumidity_2m:Math.round(avg(h.relativehumidity_2m)),
+      cloudcover:Math.round(avg(h.cloudcover)),
+      precipitation:parseFloat((h.precipitation?.reduce((a,b)=>a+(b||0),0)||0).toFixed(1)),
+      weathercode:h.weathercode?Math.round(avg(h.weathercode)):1
+    };
+    applyWxData(c,`Historisch ${dateStr} ✓`);
+  }).catch(()=>{
+    if(strip)strip.style.display='none';
+  });
+}
+
+function updMoon(){
+  const v=document.getElementById('s-date').value;
+  const m=getMoon(v||null);
+  document.getElementById('moon-ico').textContent=m.icon;
+  document.getElementById('moon-txt').textContent=m.name;
+  document.getElementById('moon-pct').textContent=m.illum+'% beleuchtet';
+  // Fix 2c: historisches Wetter beim Datumswechsel
+  if(v)_tryLoadHistoricalWeather(v);
+  // Fix 1a: Schneider-Banner neu prüfen
+  chkAutoSk();
+}
 // ═══════════════════════════════════════════════════════════
 function updClock(){const n=new Date();document.getElementById('live-time').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}
 updClock();setInterval(updClock,30000);
@@ -1514,7 +1550,7 @@ function getMoon(ds){
   if(f<0.033||f>=0.967){icon='🌑';name='Neumond';}else if(f<0.183){icon='🌒';name='Zunehmende Sichel';}else if(f<0.283){icon='🌓';name='Erstes Viertel';}else if(f<0.450){icon='🌔';name='Zunehmend';}else if(f<0.550){icon='🌕';name='Vollmond';}else if(f<0.716){icon='🌖';name='Abnehmend';}else if(f<0.816){icon='🌗';name='Letztes Viertel';}else{icon='🌘';name='Abnehmende Sichel';}
   return{icon,name,illum};
 }
-function updMoon(){const v=document.getElementById('s-date').value;const m=getMoon(v||null);document.getElementById('moon-ico').textContent=m.icon;document.getElementById('moon-txt').textContent=m.name;document.getElementById('moon-pct').textContent=m.illum+'% beleuchtet';}
+// updMoon: siehe oben (inkl. historisches Wetter + Banner-Check)
 
 // ═══════════════════════════════════════════════════════════
 // WEATHER API (v9: PLZ-primär, GPS als Fallback)
@@ -1796,17 +1832,15 @@ function rndrWChips(fv){
 function wSel(v){document.getElementById('s-water').value=v;document.getElementById('w-chips').style.display='none';for(let i=1;i<=catchCount;i++)rndrFChips(i,'');}
 
 // SMART START TIME CHIPS
+// Fix 3a: Uhrzeit-Chips entfernt – keine vorgeschlagenen Startzeiten mehr
 function rndrStartChips(){
-  const el=document.getElementById('start-chips');if(!el)return;
-  const times={};sessions.forEach(s=>{if(s.start){const h=s.start.split(':')[0]+':00';times[h]=(times[h]||0)+1;}});
-  const top=Object.entries(times).sort((a,b)=>b[1]-a[1]).map(e=>e[0]).slice(0,4);
-  if(!top.length){el.style.display='none';return;}
-  el.style.display='flex';
-  el.innerHTML=top.map(t=>`<button class="chip" onmousedown="startSel('${t}')">${t}</button>`).join('');
+  // Absichtlich leer – Uhrzeit-Chips entfernt (AP v14)
+  const el=document.getElementById('start-chips');
+  if(el)el.style.display='none';
 }
 function startSel(v){document.getElementById('s-start').value=v;document.getElementById('start-chips').style.display='none';}
 
-// FISH CHIPS (no label shown – cleaner UX)
+// FISH CHIPS
 function rndrFChips(id,fv){
   const el=document.getElementById('fc-'+id);if(!el)return;
   const ctx=ctxIdx();const water=document.getElementById('s-water').value.trim();
@@ -1818,15 +1852,21 @@ function rndrFChips(id,fv){
   el.style.display='flex';
   el.innerHTML=chips.map(f=>{const s=f.replace(/'/g,"\\'");return`<button class="chip${isCtx?' cc':''}" onmousedown="fSel(${id},'${s}')">${fIco(f)} ${f}</button>`;}).join('');
 }
-function fSel(id,v){document.getElementById('ft-'+id).value=v;document.getElementById('fc-'+id).style.display='none';chkMMF(id);rndrBChips(id,'');}
 
-// BAIT CHIPS
+// Fix 3b: Köder-Chips – nur wenn Nutzer bereits Köder hat (Top 5 aus favs)
 function rndrBChips(id,fv){
   const el=document.getElementById('bc-'+id);if(!el)return;
   const ctx=ctxIdx();const ft=document.getElementById('ft-'+id)?.value?.trim();
   let chips=[],isCtx=false;
-  if(ft&&ctx.fB[ft]&&Object.keys(ctx.fB[ft]).length){chips=topN(ctx.fB[ft],5);isCtx=true;}
-  else chips=topFavs('bait',5);
+  // Kontext: Köder dieser Fischart aus History
+  if(ft&&ctx.fB[ft]&&Object.keys(ctx.fB[ft]).length){
+    chips=topN(ctx.fB[ft],5);isCtx=true;
+  } else {
+    // Fix 3b: Nur zeigen wenn Nutzer eigene Köder hat – keine statischen Defaults
+    const learned=topFavs('bait',5);
+    if(!learned.length){el.style.display='none';return;} // keine Daten → keine Chips
+    chips=learned;
+  }
   if(fv)chips=chips.filter(b=>b.toLowerCase().includes(fv.toLowerCase()));
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
@@ -1835,19 +1875,17 @@ function rndrBChips(id,fv){
 // bSel: Köder-Chip gewählt → Notiz-Chips aktualisieren (einzige Definition)
 function bSel(id,v){document.getElementById('fb-'+id).value=v;document.getElementById('bc-'+id).style.display='none';updNoteChips(id);}
 
-// BAIT NOTE CHIPS – keyword-based (Smart-Input 3.0)
+// Fix 3c: Notiz-Chips – nur gelernte Keywords aus History, keine statischen Chips
 function rndrNChips(id,fv){
   const el=document.getElementById('nc-'+id);if(!el)return;
   const bait=document.getElementById('fb-'+id)?.value?.trim();
   const ctx=ctxIdx();
-  const tofC=tofKws();
   let chips=[];
-  // Priority: co-occurring keywords from history
-  const histKw=(ctx.bKw[bait]&&Object.keys(ctx.bKw[bait]).length)?topN(ctx.bKw[bait],4):[];
-  const favsKw=(bait&&favs.baitKeywords?.[bait]&&Object.keys(favs.baitKeywords[bait]).length)?topN(favs.baitKeywords[bait],4):[];
-  const allKw=[...new Set([...histKw,...favsKw])].slice(0,4);
-  if(allKw.length){chips=allKw;tofC.forEach(c=>{if(!chips.some(x=>x.toLowerCase()===c.toLowerCase())&&chips.length<6)chips.push(c);});}
-  else chips=tofC.slice(0,3);
+  const histKw=(bait&&ctx.bKw[bait]&&Object.keys(ctx.bKw[bait]).length)?topN(ctx.bKw[bait],6):[];
+  const favsKw=(bait&&favs.baitKeywords?.[bait]&&Object.keys(favs.baitKeywords[bait]).length)?topN(favs.baitKeywords[bait],6):[];
+  chips=[...new Set([...histKw,...favsKw])].slice(0,6);
+  // Fix 3c: Keine Chips zeigen wenn keine gelernten Daten vorhanden
+  if(!chips.length){el.style.display='none';el.innerHTML='';return;}
   if(fv)chips=chips.filter(c=>c.toLowerCase().includes(fv.toLowerCase()));
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
@@ -1862,6 +1900,39 @@ function rndrClarityChips(){
   el.innerHTML=CLARITY.map(c=>{const s=c.replace(/'/g,"\\'");return`<button class="chip ct" onmousedown="clarSel('${s}')">${c}</button>`;}).join('');
 }
 function clarSel(v){document.getElementById('s-clarity').value=v;document.getElementById('clarity-chips').style.display='none';}
+
+// Fix 1c: Prüft ob Fang-Uhrzeit innerhalb Session-Start/Ende liegt
+function chkCatchTime(id){
+  const sessStart=document.getElementById('s-start')?.value;
+  const sessEnd=document.getElementById('s-end')?.value;
+  const catchTime=document.getElementById('ftime-'+id)?.value;
+  const el=document.getElementById('ct-warn-'+id);
+  if(!el||!sessStart||!catchTime)return;
+  const[sh,sm]=sessStart.split(':').map(Number);
+  const[ch,cm]=catchTime.split(':').map(Number);
+  const sMin=sh*60+sm, cMin=ch*60+cm;
+  // Nacht-Session berücksichtigen
+  let isOutside=false;
+  if(sessEnd){
+    const[eh,em]=sessEnd.split(':').map(Number);
+    const eMin=eh*60+em;
+    if(eMin>sMin){
+      // Normale Session (kein Mitternachts-Übergang)
+      isOutside=cMin<sMin||cMin>eMin;
+    } else {
+      // Nacht-Session: gültig wenn >= start ODER <= end
+      isOutside=cMin<sMin&&cMin>eMin;
+    }
+  } else {
+    isOutside=cMin<sMin;
+  }
+  if(isOutside){
+    el.textContent=`⚠️ Uhrzeit liegt außerhalb der Session-Zeit`;
+    el.style.display='block';
+  } else {
+    el.style.display='none';
+  }
+}
 
 // MINDESTMASS
 function chkMMF(id){const type=document.getElementById('ft-'+id)?.value?.trim();const len=parseFloat(document.getElementById('fl-'+id)?.value);const we=document.getElementById('mm-'+id);const le=document.getElementById('fl-'+id);if(!we)return;const r=chkMM(type,len);if(r&&!r.ok){we.textContent=r.msg;we.classList.add('on');le.classList.add('warn');}else{we.classList.remove('on');le?.classList.remove('warn');}}
@@ -1893,7 +1964,31 @@ async function setSuc(mode){
 }
 
 // PHOTO
-function trigPhoto(id){_curPhotoId=id;document.getElementById('photo-inp').click();}
+// Fix 4b: Foto – Auswahl zwischen Kamera und Mediathek
+function trigPhoto(id){
+  _curPhotoId=id;
+  // Auf Geräten ohne Kamera direkt Mediathek öffnen
+  // Auf Mobilgeräten: Auswahl anbieten
+  const isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  if(!isMobile){
+    document.getElementById('photo-inp').click();
+    return;
+  }
+  // Zeige Mini-Auswahl als Sheet
+  const existing=document.getElementById('photo-choice-sheet');
+  if(existing)existing.remove();
+  const sheet=document.createElement('div');
+  sheet.id='photo-choice-sheet';
+  sheet.style.cssText='position:absolute;inset:0;z-index:260;display:flex;align-items:flex-end;background:rgba(15,25,18,.6);';
+  sheet.innerHTML=`<div style="width:100%;background:var(--cream);border-radius:20px 20px 0 0;padding:20px 18px 32px;display:flex;flex-direction:column;gap:10px;">
+    <div style="font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:4px;text-align:center;">Foto hinzufügen</div>
+    <button onclick="document.getElementById('photo-cam').click();document.getElementById('photo-choice-sheet').remove();" style="width:100%;padding:14px;background:var(--green-deep);border:none;border-radius:var(--rs);color:#fff;font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;">📷 Kamera aufnehmen</button>
+    <button onclick="document.getElementById('photo-inp').click();document.getElementById('photo-choice-sheet').remove();" style="width:100%;padding:14px;background:var(--cream-dark);border:none;border-radius:var(--rs);color:var(--text-dark);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;">🖼️ Aus Mediathek wählen</button>
+    <button onclick="document.getElementById('photo-choice-sheet').remove();" style="width:100%;padding:12px;background:transparent;border:none;color:var(--text-light);font-size:13px;font-family:var(--fa);cursor:pointer;">Abbrechen</button>
+  </div>`;
+  document.getElementById('frame').appendChild(sheet);
+  sheet.addEventListener('click',e=>{if(e.target===sheet)sheet.remove();});
+}
 function handlePhoto(e){const file=e.target.files[0];if(!file||!_curPhotoId)return;const reader=new FileReader();reader.onload=async ev=>{const b64=ev.target.result;const pk='photo_'+Date.now()+'_'+_curPhotoId;await savePhoto(pk,b64);window._pm=window._pm||{};window._pm[_curPhotoId]=pk;const pr=document.getElementById('pp-'+_curPhotoId);const ab=document.getElementById('pa-'+_curPhotoId);if(pr){pr.src=b64;pr.style.display='block';}if(ab)ab.style.display='none';showToast('📷','Foto gespeichert');_curPhotoId=null;};reader.readAsDataURL(file);e.target.value='';}
 
 // ═══════════════════════════════════════════════════════════
@@ -1983,10 +2078,11 @@ function addCatch(){
       </div>
       <div class="ig">
         <label class="il" for="ftime-${id}">Uhrzeit</label>
-        <input type="time" class="if" id="ftime-${id}" value="${t}">
+        <input type="time" class="if" id="ftime-${id}" value="${t}" oninput="chkCatchTime(${id})">
       </div>
     </div>
     <div class="mmw" id="mm-${id}" role="alert"></div>
+    <div class="mmw" id="ct-warn-${id}" role="alert" style="color:var(--gold-d);"></div>
 
     <!-- Köder -->
     <div class="ig" style="margin-bottom:6px;margin-top:8px;">
@@ -2037,22 +2133,33 @@ function addCatch(){
   if(presetFish)chkMMF(id);
 }
 
-// Favoriten-Auswahl Fischart → Auto-Focus auf Länge
+// Fix 2b: Auto-Focus auf Länge nach Fischart-Auswahl – mit echtem focus() für Tastatur
+function _focusLength(id){
+  const el=document.getElementById('fl-'+id);
+  if(!el)return;
+  // Kurzer Delay damit DOM-Rendering abgeschlossen ist
+  setTimeout(()=>{
+    el.focus();
+    // Auf Touch-Geräten: readOnly kurz entfernen um Tastatur zu erzwingen
+    el.readOnly=false;
+    el.click();
+  },80);
+}
+
+// Favoriten-Auswahl Fischart → Auto-Focus auf Länge (Fix 2b)
 function favFishSel(id,v){
   document.getElementById('ft-'+id).value=v;
   document.getElementById('fc-'+id).style.display='none';
   chkMMF(id);
-  // Köder-Kontext aktualisieren
   rndrBChips(id,'');
-  // Auto-Focus auf Länge
-  setTimeout(()=>document.getElementById('fl-'+id)?.focus(),50);
+  _focusLength(id);
 }
-// fSel überschreiben für Auto-Focus
+// fSel überschreiben für Auto-Focus (Fix 2b)
 function fSel(id,v){
   document.getElementById('ft-'+id).value=v;
   document.getElementById('fc-'+id).style.display='none';
   chkMMF(id);rndrBChips(id,'');
-  setTimeout(()=>document.getElementById('fl-'+id)?.focus(),50);
+  _focusLength(id);
 }
 
 // Favoriten-Auswahl Köder
@@ -2072,10 +2179,14 @@ function addNoteChip(id,val){
 function updNoteChips(id){
   const el=document.getElementById('nc-'+id);if(!el)return;
   const bait=document.getElementById('fb-'+id)?.value?.trim()||'';
-  const learnedKws=bait&&favs.baitKeywords?.[bait]?topN(favs.baitKeywords[bait],4):[];
-  const allChips=[...new Set([...learnedKws,...NOTE_CHIPS_STATIC])].slice(0,8);
+  const ctx=ctxIdx();
+  const histKw=(bait&&ctx.bKw[bait]&&Object.keys(ctx.bKw[bait]).length)?topN(ctx.bKw[bait],6):[];
+  const favsKw=(bait&&favs.baitKeywords?.[bait]&&Object.keys(favs.baitKeywords[bait]).length)?topN(favs.baitKeywords[bait],6):[];
+  const allChips=[...new Set([...histKw,...favsKw])].slice(0,6);
+  if(!allChips.length){el.style.display='none';el.innerHTML='';return;}
+  el.style.display='flex';
   el.innerHTML=allChips.map(c=>{
-    const safe=c.replace(/'/g,"\\'");
+    const safe=c.replace(/'/g,"\'");
     return`<button class="fav-btn fav-btn-note" onmousedown="addNoteChip(${id},'${safe}')">${c}</button>`;
   }).join('');
 }
@@ -2098,12 +2209,20 @@ async function saveSess(){
     const date=document.getElementById('s-date').value;
     const start=document.getElementById('s-start').value;
     const end=document.getElementById('s-end').value;
-    const water=document.getElementById('s-water').value.trim()||'Unbekanntes Gewässer';
+    const water=waterVal||'Unbekanntes Gewässer';
     const wx=document.getElementById('s-wx').value;
     const temp=document.getElementById('s-temp').value;
     const clarity=document.getElementById('s-clarity').value.trim();
 
     if(!date||!start){showToast('⚠️','Datum und Startzeit erforderlich!',true);return;}
+
+    // Fix 1b: Pflichtfeld Gewässer
+    const waterVal=document.getElementById('s-water').value.trim();
+    if(!waterVal){
+      showToast('📍','Bitte ein Gewässer eingeben!',true);
+      document.getElementById('s-water').focus();
+      return;
+    }
 
     // Fix 2: Endzeitvalidierung – Nacht-Sessions (end < start) sind legitim
     if(end&&start){
@@ -2255,6 +2374,11 @@ function showPage(p){
     const dateEl=document.getElementById('s-date');
     if(dateEl&&!dateEl.value)dateEl.value=n.toISOString().split('T')[0];
     updMoon();
+    // Fix 2a: Immer zum Anfang scrollen wenn Formular geöffnet wird
+    requestAnimationFrame(()=>{
+      const sc=document.querySelector('#page-new .sc');
+      if(sc)sc.scrollTop=0;
+    });
   }
 }
 
