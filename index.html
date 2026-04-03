@@ -125,116 +125,142 @@ body{
 @keyframes plusTap{0%{transform:scale(1);}40%{transform:scale(1.25);background:#e8c44a;}100%{transform:scale(1);background:var(--gold);}}
 .hplus-tap{animation:plusTap .3s ease;}
 
-/* BOTTOM TAB BAR – fix unten */
+/* BOTTOM TAB BAR – immer fest unten, nie scrollbar */
 .btabs{
   display:flex;
   background:var(--cream);
   border-top:1px solid var(--cream-dark);
   flex-shrink:0;
+  position:relative;
+  z-index:10;
   padding:6px 0 max(8px, env(safe-area-inset-bottom, 8px));
 }
 .btab{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
   cursor:pointer;padding:6px 4px 2px;border:none;background:transparent;
   font-family:var(--fa);
-  /* Fix 5: flüssige Transition für alle Zustände */
   transition:transform .15s cubic-bezier(.22,1,.36,1),background .1s;
   -webkit-tap-highlight-color:transparent;
   border-radius:12px;
   margin:0 4px;
 }
-/* Fix 5: Tap-Feedback ähnlich Plus-Button */
-@keyframes tabTap{
-  0%{transform:scale(1);}
-  35%{transform:scale(.82);}
-  100%{transform:scale(1);}
-}
+@keyframes tabTap{0%{transform:scale(1);}35%{transform:scale(.82);}100%{transform:scale(1);}}
 .btab:active{animation:tabTap .2s cubic-bezier(.22,1,.36,1);}
 .btab-ico{width:24px;height:24px;color:var(--text-light);transition:color .2s,transform .2s;}
 .btab-lbl{font-size:10px;font-weight:500;color:var(--text-light);letter-spacing:.2px;transition:color .2s,font-weight .1s;}
 .btab.on .btab-ico{color:var(--green-deep);transform:scale(1.1);}
 .btab.on .btab-lbl{color:var(--green-deep);font-weight:700;}
 
-/* PAGES: flex:1 → nimmt genau den Platz zwischen Header und Footer */
-.pages{
-  display:flex;
-  flex-direction:column;
-  flex:1;
-  min-height:0;      /* kritisch: erlaubt Flex-Kind kleiner als Inhalt */
-  overflow:hidden;
-}
-.page{
-  display:none;
-  flex-direction:column;
-  flex:1;
-  min-height:0;
-  overflow:hidden;
-}
+/* PAGES */
+.pages{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+.page{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
 .page.on{display:flex;}
 
-/* SCROLL-BEREICH: einziger scrollbarer Bereich, kein padding-bottom-Hack mehr */
-.sc{
-  flex:1;
-  overflow-y:auto;
-  overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior-y:contain;
-  padding:16px 16px 24px;
-  scrollbar-width:none;
-}
+/* SCROLL-BEREICH */
+.sc{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:16px 16px 24px;scrollbar-width:none;}
 .sc::-webkit-scrollbar{display:none;}
 
-/* FULLSCREEN OVERLAYS: position:absolute über .phone, eigene Scroll-Zone */
+/* FULLSCREEN OVERLAYS */
 .fsov{
-  position:absolute;
-  inset:0;
-  z-index:105;
-  display:flex;
-  flex-direction:column;
+  position:absolute;inset:0;z-index:105;
+  display:flex;flex-direction:column;
   background:var(--cream);
   transform:translateY(100%);
   transition:transform .32s cubic-bezier(.22,1,.36,1);
-  /* Overflow nur im Body-Teil des Overlays – gesteuert via .fsov-body */
   overflow:hidden;
 }
 .fsov.on{transform:translateY(0);}
 
-/* Overlay-Header: fix oben im Overlay */
+/* Overlay-Header fix */
 .fshdr{
-  background:var(--green-deep);
-  padding:16px 20px;
-  color:#fff;
-  display:flex;align-items:center;gap:12px;
-  flex-shrink:0;
+  background:var(--green-deep);padding:16px 20px;color:#fff;
+  display:flex;align-items:center;gap:12px;flex-shrink:0;
 }
 .fstitle{font-family:var(--fs);font-size:20px;font-weight:600;flex:1;}
 .fsmeta{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;}
-.xbtn{background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.xbtn:hover{background:rgba(255,255,255,.25);}
 
-/* Filter-Bar unter Overlay-Header: fix */
+/* X-Button: immer absolut oben rechts */
+.xbtn{
+  position:absolute;top:14px;right:14px;
+  background:rgba(255,255,255,.18);border:none;color:#fff;
+  width:34px;height:34px;border-radius:50%;cursor:pointer;
+  font-size:17px;display:flex;align-items:center;justify-content:center;
+  z-index:10;flex-shrink:0;
+  transition:background .15s;
+}
+.xbtn:hover{background:rgba(255,255,255,.32);}
+
 .fbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;background:#fff;border-bottom:1px solid var(--cream-dark);flex-shrink:0;}
 
-/* Overlay-Scroll-Body: scrollt innerhalb des Overlays */
+/* Overlay-Scroll-Body */
 .fsov > div:not(.fshdr):not(.fbar){
-  flex:1;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior-y:contain;
-  scrollbar-width:none;
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;scrollbar-width:none;
 }
 .fsov > div:not(.fshdr):not(.fbar)::-webkit-scrollbar{display:none;}
-
-/* Explizit für inline-style scroll-divs in fsov */
 .fsov-scroll{
-  flex:1;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior-y:contain;
-  padding:16px 16px 24px;
-  scrollbar-width:none;
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;padding:16px 16px 24px;scrollbar-width:none;
 }
 .fsov-scroll::-webkit-scrollbar{display:none;}
+
+/* ── iPhone-style Wetter-Overlay ── */
+.fc-ov-bg{
+  background:linear-gradient(170deg,#1a3a5c 0%,#0d2137 40%,#051525 100%);
+  color:#fff;flex-shrink:0;padding:0;position:relative;overflow:hidden;
+}
+.fc-ov-bg::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 60% 20%,rgba(100,160,255,.18) 0%,transparent 70%);
+  pointer-events:none;
+}
+.fc-ov-top{padding:18px 20px 16px;position:relative;}
+.fc-ov-dow{font-size:13px;font-weight:600;opacity:.7;text-transform:uppercase;letter-spacing:.8px;}
+.fc-ov-date{font-size:15px;opacity:.6;margin-top:1px;}
+.fc-ov-ico{font-size:52px;margin:12px 0 4px;line-height:1;}
+.fc-ov-temp{font-size:64px;font-weight:200;letter-spacing:-2px;line-height:1;}
+.fc-ov-desc{font-size:16px;opacity:.75;margin-top:4px;}
+.fc-ov-range{font-size:14px;opacity:.6;margin-top:2px;}
+.fc-ov-tiles{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:rgba(255,255,255,.08);border-top:1px solid rgba(255,255,255,.12);
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+.fc-ov-tile{
+  padding:12px 10px;text-align:center;
+  background:rgba(255,255,255,.05);
+}
+.fc-ov-tile-lbl{font-size:10px;opacity:.55;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.fc-ov-tile-val{font-size:18px;font-weight:600;}
+.fc-ov-tile-sub{font-size:10px;opacity:.5;margin-top:2px;}
+/* Beißindex Ring */
+.fc-bite-ring{width:56px;height:56px;margin:0 auto 4px;}
+.fc-ov-scroll{
+  background:linear-gradient(170deg,#1a3a5c 0%,#0d2137 40%,#051525 100%);
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;padding:0 0 32px;scrollbar-width:none;
+}
+.fc-ov-scroll::-webkit-scrollbar{display:none;}
+/* Wetter-Sektion im Overlay */
+.fc-sec{margin:16px 16px 0;background:rgba(255,255,255,.08);border-radius:16px;padding:14px 16px;color:#fff;}
+.fc-sec-title{font-size:11px;font-weight:600;opacity:.5;text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;}
+/* Chart-Canvas */
+.fc-canvas-wrap{position:relative;height:120px;width:100%;}
+/* Regen-Balken (Chart.js Bar) */
+.fc-rain-wrap{position:relative;height:80px;width:100%;}
+/* Swipe-Nav Punkte */
+.fc-day-dots{display:flex;gap:6px;justify-content:center;padding:10px 0 4px;}
+.fc-day-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);transition:background .2s;}
+.fc-day-dot.on{background:#fff;}
+/* Back-Button im Forecast-Overlay */
+.fc-ov-back{
+  position:absolute;top:14px;left:14px;
+  background:rgba(255,255,255,.15);border:none;color:#fff;
+  padding:6px 12px 6px 8px;border-radius:20px;font-size:13px;font-weight:500;
+  font-family:var(--fa);cursor:pointer;display:flex;align-items:center;gap:4px;
+  z-index:10;
+}
+.fc-ov-back:hover{background:rgba(255,255,255,.25);}
 
 /* TOAST: immer über Tab-Bar */
 .toast{
@@ -766,8 +792,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fc-empty-icon{font-size:48px;margin-bottom:12px;opacity:.4;}
 .fc-btn{width:100%;padding:16px;background:var(--green-deep);border:none;border-radius:var(--r);color:#fff;font-size:15px;font-weight:600;font-family:var(--fa);cursor:pointer;margin-bottom:10px;}
 
-.xbtn{background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.xbtn:hover{background:rgba(255,255,255,.25);}
+.xbtn-old-removed{}
 .fbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;background:#fff;border-bottom:1px solid var(--cream-dark);}
 
 /* BURGER MENU */
@@ -1231,16 +1256,14 @@ input[type=file]{display:none;}
 
 <!-- DAY DETAIL OVERLAY (AP2) -->
 <div class="fsov" id="fs-day-detail" role="dialog" aria-modal="true" aria-label="Tages-Details">
-  <!-- Hero-Header wird per JS befüllt -->
-  <div id="dd-hero-wrap"></div>
-  <!-- Body -->
+  <div id="dd-hero-wrap" style="flex-shrink:0;"></div>
   <div class="fsov-scroll" id="dd-body"></div>
 </div>
 
 <!-- AP4: FORECAST DAY DETAIL OVERLAY -->
-<div class="fsov" id="fs-fc-day" role="dialog" aria-modal="true" aria-label="Vorhersage-Detail" style="z-index:115;">
-  <div id="fc-day-hero"></div>
-  <div class="fsov-scroll" id="fc-day-body"></div>
+<div class="fsov" id="fs-fc-day" role="dialog" aria-modal="true" aria-label="Vorhersage-Detail" style="z-index:115;background:#051525;">
+  <div id="fc-day-hero" class="fc-ov-bg" style="flex-shrink:0;position:relative;"></div>
+  <div class="fc-ov-scroll" id="fc-day-body"></div>
 </div>
 
 <!-- PAGE: DETAIL -->
@@ -1821,45 +1844,119 @@ function rndrFChips(id,fv){
   el.innerHTML=chips.map(f=>{const s=f.replace(/'/g,"\\'");return`<button class="chip${isCtx?' cc':''}" onmousedown="fSel(${id},'${s}')">${fIco(f)} ${f}</button>`;}).join('');
 }
 
-// Fix 3b: Köder-Chips – nur wenn Nutzer bereits Köder hat (Top 5 aus favs)
+// FISH CHIPS – nur eigene gelernte Fischarten (Top 5), keine ATYP-Defaults
+function rndrFChips(id,fv){
+  const el=document.getElementById('fc-'+id);if(!el)return;
+  const ctx=ctxIdx();
+  const water=document.getElementById('s-water').value.trim();
+  let chips=[],isCtx=false;
+
+  // 1. Kontext aus Gewässer-History (stärkste Signale)
+  if(water&&ctx.wF[water]&&Object.keys(ctx.wF[water]).length){
+    chips=topN(ctx.wF[water],5);isCtx=true;
+  }
+  // 2. Eigene Top-5 aus allen Sessions
+  if(!chips.length){
+    chips=topFavs('fish',5);
+  }
+  // Kein Fallback auf ATYP-Defaults – nur eigene Daten
+  if(!chips.length){el.style.display='none';return;}
+  if(fv)chips=chips.filter(f=>f.toLowerCase().includes(fv.toLowerCase()));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(f=>{
+    const s=f.replace(/'/g,"\\'");
+    return`<button class="chip${isCtx?' cc':''}" onmousedown="fSel(${id},'${s}')">${fIco(f)} ${f}</button>`;
+  }).join('');
+}
+
+// BAIT CHIPS – nur eigene gelernte Köder (Top 5)
 function rndrBChips(id,fv){
   const el=document.getElementById('bc-'+id);if(!el)return;
-  const ctx=ctxIdx();const ft=document.getElementById('ft-'+id)?.value?.trim();
+  const ctx=ctxIdx();
+  const ft=document.getElementById('ft-'+id)?.value?.trim();
   let chips=[],isCtx=false;
-  // Kontext: Köder dieser Fischart aus History
+
+  // 1. Kontext aus Fischart-History (stärkste Signale)
   if(ft&&ctx.fB[ft]&&Object.keys(ctx.fB[ft]).length){
     chips=topN(ctx.fB[ft],5);isCtx=true;
-  } else {
-    // Fix 3b: Nur zeigen wenn Nutzer eigene Köder hat – keine statischen Defaults
-    const learned=topFavs('bait',5);
-    if(!learned.length){el.style.display='none';return;} // keine Daten → keine Chips
-    chips=learned;
   }
+  // 2. Eigene Top-5 aus allen Köder-Verwendungen
+  if(!chips.length){
+    chips=topFavs('bait',5);
+  }
+  // Keine Daten → keine Chips
+  if(!chips.length){el.style.display='none';return;}
   if(fv)chips=chips.filter(b=>b.toLowerCase().includes(fv.toLowerCase()));
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
-  el.innerHTML=chips.map(b=>{const s=b.replace(/'/g,"\\'");return`<button class="chip${isCtx?' cc':''}" onmousedown="bSel(${id},'${s}')">🪝 ${b}</button>`;}).join('');
+  el.innerHTML=chips.map(b=>{
+    const s=b.replace(/'/g,"\\'");
+    return`<button class="chip${isCtx?' cc':''}" onmousedown="bSel(${id},'${s}')">🪝 ${b}</button>`;
+  }).join('');
 }
-// bSel: Köder-Chip gewählt → Notiz-Chips aktualisieren (einzige Definition)
+// bSel: Köder gewählt → Notiz-Chips aktualisieren
 function bSel(id,v){document.getElementById('fb-'+id).value=v;document.getElementById('bc-'+id).style.display='none';updNoteChips(id);}
 
-// Fix 3c: Notiz-Chips – nur gelernte Keywords aus History, keine statischen Chips
+// NOTIZ-CHIPS – lernendes System mit n-gram Phrasen (auch 2-Wort-Ausdrücke wie "Fox rage")
+// Tokenisierung mit Unigrams + Bigrams für Phrasen
+function _extractPhrases(note){
+  if(!note)return[];
+  // Unigrams (Einzelwörter, gefiltert)
+  const words=note.split(/[\s,;\/]+/)
+    .map(w=>w.replace(/[.!?()"""]+/g,'').trim())
+    .filter(w=>w.length>=2&&!STOPWORDS.has(w.toLowerCase()));
+  const unigrams=words.filter(w=>
+    /^[A-Z]\d{2,3}$/i.test(w)||  // C04, C05
+    /^\d+(cm|mm|g|m)$/i.test(w)|| // 10g, 12cm
+    w.length>=3
+  );
+  // Bigrams (Zwei-Wort-Phrasen, z.B. "Fox rage", "Strike King")
+  const bigrams=[];
+  for(let i=0;i<words.length-1;i++){
+    const a=words[i],b=words[i+1];
+    // Bigram nur wenn beide Wörter >= 2 Zeichen und das erste großgeschrieben ist (Marken!)
+    if(a.length>=2&&b.length>=2&&/^[A-ZÄÖÜ]/.test(a)){
+      bigrams.push(a+' '+b);
+    }
+  }
+  return[...bigrams,...unigrams]; // Bigrams Priorität
+}
+
+// Erweiterte addBaitKw die auch Phrasen lernt
+function addBaitKw(bait,note){
+  if(!bait||!note)return;
+  const phrases=_extractPhrases(note);
+  if(!favs.baitKeywords)favs.baitKeywords={};
+  phrases.forEach(ph=>{
+    favs.baitKeywords[bait]=favs.baitKeywords[bait]||{};
+    favs.baitKeywords[bait][ph]=(favs.baitKeywords[bait][ph]||0)+1;
+  });
+  saveFavs();
+}
+
+// Fix 3c: Notiz-Chips – nur gelernte Phrases, Bigrams zuerst
 function rndrNChips(id,fv){
   const el=document.getElementById('nc-'+id);if(!el)return;
   const bait=document.getElementById('fb-'+id)?.value?.trim();
   const ctx=ctxIdx();
-  let chips=[];
-  const histKw=(bait&&ctx.bKw[bait]&&Object.keys(ctx.bKw[bait]).length)?topN(ctx.bKw[bait],6):[];
-  const favsKw=(bait&&favs.baitKeywords?.[bait]&&Object.keys(favs.baitKeywords[bait]).length)?topN(favs.baitKeywords[bait],6):[];
-  chips=[...new Set([...histKw,...favsKw])].slice(0,6);
-  // Fix 3c: Keine Chips zeigen wenn keine gelernten Daten vorhanden
+  // bKw aus ctxIdx nutzt noch alten tokenize → wir bevorzugen favs.baitKeywords
+  const favsKw=(bait&&favs.baitKeywords?.[bait]&&Object.keys(favs.baitKeywords[bait]).length)
+    ?topN(favs.baitKeywords[bait],5):[];
+  const chips=favsKw; // nur eigene gelernte Phrasen
   if(!chips.length){el.style.display='none';el.innerHTML='';return;}
-  if(fv)chips=chips.filter(c=>c.toLowerCase().includes(fv.toLowerCase()));
-  if(!chips.length){el.style.display='none';return;}
+  if(fv&&!chips.some(c=>c.toLowerCase().includes(fv.toLowerCase()))){el.style.display='none';return;}
   el.style.display='flex';
-  el.innerHTML=chips.map(n=>{const s=n.replace(/'/g,"\\'");return`<button class="chip cc" onmousedown="nSel(${id},'${s}')">${n}</button>`;}).join('');
+  el.innerHTML=chips.map(n=>{
+    const s=n.replace(/'/g,"\\'");
+    return`<button class="chip cc" onmousedown="nSel(${id},'${s}')">${n}</button>`;
+  }).join('');
 }
-function nSel(id,v){const el=document.getElementById('fn-'+id);if(!el)return;el.value=el.value?(el.value+' '+v):v;document.getElementById('nc-'+id).style.display='none';}
+function nSel(id,v){
+  const el=document.getElementById('fn-'+id);if(!el)return;
+  el.value=el.value?el.value.trimEnd()+' '+v:v;
+  document.getElementById('nc-'+id).style.display='none';
+}
 
 // CLARITY CHIPS
 function rndrClarityChips(){
@@ -1989,29 +2086,7 @@ function addCatch(){
   const presetFish=id>1?_lastCatchFish():'';
   const presetBait=id>1?_lastCatchBait():'';
 
-  // Top-3 Fischarten aus favs als permanente Buttons
-  const topFish=topFavs('fish',3);
-  const topBait=topFavs('bait',3);
-  const ctx=ctxIdx();
-  const water=document.getElementById('s-water')?.value?.trim()||'';
-
-  // Kontext-Fischarten (aus Gewässer-History)
-  let ctxFish=[];
-  if(water&&ctx.wF[water])ctxFish=topN(ctx.wF[water],3);
-  const fishFavBtns=[...new Set([...ctxFish,...topFish])].slice(0,3).map(f=>{
-    const safe=f.replace(/'/g,"\\'");
-    return`<button class="fav-btn" onmousedown="favFishSel(${id},'${safe}')">${fIco(f)} ${f}</button>`;
-  }).join('');
-
-  // Kontext-Köder (aus Fischart-History)
-  let ctxBait=[];
-  if(presetFish&&ctx.fB[presetFish])ctxBait=topN(ctx.fB[presetFish],3);
-  const baitFavBtns=[...new Set([...ctxBait,...topBait])].slice(0,3).map(b=>{
-    const safe=b.replace(/'/g,"\\'");
-    return`<button class="fav-btn fav-btn-bait" onmousedown="favBaitSel(${id},'${safe}')">🪝 ${b}</button>`;
-  }).join('');
-
-  // Notiz-Chips: nur gelernte Keywords – initial leer (Fix 3)
+  // Notiz-Chips: nur gelernte Keywords – initial leer
   const learnedKws=presetBait&&favs.baitKeywords?.[presetBait]?topN(favs.baitKeywords[presetBait],4):[];
   const noteChipsHtml=learnedKws.length
     ? learnedKws.map(c=>{const safe=c.replace(/'/g,"\\'");return`<button class="fav-btn fav-btn-note" onmousedown="addNoteChip(${id},'${safe}')">${c}</button>`;}).join('')
@@ -2024,14 +2099,13 @@ function addCatch(){
       ${id>1?`<button class="rm" onclick="rmCatch(${id})" aria-label="Fang ${id} entfernen">×</button>`:'<div style="width:32px"></div>'}
     </div>
 
-    <!-- Fischart -->
+    <!-- Fischart – Chips als Dropdown, keine doppelten Favoritenbuttons -->
     <div class="ig" style="margin-bottom:6px;">
       <label class="il" for="ft-${id}">Fischart</label>
       <input type="text" list="fdl-${id}" class="if" id="ft-${id}" placeholder="z.B. Zander"
         value="${presetFish}"
         onfocus="rndrFChips(${id},this.value)" oninput="rndrFChips(${id},this.value);chkMMF(${id})" onblur="dHide('fc-${id}')" autocomplete="off">
       <datalist id="fdl-${id}">${FISH.map(f=>`<option value="${f}">`).join('')}</datalist>
-      ${fishFavBtns?`<div class="fav-row">${fishFavBtns}</div>`:''}
       <div class="crow" id="fc-${id}" style="display:none;" role="listbox"></div>
     </div>
 
@@ -2040,6 +2114,7 @@ function addCatch(){
       <div class="ig">
         <label class="il" for="fl-${id}">Länge (cm)</label>
         <input type="number" class="if" id="fl-${id}" placeholder="65" min="1" max="300" step="0.5"
+          inputmode="decimal"
           oninput="chkMMF(${id})">
       </div>
       <div class="ig">
@@ -2050,21 +2125,20 @@ function addCatch(){
     <div class="mmw" id="mm-${id}" role="alert"></div>
     <div class="mmw" id="ct-warn-${id}" role="alert" style="color:var(--gold-d);"></div>
 
-    <!-- Köder -->
+    <!-- Köder – Chips als Dropdown, keine doppelten Favoritenbuttons -->
     <div class="ig" style="margin-bottom:6px;margin-top:8px;">
       <label class="il" for="fb-${id}">Köder</label>
       <input type="text" class="if" id="fb-${id}" placeholder="z.B. Gummifisch"
         value="${presetBait}"
         onfocus="rndrBChips(${id},this.value)" oninput="rndrBChips(${id},this.value);updNoteChips(${id})" onblur="dHide('bc-${id}')" autocomplete="off">
-      ${baitFavBtns?`<div class="fav-row">${baitFavBtns}</div>`:''}
       <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
     </div>
 
-    <!-- Notizen (Fix 5: Label umbenannt, Chips nur wenn gelernt) -->
+    <!-- Notizen -->
     <div class="ig" style="margin-bottom:10px;">
       <label class="il" for="fn-${id}">Notizen</label>
       <div class="fav-row" id="nc-${id}" style="margin-bottom:${noteChipsHtml?'6px':'0'};display:${noteChipsHtml?'flex':'none'};">${noteChipsHtml}</div>
-      <input type="text" class="if" id="fn-${id}" placeholder='z.B. Buhne 6 · Strömungsrinne'
+      <input type="text" class="if" id="fn-${id}" placeholder='z.B. Buhne 6 · Fox Rage Zander'
         autocomplete="off" autocorrect="off" autocapitalize="none"
         style="font-size:15px;">
     </div>
@@ -2102,17 +2176,21 @@ function addCatch(){
   if(presetFish)chkMMF(id);
 }
 
-// Fix 2b: Auto-Focus auf Länge nach Fischart-Auswahl – mit echtem focus() für Tastatur
+// Fix 2b: Auto-Focus auf Länge nach Fischart-Auswahl
+// inputmode="decimal" im HTML-Input ist Voraussetzung für iOS-Tastatur
 function _focusLength(id){
   const el=document.getElementById('fl-'+id);
   if(!el)return;
-  // Kurzer Delay damit DOM-Rendering abgeschlossen ist
+  // Kurzer Delay damit Chip-Dropdown geschlossen ist
   setTimeout(()=>{
-    el.focus();
-    // Auf Touch-Geräten: readOnly kurz entfernen um Tastatur zu erzwingen
-    el.readOnly=false;
-    el.click();
-  },80);
+    el.setAttribute('inputmode','decimal');
+    el.focus({preventScroll:false});
+    // iOS-Workaround: temporäre readOnly-Manipulation zwingt Tastatur auf
+    if(/iPhone|iPad/i.test(navigator.userAgent)){
+      el.setAttribute('readonly','readonly');
+      setTimeout(()=>{el.removeAttribute('readonly');el.focus();},50);
+    }
+  },100);
 }
 
 // Favoriten-Auswahl Fischart → Auto-Focus auf Länge (Fix 2b)
@@ -2148,13 +2226,11 @@ function addNoteChip(id,val){
 function updNoteChips(id){
   const el=document.getElementById('nc-'+id);if(!el)return;
   const bait=document.getElementById('fb-'+id)?.value?.trim()||'';
-  const ctx=ctxIdx();
-  const histKw=(bait&&ctx.bKw[bait]&&Object.keys(ctx.bKw[bait]).length)?topN(ctx.bKw[bait],6):[];
-  const favsKw=(bait&&favs.baitKeywords?.[bait]&&Object.keys(favs.baitKeywords[bait]).length)?topN(favs.baitKeywords[bait],6):[];
-  const allChips=[...new Set([...histKw,...favsKw])].slice(0,6);
-  if(!allChips.length){el.style.display='none';el.innerHTML='';return;}
+  const favsKw=(bait&&favs.baitKeywords?.[bait]&&Object.keys(favs.baitKeywords[bait]).length)
+    ?topN(favs.baitKeywords[bait],5):[];
+  if(!favsKw.length){el.style.display='none';el.innerHTML='';return;}
   el.style.display='flex';
-  el.innerHTML=allChips.map(c=>{
+  el.innerHTML=favsKw.map(c=>{
     const safe=c.replace(/'/g,"\'");
     return`<button class="fav-btn fav-btn-note" onmousedown="addNoteChip(${id},'${safe}')">${c}</button>`;
   }).join('');
@@ -3303,7 +3379,7 @@ function rndrForecast(){
   // Parallel: Daily + Hourly (für Detail-Overlay)
   Promise.all([
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant,precipitation_sum,surface_pressure_mean&timezone=auto&forecast_days=7`).then(r=>r.json()),
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,precipitation_probability,weathercode&timezone=auto&forecast_days=7`).then(r=>r.json())
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,precipitation_probability,weathercode,surface_pressure&timezone=auto&forecast_days=7`).then(r=>r.json())
   ])
   .then(([daily,hourly])=>{
     _fcData=daily;_fcHourlyData=hourly;
@@ -3380,109 +3456,229 @@ function renderFcDays(data){
     </div>`;
 }
 
-// ── AP4: Stündliches Detail-Overlay ──────────────────────────
-function openFcDayDetail(dayIdx,dateStr){
-  if(!_fcHourlyData)return;
-  openFs('fc-day');
-  const h=_fcHourlyData.hourly;
-  if(!h||!h.time)return;
+// ── AP4: iPhone-style Wetter-Overlay mit Chart.js + Swipe + Tide ──────────────
+let _fcDayIdx=0; // aktueller Tag im Forecast-Overlay
+let _fcDayCount=0;
+let _swipeStartX=0,_swipeStartY=0;
 
-  // Stunden dieses Tages extrahieren
+function openFcDayDetail(dayIdx,dateStr){
+  if(!_fcHourlyData||!_fcData)return;
+  _fcDayIdx=dayIdx;
+  _fcDayCount=_fcData?.daily?.time?.length||7;
+  openFs('fc-day');
+  _renderFcDay(dayIdx);
+
+  // Swipe-Geste
+  const el=document.getElementById('fs-fc-day');
+  el.ontouchstart=e=>{_swipeStartX=e.touches[0].clientX;_swipeStartY=e.touches[0].clientY;};
+  el.ontouchend=e=>{
+    const dx=e.changedTouches[0].clientX-_swipeStartX;
+    const dy=Math.abs(e.changedTouches[0].clientY-_swipeStartY);
+    if(Math.abs(dx)>48&&dy<80){
+      if(dx<0&&_fcDayIdx<_fcDayCount-1){_fcDayIdx++;_renderFcDay(_fcDayIdx);}
+      else if(dx>0&&_fcDayIdx>0){_fcDayIdx--;_renderFcDay(_fcDayIdx);}
+    }
+  };
+}
+
+async function _renderFcDay(dayIdx){
+  const h=_fcHourlyData.hourly;
+  const dayData=_fcData?.daily;
+  if(!h||!h.time||!dayData)return;
+
+  const dateStr=dayData.time[dayIdx];
+  const di=dayIdx;
+  const tmax=dayData.temperature_2m_max[di];
+  const tmin=dayData.temperature_2m_min[di];
+  const windMax=dayData.windspeed_10m_max[di];
+  const windDir=dayData.winddirection_10m_dominant?.[di];
+  const pres=dayData.surface_pressure_mean?.[di];
+  const precip=dayData.precipitation_sum[di];
+  const wc=dayData.weathercode[di];
+  const bp=calcBiteProb({date:dateStr,wc,tmax,wind:windMax,windDir,pres});
+
+  // Stunden dieses Tages
   const hoursOfDay=h.time.map((t,i)=>({
     t,hour:parseInt(t.slice(11,13)),
     temp:h.temperature_2m?.[i],
     wind:h.windspeed_10m?.[i],
     windDir:h.winddirection_10m?.[i],
     rainProb:h.precipitation_probability?.[i],
+    pressure:h.surface_pressure?.[i]??pres,
     wc:h.weathercode?.[i]
   })).filter(x=>x.t.startsWith(dateStr));
 
-  if(!hoursOfDay.length){closeFs('fc-day');return;}
-
-  // Tages-Daten aus _fcData
-  const dayData=_fcData?.daily;
-  const di=dayData?.time?.indexOf(dateStr);
-  const tmax=di>=0?dayData.temperature_2m_max[di]:null;
-  const tmin=di>=0?dayData.temperature_2m_min[di]:null;
-  const windMax=di>=0?dayData.windspeed_10m_max[di]:null;
-  const windDir=di>=0?dayData.winddirection_10m_dominant?.[di]:null;
-  const pres=di>=0?dayData.surface_pressure_mean?.[di]:null;
-  const precip=di>=0?dayData.precipitation_sum[di]:null;
-  const wc=di>=0?dayData.weathercode[di]:null;
-  const bp=calcBiteProb({date:dateStr,wc,tmax,wind:windMax,windDir,pres});
-
   const DOW7=['So','Mo','Di','Mi','Do','Fr','Sa'];
   const dow=DOW7[new Date(dateStr+'T12:00:00').getDay()];
-  const pctColor=bp.pct>=70?'var(--green-mid)':bp.pct>=40?'var(--gold)':'var(--text-light)';
+  const [,mo,dy]=dateStr.split('-');
+  const MON_S=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  const dateLabel=`${parseInt(dy)}. ${MON_S[parseInt(mo)-1]}`;
+  const pctColor=bp.pct>=70?'#5fd090':bp.pct>=40?'#f0c040':'#8ab0c0';
 
-  // Hero
+  // Swipe-Punkte
+  const dots=Array.from({length:_fcDayCount},(_,i)=>`<div class="fc-day-dot${i===dayIdx?' on':''}"></div>`).join('');
+
+  // ── Hero ──
   document.getElementById('fc-day-hero').innerHTML=`
-    <div class="dd-hero">
-      <button class="dd-hero-back" onclick="closeFs('fc-day')">‹ Zurück</button>
-      <div class="dd-hero-meta">${dow}, ${fmtDate(dateStr)}</div>
-      <div class="dd-hero-date">${wxIco(wc)} ${tmax!=null?Math.round(tmax)+'° / '+Math.round(tmin)+'°':''}</div>
-      <div style="display:flex;align-items:center;gap:16px;margin-top:10px;">
-        <div>
-          <div style="font-size:36px;font-weight:800;color:${pctColor};line-height:1;">${bp.pct}%</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:2px;text-transform:uppercase;letter-spacing:.6px;">Beißindex</div>
-        </div>
-        <div class="dd-tiles" style="flex:1;grid-template-columns:repeat(3,1fr);">
-          ${windMax!=null?`<div class="dd-tile"><div class="dd-tile-val">${Math.round(windMax)}</div><div class="dd-tile-lbl">km/h ${windLabel(windDir)}</div></div>`:''}
-          ${pres!=null?`<div class="dd-tile"><div class="dd-tile-val">${Math.round(pres)}</div><div class="dd-tile-lbl">hPa</div></div>`:''}
-          ${precip!=null?`<div class="dd-tile"><div class="dd-tile-val">${precip.toFixed(1)}</div><div class="dd-tile-lbl">mm</div></div>`:''}
-        </div>
+    <button class="fc-ov-back" onclick="closeFs('fc-day')">‹ Zurück</button>
+    <div class="fc-ov-top">
+      <div class="fc-ov-dow">${dow}</div>
+      <div class="fc-ov-date">${dateLabel}</div>
+      <div class="fc-ov-ico">${wxIco(wc)}</div>
+      <div class="fc-ov-temp">${tmax!=null?Math.round(tmax)+'°':'–'}</div>
+      <div class="fc-ov-desc">${wxDesc(wc)}</div>
+      <div class="fc-ov-range">${tmin!=null?'↓'+Math.round(tmin)+'°':''} ${tmax!=null?'↑'+Math.round(tmax)+'°':''}</div>
+    </div>
+    <div class="fc-ov-tiles">
+      <div class="fc-ov-tile">
+        <div class="fc-ov-tile-lbl">Beißindex</div>
+        <div class="fc-ov-tile-val" style="color:${pctColor};">${bp.pct}%</div>
+        <div class="fc-ov-tile-sub">${bp.pct>=70?'Sehr gut':bp.pct>=50?'Gut':bp.pct>=30?'Mäßig':'Schlecht'}</div>
       </div>
-    </div>`;
+      <div class="fc-ov-tile">
+        <div class="fc-ov-tile-lbl">Wind</div>
+        <div class="fc-ov-tile-val">${windMax!=null?Math.round(windMax):'–'}</div>
+        <div class="fc-ov-tile-sub">km/h ${windLabel(windDir)}</div>
+      </div>
+      <div class="fc-ov-tile">
+        <div class="fc-ov-tile-lbl">Regen</div>
+        <div class="fc-ov-tile-val">${precip!=null?precip.toFixed(1):'–'}</div>
+        <div class="fc-ov-tile-sub">mm</div>
+      </div>
+    </div>
+    <div class="fc-day-dots">${dots}</div>`;
 
-  // Stundenkurve
-  const temps=hoursOfDay.map(h=>h.temp).filter(v=>v!=null);
-  const minT=temps.length?Math.min(...temps):0;
-  const maxT=temps.length?Math.max(...temps):30;
-  const tRange=maxT-minT||1;
+  // ── Body: Charts ──
+  // Stunden-Labels
+  const labels=hoursOfDay.map(x=>`${String(x.hour).padStart(2,'0')}:00`);
+  const temps=hoursOfDay.map(x=>x.temp!=null?Math.round(x.temp*10)/10:null);
+  const winds=hoursOfDay.map(x=>x.wind!=null?Math.round(x.wind):null);
+  const rains=hoursOfDay.map(x=>x.rainProb!=null?x.rainProb:null);
+  const presses=hoursOfDay.map(x=>x.pressure!=null?Math.round(x.pressure):null);
 
-  const hourCols=hoursOfDay.filter(h=>h.hour%3===0).map(h=>{
-    const barH=Math.round(((h.temp-minT)/tRange)*60)+8;
-    const tempColor=h.temp>=20?'var(--red)':h.temp>=10?'var(--gold)':'var(--blue-t)';
-    return`<div class="fc-hcol">
-      <div class="fc-htime">${String(h.hour).padStart(2,'0')}h</div>
-      <div class="fc-hbar-bg"><div class="fc-hbar" style="height:${barH}px;background:${tempColor};"></div></div>
-      <div class="fc-htemp">${h.temp!=null?Math.round(h.temp)+'°':''}</div>
-      <div class="fc-hrain">${h.rainProb!=null?h.rainProb+'%':''}</div>
+  // Tide für Weser Bremen – nur wenn coords nahe Bremen
+  const coords=_plzCoords||gpsCoords;
+  const isBremen=coords&&Math.abs(coords.lat-53.07)<0.8&&Math.abs(coords.lon-8.8)<1.2;
+  let tideHtml='';
+  if(isBremen){
+    tideHtml=`<div class="fc-sec">
+      <div class="fc-sec-title">🌊 Tide Weser Bremen</div>
+      <div class="fc-canvas-wrap"><canvas id="fc-tide-chart"></canvas></div>
+      <div id="fc-tide-info" style="font-size:11px;opacity:.5;text-align:center;margin-top:6px;">Lade Tidendaten…</div>
     </div>`;
-  }).join('');
+  }
 
   // Fisch-Insights
   const fishInsights=bp.fishInsights||[];
   const insightsHtml=fishInsights.length?`
-    <div class="slbl" style="margin-top:14px;">Fisch-Wahrscheinlichkeiten</div>
-    <div class="card" style="padding:4px 16px;">
-      ${fishInsights.map(fi=>`<div class="fc-insight-row">
-        <div class="fc-insight-name">${fi.fish}</div>
-        <div class="fc-insight-bar"><div class="fc-insight-fill" style="width:${fi.pct}%;background:${fi.pct>=70?'var(--green-mid)':fi.pct>=40?'var(--gold)':'#CBD5D0'};"></div></div>
-        <div class="fc-insight-pct" style="color:${fi.pct>=70?'var(--green-mid)':fi.pct>=40?'var(--gold-d)':'var(--text-light)'};">${fi.pct}%</div>
+    <div class="fc-sec">
+      <div class="fc-sec-title">🎣 Fisch-Wahrscheinlichkeiten</div>
+      ${fishInsights.map(fi=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <div style="font-size:13px;font-weight:600;color:#fff;min-width:70px;">${fi.fish}</div>
+        <div style="flex:1;background:rgba(255,255,255,.12);border-radius:4px;height:8px;overflow:hidden;">
+          <div style="height:100%;width:${fi.pct}%;background:${fi.pct>=70?'#5fd090':fi.pct>=40?'#f0c040':'#4a7c99'};border-radius:4px;"></div>
+        </div>
+        <div style="font-size:12px;color:${fi.pct>=70?'#5fd090':fi.pct>=40?'#f0c040':'rgba(255,255,255,.4)'};min-width:32px;text-align:right;font-weight:600;">${fi.pct}%</div>
       </div>`).join('')}
     </div>`:'';
 
-  // Stündlicher Wind-Verlauf
-  const windRows=hoursOfDay.filter(h=>h.hour%3===0).map(h=>`
-    <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(200,221,208,.2);">
-      <div style="font-size:11px;font-weight:700;color:var(--text-light);width:28px;">${String(h.hour).padStart(2,'0')}h</div>
-      <div style="font-size:13px;">${wxIco(h.wc)}</div>
-      <div style="font-size:13px;font-weight:500;flex:1;">${h.wind!=null?Math.round(h.wind)+' km/h':''} ${windArrow(h.windDir)}</div>
-      <div style="font-size:12px;color:var(--blue-t);">${h.rainProb!=null?h.rainProb+'% 🌧':''}</div>
-    </div>`).join('');
-
   document.getElementById('fc-day-body').innerHTML=`
-    <div class="slbl">Temperaturverlauf</div>
-    <div class="card" style="padding:14px 12px 8px;">
-      <div class="fc-hourly-wrap"><div class="fc-hourly-row">${hourCols}</div></div>
-      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-light);margin-top:4px;padding:0 2px;">
-        <span>Min ${minT!=null?Math.round(minT)+'°':''}</span><span>Max ${maxT!=null?Math.round(maxT)+'°':''}</span>
-      </div>
+    <div class="fc-sec">
+      <div class="fc-sec-title">🌡 Temperatur</div>
+      <div class="fc-canvas-wrap"><canvas id="fc-temp-chart"></canvas></div>
     </div>
-    ${insightsHtml}
-    <div class="slbl" style="margin-top:14px;">Wind &amp; Niederschlag</div>
-    <div class="card" style="padding:4px 16px;">${windRows}</div>`;
+    <div class="fc-sec">
+      <div class="fc-sec-title">🌧 Regenwahrscheinlichkeit</div>
+      <div class="fc-rain-wrap"><canvas id="fc-rain-chart"></canvas></div>
+    </div>
+    <div class="fc-sec">
+      <div class="fc-sec-title">💨 Wind (km/h)</div>
+      <div class="fc-canvas-wrap"><canvas id="fc-wind-chart"></canvas></div>
+    </div>
+    <div class="fc-sec">
+      <div class="fc-sec-title">📊 Luftdruck (hPa)</div>
+      <div class="fc-canvas-wrap"><canvas id="fc-pres-chart"></canvas></div>
+    </div>
+    ${tideHtml}
+    ${insightsHtml}`;
+
+  // Chart.js rendern
+  requestAnimationFrame(()=>{
+    if(typeof Chart==='undefined')return;
+    const chartDefaults={
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(0,20,40,.85)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.75)',borderColor:'rgba(255,255,255,.15)',borderWidth:1}},
+      scales:{
+        x:{ticks:{color:'rgba(255,255,255,.45)',font:{size:9},maxRotation:0},grid:{color:'rgba(255,255,255,.06)'}},
+        y:{ticks:{color:'rgba(255,255,255,.45)',font:{size:9}},grid:{color:'rgba(255,255,255,.08)'}}
+      }
+    };
+    const lineDs=(data,color,label)=>({labels,datasets:[{label,data,borderColor:color,backgroundColor:color+'28',fill:true,tension:.4,pointRadius:0,borderWidth:2}]});
+
+    // Temperatur-Linie
+    const tc=document.getElementById('fc-temp-chart');
+    if(tc)new Chart(tc,{type:'line',data:lineDs(temps,'#f0a840','°C'),options:{...chartDefaults,scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+'°'}}}}});
+
+    // Regen-Säulen
+    const rc=document.getElementById('fc-rain-chart');
+    if(rc)new Chart(rc,{type:'bar',data:{labels,datasets:[{label:'%',data:rains,backgroundColor:'rgba(80,160,255,.55)',borderColor:'rgba(80,160,255,.8)',borderWidth:1,borderRadius:3}]},options:{...chartDefaults,scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,min:0,max:100,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+'%'}}}}});
+
+    // Wind-Linie
+    const wc2=document.getElementById('fc-wind-chart');
+    if(wc2)new Chart(wc2,{type:'line',data:lineDs(winds,'#80c8ff','km/h'),options:{...chartDefaults,scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,min:0,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+' km/h'}}}}});
+
+    // Luftdruck-Linie
+    const pc=document.getElementById('fc-pres-chart');
+    if(pc){const pMin=Math.min(...presses.filter(Boolean))-3,pMax=Math.max(...presses.filter(Boolean))+3;new Chart(pc,{type:'line',data:lineDs(presses,'#a0d4b0','hPa'),options:{...chartDefaults,scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,min:pMin,max:pMax,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+' hPa'}}}}});}
+
+    // Tide Weser Bremen via Open-Meteo Marine API
+    if(isBremen){_loadTide(dateStr);}
+  });
+}
+
+// Tide-Daten für Weser Bremen (Bremerhaven ~8.58°O, 53.54°N = Tidepegel)
+async function _loadTide(dateStr){
+  const infoEl=document.getElementById('fc-tide-info');
+  try{
+    // Open-Meteo Marine: Wellenhöhe als Tide-Proxy (Nordsee-Ästuar)
+    const url=`https://marine-api.open-meteo.com/v1/marine?latitude=53.54&longitude=8.58&hourly=ocean_current_velocity,wave_height&start_date=${dateStr}&end_date=${dateStr}&timezone=auto`;
+    const r=await fetch(url);
+    const data=await r.json();
+    const h=data.hourly;
+    if(!h||!h.wave_height){if(infoEl)infoEl.textContent='Keine Tidendaten verfügbar.';return;}
+
+    const labels=h.time.map(t=>t.slice(11,16));
+    const heights=h.wave_height.map(v=>v!=null?Math.round(v*100)/100:null);
+
+    const tc=document.getElementById('fc-tide-chart');
+    if(!tc||typeof Chart==='undefined')return;
+    if(infoEl)infoEl.textContent='Pegelverlauf Bremerhaven (Wellenhöhe Nordseeästuar)';
+
+    new Chart(tc,{
+      type:'line',
+      data:{labels,datasets:[{
+        label:'m',data:heights,
+        borderColor:'#60c8ff',backgroundColor:'rgba(96,200,255,.18)',
+        fill:true,tension:.5,pointRadius:0,borderWidth:2
+      }]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(0,20,40,.85)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.75)'}},
+        scales:{
+          x:{ticks:{color:'rgba(255,255,255,.45)',font:{size:9},maxRotation:0,maxTicksLimit:8},grid:{color:'rgba(255,255,255,.06)'}},
+          y:{ticks:{color:'rgba(255,255,255,.45)',font:{size:9},callback:v=>v+'m'},grid:{color:'rgba(255,255,255,.08)'}}
+        }
+      }
+    });
+  }catch(e){if(infoEl)infoEl.textContent='Tidendaten nicht verfügbar.';}
+}
+
+// Wetterbeschreibung aus WMO-Code
+function wxDesc(wc){
+  if(wc==null)return'';
+  if(wc<=1)return'Klar';if(wc<=3)return'Bewölkt';
+  if(wc<=49)return'Neblig';if(wc<=67)return'Regen';
+  if(wc<=77)return'Schnee';return'Gewitter';
 }
 
 // ── AP4: Verfeinerter Beißindex-Algorithmus ───────────────────
