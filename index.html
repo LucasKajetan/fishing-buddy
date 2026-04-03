@@ -1123,15 +1123,14 @@ input[type=file]{display:none;}
 <div class="page on" id="page-new">
   <div class="sc">
     <div id="warn-wrap" aria-live="polite"></div>
-    <div id="skunk-wrap"></div>
 
     <div class="slbl">Datum &amp; Bedingungen</div>
     <div class="card">
       <div class="ig" style="margin-bottom:10px;">
         <label class="il" for="s-date">Datum</label>
         <input type="date" class="if" id="s-date"
-          oninput="updMoon();chkAutoSk()"
-          onchange="updMoon();chkAutoSk()">
+          oninput="updMoon()"
+          onchange="updMoon()">
       </div>
       <div class="erow">
         <div class="ec" onclick="showPage('stats')" role="button" tabindex="0">
@@ -1160,7 +1159,7 @@ input[type=file]{display:none;}
       <div class="ig" style="margin-bottom:10px;">
         <label class="il" for="s-water">Gewässer</label>
         <input type="text" class="if" id="s-water" placeholder="z.B. Dümmer See"
-          onfocus="rndrWChips('')" oninput="rndrWChips(this.value);chkAutoSk()" onblur="dHide('w-chips')" autocomplete="off">
+          onfocus="rndrWChips('')" oninput="rndrWChips(this.value)" onblur="dHide('w-chips')" autocomplete="off">
         <div class="crow" id="w-chips" style="display:none;" role="listbox"></div>
       </div>
       <div class="g2" style="margin-bottom:10px;">
@@ -1210,9 +1209,6 @@ input[type=file]{display:none;}
       <div class="slbl">Fänge</div>
       <div id="catches-con"></div>
       <button class="addcatch" onclick="addCatch()"><div class="aplus">+</div>Fang hinzufügen</button>
-    </div>
-    <div id="sk-placeholder" style="display:none;">
-      <div class="sk-card"><div style="font-size:44px;margin-bottom:10px;">🪝</div><div style="font-size:15px;font-weight:600;color:#888;">Schneider</div><div style="font-size:12px;color:#aaa;margin-top:5px;">Session wird trotzdem gespeichert</div></div>
     </div>
     <button class="btn" onclick="saveSess()">Session speichern ✓</button>
   </div>
@@ -1425,44 +1421,29 @@ function rebuildBanners(el,active,preview){
   if(preview.length){const pn=preview.map(p=>p.si===0?`${p.f} (heute)`:p.si===1?`${p.f} (morgen)`:`${p.f} (in ${p.si}d)`).join(', ');h+=`<div class="prev-banner"><div style="font-size:17px;flex-shrink:0;">🗓️</div><div style="flex:1;"><div style="font-size:12px;color:var(--yellow-t);font-weight:600;">Bald Schonzeit: ${pn}</div><div style="font-size:10px;color:var(--yellow-t);opacity:.8;margin-top:2px;font-style:italic;">${SZ_DISC}</div></div></div>`;}
   el.innerHTML=h;
 }
-// ── Datum-Helper: ist das gewählte Datum heute oder Zukunft? ──
-function _isToday(dateStr){
-  if(!dateStr)return true;
-  const d=new Date(dateStr+'T00:00:00');
-  const t=new Date();t.setHours(0,0,0,0);
-  return d>=t;
+function updMoon(){
+  const v=document.getElementById('s-date').value;
+  const m=getMoon(v||null);
+  document.getElementById('moon-ico').textContent=m.icon;
+  document.getElementById('moon-txt').textContent=m.name;
+  document.getElementById('moon-pct').textContent=m.illum+'% beleuchtet';
+  if(v)_tryLoadHistoricalWeather(v);
 }
 
-function chkAutoSk(){
-  const el=document.getElementById('skunk-wrap');
-  if(sucMode==='sk'){el.innerHTML='';return;}
-  // Fix 1a: Banner nur bei heutigem oder zukünftigem Datum zeigen
-  const dateVal=document.getElementById('s-date').value;
-  if(!_isToday(dateVal)){el.innerHTML='';return;}
-  let fc=0;
-  for(let i=1;i<=catchCount;i++){
-    const te=document.getElementById('ft-'+i),le=document.getElementById('fl-'+i);
-    if(te?.value?.trim()&&parseFloat(le?.value)>0)fc++;
-  }
-  const hasTime=document.getElementById('s-start').value&&document.getElementById('s-end').value;
-  if(hasTime&&fc===0){
-    el.innerHTML=`<div class="sk-banner"><div style="font-size:18px;flex-shrink:0;">💡</div><div><div style="font-size:12px;color:var(--purple-t);font-weight:600;">Kein Fang eingetragen</div><div style="font-size:11px;color:var(--purple-t);opacity:.8;margin-top:2px;">Als Schneider speichern?</div><button onclick="setSuc('sk')" style="margin-top:8px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--purple-t);background:transparent;color:var(--purple-t);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--fa);">Als Schneider markieren</button></div></div>`;
-  } else el.innerHTML='';
-}
-
-// Fix 2c: Historisches Wetter nachladen wenn Datum in Vergangenheit
+// Historisches Wetter für Vergangenheitsdaten nachladen
 function _tryLoadHistoricalWeather(dateStr){
-  if(!dateStr||_isToday(dateStr))return; // nur Vergangenheit
-  if(_lastWx)return; // bereits Wetter vorhanden
+  const today=new Date();today.setHours(0,0,0,0);
+  const d=new Date(dateStr+'T00:00:00');
+  if(d>=today)return; // nur Vergangenheit
+  if(_lastWx)return;  // bereits Wetter vorhanden
   const coords=_plzCoords||gpsCoords;
   if(!coords)return;
-  const url=`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation&start_date=${dateStr}&end_date=${dateStr}&timezone=auto`;
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation,weathercode&start_date=${dateStr}&end_date=${dateStr}&timezone=auto`;
   const strip=document.getElementById('gps-strip');
   if(strip){strip.style.display='flex';document.getElementById('gps-txt').textContent='Lade historisches Wetter…';}
   fetch(url).then(r=>r.json()).then(data=>{
     const h=data.hourly;if(!h||!h.time?.length)return;
     const avg=arr=>arr?.filter(v=>v!=null).reduce((a,b)=>a+b,0)/(arr?.filter(v=>v!=null).length||1);
-    // Simuliere current-Objekt für applyWxData
     const c={
       temperature_2m:parseFloat(avg(h.temperature_2m).toFixed(1)),
       windspeed_10m:Math.round(avg(h.windspeed_10m)),
@@ -1474,23 +1455,10 @@ function _tryLoadHistoricalWeather(dateStr){
       weathercode:h.weathercode?Math.round(avg(h.weathercode)):1
     };
     applyWxData(c,`Historisch ${dateStr} ✓`);
-  }).catch(()=>{
-    if(strip)strip.style.display='none';
-  });
+  }).catch(()=>{if(strip)strip.style.display='none';});
 }
 
-function updMoon(){
-  const v=document.getElementById('s-date').value;
-  const m=getMoon(v||null);
-  document.getElementById('moon-ico').textContent=m.icon;
-  document.getElementById('moon-txt').textContent=m.name;
-  document.getElementById('moon-pct').textContent=m.illum+'% beleuchtet';
-  // Fix 2c: historisches Wetter beim Datumswechsel
-  if(v)_tryLoadHistoricalWeather(v);
-  // Fix 1a: Schneider-Banner neu prüfen
-  chkAutoSk();
-}
-// ═══════════════════════════════════════════════════════════
+function disSzHint(){_szDismissed=true;if(profile){profile.szDismissed=true;saveProfile();}document.getElementById('sz-hint').style.display='none';}
 function updClock(){const n=new Date();document.getElementById('live-time').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}
 updClock();setInterval(updClock,30000);
 function updNet(){const on=navigator.onLine;document.getElementById('netind').textContent=on?'Online':'Offline';const b=document.getElementById('off-banner');if(!on)b.classList.add('on');else b.classList.remove('on');}
@@ -1959,8 +1927,8 @@ async function setSuc(mode){
   document.getElementById('btn-catch').setAttribute('aria-pressed',String(mode==='catch'));
   document.getElementById('btn-sk').setAttribute('aria-pressed',String(mode==='sk'));
   document.getElementById('catches-area').style.display=mode==='catch'?'':'none';
-  document.getElementById('sk-placeholder').style.display=mode==='sk'?'':'none';
-  document.getElementById('skunk-wrap').innerHTML='';
+  
+  
 }
 
 // PHOTO
@@ -1995,7 +1963,7 @@ function handlePhoto(e){const file=e.target.files[0];if(!file||!_curPhotoId)retu
 // ADD CATCH – v11: Memory, Auto-Focus, Permanent Chips, Favs
 // ═══════════════════════════════════════════════════════════
 // Permanente Action-Chips für Notizfeld
-const NOTE_CHIPS_STATIC=['gejiggt','geleiert','faulenzt','UV-aktiv','10g','14g','20g','Pause'];
+// Notiz-Chips: nur gelernte Keywords aus favs.baitKeywords (keine statischen Chips)
 
 // Fix 7: Memory liest den zuletzt ausgefüllten Fang (nicht immer #1)
 function _lastCatchFish(){
@@ -2043,13 +2011,11 @@ function addCatch(){
     return`<button class="fav-btn fav-btn-bait" onmousedown="favBaitSel(${id},'${safe}')">🪝 ${b}</button>`;
   }).join('');
 
-  // Permanente Notiz-Chips (statisch + gelernte Keywords)
+  // Notiz-Chips: nur gelernte Keywords – initial leer (Fix 3)
   const learnedKws=presetBait&&favs.baitKeywords?.[presetBait]?topN(favs.baitKeywords[presetBait],4):[];
-  const noteChips=[...new Set([...learnedKws,...NOTE_CHIPS_STATIC])].slice(0,8);
-  const noteChipsHtml=noteChips.map(c=>{
-    const safe=c.replace(/'/g,"\\'");
-    return`<button class="fav-btn fav-btn-note" onmousedown="addNoteChip(${id},'${safe}')">${c}</button>`;
-  }).join('');
+  const noteChipsHtml=learnedKws.length
+    ? learnedKws.map(c=>{const safe=c.replace(/'/g,"\\'");return`<button class="fav-btn fav-btn-note" onmousedown="addNoteChip(${id},'${safe}')">${c}</button>`;}).join('')
+    : '';
 
   const div=document.createElement('div');div.className='cc';div.id='catch-'+id;
   div.innerHTML=`
@@ -2063,7 +2029,7 @@ function addCatch(){
       <label class="il" for="ft-${id}">Fischart</label>
       <input type="text" list="fdl-${id}" class="if" id="ft-${id}" placeholder="z.B. Zander"
         value="${presetFish}"
-        onfocus="rndrFChips(${id},this.value)" oninput="rndrFChips(${id},this.value);chkMMF(${id});chkAutoSk()" onblur="dHide('fc-${id}')" autocomplete="off">
+        onfocus="rndrFChips(${id},this.value)" oninput="rndrFChips(${id},this.value);chkMMF(${id})" onblur="dHide('fc-${id}')" autocomplete="off">
       <datalist id="fdl-${id}">${FISH.map(f=>`<option value="${f}">`).join('')}</datalist>
       ${fishFavBtns?`<div class="fav-row">${fishFavBtns}</div>`:''}
       <div class="crow" id="fc-${id}" style="display:none;" role="listbox"></div>
@@ -2074,7 +2040,7 @@ function addCatch(){
       <div class="ig">
         <label class="il" for="fl-${id}">Länge (cm)</label>
         <input type="number" class="if" id="fl-${id}" placeholder="65" min="1" max="300" step="0.5"
-          oninput="chkMMF(${id});chkAutoSk()">
+          oninput="chkMMF(${id})">
       </div>
       <div class="ig">
         <label class="il" for="ftime-${id}">Uhrzeit</label>
@@ -2094,23 +2060,26 @@ function addCatch(){
       <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
     </div>
 
-    <!-- Notiz – Tastatur nur bei Klick, Chips dauerhaft sichtbar -->
+    <!-- Notizen (Fix 5: Label umbenannt, Chips nur wenn gelernt) -->
     <div class="ig" style="margin-bottom:10px;">
-      <label class="il" for="fn-${id}">Notiz · Keywords</label>
-      <div class="fav-row" id="nc-${id}" style="margin-bottom:6px;">${noteChipsHtml}</div>
+      <label class="il" for="fn-${id}">Notizen</label>
+      <div class="fav-row" id="nc-${id}" style="margin-bottom:${noteChipsHtml?'6px':'0'};display:${noteChipsHtml?'flex':'none'};">${noteChipsHtml}</div>
       <input type="text" class="if" id="fn-${id}" placeholder='z.B. Buhne 6 · Strömungsrinne'
         autocomplete="off" autocorrect="off" autocapitalize="none"
         style="font-size:15px;">
     </div>
 
-    <!-- Foto + C&R -->
+    <!-- Foto + Entnommen-Toggle -->
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
       <div id="pa-${id}" class="phadd" onclick="trigPhoto(${id})" role="button" tabindex="0"><span>📷</span><span class="phlbl">Foto</span></div>
       <img id="pp-${id}" class="phpr" src="" alt="Fangfoto" style="display:none;" onclick="trigPhoto(${id})">
-      <div style="flex:1;font-size:11px;color:var(--text-light);line-height:1.5;">Foto direkt aufnehmen oder Galerie</div>
+      <div style="flex:1;font-size:11px;color:var(--text-light);line-height:1.5;cursor:pointer;" onclick="trigPhoto(${id})">Foto hinzufügen</div>
     </div>
     <div class="crr" id="crr-${id}">
-      <div class="crl"><span class="crm" id="crm-${id}">Catch &amp; Release</span><span class="crs" id="crs-${id}">Fisch zurückgesetzt</span></div>
+      <div class="crl">
+        <span class="crm" id="crm-${id}">Fisch mitgenommen?</span>
+        <span class="crs" id="crs-${id}">Nein – zurückgesetzt (C&amp;R)</span>
+      </div>
       <label class="tw" aria-label="Fisch entnommen?">
         <input type="checkbox" id="ftak-${id}" onchange="updCR(${id})" role="switch" aria-checked="false">
         <span class="tsl"></span>
@@ -2191,8 +2160,15 @@ function updNoteChips(id){
   }).join('');
 }
 
-function updCR(id){const taken=document.getElementById('ftak-'+id).checked;document.getElementById('ftak-'+id).setAttribute('aria-checked',String(taken));document.getElementById('crm-'+id).textContent=taken?'Fisch entnommen':'Catch & Release';document.getElementById('crs-'+id).textContent=taken?'Fisch mitgenommen':'Fisch zurückgesetzt';document.getElementById('crr-'+id).classList.toggle('tk',taken);}
-function rmCatch(id){const el=document.getElementById('catch-'+id);el.style.cssText='opacity:0;transform:scale(.95);transition:all .2s;';setTimeout(()=>{el.remove();chkAutoSk();},200);}
+function updCR(id){
+  const taken=document.getElementById('ftak-'+id).checked;
+  document.getElementById('ftak-'+id).setAttribute('aria-checked',String(taken));
+  // AN = Fisch entnommen, AUS = zurückgesetzt (C&R)
+  document.getElementById('crm-'+id).textContent='Fisch mitgenommen?';
+  document.getElementById('crs-'+id).textContent=taken?'Ja – entnommen':'Nein – zurückgesetzt (C&R)';
+  document.getElementById('crr-'+id).classList.toggle('tk',taken);
+}
+function rmCatch(id){const el=document.getElementById('catch-'+id);el.style.cssText='opacity:0;transform:scale(.95);transition:all .2s;';setTimeout(()=>{el.remove();},200);}
 
 // ═══════════════════════════════════════════════════════════
 // SAVE SESSION
@@ -2200,7 +2176,7 @@ function rmCatch(id){const el=document.getElementById('catch-'+id);el.style.cssT
 let _saving=false; // Fix 4: Debounce-Flag
 
 async function saveSess(){
-  if(_saving)return; // Fix 4: Doppelklick-Schutz
+  if(_saving)return;
   _saving=true;
   const saveBtn=document.querySelector('#page-new .btn[onclick="saveSess()"]');
   if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Speichern…';}
@@ -2209,35 +2185,35 @@ async function saveSess(){
     const date=document.getElementById('s-date').value;
     const start=document.getElementById('s-start').value;
     const end=document.getElementById('s-end').value;
-    const water=waterVal||'Unbekanntes Gewässer';
+    // Fix: waterVal VOR Benutzung definieren
+    const waterVal=document.getElementById('s-water').value.trim();
+    const water=waterVal||'';
     const wx=document.getElementById('s-wx').value;
     const temp=document.getElementById('s-temp').value;
     const clarity=document.getElementById('s-clarity').value.trim();
 
     if(!date||!start){showToast('⚠️','Datum und Startzeit erforderlich!',true);return;}
 
-    // Fix 1b: Pflichtfeld Gewässer
-    const waterVal=document.getElementById('s-water').value.trim();
+    // Pflichtfeld Gewässer
     if(!waterVal){
       showToast('📍','Bitte ein Gewässer eingeben!',true);
       document.getElementById('s-water').focus();
       return;
     }
 
-    // Fix 2: Endzeitvalidierung – Nacht-Sessions (end < start) sind legitim
+    // Endzeitvalidierung
     if(end&&start){
-      const [sh,sm]=start.split(':').map(Number);
-      const [eh,em]=end.split(':').map(Number);
-      const startMins=sh*60+sm, endMins=eh*60+em;
-      if(endMins>0&&endMins===startMins){
-        // Exakt gleiche Zeit – das ist vermutlich ein Fehler
+      const[sh,sm]=start.split(':').map(Number);
+      const[eh,em]=end.split(':').map(Number);
+      if(eh*60+em>0&&eh*60+em===sh*60+sm){
         showToast('⚠️','Start- und Endzeit sind identisch.',true);return;
       }
-      // end < start → Nacht-Session über Mitternacht, kein Dialog nötig
     }
 
-    const moon=getMoon(date);const sk=sucMode==='sk';const catches=[];
-    let skippedCatches=0; // Fix 5: Zähle übersprungene Einträge
+    const moon=getMoon(date);
+    const sk=sucMode==='sk';
+    const catches=[];
+    let skippedCatches=0;
 
     if(!sk){
       for(let i=1;i<=catchCount;i++){
@@ -2252,22 +2228,20 @@ async function saveSess(){
           catches.push({type,length:len,time:ti?.value||'',taken:tk?.checked||false,bait,baitNote:note,score:fScore(type,len),photoKey:pk});
           addFav('fish',type);if(bait)addFav('bait',bait);if(bait&&note)addBaitKw(bait,note);
         } else if(te.value.trim()||le?.value){
-          // Teilweise ausgefüllt aber nicht vollständig → zählen
           skippedCatches++;
         }
       }
     }
 
-    // Fix 5: Hinweis auf übersprungene Fänge
     if(skippedCatches>0){
       showToast('⚠️',`${skippedCatches} unvollständiger Fang${skippedCatches>1?'e':''} nicht gespeichert`);
     }
 
-    addFav('waters',water);window._pm={};
+    addFav('waters',waterVal);window._pm={};
     const effSk=sk||(catches.length===0&&sucMode==='catch');
     const sess={
-      id:_newId(), // Fix 3: UUID
-      date,start,end,water,weather:wx,
+      id:_newId(),
+      date,start,end,water:waterVal,weather:wx,
       temp:temp?parseFloat(temp):(_lastWx?.temp||null),
       lat:gpsCoords?.lat||null,lon:gpsCoords?.lon||null,
       moonIcon:moon.icon,moonName:moon.name,moonIllum:moon.illum,
@@ -2277,22 +2251,25 @@ async function saveSess(){
       clouds:_lastWx?.clouds||null,precip:_lastWx?.precip||null,
       catches,saved:new Date().toISOString()
     };
-    sessions.unshift(sess);await saveOneSess(sess);
+    sessions.unshift(sess);
+    await saveOneSess(sess);
 
-    // v13 Edit-Safety: Original-Session erst JETZT löschen (nach erfolgreichem Speichern)
     if(_editPendingId){
       sessions=sessions.filter(x=>String(x.id)!==String(_editPendingId));
       await idbD('sessions',String(_editPendingId));
       _editPendingId=null;
     }
 
-    // Fix 8: _lastWx erst in resetForm() nullen
-    if(effSk&&!sk){showToast('🪝','Als Schneider gespeichert');resetForm();}
-    else if(sk){showToast('🪝','Schneider-Session gespeichert');resetForm();}
-    else if(catches.length>0)showSuc(catches,water);
-    else{showToast('✅','Session gespeichert!');resetForm();}
+    // Fix: resetForm navigiert immer zum Fangbuch
+    if(catches.length>0&&!effSk){
+      showSuc(catches,waterVal); // disSuc() ruft resetForm() + showPage('fangbuch')
+    } else {
+      const msg=sk?'🪝 Schneider gespeichert':effSk?'🪝 Als Schneider gespeichert':'✅ Session gespeichert!';
+      showToast(effSk||sk?'🪝':'✅', sk?'Schneider-Session gespeichert':effSk?'Als Schneider gespeichert':'Session gespeichert!');
+      resetForm();
+      showPage('fangbuch');
+    }
   } finally {
-    // Fix 4: Immer entsperren
     _saving=false;
     if(saveBtn){saveBtn.disabled=false;saveBtn.textContent='Session speichern ✓';}
   }
@@ -2304,7 +2281,7 @@ function resetForm(){
   document.getElementById('s-water').value='';document.getElementById('w-chips').style.display='none';
   document.getElementById('s-temp').value='';document.getElementById('s-clarity').value='';
   document.getElementById('clarity-chips').style.display='none';document.getElementById('start-chips').style.display='none';
-  document.getElementById('skunk-wrap').innerHTML='';document.getElementById('manual-wx').style.display='';
+  document.getElementById('manual-wx').style.display='';
   gpsCoords=null;_lastWx=null;
   const gs=document.getElementById('gps-strip');gs.style.display='none';gs.classList.remove('ok');
   document.getElementById('wx-ico').textContent='🌡️';document.getElementById('wx-val').textContent='Tippen zum Laden';
@@ -2891,8 +2868,8 @@ async function editSess(id){
   document.getElementById('btn-catch').setAttribute('aria-pressed',String(sucMode==='catch'));
   document.getElementById('btn-sk').setAttribute('aria-pressed',String(sucMode==='sk'));
   document.getElementById('catches-area').style.display=sucMode==='catch'?'':'none';
-  document.getElementById('sk-placeholder').style.display=sucMode==='sk'?'':'none';
-  document.getElementById('skunk-wrap').innerHTML='';
+  
+  
 
   if(fv('catches-con'))fv('catches-con').innerHTML='';
   catchCount=0;
