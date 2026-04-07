@@ -541,51 +541,45 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   display:grid;grid-template-columns:repeat(7,1fr);
   gap:3px;
 }
-/* Fix 3: Kalender-Grid robust – aspect-ratio:1 ergänzt durch min-height Fallback */
+/* Fix 3: Kalender-Grid robust – kein gap, nahtlose Wochen */
 .fb-cal-grid{
   display:grid;
   grid-template-columns:repeat(7,1fr);
-  gap:3px;
-  /* Verhindert abgeschnittene letzte Zeile auf Android */
+  gap:0; /* kein Abstand → nahtlose Wochen */
   align-items:start;
 }
 .fb-cal-day{
-  /* aspect-ratio als Wunsch, min-height als Sicherheitsnetz */
   aspect-ratio:1;
   min-height:36px;
-  border-radius:8px;display:flex;
+  border-radius:6px;display:flex;
   flex-direction:column;align-items:center;justify-content:center;
   cursor:pointer;transition:background .15s,transform .1s;
   position:relative;font-size:13px;font-weight:500;
   color:var(--text-dark);
-  /* Overflow-Schutz */
-  overflow:hidden;
-  box-sizing:border-box;
+  overflow:hidden;box-sizing:border-box;
+  margin:1px; /* minimale Trennung statt gap */
 }
 .fb-cal-day:hover{background:var(--green-mist);transform:scale(1.05);}
-.fb-cal-day.empty{cursor:default;color:transparent;pointer-events:none;}
+.fb-cal-day.empty{cursor:default;color:transparent;pointer-events:none;margin:1px;}
 .fb-cal-day.empty:hover{background:none;transform:none;}
 .fb-cal-day.today{font-weight:700;color:var(--green-deep);}
 .fb-cal-day.today::after{
   content:'';position:absolute;bottom:3px;
-  width:4px;height:4px;border-radius:50%;
-  background:var(--green-mid);
+  width:4px;height:4px;border-radius:50%;background:var(--green-mid);
 }
+/* Hellgrün für Tage mit Fang */
 .fb-cal-day.has-catch{
-  background:rgba(74,124,89,.12);color:var(--green-deep);font-weight:700;
+  background:rgba(74,124,89,.18);color:var(--green-deep);font-weight:700;
 }
-.fb-cal-day.has-catch:hover{background:rgba(74,124,89,.22);}
+.fb-cal-day.has-catch:hover{background:rgba(74,124,89,.30);}
+/* Rot für Schneider-Tage */
 .fb-cal-day.skunked{
-  background:rgba(200,200,200,.15);color:var(--text-light);
+  background:rgba(200,60,60,.13);color:#b04040;font-weight:600;
 }
-.fb-cal-day.skunked:hover{background:rgba(200,200,200,.28);}
+.fb-cal-day.skunked:hover{background:rgba(200,60,60,.22);}
 .fb-cal-day.has-catch .fb-cal-dot{background:var(--green-mid);}
-.fb-cal-day.skunked .fb-cal-dot{background:#bbb;}
-.fb-cal-dot{
-  width:5px;height:5px;border-radius:50%;
-  margin-top:1px;flex-shrink:0;
-  display:none;
-}
+.fb-cal-day.skunked .fb-cal-dot{background:#d07070;}
+.fb-cal-dot{width:4px;height:4px;border-radius:50%;margin-top:1px;flex-shrink:0;display:none;}
 .fb-cal-day.has-catch .fb-cal-dot,
 .fb-cal-day.skunked .fb-cal-dot{display:block;}
 .fb-cal-num{line-height:1;}
@@ -593,73 +587,71 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fb-cal-month-block{margin-bottom:20px;}
 
 /* ── FANGBUCH: Monats-Trennlinie ── */
-.fb-month-sep{
-  display:flex;align-items:center;gap:10px;
-  margin:20px 0 10px;
-}
+.fb-month-sep{display:flex;align-items:center;gap:10px;margin:20px 0 10px;}
 .fb-month-sep:first-child{margin-top:0;}
-.fb-month-label{
-  font-size:12px;font-weight:700;letter-spacing:1px;
-  text-transform:uppercase;color:var(--green-mid);
-  white-space:nowrap;
-}
-.fb-month-line{
-  flex:1;height:1px;background:var(--green-pale);
-}
-.fb-month-count{
-  font-size:11px;font-weight:600;color:var(--text-light);
-  white-space:nowrap;
-}
+.fb-month-label{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green-mid);white-space:nowrap;}
+.fb-month-line{flex:1;height:1px;background:var(--green-pale);}
+.fb-month-count{font-size:11px;font-weight:600;color:var(--text-light);white-space:nowrap;}
 
-/* ── FANGBUCH: Kachel mit Erfolgs-Indikator (linker Balken) ── */
+/* ── FANGBUCH: Kompakte Kachel (v16 Redesign) ── */
 .fb-card{
   background:#fff;border-radius:var(--r);box-shadow:var(--sh-sm);
-  margin-bottom:10px;border:1px solid rgba(200,221,208,.35);
+  margin-bottom:8px;border:1px solid rgba(200,221,208,.35);
   cursor:pointer;transition:transform .15s,box-shadow .15s;
-  overflow:hidden;
-  display:flex; /* Flex für Indikator-Spalte */
+  overflow:hidden;display:flex;align-items:stretch;
 }
 .fb-card:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
 .fb-card:active{transform:scale(.99);}
-
-/* Farbiger Balken links */
-.fb-indicator{
-  width:4px;flex-shrink:0;border-radius:0;
-}
+/* linker Indikator-Balken */
+.fb-indicator{width:4px;flex-shrink:0;}
 .fb-indicator.success{background:var(--green-mid);}
-.fb-indicator.skunked{background:#CBD5D0;}/* dezentes Grau */
-
-/* Karteninhalt nimmt den Rest */
-.fb-card-content{flex:1;min-width:0;}
-
-/* Bestehende Body/Footer-Klassen unverändert behalten */
-.fb-card-body{padding:14px 16px 10px;}
-.fb-date{font-family:var(--fs);font-size:19px;font-weight:600;color:var(--text-dark);letter-spacing:-.2px;}
-.fb-water{font-size:13px;font-weight:600;color:var(--text-mid);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.fb-chips{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
-.fb-chip{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;letter-spacing:.1px;}
-.fb-chip-green{background:rgba(74,124,89,.1);color:var(--green-deep);}
+.fb-indicator.skunked{background:#d06060;} /* rot für Schneider */
+/* Hauptinhalt */
+.fb-card-content{flex:1;min-width:0;padding:10px 12px;}
+.fb-card-row1{display:flex;align-items:baseline;gap:6px;margin-bottom:3px;}
+.fb-date{font-family:var(--fa);font-size:13px;font-weight:700;color:var(--text-dark);}
+.fb-water{font-family:var(--fa);font-size:13px;font-weight:400;color:var(--text-mid);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;}
+.fb-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;}
+.fb-chip{font-size:11px;font-weight:600;padding:3px 8px;border-radius:16px;white-space:nowrap;}
+.fb-chip-green{background:rgba(74,124,89,.10);color:var(--green-deep);}
 .fb-chip-blue{background:var(--blue);color:var(--blue-t);}
 .fb-chip-gray{background:var(--cream-dark);color:var(--text-mid);}
 .fb-chip-gold{background:var(--gold-l);color:var(--gold-d);}
 .fb-chip-teal{background:var(--teal);color:var(--teal-t);}
-.fb-card-footer{border-top:1px solid rgba(200,221,208,.3);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;}
+/* rechter Fang-Zähler */
+.fb-cnt-col{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 14px 0 8px;flex-shrink:0;}
 .fb-cnt{font-size:28px;font-weight:700;color:var(--green-deep);line-height:1;}
-.fb-cnt-lbl{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-top:2px;}
-.fb-moon-area{text-align:right;}
-.fb-moon{font-size:22px;line-height:1;}
-.fb-pressure{font-size:11px;color:var(--text-light);margin-top:3px;}
+.fb-cnt.skunked-cnt{color:#d06060;}
+.fb-cnt-lbl{font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-light);margin-top:1px;text-align:center;}
 
-/* ── DAY DETAIL OVERLAY ── */
-#fs-day-detail{z-index:115;}/* stacked above regular fsov (105) */
-.dd-hero{background:var(--green-deep);padding:16px 20px 20px;color:#fff;flex-shrink:0;}
-.dd-hero-back{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:13px;font-weight:500;font-family:var(--fa);padding:6px 12px;border-radius:8px;cursor:pointer;margin-bottom:14px;}
-.dd-hero-back:hover{background:rgba(255,255,255,.25);}
-.dd-hero-meta{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:2px;}
-.dd-hero-date{font-family:var(--fs);font-size:22px;font-weight:600;margin-bottom:2px;}
-.dd-hero-water{font-size:14px;color:rgba(255,255,255,.75);margin-bottom:12px;}
-.dd-hero-cnt{font-size:38px;font-weight:700;color:var(--gold);line-height:1;}
-.dd-hero-cnt-lbl{font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;text-transform:uppercase;letter-spacing:.6px;}
+/* ── DAY DETAIL: neues Hero-Design (v16) ── */
+#fs-day-detail{z-index:115;}
+.dd-hero-v16{
+  background:var(--green-deep);padding:18px 20px 14px;color:#fff;
+  /* kein flex-shrink:0 → Hero scrollt mit */
+}
+.dd-hero-v16-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.dd-hero-v16-date{font-family:var(--fa);font-size:14px;font-weight:700;opacity:.9;}
+.dd-hero-v16-water{font-family:var(--fa);font-size:14px;font-weight:600;opacity:.75;text-align:right;flex:1;margin-left:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dd-hero-v16-time{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px;}
+.dd-hero-v16-cnt{
+  font-size:32px;font-weight:800;
+  background:linear-gradient(135deg,#f5c842,#e8a820);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;line-height:1;display:inline-block;
+}
+.dd-hero-v16-cnt-lbl{font-size:10px;opacity:.55;text-transform:uppercase;letter-spacing:.7px;margin-top:1px;}
+.dd-hero-v16-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:rgba(255,255,255,.12);border-radius:10px;overflow:hidden;
+  margin-top:10px;
+}
+.dd-hero-v16-stat{background:rgba(255,255,255,.07);padding:8px 10px;text-align:center;}
+.dd-hero-v16-stat-val{font-size:15px;font-weight:700;}
+.dd-hero-v16-stat-lbl{font-size:9px;opacity:.55;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+/* Wetter-Kacheln anklickbar */
+.dd-wx-tile{cursor:pointer;transition:background .15s;}
+.dd-wx-tile:hover{background:rgba(74,124,89,.12);border-radius:8px;}
 /* Stat tiles im Hero */
 .dd-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
 .dd-tile{background:rgba(255,255,255,.12);border-radius:10px;padding:10px;text-align:center;}
@@ -793,6 +785,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fc-btn{width:100%;padding:16px;background:var(--green-deep);border:none;border-radius:var(--r);color:#fff;font-size:15px;font-weight:600;font-family:var(--fa);cursor:pointer;margin-bottom:10px;}
 
 .xbtn-old-removed{}
+#dd-body.fsov-scroll{padding-top:0;} /* Hero scrollt mit, kein extra Abstand */
 .fbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;background:#fff;border-bottom:1px solid var(--cream-dark);}
 
 /* BURGER MENU */
@@ -1256,7 +1249,7 @@ input[type=file]{display:none;}
 
 <!-- DAY DETAIL OVERLAY (AP2) -->
 <div class="fsov" id="fs-day-detail" role="dialog" aria-modal="true" aria-label="Tages-Details">
-  <div id="dd-hero-wrap" style="flex-shrink:0;"></div>
+  <div id="dd-hero-wrap" style="display:none;"></div>
   <div class="fsov-scroll" id="dd-body"></div>
 </div>
 
@@ -2513,36 +2506,39 @@ function rndrFangbuch(){
       const totalCnt=allCatches.length;
       const isSkunked=totalCnt===0&&daySess.every(s=>s.skunked||!s.catches.length);
       const waters=[...new Set(daySess.map(s=>s.water).filter(Boolean))];
-      const waterLabel=waters.length===1?waters[0]:waters.length>1?waters[0]+' +'+(waters.length-1)+' weitere':'–';
+      const waterLabel=waters.length===1?waters[0]:waters.length>1?waters[0]+' +'+(waters.length-1):'–';
       const starts=daySess.map(s=>s.start).filter(Boolean).sort();
       const ends=daySess.map(s=>s.end).filter(Boolean).sort();
       const timeSpan=starts.length&&ends.length?starts[0]+'–'+ends[ends.length-1]:'–';
-      const pSess=daySess.find(s=>s.pressure);
-      const pressure=pSess?.pressure;
-      const moon=daySess[0]?.moonIcon||'🌕';
-      let chips='';
-      if(isSkunked){chips+='<span class="fb-chip fb-chip-gray">🪝 Schneider</span>';}
-      else{
-        chips+='<span class="fb-chip fb-chip-green">🐟 '+totalCnt+' Fang'+(totalCnt!==1?'e':'')+'</span>';
+
+      // Zwei Chips: Uhrzeit + Fischarten (keine Druckangabe)
+      let chipsHtml='<span class="fb-chip fb-chip-gray">⏱ '+timeSpan+'</span>';
+      if(!isSkunked){
         const freq={};allCatches.forEach(c=>{if(c.type)freq[c.type]=(freq[c.type]||0)+1;});
-        const top=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
-        if(top)chips+='<span class="fb-chip fb-chip-blue">'+fIco(top[0])+' '+top[0]+'</span>';
+        const topFish=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([f])=>fIco(f)+' '+f).join(' · ');
+        if(topFish)chipsHtml+='<span class="fb-chip fb-chip-blue">'+topFish+'</span>';
+      } else {
+        chipsHtml+='<span class="fb-chip fb-chip-gray" style="color:#d06060;">Schneider</span>';
       }
-      chips+='<span class="fb-chip fb-chip-gray">⏱ '+timeSpan+'</span>';
-      if(pressure)chips+='<span class="fb-chip fb-chip-teal">'+Math.round(pressure)+' hPa</span>';
+
       const indClass=isSkunked?'skunked':'success';
+      const cntClass=isSkunked?'fb-cnt skunked-cnt':'fb-cnt';
+      const [,mo2,dy]=dateKey.split('-');
+      const MON_S=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+      const dateLabel=fmtDow(dateKey)+', '+parseInt(dy)+'. '+MON_S[parseInt(mo2)-1];
+
       html+='<div class="fb-card" onclick="openDayDetail(\''+dateKey+'\')" role="button" tabindex="0">'+
         '<div class="fb-indicator '+indClass+'"></div>'+
         '<div class="fb-card-content">'+
-          '<div class="fb-card-body">'+
-            '<div class="fb-date">'+fmtDow(dateKey)+', '+fmtDate(dateKey)+'</div>'+
-            '<div class="fb-water">'+waterLabel+'</div>'+
-            '<div class="fb-chips">'+chips+'</div>'+
+          '<div class="fb-card-row1">'+
+            '<span class="fb-date">'+dateLabel+'</span>'+
+            '<span class="fb-water">'+waterLabel+'</span>'+
           '</div>'+
-          '<div class="fb-card-footer">'+
-            '<div><div class="fb-cnt">'+(isSkunked?'–':totalCnt)+'</div><div class="fb-cnt-lbl">'+(isSkunked?'Schneider':'Fänge')+'</div></div>'+
-            '<div class="fb-moon-area"><div class="fb-moon">'+moon+'</div>'+(pressure?'<div class="fb-pressure">'+Math.round(pressure)+' hPa</div>':'')+'</div>'+
-          '</div>'+
+          '<div class="fb-chips">'+chipsHtml+'</div>'+
+        '</div>'+
+        '<div class="fb-cnt-col">'+
+          '<div class="'+cntClass+'">'+(isSkunked?'–':totalCnt)+'</div>'+
+          '<div class="fb-cnt-lbl">'+(isSkunked?'Skunk':'Fänge')+'</div>'+
         '</div>'+
       '</div>';
     });
@@ -2638,135 +2634,155 @@ function rndrCalendar(){
 // ID-sicherer Lookup, Scroll-Position merken, PLZ-Fallback
 // ═══════════════════════════════════════════════════════════
 async function openDayDetail(dateKey){
-  // Scroll-Position des Fangbuchs merken (vor Overlay-Öffnung)
   const sc=document.getElementById('fangbuch-sc');
   if(sc)_fbScrollY=sc.scrollTop;
 
-  // ID-sicherer Filter: String-Vergleich für importierte Sessions
   const daySess=sessions.filter(s=>String(s.date)===String(dateKey));
   if(!daySess.length)return;
 
   openFs('day-detail');
 
-  // Alle Fänge chronologisch
-  const allCatches=daySess.flatMap(s=>s.catches.map(c=>({...c,_sessId:s.id,_sessWater:s.water})));
-  const sortedCatches=[...allCatches].sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  // Alle Fänge chronologisch nach Uhrzeit sortiert
+  const allCatches=daySess.flatMap(s=>s.catches.map(c=>({...c,_sessId:s.id,_sessWater:s.water}))).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
 
   const totalCnt=allCatches.length;
   const isSkunked=totalCnt===0&&daySess.every(s=>s.skunked||!s.catches.length);
   const waters=[...new Set(daySess.map(s=>s.water).filter(Boolean))];
   const waterLabel=waters.length===1?waters[0]:waters.length>1?`${waters[0]} +${waters.length-1}`:'–';
-
-  // Statistiken
+  const starts=daySess.map(s=>s.start).filter(Boolean).sort();
+  const ends=daySess.map(s=>s.end).filter(Boolean).sort((a,b)=>b.localeCompare(a));
+  const timeSpan=starts.length&&ends.length?starts[0]+'–'+ends[0]+' Uhr':'–';
   const lens=allCatches.map(c=>c.length).filter(Boolean);
   const avgLen=lens.length?(lens.reduce((a,b)=>a+b,0)/lens.length).toFixed(1):'–';
   const maxLen=lens.length?Math.max(...lens):'–';
+  const takenCnt=allCatches.filter(c=>c.taken).length;
 
-  // ── Hero sofort rendern ──
-  document.getElementById('dd-hero-wrap').innerHTML=`
-    <div class="dd-hero">
-      <button class="dd-hero-back" onclick="closeDayDetail()">‹ Zurück</button>
-      <div class="dd-hero-meta">${fmtDow(dateKey)}, ${fmtDate(dateKey)}</div>
-      <div class="dd-hero-date">${waterLabel}</div>
-      <div class="dd-hero-cnt">${isSkunked?'–':totalCnt}</div>
-      <div class="dd-hero-cnt-lbl">${isSkunked?'Schneider':'Fänge gesamt'}</div>
-      ${!isSkunked?`<div class="dd-tiles">
-        <div class="dd-tile"><div class="dd-tile-val">${avgLen}cm</div><div class="dd-tile-lbl">Ø Länge</div></div>
-        <div class="dd-tile"><div class="dd-tile-val">${maxLen}cm</div><div class="dd-tile-lbl">Rekord</div></div>
-        <div class="dd-tile"><div class="dd-tile-val">${allCatches.filter(c=>c.taken).length}</div><div class="dd-tile-lbl">Entnommen</div></div>
-      </div>`:''}
-    </div>`;
+  // Wetter: Mittelwert über alle Sessions (bezogen auf Angelzeit)
+  const wxSess=daySess.filter(s=>s.temp!=null||s.pressure||s.windSpeed!=null);
+  const wxAvg=wxSess.length?{
+    temp:wxSess.filter(s=>s.temp!=null).length?Math.round(wxSess.filter(s=>s.temp!=null).reduce((a,s)=>a+s.temp,0)/wxSess.filter(s=>s.temp!=null).length*10)/10:null,
+    pressure:wxSess.filter(s=>s.pressure).length?Math.round(wxSess.filter(s=>s.pressure).reduce((a,s)=>a+s.pressure,0)/wxSess.filter(s=>s.pressure).length):null,
+    windSpeed:wxSess.filter(s=>s.windSpeed!=null).length?Math.round(wxSess.filter(s=>s.windSpeed!=null).reduce((a,s)=>a+s.windSpeed,0)/wxSess.filter(s=>s.windSpeed!=null).length):null,
+    windDir:wxSess[0]?.windDir,
+    humidity:wxSess.filter(s=>s.humidity!=null).length?Math.round(wxSess.filter(s=>s.humidity!=null).reduce((a,s)=>a+s.humidity,0)/wxSess.filter(s=>s.humidity!=null).length):null,
+    clouds:wxSess.filter(s=>s.clouds!=null).length?Math.round(wxSess.filter(s=>s.clouds!=null).reduce((a,s)=>a+s.clouds,0)/wxSess.filter(s=>s.clouds!=null).length):null,
+    weather:wxSess[0]?.weather,
+    moonIcon:daySess[0]?.moonIcon,moonName:daySess[0]?.moonName,moonIllum:daySess[0]?.moonIllum
+  }:null;
+
+  // ── Hero + Body in EINEM scrollbaren Container ──
+  // Hero scrollt mit (kein flex-shrink:0)
+  document.getElementById('dd-hero-wrap').innerHTML=''; // leer lassen
+
+  const [,mo,dy]=dateKey.split('-');
+  const MON_FULL=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const dateLabel=fmtDow(dateKey)+', '+parseInt(dy)+'. '+MON_FULL[parseInt(mo)-1];
+
+  // Wetter-Kacheln (anklickbar für Kurven-Overlay)
+  const _wxTile=(ico,val,lbl,action)=>
+    `<div class="dd-wx-tile"${action?` onclick="${action}" style="cursor:pointer;"`:''}><div class="dd-wx-ico">${ico}</div><div class="dd-wx-val">${val}</div><div class="dd-wx-lbl">${lbl}</div></div>`;
+
+  let wxHtml='';
+  if(wxAvg){
+    let tiles='';
+    if(wxAvg.temp!=null)tiles+=_wxTile('🌡️',wxAvg.temp+'°C','Temp. Ø','');
+    if(wxAvg.windSpeed!=null)tiles+=_wxTile('💨',wxAvg.windSpeed+' km/h','Wind '+_windDir(wxAvg.windDir),'');
+    if(wxAvg.pressure)tiles+=_wxTile('📊',wxAvg.pressure+' hPa','Luftdruck','');
+    if(wxAvg.humidity!=null)tiles+=_wxTile('💧',wxAvg.humidity+'%','Luftf.','');
+    if(wxAvg.clouds!=null)tiles+=_wxTile('☁️',wxAvg.clouds+'%','Bewölk.','');
+    if(tiles)wxHtml=`<div class="slbl" style="margin-top:0;">Bedingungen <small style="font-weight:400;opacity:.6;font-size:10px;">Ø über Angelzeit</small></div><div class="dd-wx-grid">${tiles}</div>`;
+  } else if(profile?.plz){
+    wxHtml=`<div style="padding:8px 0 14px;"><button onclick="reloadWeatherForDay('${dateKey}')" style="width:100%;padding:10px;background:var(--blue);color:var(--blue-t);border:1.5px solid rgba(12,68,124,.2);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;">🌡️ Wetter via PLZ ${profile.plz} nachladen</button></div>`;
+  }
+
+  // Session-Kacheln mit Fängen
+  let sessionsHtml='';
+  if(isSkunked){
+    sessionsHtml=`<div style="text-align:center;padding:28px;color:var(--text-light);">🪝 Schneider – kein Fang</div>`;
+  } else {
+    daySess.forEach(s=>{
+      const sCatches=allCatches.filter(c=>String(c._sessId)===String(s.id));
+      const dur=calcDur(s.start,s.end);
+      const sessTimeLabel=`${s.start||'–'}–${s.end||'?'} Uhr · ${dur}`;
+
+      let catchRows='';
+      if(s.skunked||!sCatches.length){
+        catchRows=`<div style="padding:8px 0;font-size:12px;color:var(--text-light);">Kein Fang</div>`;
+      } else {
+        catchRows=sCatches.map((c,i)=>{
+          const mm=chkMM(c.type,c.length);
+          const safeId=String(s.id).replace(/[^a-z0-9]/gi,'_');
+          return`<div class="dd-catch-row">
+            <div class="dd-catch-photo dd-photo-${safeId}-${i}">${fIco(c.type)}</div>
+            <div class="dd-catch-info">
+              <div class="dd-catch-name">${c.type||'–'}</div>
+              <div class="dd-catch-meta">${c.time||'–'} Uhr${c.bait?' · 🪝 '+c.bait:''}${c.baitNote?' · '+c.baitNote:''}</div>
+              <span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>
+              ${mm&&!mm.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ &lt;${mm.mm}cm</span>`:''}
+            </div>
+            <div class="dd-catch-right">
+              <div class="dd-catch-len">${c.length}</div>
+              <div class="dd-catch-unit">cm</div>
+              ${c.score?`<div style="font-size:10px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score}</div>`:''}
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      // Session-Kachel mit eigenem Edit/Delete
+      sessionsHtml+=`<div style="background:#fff;border-radius:var(--rs);margin-bottom:10px;overflow:hidden;border:1px solid rgba(200,221,208,.3);box-shadow:var(--sh-sm);">
+        <div style="background:var(--green-mist);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--green-deep);">${s.water||'–'}</div>
+            <div style="font-size:11px;color:var(--text-mid);margin-top:1px;">${sessTimeLabel}</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button onclick="editSess('${s.id}')" style="padding:6px 10px;background:rgba(74,124,89,.15);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:var(--green-deep);">✏️</button>
+            <button onclick="delSessFromDetail('${s.id}','${dateKey}')" style="padding:6px 10px;background:rgba(200,60,60,.12);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:#c04040;">🗑️</button>
+          </div>
+        </div>
+        <div style="padding:0 14px;">${catchRows}</div>
+      </div>`;
+    });
+  }
 
   const body=document.getElementById('dd-body');
+  body.innerHTML=`
+    <div class="dd-hero-v16">
+      <button class="dd-hero-back" onclick="closeDayDetail()">‹ Zurück</button>
+      <div class="dd-hero-v16-top">
+        <div class="dd-hero-v16-date">${dateLabel}</div>
+        <div class="dd-hero-v16-water">${waterLabel}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:4px;">
+        <div>
+          <div class="dd-hero-v16-time">${timeSpan}</div>
+        </div>
+        <div style="text-align:right;margin-left:auto;">
+          <div class="dd-hero-v16-cnt">${isSkunked?'–':totalCnt}</div>
+          <div class="dd-hero-v16-cnt-lbl">${isSkunked?'Schneider':'Fänge'}</div>
+        </div>
+      </div>
+      ${!isSkunked?`<div class="dd-hero-v16-stats">
+        <div class="dd-hero-v16-stat"><div class="dd-hero-v16-stat-val">${avgLen}cm</div><div class="dd-hero-v16-stat-lbl">Ø Länge</div></div>
+        <div class="dd-hero-v16-stat"><div class="dd-hero-v16-stat-val">${maxLen}cm</div><div class="dd-hero-v16-stat-lbl">Rekord</div></div>
+        <div class="dd-hero-v16-stat"><div class="dd-hero-v16-stat-val">${takenCnt}</div><div class="dd-hero-v16-stat-lbl">Entnommen</div></div>
+      </div>`:''}
+    </div>
+    ${wxHtml}
+    <div class="slbl">Fänge</div>
+    ${sessionsHtml}`;
 
-  // ── Fang-Liste sofort rendern (blockiert nicht auf Wetter) ──
-  const _buildBody=(wxHtml)=>{
-    let catchesHtml='';
-    if(isSkunked){
-      catchesHtml=`<div style="text-align:center;padding:28px;color:var(--text-light);">🪝 Schneider – kein Fang</div>`;
-    } else {
-      daySess.forEach(s=>{
-        // ID-sicherer Vergleich für importierte Sessions
-        const sCatches=sortedCatches.filter(c=>String(c._sessId)===String(s.id));
-        const dur=calcDur(s.start,s.end);
-        catchesHtml+=`<div class="dd-sess-sep">${s.start||'–'}–${s.end||'?'} Uhr · ${dur} · ${s.water||'–'}</div>`;
-        if(s.skunked||!sCatches.length){
-          catchesHtml+=`<div style="padding:10px 0;font-size:12px;color:var(--text-light);">Kein Fang</div>`;
-        } else {
-          catchesHtml+=sCatches.map((c,i)=>{
-            const mm=chkMM(c.type,c.length);
-            return`<div class="dd-catch-row">
-              <div class="dd-catch-photo dd-photo-${String(s.id).replace(/[^a-z0-9]/gi,'_')}-${i}">${fIco(c.type)}</div>
-              <div class="dd-catch-info">
-                <div class="dd-catch-name">${c.type||'–'}</div>
-                <div class="dd-catch-meta">${c.time||'–'} Uhr${c.bait?' · 🪝 '+c.bait:''}${c.baitNote?' · '+c.baitNote:''}</div>
-                <span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>
-                ${mm&&!mm.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ &lt;${mm.mm}cm</span>`:''}
-              </div>
-              <div class="dd-catch-right">
-                <div class="dd-catch-len">${c.length}</div>
-                <div class="dd-catch-unit">cm</div>
-                ${c.score?`<div style="font-size:10px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score}</div>`:''}
-              </div>
-            </div>`;
-          }).join('');
-        }
-      });
-    }
-
-    // Aktions-Buttons je Session
-    const actionsHtml=`<div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
-      ${daySess.map(s=>`
-        <div style="background:#fff;border-radius:var(--rs);padding:12px 14px;box-shadow:var(--sh-sm);border:1px solid rgba(200,221,208,.3);">
-          <div style="font-size:12px;font-weight:600;color:var(--text-mid);margin-bottom:8px;">${s.water||'–'} · ${s.start||'–'}–${s.end||'?'} Uhr</div>
-          <div style="display:flex;gap:8px;">
-            <button onclick="editSess('${s.id}')" style="flex:1;padding:10px;background:var(--green-mist);border:1.5px solid var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);">✏️ Bearbeiten</button>
-            <button onclick="delSessFromDetail('${s.id}','${dateKey}')" style="flex:1;padding:10px;background:var(--rose);border:1.5px solid var(--rose-b);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--rose-t);">🗑️ Löschen</button>
-          </div>
-        </div>`).join('')}
-    </div>`;
-
-    body.innerHTML=`${wxHtml}<div class="slbl">Fänge</div><div class="card" style="padding:0 16px;">${catchesHtml}</div>${actionsHtml}`;
-
-    // Fotos asynchron nachladen
-    daySess.forEach(s=>{
-      const safeId=String(s.id).replace(/[^a-z0-9]/gi,'_');
-      s.catches.forEach(async(c,i)=>{
-        if(!c.photoKey)return;
-        const ph=await getPhoto(c.photoKey);if(!ph)return;
-        const el=body.querySelector(`.dd-photo-${safeId}-${i}`);
-        if(el)el.innerHTML=`<img src="${ph}" alt="Foto">`;
-      });
+  // Fotos nachladen
+  daySess.forEach(s=>{
+    const safeId=String(s.id).replace(/[^a-z0-9]/gi,'_');
+    s.catches.forEach(async(c,i)=>{
+      if(!c.photoKey)return;
+      const ph=await getPhoto(c.photoKey);if(!ph)return;
+      const el=body.querySelector(`.dd-photo-${safeId}-${i}`);
+      if(el)el.innerHTML=`<img src="${ph}" alt="Foto" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
     });
-  };
-
-  // ── Wetter-Kacheln: erst ohne Wetterdaten zeigen ──
-  const _buildWxHtml=(sess)=>{
-    if(!sess)return'';
-    return`<div class="slbl">Bedingungen</div>
-    <div class="dd-wx-grid">
-      ${sess.temp!=null?`<div class="dd-wx-tile"><div class="dd-wx-ico">🌡️</div><div class="dd-wx-val">${sess.temp}°C</div><div class="dd-wx-lbl">Temp.</div></div>`:''}
-      ${sess.pressure?`<div class="dd-wx-tile"><div class="dd-wx-ico">🔵</div><div class="dd-wx-val">${Math.round(sess.pressure)}</div><div class="dd-wx-lbl">hPa</div></div>`:''}
-      ${sess.windSpeed!=null?`<div class="dd-wx-tile"><div class="dd-wx-ico">💨</div><div class="dd-wx-val">${sess.windSpeed}<small style="font-size:10px;"> km/h</small></div><div class="dd-wx-lbl">Wind ${_windDir(sess.windDir)}</div></div>`:''}
-      ${sess.humidity!=null?`<div class="dd-wx-tile"><div class="dd-wx-ico">💧</div><div class="dd-wx-val">${sess.humidity}%</div><div class="dd-wx-lbl">Luftf.</div></div>`:''}
-      ${sess.clouds!=null?`<div class="dd-wx-tile"><div class="dd-wx-ico">☁️</div><div class="dd-wx-val">${sess.clouds}%</div><div class="dd-wx-lbl">Bewölk.</div></div>`:''}
-      ${sess.moonIcon?`<div class="dd-wx-tile"><div class="dd-wx-ico">${sess.moonIcon}</div><div class="dd-wx-val" style="font-size:12px;">${sess.moonIllum||''}%</div><div class="dd-wx-lbl">${sess.moonName||'Mond'}</div></div>`:''}
-    </div>`;
-  };
-
-  // Wetter sofort aus vorhandenen Daten anzeigen
-  const wxSessNow=daySess.find(s=>s.pressure||s.temp!=null||s.windSpeed!=null);
-  _buildBody(_buildWxHtml(wxSessNow));
-
-  // PLZ-Fallback: Wenn kein Wetter vorhanden und PLZ konfiguriert, Button anbieten
-  if(!wxSessNow){
-    const noWxHint=document.createElement('div');
-    noWxHint.style.cssText='padding:10px 0 6px;';
-    noWxHint.innerHTML=profile?.plz
-      ?`<button onclick="reloadWeatherForDay('${dateKey}')" style="width:100%;padding:11px;background:var(--blue);color:var(--blue-t);border:1.5px solid rgba(12,68,124,.2);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;">🌡️ Wetter via PLZ ${profile.plz} nachladen</button>`
-      :`<div style="font-size:12px;color:var(--text-light);padding:6px 0;">Keine Wetterdaten – PLZ im Profil hinterlegen für automatisches Nachladen.</div>`;
-    body.insertBefore(noWxHint,body.firstChild);
-  }
+  });
 }
 
 // Wetter für einen Tag nachziehen und Overlay aktualisieren
