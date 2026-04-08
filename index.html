@@ -282,21 +282,32 @@ position:relative;}
 /* ── DETAIL-OVERLAY: Helles Design ── */
 #fs-fc-day{background:#f5f7f5;}
 
-/* Overlay-Header (helles Design) */
+/* ── Day-Detail: Header scrollt MIT dem Inhalt ── */
 .fc-detail-hdr{
   background:#fff;border-bottom:1px solid rgba(200,221,208,.4);
-  padding:16px 18px 14px;position:relative;flex-shrink:0;
+  padding:14px 16px 12px;position:relative;
+  /* kein flex-shrink:0 → scrollt mit */
 }
-.fc-detail-hdr-row1{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
-.fc-detail-date{font-family:var(--fs);font-size:22px;font-weight:700;color:var(--text-dark);}
-.fc-detail-wx{text-align:right;}
-.fc-detail-wx-ico{font-size:28px;line-height:1;}
-.fc-detail-wx-tmp{font-size:20px;font-weight:700;color:var(--text-dark);}
-.fc-detail-wx-desc{font-size:11px;color:var(--text-light);margin-top:1px;}
-/* Info-Band: Beißindex · Wind · Mond */
-.fc-detail-band{
-  display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;
+/* Zeile 1: links Datum+Tag, rechts Wetter+Temp */
+.fc-detail-hdr-row1{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:6px;padding-right:40px; /* Platz für X-Button */
 }
+.fc-detail-date{
+  font-family:var(--fs);font-size:19px;font-weight:700;color:var(--text-dark);
+  line-height:1.15;
+}
+.fc-detail-date-sub{font-size:12px;color:var(--text-light);margin-top:1px;}
+.fc-detail-wx{text-align:right;flex-shrink:0;}
+.fc-detail-wx-ico{font-size:26px;line-height:1;}
+.fc-detail-wx-tmp{font-size:22px;font-weight:700;color:var(--text-dark);line-height:1;}
+/* Zeile 2: Beschreibung + Wind */
+.fc-detail-desc-row{
+  font-size:12px;color:var(--text-mid);margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;
+}
+/* Info-Band Chips */
+.fc-detail-band{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:4px;}
 .fc-detail-chip{
   background:var(--green-mist);border-radius:20px;padding:4px 10px;
   font-size:11px;font-weight:600;color:var(--green-deep);white-space:nowrap;
@@ -304,59 +315,62 @@ position:relative;}
 .fc-detail-chip.bite-hi{background:#d4f4e2;color:#1a5c33;}
 .fc-detail-chip.bite-mid{background:#fef3cd;color:#8a6820;}
 .fc-detail-chip.bite-lo{background:var(--cream-dark);color:var(--text-mid);}
-/* X-Button im hellen Overlay */
+/* X-Button */
 .fc-detail-close{
   position:absolute;top:12px;right:12px;
   background:var(--cream-dark);border:none;
-  width:32px;height:32px;border-radius:50%;cursor:pointer;
-  font-size:16px;display:flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:50%;cursor:pointer;
+  font-size:15px;display:flex;align-items:center;justify-content:center;
   color:var(--text-mid);transition:background .15s;
 }
 .fc-detail-close:hover{background:var(--green-pale);color:var(--green-deep);}
-/* Swipe-Dots (helle Variante) */
-.fc-day-dots{display:flex;gap:6px;justify-content:center;padding:6px 0 2px;}
+/* Swipe-Dots */
+.fc-day-dots{display:flex;gap:6px;justify-content:center;padding:8px 0 4px;}
 .fc-day-dot{width:6px;height:6px;border-radius:50%;background:rgba(74,124,89,.2);transition:all .2s;}
 .fc-day-dot.on{background:var(--green-mid);width:16px;border-radius:3px;}
 
-/* Scrollbereich im Detail */
+/* Scrollbereich – jetzt das GANZE Overlay (Header + Body zusammen) */
 .fc-detail-scroll{
   flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  overscroll-behavior-y:contain;padding:12px 14px 32px;scrollbar-width:none;
+  overscroll-behavior-y:contain;scrollbar-width:none;
   background:#f5f7f5;
 }
 .fc-detail-scroll::-webkit-scrollbar{display:none;}
 
-/* Sektionen (helles Design) */
+/* Sektionen – helles Design */
 .fc-sec{
-  background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:12px;
+  background:#fff;border-radius:14px;padding:14px 16px;margin:0 14px 12px;
   border:1px solid rgba(200,221,208,.35);box-shadow:0 1px 4px rgba(45,74,53,.06);
 }
 .fc-sec-title{
   font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;
   color:var(--text-light);margin-bottom:10px;
 }
-/* GROSSE Charts für bessere Ablesbarkeit */
-.fc-canvas-wrap{position:relative;height:160px;width:100%;}
-.fc-rain-wrap{position:relative;height:100px;width:100%;}
+/* GROSSE Charts */
+.fc-canvas-wrap{position:relative;height:170px;width:100%;}
+.fc-rain-wrap{position:relative;height:110px;width:100%;}
 
-/* Fisch-Insights helles Design */
-.fc-insight-bar-bg{flex:1;background:var(--cream-dark);border-radius:4px;height:8px;overflow:hidden;}
-.fc-insight-bar-fill{height:100%;border-radius:4px;}
+/* Chart Hover-Info-Div */
+.fc-hover-info{
+  min-height:36px;padding:6px 10px;margin-bottom:6px;
+  background:var(--green-mist);border-radius:8px;
+  font-size:13px;font-weight:600;color:var(--green-deep);
+  display:flex;align-items:center;gap:8px;
+  transition:opacity .2s;
+}
+.fc-hover-info:empty{opacity:0;}
 
-/* Beißindex Back-Button (Legacy entfernt) */
-.fc-ov-back{display:none;}
-
-/* Mondkalender Overlay */
-.fc-moon-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;}
+/* Mondkalender – größere Zellen */
+.fc-moon-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px;}
 .fc-moon-cell{
   display:flex;flex-direction:column;align-items:center;padding:6px 2px;
   border-radius:8px;cursor:default;
 }
 .fc-moon-cell.today{background:var(--green-mist);}
-.fc-moon-cell-dow{font-size:9px;color:var(--text-light);font-weight:600;text-transform:uppercase;}
-.fc-moon-cell-ico{font-size:18px;line-height:1;margin:2px 0;}
-.fc-moon-cell-day{font-size:11px;color:var(--text-dark);font-weight:500;}
-.fc-moon-cell-pct{font-size:9px;color:var(--text-light);}
+.fc-moon-cell-dow{font-size:10px;color:var(--text-light);font-weight:700;text-transform:uppercase;margin-bottom:2px;}
+.fc-moon-cell-ico{font-size:22px;line-height:1;margin:2px 0;}
+.fc-moon-cell-day{font-size:13px;color:var(--text-dark);font-weight:600;}
+.fc-moon-cell-pct{font-size:10px;color:var(--text-light);margin-top:1px;}
 
 /* Tide Overlay */
 .fc-tide-canvas-wrap{position:relative;height:180px;width:100%;margin-bottom:8px;}
@@ -619,6 +633,23 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 
 /* ENV */
 .erow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+
+/* ── Sync-Fortschrittsbalken (oben fixiert) ── */
+#sync-progress{
+  position:absolute;top:0;left:0;right:0;
+  background:var(--green-deep);color:#fff;
+  font-size:11px;font-weight:600;letter-spacing:.3px;
+  padding:6px 14px;display:none;
+  align-items:center;gap:8px;z-index:310;
+}
+#sync-progress.on{display:flex;}
+#sync-progress-bar{
+  flex:1;height:3px;background:rgba(255,255,255,.25);
+  border-radius:2px;overflow:hidden;
+}
+#sync-progress-fill{height:100%;background:#fff;border-radius:2px;transition:width .3s ease;}
+/* Wetter-Kachel (einzeln, volle Breite) */
+#new-moon-wx-row .ec{width:100%;}
 .ec{background:var(--green-mist);border:1px solid var(--green-pale);border-radius:var(--rs);padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .15s;}
 .ec:hover{background:var(--green-pale);}
 .ei{font-size:24px;flex-shrink:0;}
@@ -1104,6 +1135,13 @@ input[type=file]{display:none;}
 
 <!-- GOAL WALKOUT OVERLAY -->
 <div id="goal-walkout" onclick="dismissGoalWalkout()" role="dialog" aria-modal="true" aria-label="Ziel erreicht">
+
+<!-- Sync-Fortschrittsbalken (oben fixiert) -->
+<div id="sync-progress" role="status" aria-live="polite">
+  <span id="sync-progress-txt">Lade historische Wetterdaten…</span>
+  <div id="sync-progress-bar"><div id="sync-progress-fill" style="width:0%"></div></div>
+  <span id="sync-progress-count" style="white-space:nowrap;font-size:10px;opacity:.8;"></span>
+</div>
   <canvas id="goal-kcanvas" style="position:absolute;inset:0;pointer-events:none;width:100%;height:100%;"></canvas>
   <div class="goal-walkout-badge" id="gwalk-badge">🏆</div>
   <div class="goal-walkout-label">ZIEL ERREICHT</div>
@@ -1347,24 +1385,22 @@ input[type=file]{display:none;}
       </div>
     </div>
     <div class="card">
+      <!-- Datum -->
       <div class="ig" style="margin-bottom:10px;">
         <label class="il" for="s-date">Datum</label>
         <input type="date" class="if" id="s-date"
           oninput="updMoon()"
           onchange="updMoon()">
       </div>
-      <div id="new-moon-wx-row" class="erow">
-        <div class="ec" onclick="showPage('stats')" role="button" tabindex="0">
-          <div class="ei" id="moon-ico">🌕</div>
-          <div><div class="elbl">Mondphase</div><div class="ev" id="moon-txt">Vollmond</div><div class="esub" id="moon-pct">100%</div></div>
-        </div>
+      <!-- Wetter-Karte (nur wenn nicht Reduziert) -->
+      <div id="new-moon-wx-row" style="margin-bottom:10px;">
         <div class="ec" onclick="fetchWx()" role="button" tabindex="0" id="wx-card">
           <div class="ei" id="wx-ico">🌡️</div>
           <div><div class="elbl">Wetter</div><div class="ev" id="wx-val" style="font-size:11px;color:var(--text-light);line-height:1.5;">Tippen zum Laden</div></div>
         </div>
       </div>
       <!-- Silent Weather Bestätigung (Reduziert-Modus) -->
-      <div id="silent-wx-hint" style="display:none;padding:8px 0 2px;">
+      <div id="silent-wx-hint" style="display:none;padding:4px 0 6px;">
         <div style="font-size:11px;color:var(--green-mid);font-weight:600;display:flex;align-items:center;gap:6px;">
           <span>✓</span><span id="silent-wx-txt">Wetterdaten automatisch im Hintergrund erfasst</span>
         </div>
@@ -1379,10 +1415,8 @@ input[type=file]{display:none;}
         <div class="sz-text" id="sz-text"></div>
         <button class="sz-close" onclick="disSzHint()" aria-label="Schließen">✕</button>
       </div>
-    </div>
 
-    <div class="slbl">Session-Details</div>
-    <div class="card">
+      <!-- Session-Details (zusammengeführt) -->
       <div class="ig" style="margin-bottom:10px;">
         <label class="il" for="s-water">Gewässer</label>
         <input type="text" class="if" id="s-water" placeholder="z.B. Dümmer See"
@@ -1400,25 +1434,25 @@ input[type=file]{display:none;}
           <input type="time" class="if" id="s-end">
         </div>
       </div>
-      <!-- Manual weather – fallback (hidden when GPS loaded, hidden in reduced mode) -->
+      <!-- Manual weather – fallback (hidden when auto-loaded, hidden in reduced mode) -->
       <div id="new-manual-wx-wrap">
         <div id="manual-wx">
-        <div class="g2" style="margin-bottom:10px;">
-          <div class="ig">
-            <label class="il" for="s-wx">Wetter</label>
-            <select class="if" id="s-wx">
-              <option>☀️ Sonnig</option><option>⛅ Bewölkt</option><option>🌧 Regen</option><option>🌫 Nebel</option><option>💨 Windig</option>
-            </select>
-          </div>
-          <div class="ig">
-            <label class="il" for="s-temp">Temp. (°C)</label>
-            <input type="number" class="if" id="s-temp" placeholder="15" min="-20" max="45">
+          <div class="g2" style="margin-bottom:10px;">
+            <div class="ig">
+              <label class="il" for="s-wx">Wetter</label>
+              <select class="if" id="s-wx">
+                <option>☀️ Sonnig</option><option>⛅ Bewölkt</option><option>🌧 Regen</option><option>🌫 Nebel</option><option>💨 Windig</option>
+              </select>
+            </div>
+            <div class="ig">
+              <label class="il" for="s-temp">Temp. (°C)</label>
+              <input type="number" class="if" id="s-temp" placeholder="15" min="-20" max="45">
+            </div>
           </div>
         </div>
-      </div>
       </div><!-- /new-manual-wx-wrap -->
-      <!-- Sichttiefe / Trübung -->
-      <div class="ig">
+      <!-- Sichttiefe – im Reduziert-Modus ausgeblendet -->
+      <div id="new-clarity-wrap">
         <label class="il" for="s-clarity">Sichttiefe / Trübung</label>
         <input type="text" class="if" id="s-clarity" placeholder="z.B. Klar · optional"
           onfocus="rndrClarityChips()" onblur="dHide('clarity-chips')" autocomplete="off">
@@ -1475,8 +1509,10 @@ input[type=file]{display:none;}
 
 <!-- AP4: FORECAST DAY DETAIL OVERLAY – Helles Theme -->
 <div class="fsov" id="fs-fc-day" role="dialog" aria-modal="true" aria-label="Vorhersage-Detail" style="z-index:115;background:#f5f7f5;">
-  <div id="fc-day-hero" class="fc-detail-hdr" style="flex-shrink:0;position:relative;"></div>
-  <div class="fc-detail-scroll" id="fc-day-body"></div>
+  <div class="fc-detail-scroll" id="fc-day-scroll">
+    <div id="fc-day-hero"></div>
+    <div id="fc-day-body" style="padding-top:8px;"></div>
+  </div>
 </div>
 
 <!-- Mondkalender Overlay -->
@@ -1629,11 +1665,13 @@ function setInputMode(mode){
   if(btnFull){btnFull.style.background=!reduced?'var(--green-deep)':'transparent';btnFull.style.color=!reduced?'#fff':'var(--text-mid)';}
   if(btnRed){btnRed.style.background=reduced?'var(--green-deep)':'transparent';btnRed.style.color=reduced?'#fff':'var(--text-mid)';}
 
-  // Mond + Wetter-Karte ausblenden im reduzierten Modus
+  // Wetter-Karte + manuelle Felder ausblenden im reduzierten Modus
   const moonWxRow=document.getElementById('new-moon-wx-row');
   const manualWxWrap=document.getElementById('new-manual-wx-wrap');
+  const clarityWrap=document.getElementById('new-clarity-wrap');
   if(moonWxRow)moonWxRow.style.display=reduced?'none':'';
   if(manualWxWrap)manualWxWrap.style.display=reduced?'none':'';
+  if(clarityWrap)clarityWrap.style.display=reduced?'none':'';
 
   // Silent Weather Hint
   const hint=document.getElementById('silent-wx-hint');
@@ -1758,10 +1796,8 @@ function rebuildBanners(el,active,preview){
 }
 function updMoon(){
   const v=document.getElementById('s-date').value;
-  const m=getMoon(v||null);
-  document.getElementById('moon-ico').textContent=m.icon;
-  document.getElementById('moon-txt').textContent=m.name;
-  document.getElementById('moon-pct').textContent=m.illum+'% beleuchtet';
+  // Mondphase wird im Formular nicht mehr angezeigt (entfernt),
+  // aber Mondwert wird weiterhin beim Speichern der Session berechnet.
   if(v)_tryLoadHistoricalWeather(v);
 }
 
@@ -1772,8 +1808,10 @@ async function _tryLoadHistoricalWeather(dateStr){
   if(d>=today)return; // nur Vergangenheit
   if(_lastWx)return;  // bereits Wetter vorhanden
   const coords=_plzCoords||gpsCoords;
-  if(!coords)return;
-  const url=`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation,weathercode&start_date=${dateStr}&end_date=${dateStr}&timezone=auto`;
+  if(!coords&&profile?.plz)await resolvePlzCoords(profile.plz);
+  const c2=_plzCoords||gpsCoords;
+  if(!c2)return;
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${c2.lat}&longitude=${c2.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation,weathercode&start_date=${dateStr}&end_date=${dateStr}&timezone=auto`;
   const strip=document.getElementById('gps-strip');
   if(strip){strip.style.display='flex';document.getElementById('gps-txt').textContent='Lade historisches Wetter…';}
   try{
@@ -1781,7 +1819,7 @@ async function _tryLoadHistoricalWeather(dateStr){
     const data=await r.json();
     const h=data.hourly;if(!h||!h.time?.length)throw new Error('no data');
     const avg=arr=>arr?.filter(v=>v!=null).reduce((a,b)=>a+b,0)/(arr?.filter(v=>v!=null).length||1);
-    const c={
+    const wx={
       temperature_2m:parseFloat(avg(h.temperature_2m).toFixed(1)),
       windspeed_10m:Math.round(avg(h.windspeed_10m)),
       winddirection_10m:Math.round(avg(h.winddirection_10m)),
@@ -1791,7 +1829,11 @@ async function _tryLoadHistoricalWeather(dateStr){
       precipitation:parseFloat((h.precipitation?.reduce((a,b)=>a+(b||0),0)||0).toFixed(1)),
       weathercode:h.weathercode?Math.round(avg(h.weathercode)):1
     };
-    applyWxData(c,`Historisch ${dateStr} ✓`);
+    applyWxData(wx,`Historisch ${dateStr} ✓`);
+    // Manuelle Felder ausblenden – historische Daten wurden automatisch geladen
+    const manWrap=document.getElementById('new-manual-wx-wrap');
+    if(manWrap)manWrap.style.display='none';
+    if(strip)strip.style.display='none';
   }catch(e){if(strip)strip.style.display='none';}
 }
 
@@ -2560,8 +2602,12 @@ function _autoTabLength(id){
   if(!lenEl||!lenEl.value)return;
   setTimeout(()=>{
     const timeEl=document.getElementById('ftime-'+id);
-    if(timeEl)timeEl.focus(); // time-widget öffnet sich automatisch
-  },100);
+    if(!timeEl)return;
+    // Cursor ins Feld setzen, aber time-Widget NICHT erzwingen.
+    // showPicker() / click() würde das native Widget öffnen → absichtlich weggelassen.
+    // Nur focus() damit der Nutzer direkt tippen kann – kein Popup.
+    timeEl.focus({preventScroll:true});
+  },120);
 }
 
 function _focusLength(id){
@@ -3329,27 +3375,44 @@ async function delSessFromDetail(id,dateKey){
 // WETTER NACHZIEHEN – AP2: fehlende Wetterdaten via PLZ laden
 // ═══════════════════════════════════════════════════════════
 async function fetchMissingWeather(sessList){
-  // Nur Sessions ohne Wetterdaten und mit bekanntem Datum
   const missing=sessList.filter(s=>!s.pressure&&!s.windSpeed&&s.date);
   if(!missing.length)return;
 
-  // PLZ-Koordinaten müssen vorhanden sein
   if(!_plzCoords){
     if(profile?.plz)await resolvePlzCoords(profile.plz);
-    if(!_plzCoords)return; // Offline oder PLZ nicht auflösbar
+    if(!_plzCoords)return;
   }
+
+  const total=missing.length;
+  let done=0;
+
+  // Fortschrittsbalken einblenden
+  const bar=document.getElementById('sync-progress');
+  const fill=document.getElementById('sync-progress-fill');
+  const txt=document.getElementById('sync-progress-txt');
+  const cnt=document.getElementById('sync-progress-count');
+  function updProgress(){
+    const pct=Math.round(done/total*100);
+    if(fill)fill.style.width=pct+'%';
+    if(cnt)cnt.textContent=`${done}/${total}`;
+    if(txt)txt.textContent='Lade historische Wetterdaten…';
+    if(bar)bar.classList.add('on');
+  }
+  function hideProgress(){
+    if(bar)bar.classList.remove('on');
+    if(fill)fill.style.width='0%';
+  }
+  updProgress();
 
   for(const sess of missing){
     try{
-      // Open-Meteo: historische Daten via „past_days" oder Datum-Range
-      const date=sess.date;
+      // Datum dynamisch aus Session – funktioniert für 2024, 2025, 2026 und alle Jahre
+      const date=sess.date; // Format: YYYY-MM-DD
       const url=`https://api.open-meteo.com/v1/forecast?latitude=${_plzCoords.lat}&longitude=${_plzCoords.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation&start_date=${date}&end_date=${date}&timezone=auto`;
       const r=await fetch(url);if(!r.ok)continue;
       const data=await r.json();
       const h=data.hourly;
       if(!h||!h.time?.length)continue;
-
-      // Mittelwerte über den gesamten Tag berechnen
       const avg=arr=>arr?.filter(v=>v!=null).reduce((a,b)=>a+b,0)/(arr?.filter(v=>v!=null).length||1);
       sess.pressure=Math.round(avg(h.surface_pressure));
       sess.temp=Math.round(avg(h.temperature_2m));
@@ -3358,11 +3421,13 @@ async function fetchMissingWeather(sessList){
       sess.humidity=Math.round(avg(h.relativehumidity_2m));
       sess.clouds=Math.round(avg(h.cloudcover));
       sess.precip=parseFloat((h.precipitation?.reduce((a,b)=>a+(b||0),0)||0).toFixed(1));
-
-      // Persistent speichern
       await idbP('sessions',String(sess.id),sess);
-    }catch(e){/* Einzelfehler ignorieren */}
+    }catch(e){/* Einzelfehler ignorieren, nächste Session */}
+    done++;
+    updProgress();
   }
+  // Kurz stehen lassen, dann ausblenden
+  setTimeout(hideProgress,1200);
 }
 
 // Windrichtung in Buchstaben umrechnen
@@ -4203,34 +4268,53 @@ function openMoonCal(){
   openFs('moon-cal');
   const today=new Date();today.setHours(0,0,0,0);
   const DOW_S=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const MNAMES=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
   let html='';
-  // 3 Monate: Vormonat, aktuell, nächst
-  for(let mo=-1;mo<=2;mo++){
-    const d=new Date(today.getFullYear(),today.getMonth()+mo,1);
-    const yr=d.getFullYear(),m=d.getMonth();
-    const MNAMES=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
-    const lastDay=new Date(yr,m+1,0).getDate();
-    const firstDow=(new Date(yr,m,1).getDay()+6)%7;
-    html+=`<div style="margin-bottom:20px;">
-      <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green-mid);margin-bottom:8px;">${MNAMES[m]} ${yr}</div>
-      <div class="fc-moon-grid">
-        ${DOW_S.map(d=>`<div style="font-size:9px;font-weight:700;color:var(--text-light);text-align:center;padding:4px 0;text-transform:uppercase;">${d}</div>`).join('')}
-        ${Array(firstDow).fill('<div></div>').join('')}
-        ${Array.from({length:lastDay},(_,i)=>{
-          const day=new Date(yr,m,i+1);
-          const ds=`${yr}-${String(m+1).padStart(2,'0')}-${String(i+1).padStart(2,'0')}`;
-          const moon=getMoon(ds);
-          const isToday=day.getTime()===today.getTime();
-          return`<div class="fc-moon-cell${isToday?' today':''}">
-            <div class="fc-moon-cell-ico">${moon.icon}</div>
-            <div class="fc-moon-cell-day" style="${isToday?'font-weight:700;color:var(--green-deep);':''}">${i+1}</div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`;
+
+  // 2020 bis 2030: volle historische + zukünftige Scrollbarkeit
+  const startYear=2020, endYear=2030;
+  let todayBlockId='';
+
+  for(let yr=startYear;yr<=endYear;yr++){
+    for(let m=0;m<12;m++){
+      const blockId=`moon-${yr}-${m}`;
+      const isCurrentMonth=(yr===today.getFullYear()&&m===today.getMonth());
+      if(isCurrentMonth)todayBlockId=blockId;
+
+      const lastDay=new Date(yr,m+1,0).getDate();
+      const firstDow=(new Date(yr,m,1).getDay()+6)%7; // 0=Mo
+
+      html+=`<div id="${blockId}" style="margin-bottom:24px;">
+        <div style="font-size:13px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--green-mid);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--green-pale);">${MNAMES[m]} ${yr}</div>
+        <div class="fc-moon-grid">
+          ${DOW_S.map(d=>`<div class="fc-moon-cell-dow">${d}</div>`).join('')}
+          ${Array(firstDow).fill('<div></div>').join('')}
+          ${Array.from({length:lastDay},(_,i)=>{
+            const day=new Date(yr,m,i+1);
+            const ds=`${yr}-${String(m+1).padStart(2,'0')}-${String(i+1).padStart(2,'0')}`;
+            const moon=getMoon(ds);
+            const isToday=day.getTime()===today.getTime();
+            const isPast=day<today;
+            return`<div class="fc-moon-cell${isToday?' today':''}" style="${isPast?'opacity:.55':''}">
+              <div class="fc-moon-cell-ico">${moon.icon}</div>
+              <div class="fc-moon-cell-day" style="${isToday?'font-weight:800;color:var(--green-deep);font-size:14px;':''}">${i+1}</div>
+              <div class="fc-moon-cell-pct">${moon.illum}%</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }
   }
-  document.getElementById('fs-moon-meta').textContent='Mondphasen-Kalender';
+
+  document.getElementById('fs-moon-meta').textContent='2020 – 2030';
   document.getElementById('fs-moon-body').innerHTML=html;
+
+  // Scroll zum aktuellen Monat
+  requestAnimationFrame(()=>{
+    const target=document.getElementById(todayBlockId);
+    const scroll=document.querySelector('#fs-moon-cal .fsov-scroll');
+    if(target&&scroll)scroll.scrollTop=target.offsetTop-16;
+  });
 }
 
 // ── Tidenkalender Overlay ───────────────────────────────────
@@ -4370,12 +4454,13 @@ let _swipeStartX=0,_swipeStartY=0;
 function openFcDayDetail(dayIdx,dateStr){
   if(!_fcHourlyData||!_fcData)return;
   _fcDayIdx=dayIdx;
-  _fcDayCount=_fcData?.daily?.time?.length||7;
+  _fcDayCount=_fcData?.daily?.time?.length||14;
   openFs('fc-day');
   _renderFcDay(dayIdx);
 
-  // Swipe-Geste
-  const el=document.getElementById('fs-fc-day');
+  // Swipe-Geste – am Scroll-Container hängen
+  const el=document.getElementById('fc-day-scroll')||document.getElementById('fs-fc-day');
+  if(!el)return;
   el.ontouchstart=e=>{_swipeStartX=e.touches[0].clientX;_swipeStartY=e.touches[0].clientY;};
   el.ontouchend=e=>{
     const dx=e.changedTouches[0].clientX-_swipeStartX;
@@ -4393,22 +4478,22 @@ async function _renderFcDay(dayIdx){
   if(!h||!h.time||!dayData)return;
 
   const dateStr=dayData.time[dayIdx];
-  const di=dayIdx;
-  const tmax=dayData.temperature_2m_max[di];
-  const tmin=dayData.temperature_2m_min[di];
-  const windMax=dayData.windspeed_10m_max[di];
-  const windDir=dayData.winddirection_10m_dominant?.[di];
-  const pres=dayData.surface_pressure_mean?.[di];
-  const precip=dayData.precipitation_sum[di];
-  const wc=dayData.weathercode[di];
+  const tmax=dayData.temperature_2m_max[dayIdx];
+  const tmin=dayData.temperature_2m_min[dayIdx];
+  const windMax=dayData.windspeed_10m_max[dayIdx];
+  const windDir=dayData.winddirection_10m_dominant?.[dayIdx];
+  const pres=dayData.surface_pressure_mean?.[dayIdx];
+  const precip=dayData.precipitation_sum[dayIdx];
+  const wc=dayData.weathercode[dayIdx];
   const bp=calcBiteProb({date:dateStr,wc,tmax,wind:windMax,windDir,pres});
+  const moon=getMoon(dateStr);
 
   // Stunden dieses Tages
   const hoursOfDay=h.time.map((t,i)=>({
     t,hour:parseInt(t.slice(11,13)),
     temp:h.temperature_2m?.[i],
     wind:h.windspeed_10m?.[i],
-    windDir:h.winddirection_10m?.[i],
+    windDirH:h.winddirection_10m?.[i],
     rainProb:h.precipitation_probability?.[i],
     pressure:h.surface_pressure?.[i]??pres,
     wc:h.weathercode?.[i]
@@ -4416,63 +4501,54 @@ async function _renderFcDay(dayIdx){
 
   const DOW7=['So','Mo','Di','Mi','Do','Fr','Sa'];
   const dow=DOW7[new Date(dateStr+'T12:00:00').getDay()];
-  const [,mo,dy]=dateStr.split('-');
-  const MON_S=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-  const dateLabel=`${parseInt(dy)}. ${MON_S[parseInt(mo)-1]}`;
-  const pctColor=bp.pct>=70?'#5fd090':bp.pct>=40?'#f0c040':'#8ab0c0';
+  const[yr,mo,dy]=dateStr.split('-');
+  const MON_FULL=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const isToday=dayIdx===0;
+  const dayLabel=isToday?'Heute':dow;
+  const dateLabel=`${parseInt(dy)}. ${MON_FULL[parseInt(mo)-1]} ${yr}`;
 
-  // Swipe-Punkte
+  // Beißindex Chip-Klasse
+  const biteClass=bp.pct>=70?'bite-hi':bp.pct>=40?'bite-mid':'bite-lo';
+  const biteLabel=bp.pct>=70?'Sehr gut':bp.pct>=50?'Gut':bp.pct>=30?'Mäßig':'Schlecht';
+
+  // Swipe-Dots
   const dots=Array.from({length:_fcDayCount},(_,i)=>`<div class="fc-day-dot${i===dayIdx?' on':''}"></div>`).join('');
 
-  // ── Hero ──
+  // ── Hero (scrollt mit) ──
   document.getElementById('fc-day-hero').innerHTML=`
-    <button class="fc-ov-back" onclick="closeFs('fc-day')">‹ Zurück</button>
-    <div class="fc-ov-top">
-      <div class="fc-ov-dow">${dow}</div>
-      <div class="fc-ov-date">${dateLabel}</div>
-      <div class="fc-ov-ico">${wxIco(wc)}</div>
-      <div class="fc-ov-temp">${tmax!=null?Math.round(tmax)+'°':'–'}</div>
-      <div class="fc-ov-desc">${wxDesc(wc)}</div>
-      <div class="fc-ov-range">${tmin!=null?'↓'+Math.round(tmin)+'°':''} ${tmax!=null?'↑'+Math.round(tmax)+'°':''}</div>
-    </div>
-    <div class="fc-ov-tiles">
-      <div class="fc-ov-tile">
-        <div class="fc-ov-tile-lbl">Beißindex</div>
-        <div class="fc-ov-tile-val" style="color:${pctColor};">${bp.pct}%</div>
-        <div class="fc-ov-tile-sub">${bp.pct>=70?'Sehr gut':bp.pct>=50?'Gut':bp.pct>=30?'Mäßig':'Schlecht'}</div>
+    <div class="fc-detail-hdr">
+      <button class="fc-detail-close" onclick="closeFs('fc-day')" aria-label="Schließen">✕</button>
+      <div class="fc-detail-hdr-row1">
+        <div>
+          <div class="fc-detail-date">${dayLabel}, ${parseInt(dy)}. ${MON_FULL[parseInt(mo)-1]}</div>
+          <div class="fc-detail-date-sub">${yr}</div>
+        </div>
+        <div class="fc-detail-wx">
+          <div class="fc-detail-wx-ico">${wxIco(wc)}</div>
+          <div class="fc-detail-wx-tmp">${tmax!=null?Math.round(tmax)+'°':'–'}</div>
+        </div>
       </div>
-      <div class="fc-ov-tile">
-        <div class="fc-ov-tile-lbl">Wind</div>
-        <div class="fc-ov-tile-val">${windMax!=null?Math.round(windMax):'–'}</div>
-        <div class="fc-ov-tile-sub">km/h ${windLabel(windDir)}</div>
+      <div class="fc-detail-desc-row">
+        <span>${wxDesc(wc)}</span>
+        <span style="color:var(--text-light);">·</span>
+        <span>💨 ${windMax!=null?Math.round(windMax):'–'} km/h ${windLabel(windDir)}</span>
+        ${tmin!=null?`<span style="color:var(--text-light);">·</span><span>↕ ${Math.round(tmin)}–${Math.round(tmax)}°</span>`:''}
       </div>
-      <div class="fc-ov-tile">
-        <div class="fc-ov-tile-lbl">Regen</div>
-        <div class="fc-ov-tile-val">${precip!=null?precip.toFixed(1):'–'}</div>
-        <div class="fc-ov-tile-sub">mm</div>
+      <div class="fc-detail-band">
+        <span class="fc-detail-chip ${biteClass}">🎣 ${bp.pct}% · ${biteLabel}</span>
+        <span class="fc-detail-chip">💨 ${windMax!=null?Math.round(windMax):'–'} km/h</span>
+        <span class="fc-detail-chip">🌙 ${moon.icon} ${moon.illum}%</span>
       </div>
-    </div>
-    <div class="fc-day-dots">${dots}</div>`;
+      <div class="fc-day-dots" style="margin-top:10px;">${dots}</div>
+    </div>`;
 
-  // ── Body: Charts ──
-  // Stunden-Labels
-  const labels=hoursOfDay.map(x=>`${String(x.hour).padStart(2,'0')}:00`);
-  const temps=hoursOfDay.map(x=>x.temp!=null?Math.round(x.temp*10)/10:null);
+  // ── Daten für Charts ──
+  const labels=hoursOfDay.map(x=>`${String(x.hour).padStart(2,'0')}`);
+  const temps=hoursOfDay.map(x=>x.temp!=null?parseFloat(x.temp.toFixed(1)):null);
   const winds=hoursOfDay.map(x=>x.wind!=null?Math.round(x.wind):null);
+  const windDirs=hoursOfDay.map(x=>x.windDirH!=null?windLabel(x.windDirH):'');
   const rains=hoursOfDay.map(x=>x.rainProb!=null?x.rainProb:null);
   const presses=hoursOfDay.map(x=>x.pressure!=null?Math.round(x.pressure):null);
-
-  // Tide für Weser Bremen – nur wenn coords nahe Bremen
-  const coords=_plzCoords||gpsCoords;
-  const isBremen=coords&&Math.abs(coords.lat-53.07)<0.8&&Math.abs(coords.lon-8.8)<1.2;
-  let tideHtml='';
-  if(isBremen){
-    tideHtml=`<div class="fc-sec">
-      <div class="fc-sec-title">🌊 Tide Weser Bremen</div>
-      <div class="fc-canvas-wrap"><canvas id="fc-tide-chart"></canvas></div>
-      <div id="fc-tide-info" style="font-size:11px;opacity:.5;text-align:center;margin-top:6px;">Lade Tidendaten…</div>
-    </div>`;
-  }
 
   // Fisch-Insights
   const fishInsights=bp.fishInsights||[];
@@ -4480,65 +4556,150 @@ async function _renderFcDay(dayIdx){
     <div class="fc-sec">
       <div class="fc-sec-title">🎣 Fisch-Wahrscheinlichkeiten</div>
       ${fishInsights.map(fi=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-        <div style="font-size:13px;font-weight:600;color:#fff;min-width:70px;">${fi.fish}</div>
-        <div style="flex:1;background:rgba(255,255,255,.12);border-radius:4px;height:8px;overflow:hidden;">
-          <div style="height:100%;width:${fi.pct}%;background:${fi.pct>=70?'#5fd090':fi.pct>=40?'#f0c040':'#4a7c99'};border-radius:4px;"></div>
+        <div style="font-size:13px;font-weight:600;color:var(--text-dark);min-width:72px;">${fi.fish}</div>
+        <div class="fc-insight-bar-bg" style="flex:1;background:var(--cream-dark);border-radius:4px;height:8px;overflow:hidden;">
+          <div style="height:100%;width:${fi.pct}%;background:${fi.pct>=70?'var(--green-mid)':fi.pct>=40?'var(--gold)':'var(--cream-dark)'};border-radius:4px;"></div>
         </div>
-        <div style="font-size:12px;color:${fi.pct>=70?'#5fd090':fi.pct>=40?'#f0c040':'rgba(255,255,255,.4)'};min-width:32px;text-align:right;font-weight:600;">${fi.pct}%</div>
+        <div style="font-size:12px;font-weight:700;color:${fi.pct>=70?'var(--green-deep)':fi.pct>=40?'var(--gold)':'var(--text-light)'};min-width:32px;text-align:right;">${fi.pct}%</div>
       </div>`).join('')}
     </div>`:'';
 
   document.getElementById('fc-day-body').innerHTML=`
-    <div class="fc-sec">
+    <div class="fc-sec" style="margin-top:0;">
       <div class="fc-sec-title">🌡 Temperatur</div>
+      <div id="hover-temp" class="fc-hover-info"></div>
       <div class="fc-canvas-wrap"><canvas id="fc-temp-chart"></canvas></div>
     </div>
     <div class="fc-sec">
       <div class="fc-sec-title">🌧 Regenwahrscheinlichkeit</div>
+      <div id="hover-rain" class="fc-hover-info"></div>
       <div class="fc-rain-wrap"><canvas id="fc-rain-chart"></canvas></div>
     </div>
     <div class="fc-sec">
-      <div class="fc-sec-title">💨 Wind (km/h)</div>
+      <div class="fc-sec-title">💨 Wind</div>
+      <div id="hover-wind" class="fc-hover-info"></div>
       <div class="fc-canvas-wrap"><canvas id="fc-wind-chart"></canvas></div>
     </div>
     <div class="fc-sec">
-      <div class="fc-sec-title">📊 Luftdruck (hPa)</div>
+      <div class="fc-sec-title">📊 Luftdruck</div>
+      <div id="hover-pres" class="fc-hover-info"></div>
       <div class="fc-canvas-wrap"><canvas id="fc-pres-chart"></canvas></div>
     </div>
-    ${tideHtml}
     ${insightsHtml}`;
 
-  // Chart.js rendern
+  // Chart.js: helles Theme mit Hover-Info-Divs
   requestAnimationFrame(()=>{
     if(typeof Chart==='undefined')return;
-    const chartDefaults={
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(0,20,40,.85)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.75)',borderColor:'rgba(255,255,255,.15)',borderWidth:1}},
-      scales:{
-        x:{ticks:{color:'rgba(255,255,255,.45)',font:{size:9},maxRotation:0},grid:{color:'rgba(255,255,255,.06)'}},
-        y:{ticks:{color:'rgba(255,255,255,.45)',font:{size:9}},grid:{color:'rgba(255,255,255,.08)'}}
+
+    // Helles Theme – gemeinsame Defaults
+    const TICK_COLOR='#6a7a6f';
+    const GRID_COLOR='rgba(0,0,0,.07)';
+    const mkScales=(yOpts)=>({
+      x:{
+        ticks:{color:TICK_COLOR,font:{size:10},maxRotation:0,
+          callback:(_,i)=>i%2===0?labels[i]:''}, // jede 2. Stunde
+        grid:{color:GRID_COLOR}
+      },
+      y:{
+        ticks:{color:TICK_COLOR,font:{size:10},...(yOpts.ticks||{})},
+        grid:{color:GRID_COLOR},
+        ...(yOpts.minMax||{})
       }
-    };
-    const lineDs=(data,color,label)=>({labels,datasets:[{label,data,borderColor:color,backgroundColor:color+'28',fill:true,tension:.4,pointRadius:0,borderWidth:2}]});
+    });
+    const mkLineDs=(data,color,label)=>({
+      label,data,
+      borderColor:color,
+      backgroundColor:color+'22',
+      fill:true,tension:.35,
+      pointRadius:3,pointHoverRadius:5,
+      pointBackgroundColor:color,
+      borderWidth:2.5
+    });
+    // Hover-Info-Handler
+    function hoverPlugin(divId,fmtFn){
+      return{id:'hoverDiv_'+divId,afterDatasetsDraw(chart){
+        const active=chart.tooltip?.dataPoints;
+        const el=document.getElementById(divId);
+        if(!el)return;
+        if(active?.length){
+          const idx=active[0].dataIndex;
+          el.textContent=fmtFn(idx,active[0].parsed.y);
+          el.style.opacity='1';
+        } else {
+          el.style.opacity='0';
+        }
+      }};
+    }
 
-    // Temperatur-Linie
+    // Temperatur
     const tc=document.getElementById('fc-temp-chart');
-    if(tc)new Chart(tc,{type:'line',data:lineDs(temps,'#f0a840','°C'),options:{...chartDefaults,scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+'°'}}}}});
+    if(tc&&temps.some(v=>v!=null)){
+      const tMin=Math.min(...temps.filter(v=>v!=null))-2;
+      const tMax=Math.max(...temps.filter(v=>v!=null))+2;
+      new Chart(tc,{type:'line',
+        data:{labels,datasets:[mkLineDs(temps,'#e07030','°C')]},
+        plugins:[hoverPlugin('hover-temp',(i,v)=>`${labels[i]}:00 · ${v}°C`)],
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,
+            callbacks:{label:c=>`${c.parsed.y}°C`},
+            backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)',
+          }},
+          scales:mkScales({ticks:{callback:v=>v+'°'},minMax:{min:tMin,max:tMax}})
+        }
+      });
+    }
 
-    // Regen-Säulen
+    // Regen
     const rc=document.getElementById('fc-rain-chart');
-    if(rc)new Chart(rc,{type:'bar',data:{labels,datasets:[{label:'%',data:rains,backgroundColor:'rgba(80,160,255,.55)',borderColor:'rgba(80,160,255,.8)',borderWidth:1,borderRadius:3}]},options:{...chartDefaults,scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,min:0,max:100,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+'%'}}}}});
+    if(rc&&rains.some(v=>v!=null)){
+      new Chart(rc,{type:'bar',
+        data:{labels,datasets:[{label:'%',data:rains,
+          backgroundColor:'rgba(74,144,220,.55)',borderColor:'rgba(74,144,220,.8)',
+          borderWidth:1,borderRadius:3,borderSkipped:false}]},
+        plugins:[hoverPlugin('hover-rain',(i,v)=>`${labels[i]}:00 · ${v}% Regen`)],
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,
+            callbacks:{label:c=>`${c.parsed.y}%`},
+            backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)',
+          }},
+          scales:mkScales({ticks:{callback:v=>v+'%'},minMax:{min:0,max:100}})
+        }
+      });
+    }
 
-    // Wind-Linie
+    // Wind (inkl. Richtung im Hover)
     const wc2=document.getElementById('fc-wind-chart');
-    if(wc2)new Chart(wc2,{type:'line',data:lineDs(winds,'#80c8ff','km/h'),options:{...chartDefaults,scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,min:0,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+' km/h'}}}}});
+    if(wc2&&winds.some(v=>v!=null)){
+      new Chart(wc2,{type:'line',
+        data:{labels,datasets:[mkLineDs(winds,'#4a90d9','km/h')]},
+        plugins:[hoverPlugin('hover-wind',(i,v)=>`${labels[i]}:00 · ${v} km/h ${windDirs[i]||''}`)],
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,
+            callbacks:{label:c=>`${c.parsed.y} km/h · ${windDirs[c.dataIndex]||''}`},
+            backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)',
+          }},
+          scales:mkScales({ticks:{callback:v=>v+' km/h'},minMax:{min:0}})
+        }
+      });
+    }
 
-    // Luftdruck-Linie
+    // Luftdruck
     const pc=document.getElementById('fc-pres-chart');
-    if(pc){const pMin=Math.min(...presses.filter(Boolean))-3,pMax=Math.max(...presses.filter(Boolean))+3;new Chart(pc,{type:'line',data:lineDs(presses,'#a0d4b0','hPa'),options:{...chartDefaults,scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,min:pMin,max:pMax,ticks:{...chartDefaults.scales.y.ticks,callback:v=>v+' hPa'}}}}});}
-
-    // Tide Weser Bremen via Open-Meteo Marine API
-    if(isBremen){_loadTide(dateStr);}
+    if(pc&&presses.some(v=>v!=null)){
+      const pMin=Math.min(...presses.filter(Boolean))-3;
+      const pMax=Math.max(...presses.filter(Boolean))+3;
+      new Chart(pc,{type:'line',
+        data:{labels,datasets:[mkLineDs(presses,'#5a9e7a','hPa')]},
+        plugins:[hoverPlugin('hover-pres',(i,v)=>`${labels[i]}:00 · ${v} hPa`)],
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,
+            callbacks:{label:c=>`${c.parsed.y} hPa`},
+            backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)',
+          }},
+          scales:mkScales({ticks:{callback:v=>v+' hPa'},minMax:{min:pMin,max:pMax}})
+        }
+      });
+    }
   });
 }
 
