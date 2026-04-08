@@ -12,8 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<style>
-:root{
+<style>:root{
   --cream:#F8F5EF;--cream-dark:#EDE8DC;
   --green-deep:#2D4A35;--green-mid:#4A7C59;--green-light:#7BAE8A;
   --green-pale:#C8DDD0;--green-mist:#EAF2ED;
@@ -175,7 +174,7 @@ body{
 .fshdr{
   background:var(--green-deep);padding:16px 20px;color:#fff;
   display:flex;align-items:center;gap:12px;flex-shrink:0;
-}
+position:relative;}
 .fstitle{font-family:var(--fs);font-size:20px;font-weight:600;flex:1;}
 .fsmeta{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;}
 
@@ -190,8 +189,6 @@ body{
 }
 .xbtn:hover{background:rgba(255,255,255,.32);}
 
-.fbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;background:#fff;border-bottom:1px solid var(--cream-dark);flex-shrink:0;}
-
 /* Overlay-Scroll-Body */
 .fsov > div:not(.fshdr):not(.fbar){
   flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
@@ -205,15 +202,7 @@ body{
 .fsov-scroll::-webkit-scrollbar{display:none;}
 
 /* ── iPhone-style Wetter-Overlay ── */
-.fc-ov-bg{
-  background:linear-gradient(170deg,#1a3a5c 0%,#0d2137 40%,#051525 100%);
-  color:#fff;flex-shrink:0;padding:0;position:relative;overflow:hidden;
-}
-.fc-ov-bg::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 60% 20%,rgba(100,160,255,.18) 0%,transparent 70%);
-  pointer-events:none;
-}
+
 .fc-ov-top{padding:18px 20px 16px;position:relative;}
 .fc-ov-dow{font-size:13px;font-weight:600;opacity:.7;text-transform:uppercase;letter-spacing:.8px;}
 .fc-ov-date{font-size:15px;opacity:.6;margin-top:1px;}
@@ -234,33 +223,16 @@ body{
 .fc-ov-tile-val{font-size:18px;font-weight:600;}
 .fc-ov-tile-sub{font-size:10px;opacity:.5;margin-top:2px;}
 /* Beißindex Ring */
-.fc-bite-ring{width:56px;height:56px;margin:0 auto 4px;}
-.fc-ov-scroll{
-  background:linear-gradient(170deg,#1a3a5c 0%,#0d2137 40%,#051525 100%);
-  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  overscroll-behavior-y:contain;padding:0 0 32px;scrollbar-width:none;
-}
-.fc-ov-scroll::-webkit-scrollbar{display:none;}
+
 /* Wetter-Sektion im Overlay */
-.fc-sec{margin:16px 16px 0;background:rgba(255,255,255,.08);border-radius:16px;padding:14px 16px;color:#fff;}
-.fc-sec-title{font-size:11px;font-weight:600;opacity:.5;text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;}
+
 /* Chart-Canvas */
-.fc-canvas-wrap{position:relative;height:120px;width:100%;}
+
 /* Regen-Balken (Chart.js Bar) */
-.fc-rain-wrap{position:relative;height:80px;width:100%;}
+
 /* Swipe-Nav Punkte */
-.fc-day-dots{display:flex;gap:6px;justify-content:center;padding:10px 0 4px;}
-.fc-day-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);transition:background .2s;}
-.fc-day-dot.on{background:#fff;}
+
 /* Back-Button im Forecast-Overlay */
-.fc-ov-back{
-  position:absolute;top:14px;left:14px;
-  background:rgba(255,255,255,.15);border:none;color:#fff;
-  padding:6px 12px 6px 8px;border-radius:20px;font-size:13px;font-weight:500;
-  font-family:var(--fa);cursor:pointer;display:flex;align-items:center;gap:4px;
-  z-index:10;
-}
-.fc-ov-back:hover{background:rgba(255,255,255,.25);}
 
 /* ── WETTER-DASHBOARD: Helles Theme (v17) ── */
 
@@ -414,43 +386,24 @@ body{
 .toast.err{background:var(--red);}
 
 /* TABS (legacy, versteckt) */
-.tabs{display:none;}
-.tab{display:none;}
 
 /* ── FANGBUCH: Ansicht-Header & Toggle ── */
-.fb-view-bar{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:16px;
-}
-.fb-view-title{
-  font-family:var(--fs);font-size:20px;font-weight:600;
-  color:var(--text-dark);letter-spacing:-.2px;
-}
+
 .fb-view-toggle{
   background:var(--green-mist);border:1.5px solid var(--green-pale);
   border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;
   color:var(--green-deep);cursor:pointer;font-family:var(--fa);
   transition:background .15s,border-color .15s;white-space:nowrap;
 }
-.fb-view-toggle:hover{background:var(--green-pale);}
 
 /* ── FANGBUCH: Kalender-Grid-Ansicht ── */
-.fb-cal-month{margin-bottom:24px;}
-.fb-cal-month-hdr{
-  font-size:13px;font-weight:700;letter-spacing:.5px;
-  text-transform:uppercase;color:var(--green-mid);
-  margin-bottom:10px;
-}
-.fb-cal-dow-row{
-  display:grid;grid-template-columns:repeat(7,1fr);
-  gap:3px;margin-bottom:4px;
-}
+
 .fb-cal-dow{
   font-size:10px;font-weight:700;color:var(--text-light);
   text-align:center;padding:2px 0;
   letter-spacing:.3px;text-transform:uppercase;
 }
-.fb-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+
 /* fb-cal-day → siehe Layout Engine (Fix 3) weiter unten */
 
 /* ── STATISTIK: Dashboard v9.3 ── */
@@ -473,18 +426,18 @@ body{
 }
 .st-tile:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
 .st-tile:active{transform:scale(.98);}
-.st-tile.no-click{cursor:default;}
-.st-tile.no-click:hover{transform:none;box-shadow:var(--sh-sm);}
-.st-tile.span2{grid-column:1/-1;}       /* volle Breite */
-.st-tile.dark{background:var(--green-deep);border:none;}
+.st-tile
+.st-tile
+.st-tile       /* volle Breite */
+.st-tile
 .st-tile-ico{font-size:20px;margin-bottom:8px;}
 .st-tile-val{font-size:30px;font-weight:700;color:var(--text-dark);letter-spacing:-.5px;line-height:1;}
-.st-tile.dark .st-tile-val{color:#fff;}
+.st-tile
 .st-tile-lbl{font-size:11px;color:var(--text-light);font-weight:600;margin-top:4px;
   text-transform:uppercase;letter-spacing:.5px;}
-.st-tile.dark .st-tile-lbl{color:rgba(255,255,255,.6);}
+.st-tile
 .st-tile-hint{font-size:10px;color:var(--green-mid);font-weight:600;margin-top:6px;}
-.st-tile.dark .st-tile-hint{color:rgba(255,255,255,.55);}
+.st-tile
 
 /* Erfolgsquote Progress-Bar */
 .st-rate-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
@@ -494,13 +447,6 @@ body{
 .st-pbar-fill{background:var(--green-mid);height:100%;border-radius:6px;transition:width .6s ease;}
 
 /* Wetter-Einfluss Kachel */
-.st-wx-row{display:flex;align-items:center;gap:8px;padding:6px 0;
-  border-bottom:1px solid rgba(200,221,208,.3);}
-.st-wx-row:last-child{border-bottom:none;}
-.st-wx-lbl{font-size:12px;color:var(--text-dark);flex:1;font-weight:500;}
-.st-wx-bar-bg{width:72px;height:6px;background:var(--cream-dark);border-radius:3px;overflow:hidden;}
-.st-wx-bar-fill{height:100%;border-radius:3px;background:var(--green-mid);}
-.st-wx-cnt{font-size:12px;font-weight:700;color:var(--green-deep);min-width:22px;text-align:right;}
 
 /* Fischarten-Liste */
 .st-fish-row{
@@ -663,7 +609,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .wclose{background:none;border:none;cursor:pointer;color:var(--rose-t);opacity:.6;font-size:16px;padding:0 0 0 6px;flex-shrink:0;}
 .wclose:hover{opacity:1;}
 .prev-banner{background:var(--yellow);border:1.5px solid var(--yellow-b);border-radius:var(--rs);padding:11px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
-.sk-banner{background:var(--purple);border:1.5px solid #afa9ec;border-radius:var(--rs);padding:11px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+
 .gps-strip{display:flex;align-items:center;gap:10px;background:var(--blue);border-radius:var(--rs);padding:8px 12px;margin-top:10px;font-size:12px;color:var(--blue-t);font-weight:600;transition:all .3s;}
 .gps-strip.ok{background:var(--green-mist);color:var(--green-deep);}
 
@@ -671,7 +617,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .ssbtn{display:flex;gap:8px;margin-top:2px;}
 .ssb{flex:1;padding:15px 10px;border-radius:var(--rs);border:2px solid var(--cream-dark);background:#fff;font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;transition:all .2s;text-align:center;color:var(--text-light);}
 .ssb.sc2{border-color:var(--green-mid);background:var(--green-mist);color:var(--green-deep);}
-.ssb.ss2{border-color:#aaa;background:#f5f3f0;color:#666;}
+.ssb
 .cc{background:var(--green-mist);border:1.5px solid var(--green-pale);border-radius:var(--r);padding:16px;margin-bottom:10px;}
 .ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .cn{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--green-mid);}
@@ -702,12 +648,11 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .btn.danger{background:var(--red);box-shadow:0 4px 16px rgba(180,90,70,.3);}
 .bshare{width:100%;padding:14px;border:2px solid var(--gold);background:transparent;color:var(--gold-d);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;border-radius:var(--rs);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
 .bshare:hover{background:var(--gold-l);}
-.sk-card{background:#f5f3f0;border:1.5px solid #ddd;border-radius:var(--r);padding:24px;text-align:center;margin-bottom:12px;}
+
 .bico{background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;font-size:18px;transition:background .15s;color:var(--text-light);}
 .bico:hover{background:var(--cream-dark);}
 
 /* ── FANGBUCH: Sortier-Leiste ausblenden (v9.1) ── */
-.fb-sort-bar{display:none;}
 
 /* ── FANGBUCH: Headline-Leiste mit View-Toggle ── */
 .fb-header{
@@ -731,21 +676,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fb-view-toggle:hover{background:var(--green-pale);}
 
 /* ── FANGBUCH: Kalender-Grid ── */
-.fb-cal-nav{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:12px;
-}
-.fb-cal-nav-title{
-  font-family:var(--fs);font-size:17px;font-weight:600;
-  color:var(--text-dark);
-}
-.fb-cal-nav-btn{
-  background:none;border:1px solid var(--cream-dark);border-radius:8px;
-  width:32px;height:32px;cursor:pointer;font-size:16px;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text-mid);transition:background .15s;
-}
-.fb-cal-nav-btn:hover{background:var(--cream-dark);}
+
 .fb-cal-dow{
   display:grid;grid-template-columns:repeat(7,1fr);
   margin-bottom:4px;
@@ -803,7 +734,6 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fb-cal-day.skunked .fb-cal-dot{display:block;}
 .fb-cal-num{line-height:1;}
 .fb-cal-day.future{opacity:.35;}
-.fb-cal-month-block{margin-bottom:20px;}
 
 /* ── FANGBUCH: Monats-Trennlinie ── */
 .fb-month-sep{display:flex;align-items:center;gap:10px;margin:20px 0 10px;}
@@ -822,21 +752,14 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fb-card:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
 .fb-card:active{transform:scale(.99);}
 /* linker Indikator-Balken */
-.fb-indicator{width:4px;flex-shrink:0;}
-.fb-indicator.success{background:var(--green-mid);}
-.fb-indicator.skunked{background:#d06060;} /* rot für Schneider */
+
+ /* rot für Schneider */
 /* Hauptinhalt */
 .fb-card-content{flex:1;min-width:0;padding:10px 12px;}
 .fb-card-row1{display:flex;align-items:baseline;gap:6px;margin-bottom:3px;}
 .fb-date{font-family:var(--fa);font-size:13px;font-weight:700;color:var(--text-dark);}
 .fb-water{font-family:var(--fa);font-size:13px;font-weight:400;color:var(--text-mid);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;}
-.fb-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;}
-.fb-chip{font-size:11px;font-weight:600;padding:3px 8px;border-radius:16px;white-space:nowrap;}
-.fb-chip-green{background:rgba(74,124,89,.10);color:var(--green-deep);}
-.fb-chip-blue{background:var(--blue);color:var(--blue-t);}
-.fb-chip-gray{background:var(--cream-dark);color:var(--text-mid);}
-.fb-chip-gold{background:var(--gold-l);color:var(--gold-d);}
-.fb-chip-teal{background:var(--teal);color:var(--teal-t);}
+
 /* rechter Fang-Zähler */
 .fb-cnt-col{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 14px 0 8px;flex-shrink:0;}
 .fb-cnt{font-size:28px;font-weight:700;color:var(--green-deep);line-height:1;}
@@ -852,7 +775,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   position:relative; /* für X-Button */
 }
 .dd-hero-v16-inner{padding:0 20px;} /* inneres Padding für Text-Inhalt */
-.dd-hero-v16-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+
 .dd-hero-v16-date{font-family:var(--fa);font-size:12px;font-weight:600;opacity:.65;}
 /* X-Button: absolut oben rechts */
 .dd-hero-v16-close{
@@ -890,13 +813,10 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 /* Minimaler Abstand zwischen Hero und Bedingungen */
 .dd-body-pad{padding:12px 16px 0;}
 /* Wetter-Kacheln anklickbar */
-.dd-wx-tile{cursor:pointer;transition:background .15s;}
+
 .dd-wx-tile:hover{background:rgba(74,124,89,.12);border-radius:8px;}
 /* Stat tiles im Hero */
-.dd-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
-.dd-tile{background:rgba(255,255,255,.12);border-radius:10px;padding:10px;text-align:center;}
-.dd-tile-val{font-size:16px;font-weight:700;color:#fff;line-height:1.1;}
-.dd-tile-lbl{font-size:9px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;margin-top:3px;}
+
 /* Wetter-Kacheln im Body */
 .dd-wx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
 .dd-wx-tile{background:#fff;border-radius:var(--rs);padding:10px;box-shadow:var(--sh-sm);text-align:center;border:1px solid rgba(200,221,208,.3);}
@@ -904,8 +824,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .dd-wx-val{font-size:14px;font-weight:700;color:var(--text-dark);}
 .dd-wx-lbl{font-size:10px;color:var(--text-light);margin-top:2px;}
 /* Session-Trennlinie im Overlay */
-.dd-sess-sep{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--green-mid);padding:10px 0 6px;border-top:1px solid rgba(200,221,208,.4);margin-top:12px;}
-.dd-sess-sep:first-child{border-top:none;margin-top:0;}
+
 /* Catch-Zeile im Overlay */
 .dd-catch-row{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid rgba(200,221,208,.3);gap:10px;}
 .dd-catch-row:last-child{border-bottom:none;}
@@ -918,7 +837,6 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .dd-catch-len{font-size:17px;font-weight:700;color:var(--green-deep);}
 .dd-catch-unit{font-size:10px;color:var(--text-light);}
 /* loading-state für Wetter-Nachladen */
-.wx-loading{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-light);padding:6px 0;}
 
 /* Alte HISTORY-Klassen behalten (werden von showDetail noch genutzt) */
 .scard{background:#fff;border-radius:var(--r);padding:15px 16px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);cursor:pointer;transition:transform .15s,box-shadow .15s;display:flex;align-items:center;gap:12px;}
@@ -931,9 +849,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;}
 .bg{background:var(--green-pale);color:var(--green-deep);}
 .bgr{background:#e8e5e0;color:#777;}
-.bgo{background:var(--gold-l);color:var(--gold-d);}
-.bbl{background:var(--blue);color:var(--blue-t);}
-.btl{background:var(--teal);color:var(--teal-t);}
+
 .cntb{background:var(--green-deep);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;}
 .cntb.sk{background:#bbb;}
 
@@ -961,18 +877,9 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .crp{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:3px;display:inline-block;}
 .crp.rel{background:#E0F2E8;color:#2D7A4F;}
 .crp.tak{background:#F9EDDA;color:var(--gold-d);}
-.frc{cursor:pointer;border-radius:8px;padding-left:8px;padding-right:8px;margin:0 -8px;transition:background .15s;}
-.frc:hover{background:var(--green-mist);}
 
 /* STATS */
-.sg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.stc{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--sh-sm);border:1px solid rgba(200,221,208,.4);cursor:pointer;transition:transform .15s,box-shadow .15s;}
-.stc:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
-.stc .v{font-size:28px;font-weight:700;color:var(--green-deep);}
-.stc .l{font-size:12px;color:var(--text-light);font-weight:500;margin-top:2px;}
-.stc .lh{font-size:10px;color:var(--green-mid);font-weight:600;margin-top:4px;}
-.pbg{background:var(--cream-dark);border-radius:8px;height:10px;margin:8px 0 4px;overflow:hidden;}
-.pbf{background:var(--green-mid);height:100%;border-radius:8px;transition:width .6s;}
+
 .cwrap{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);}
 .ctitle{font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase;}
 .mcard{background:linear-gradient(135deg,#fff 0%,var(--gold-l) 100%);border:1px solid #e8d4a0;border-radius:var(--r);padding:14px 16px;margin-bottom:10px;}
@@ -985,7 +892,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .msc{text-align:right;flex-shrink:0;}
 .msv{font-size:17px;font-weight:700;color:var(--gold);}
 .msl{font-size:10px;color:var(--text-light);}
-.baitcard{background:#fff;border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);}
+
 .brow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(200,221,208,.4);cursor:pointer;border-radius:8px;transition:background .15s;}
 .brow:last-child{border-bottom:none;}
 .brow:hover{background:var(--green-mist);}
@@ -998,13 +905,6 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .sccnt{font-size:13px;font-weight:700;color:var(--green-deep);width:30px;text-align:right;flex-shrink:0;}
 
 /* WEATHER CORRELATION */
-.corr-card{background:#fff;border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);}
-.corr-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(200,221,208,.3);}
-.corr-row:last-child{border-bottom:none;}
-.corr-lbl{font-size:12px;color:var(--text-mid);flex:1;}
-.corr-bar{width:80px;height:8px;background:var(--green-mist);border-radius:4px;overflow:hidden;}
-.corr-fill{height:100%;border-radius:4px;}
-.corr-val{font-size:12px;font-weight:700;color:var(--green-deep);min-width:24px;text-align:right;}
 
 /* FORECAST */
 .fc-card{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);}
@@ -1014,17 +914,9 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fc-ico{font-size:22px;flex-shrink:0;}
 .fc-info{flex:1;}
 .fc-tmp{font-size:12px;color:var(--text-mid);}
-.fc-fishes{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;}
-.fc-fish{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--green-pale);color:var(--green-deep);}
-.fc-prob{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0;}
-.fc-bar{width:44px;height:8px;background:var(--green-mist);border-radius:4px;overflow:hidden;}
-.fc-fill{height:100%;border-radius:4px;background:var(--green-mid);}
-.fc-pct{font-size:13px;font-weight:700;color:var(--green-deep);min-width:32px;text-align:right;}
-.fc-empty{text-align:center;padding:40px 20px;color:var(--text-light);}
-.fc-empty-icon{font-size:48px;margin-bottom:12px;opacity:.4;}
+
 .fc-btn{width:100%;padding:16px;background:var(--green-deep);border:none;border-radius:var(--r);color:#fff;font-size:15px;font-weight:600;font-family:var(--fa);cursor:pointer;margin-bottom:10px;}
 
-.xbtn-old-removed{}
 #dd-body.fsov-scroll{padding-top:0;} /* Hero scrollt mit, kein extra Abstand */
 .fbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;background:#fff;border-bottom:1px solid var(--cream-dark);}
 
@@ -1058,7 +950,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .obbody{flex:1;background:var(--cream);border-radius:28px 28px 0 0;padding:28px 24px 36px;overflow-y:auto;}
 .obig{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
 .oblbl{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);}
-.obif{background:var(--beige);border:1.5px solid var(--cream-dark);border-radius:var(--rs);padding:15px 16px;font-size:16px;font-family:var(--fa);color:var(--text-dark);font-weight:500;width:100%;-webkit-appearance:none;appearance:none;transition:border-color .2s;}
+
 .obif:focus{outline:none;border-color:var(--green-mid);}
 select.obif{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234A7C59' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
 .obtgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:2px;}
@@ -1147,8 +1039,7 @@ input[type=file]{display:none;}
 .empty{text-align:center;padding:50px 20px;}
 .empty-ico{font-size:52px;margin-bottom:14px;opacity:.45;}
 .empty-t{font-size:16px;font-weight:600;color:var(--text-mid);margin-bottom:6px;}
-.empty-s{font-size:13px;color:var(--text-light);line-height:1.6;}
-</style>
+.empty-s{font-size:13px;color:var(--text-light);line-height:1.6;}</style>
 </head>
 <body>
 <div class="phone" id="frame">
@@ -1212,7 +1103,7 @@ input[type=file]{display:none;}
     <div class="burg-hdr">
       <div style="font-size:32px;margin-bottom:8px;">🎣</div>
       <div class="burg-n" id="burg-name">Fishing Buddy</div>
-      <div class="burg-s" id="burg-sub">v9 · Local-First PWA</div>
+      <div class="burg-s" id="burg-sub">v21 · Local-First PWA</div>
     </div>
     <div class="burg-body">
       <div class="burg-sec">
@@ -1238,7 +1129,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v13 · IndexedDB · PWA</div>
+    <div class="burg-ver">Fishing Buddy v21 · IndexedDB · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -1375,7 +1266,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">100% Offline · v9</div>
+      <div class="hlogo-s" id="hdr-sub">100% Offline · v21</div>
     </div>
     <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus">+</button>
   </div>
@@ -1516,7 +1407,7 @@ input[type=file]{display:none;}
 
 <!-- WEITERE STATISTIKEN OVERLAY -->
 <div class="fsov" id="fs-more-stats" role="dialog" aria-modal="true" aria-label="Weitere Statistiken">
-  <div class="fshdr" style="position:relative;">
+  <div class="fshdr">
     <div><div class="fstitle">Weitere Statistiken</div><div class="fsmeta" id="fs-more-meta"></div></div>
     <button class="xbtn" onclick="closeFs('more-stats')">✕</button>
   </div>
@@ -1531,7 +1422,7 @@ input[type=file]{display:none;}
 
 <!-- Mondkalender Overlay -->
 <div class="fsov" id="fs-moon-cal" role="dialog" aria-modal="true" style="z-index:115;">
-  <div class="fshdr" style="position:relative;">
+  <div class="fshdr">
     <div><div class="fstitle">🌙 Mondkalender</div><div class="fsmeta" id="fs-moon-meta"></div></div>
     <button class="xbtn" onclick="closeFs('moon-cal')">✕</button>
   </div>
@@ -1540,7 +1431,7 @@ input[type=file]{display:none;}
 
 <!-- Tidenkalender Overlay -->
 <div class="fsov" id="fs-tide-cal" role="dialog" aria-modal="true" style="z-index:115;">
-  <div class="fshdr" style="position:relative;">
+  <div class="fshdr">
     <div><div class="fstitle">🌊 Tidenkalender</div><div class="fsmeta" id="fs-tide-meta">Weser · Elbe · Ems</div></div>
     <button class="xbtn" onclick="closeFs('tide-cal')">✕</button>
   </div>
@@ -1549,7 +1440,7 @@ input[type=file]{display:none;}
 
 <!-- Wind Overlay -->
 <div class="fsov" id="fs-wx-wind" role="dialog" aria-modal="true" style="z-index:115;">
-  <div class="fshdr" style="position:relative;">
+  <div class="fshdr">
     <div><div class="fstitle">💨 Windverlauf</div><div class="fsmeta" id="fs-wind-meta"></div></div>
     <button class="xbtn" onclick="closeFs('wx-wind')">✕</button>
   </div>
@@ -1558,7 +1449,7 @@ input[type=file]{display:none;}
 
 <!-- Regen Overlay -->
 <div class="fsov" id="fs-wx-rain" role="dialog" aria-modal="true" style="z-index:115;">
-  <div class="fshdr" style="position:relative;">
+  <div class="fshdr">
     <div><div class="fstitle">🌧 Regenverlauf</div><div class="fsmeta" id="fs-rain-meta"></div></div>
     <button class="xbtn" onclick="closeFs('wx-rain')">✕</button>
   </div>
@@ -1567,7 +1458,7 @@ input[type=file]{display:none;}
 
 <!-- Temperatur Overlay -->
 <div class="fsov" id="fs-wx-temp" role="dialog" aria-modal="true" style="z-index:115;">
-  <div class="fshdr" style="position:relative;">
+  <div class="fshdr">
     <div><div class="fstitle">🌡 Temperatur</div><div class="fsmeta" id="fs-temp-meta"></div></div>
     <button class="xbtn" onclick="closeFs('wx-temp')">✕</button>
   </div>
@@ -1816,7 +1707,7 @@ function updMoon(){
 }
 
 // Historisches Wetter für Vergangenheitsdaten nachladen
-function _tryLoadHistoricalWeather(dateStr){
+async function _tryLoadHistoricalWeather(dateStr){
   const today=new Date();today.setHours(0,0,0,0);
   const d=new Date(dateStr+'T00:00:00');
   if(d>=today)return; // nur Vergangenheit
@@ -1826,8 +1717,10 @@ function _tryLoadHistoricalWeather(dateStr){
   const url=`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation,weathercode&start_date=${dateStr}&end_date=${dateStr}&timezone=auto`;
   const strip=document.getElementById('gps-strip');
   if(strip){strip.style.display='flex';document.getElementById('gps-txt').textContent='Lade historisches Wetter…';}
-  fetch(url).then(r=>r.json()).then(data=>{
-    const h=data.hourly;if(!h||!h.time?.length)return;
+  try{
+    const r=await fetch(url);if(!r.ok)throw new Error('HTTP '+r.status);
+    const data=await r.json();
+    const h=data.hourly;if(!h||!h.time?.length)throw new Error('no data');
     const avg=arr=>arr?.filter(v=>v!=null).reduce((a,b)=>a+b,0)/(arr?.filter(v=>v!=null).length||1);
     const c={
       temperature_2m:parseFloat(avg(h.temperature_2m).toFixed(1)),
@@ -1840,7 +1733,7 @@ function _tryLoadHistoricalWeather(dateStr){
       weathercode:h.weathercode?Math.round(avg(h.weathercode)):1
     };
     applyWxData(c,`Historisch ${dateStr} ✓`);
-  }).catch(()=>{if(strip)strip.style.display='none';});
+  }catch(e){if(strip)strip.style.display='none';}
 }
 
 function disSzHint(){_szDismissed=true;if(profile){profile.szDismissed=true;saveProfile();}document.getElementById('sz-hint').style.display='none';}
@@ -2069,7 +1962,7 @@ function selTyp(t){obData.angeltyp=t;document.querySelectorAll('.obtbtn').forEac
 function finOb(){document.getElementById('onboarding').classList.add('hidden');applyProf();}
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v13`;
+  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v21`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -2163,7 +2056,7 @@ async function updBurgStor(){
     if(q){el.textContent=`${(q.usage/1024/1024).toFixed(1)}MB von ~${Math.round(q.quota/1024/1024)}MB genutzt`;}
     else el.textContent=`${sessions.length} Sessions · IndexedDB`;
   }catch(e){}
-  // Fix 8: Backup-Reminder – >10 Sessions UND letztes Backup >7 Tage
+ 
   _chkBackupReminder();
 }
 
@@ -2214,126 +2107,6 @@ function ctxIdx(){
 function topN(map,n=5){return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0]);}
 function topFavs(k,n=5){const c={};(favs[k]||[]).forEach(v=>{c[v]=(c[v]||0)+1;});return Object.entries(c).sort((a,b)=>b[1]-a[1]).map(e=>e[0]).slice(0,n);}
 function addFav(k,v){if(!v||v.trim().length<2)return;favs[k]=favs[k]||[];favs[k].push(v.trim());if(favs[k].length>400)favs[k]=favs[k].slice(-400);saveFavs();}
-function addBaitKw(bait,note){if(!bait||!note)return;const kws=tokenize(note);if(!favs.baitKeywords)favs.baitKeywords={};kws.forEach(kw=>{favs.baitKeywords[bait]=favs.baitKeywords[bait]||{};favs.baitKeywords[bait][kw]=(favs.baitKeywords[bait][kw]||0)+1;});saveFavs();}
-function dHide(id){setTimeout(()=>{const el=document.getElementById(id);if(el)el.style.display='none';},200);}
-
-// Time-of-day bait color suggestions
-function tofKws(){const h=parseInt((document.getElementById('ft-1')?.value||'12').split(':')[0]);if(h>=5&&h<=7)return['dunkel/schwarz','naturfarben','silber'];if(h>=20&&h<=22)return['orange','rot','chartreuse'];if(h>=0&&h<=4)return['UV-aktiv','weiß/glow','chartreuse'];return['naturfarben','gelbgrün','weiß'];}
-
-// WATER CHIPS
-function rndrWChips(fv){
-  const el=document.getElementById('w-chips');if(!el)return;
-  const rg=(GBL[profile?.bundesland]||[]).slice(0,5);
-  const learned=topFavs('waters',5);
-  let all=[...new Set([...learned,...rg])].slice(0,7);
-  if(fv)all=all.filter(w=>w.toLowerCase().includes(fv.toLowerCase()));
-  if(!all.length){el.style.display='none';return;}
-  el.style.display='flex';
-  el.innerHTML=all.map(w=>{const s=w.replace(/'/g,"\\'");const isRg=rg.includes(w)&&!learned.includes(w);return`<button class="chip${isRg?' cw':''}" onmousedown="wSel('${s}')">${w}</button>`;}).join('');
-}
-function wSel(v){document.getElementById('s-water').value=v;document.getElementById('w-chips').style.display='none';for(let i=1;i<=catchCount;i++)rndrFChips(i,'');}
-
-// SMART START TIME CHIPS
-// Fix 3a: Uhrzeit-Chips entfernt – keine vorgeschlagenen Startzeiten mehr
-function rndrStartChips(){
-  // Absichtlich leer – Uhrzeit-Chips entfernt (AP v14)
-  const el=document.getElementById('start-chips');
-  if(el)el.style.display='none';
-}
-function startSel(v){document.getElementById('s-start').value=v;document.getElementById('start-chips').style.display='none';}
-
-// FISH CHIPS
-function rndrFChips(id,fv){
-  const el=document.getElementById('fc-'+id);if(!el)return;
-  const ctx=ctxIdx();const water=document.getElementById('s-water').value.trim();
-  let chips=[],isCtx=false;
-  if(water&&ctx.wF[water]&&Object.keys(ctx.wF[water]).length){chips=topN(ctx.wF[water],5);isCtx=true;}
-  else{const tf=ATYP[profile?.angeltyp||'Allround']||[];chips=[...new Set([...topFavs('fish',3),...tf])].slice(0,5);}
-  if(fv)chips=chips.filter(f=>f.toLowerCase().includes(fv.toLowerCase()));
-  if(!chips.length){el.style.display='none';return;}
-  el.style.display='flex';
-  el.innerHTML=chips.map(f=>{const s=f.replace(/'/g,"\\'");return`<button class="chip${isCtx?' cc':''}" onmousedown="fSel(${id},'${s}')">${fIco(f)} ${f}</button>`;}).join('');
-}
-
-// FISH CHIPS – nur eigene gelernte Fischarten (Top 5), keine ATYP-Defaults
-function rndrFChips(id,fv){
-  const el=document.getElementById('fc-'+id);if(!el)return;
-  const ctx=ctxIdx();
-  const water=document.getElementById('s-water').value.trim();
-  let chips=[],isCtx=false;
-
-  // 1. Kontext aus Gewässer-History (stärkste Signale)
-  if(water&&ctx.wF[water]&&Object.keys(ctx.wF[water]).length){
-    chips=topN(ctx.wF[water],5);isCtx=true;
-  }
-  // 2. Eigene Top-5 aus allen Sessions
-  if(!chips.length){
-    chips=topFavs('fish',5);
-  }
-  // Kein Fallback auf ATYP-Defaults – nur eigene Daten
-  if(!chips.length){el.style.display='none';return;}
-  if(fv)chips=chips.filter(f=>f.toLowerCase().includes(fv.toLowerCase()));
-  if(!chips.length){el.style.display='none';return;}
-  el.style.display='flex';
-  el.innerHTML=chips.map(f=>{
-    const s=f.replace(/'/g,"\\'");
-    return`<button class="chip${isCtx?' cc':''}" onmousedown="fSel(${id},'${s}')">${fIco(f)} ${f}</button>`;
-  }).join('');
-}
-
-// BAIT CHIPS – nur eigene gelernte Köder (Top 5)
-function rndrBChips(id,fv){
-  const el=document.getElementById('bc-'+id);if(!el)return;
-  const ctx=ctxIdx();
-  const ft=document.getElementById('ft-'+id)?.value?.trim();
-  let chips=[],isCtx=false;
-
-  // 1. Kontext aus Fischart-History (stärkste Signale)
-  if(ft&&ctx.fB[ft]&&Object.keys(ctx.fB[ft]).length){
-    chips=topN(ctx.fB[ft],5);isCtx=true;
-  }
-  // 2. Eigene Top-5 aus allen Köder-Verwendungen
-  if(!chips.length){
-    chips=topFavs('bait',5);
-  }
-  // Keine Daten → keine Chips
-  if(!chips.length){el.style.display='none';return;}
-  if(fv)chips=chips.filter(b=>b.toLowerCase().includes(fv.toLowerCase()));
-  if(!chips.length){el.style.display='none';return;}
-  el.style.display='flex';
-  el.innerHTML=chips.map(b=>{
-    const s=b.replace(/'/g,"\\'");
-    return`<button class="chip${isCtx?' cc':''}" onmousedown="bSel(${id},'${s}')">🪝 ${b}</button>`;
-  }).join('');
-}
-// bSel: Köder gewählt → Notiz-Chips aktualisieren
-function bSel(id,v){document.getElementById('fb-'+id).value=v;document.getElementById('bc-'+id).style.display='none';updNoteChips(id);}
-
-// NOTIZ-CHIPS – lernendes System mit n-gram Phrasen (auch 2-Wort-Ausdrücke wie "Fox rage")
-// Tokenisierung mit Unigrams + Bigrams für Phrasen
-function _extractPhrases(note){
-  if(!note)return[];
-  // Unigrams (Einzelwörter, gefiltert)
-  const words=note.split(/[\s,;\/]+/)
-    .map(w=>w.replace(/[.!?()"""]+/g,'').trim())
-    .filter(w=>w.length>=2&&!STOPWORDS.has(w.toLowerCase()));
-  const unigrams=words.filter(w=>
-    /^[A-Z]\d{2,3}$/i.test(w)||  // C04, C05
-    /^\d+(cm|mm|g|m)$/i.test(w)|| // 10g, 12cm
-    w.length>=3
-  );
-  // Bigrams (Zwei-Wort-Phrasen, z.B. "Fox rage", "Strike King")
-  const bigrams=[];
-  for(let i=0;i<words.length-1;i++){
-    const a=words[i],b=words[i+1];
-    // Bigram nur wenn beide Wörter >= 2 Zeichen und das erste großgeschrieben ist (Marken!)
-    if(a.length>=2&&b.length>=2&&/^[A-ZÄÖÜ]/.test(a)){
-      bigrams.push(a+' '+b);
-    }
-  }
-  return[...bigrams,...unigrams]; // Bigrams Priorität
-}
-
 // Erweiterte addBaitKw die auch Phrasen lernt
 function addBaitKw(bait,note){
   if(!bait||!note)return;
@@ -2687,7 +2460,7 @@ function rmCatch(id){const el=document.getElementById('catch-'+id);el.style.cssT
 // ═══════════════════════════════════════════════════════════
 // SAVE SESSION
 // ═══════════════════════════════════════════════════════════
-let _saving=false; // Fix 4: Debounce-Flag
+let _saving=false;
 
 async function saveSess(){
   if(_saving)return;
@@ -2796,7 +2569,7 @@ async function saveSess(){
   }
 }
 function resetForm(){
-  // v13: Bei Abbruch einer Bearbeitung – Original bleibt erhalten
+ 
   _editPendingId=null;
   document.getElementById('catches-con').innerHTML='';
   document.getElementById('s-water').value='';document.getElementById('w-chips').style.display='none';
@@ -2812,7 +2585,7 @@ function resetForm(){
   document.getElementById('s-start').value=n.getHours().toString().padStart(2,'0')+':00';
   document.getElementById('s-end').value=Math.min(n.getHours()+3,23).toString().padStart(2,'0')+':00';
   updMoon();addCatch();
-  // v9: Kein chkSz() mehr – Schonzeiten nur noch im Burger-Menü
+ 
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2836,7 +2609,7 @@ function showSuc(catches,water){
 }
 function doShare(){const{ft,total,water,count}=_shareData;const name=profile?profile.name.split(' ')[0]+'s':'Mein';const wt=water&&water!=='Unbekanntes Gewässer'?` am ${water}`:'';navigator.share({title:'Fishing Buddy',text:`Petri Heil! 🎣 Gerade ${count} ${ft}${count!==1?'e':''}${wt} geloggt. ${name} ${ft}-Counter: ${total}! – Fishing Buddy 🎣`}).catch(()=>{});}
 function animCnt(cur,tgt){if(cur>=tgt){const n=document.getElementById('cnt-num');n.textContent=tgt;n.classList.add('pulse');setTimeout(()=>n.classList.remove('pulse'),400);return;}const p=document.getElementById('p1');p.textContent='+1';p.style.animation='none';void p.offsetWidth;p.classList.add('fly');setTimeout(()=>{p.classList.remove('fly');const n=document.getElementById('cnt-num');n.textContent=cur+1;n.classList.add('pulse');setTimeout(()=>n.classList.remove('pulse'),350);cAF=setTimeout(()=>animCnt(cur+1,tgt),tgt-cur>5?200:350);},440);}
-function disSuc(){document.getElementById('sucov').classList.remove('on');stopK();if(cAF)clearTimeout(cAF);resetForm();showPage('fangbuch');} // v9: → Fangbuch
+function disSuc(){document.getElementById('sucov').classList.remove('on');stopK();if(cAF)clearTimeout(cAF);resetForm();showPage('fangbuch');}
 
 // ── GOAL WALKOUT ─────────────────────────────────────────────
 let _gwalkCallback=null;
@@ -2939,7 +2712,7 @@ function showPage(p){
     const isActive=b.id==='btab-'+activeTab;
     b.classList.toggle('on',isActive);
     b.setAttribute('aria-selected',String(isActive));
-    // Fix 5: Tap-Animation auf dem aktiven Tab
+   
     if(isActive){
       b.classList.remove('tap');
       void b.offsetWidth; // reflow
@@ -2956,7 +2729,7 @@ function showPage(p){
     const dateEl=document.getElementById('s-date');
     if(dateEl&&!dateEl.value)dateEl.value=n.toISOString().split('T')[0];
     updMoon();
-    // Fix 2a: Immer zum Anfang scrollen wenn Formular geöffnet wird
+   
     requestAnimationFrame(()=>{
       const sc=document.querySelector('#page-new .sc');
       if(sc)sc.scrollTop=0;
@@ -2967,7 +2740,7 @@ function showPage(p){
 // BURGER
 function openBurg(){
   document.getElementById('burg-ov').classList.remove('hidden');
-  _chkBackupReminder(); // Fix 8: Reminder beim Öffnen aktualisieren
+  _chkBackupReminder();
   updBurgStor();
 }
 function closeBurg(){document.getElementById('burg-ov').classList.add('hidden');}
@@ -3085,7 +2858,6 @@ function rndrFangbuch(){
   requestAnimationFrame(()=>{const sc=document.getElementById('fangbuch-sc');if(sc&&_fbScrollY>0){sc.scrollTop=_fbScrollY;_fbScrollY=0;}});
 }
 function rndrHistory(){if(_fbView==='cal')rndrCalendar();else rndrFangbuch();}
-function _rndrSessionList(elId){if(elId==='fangbuch-list')rndrFangbuch();}
 
 function rndrCalendar(){
   const el=document.getElementById('fangbuch-list');if(!el)return;
@@ -3101,7 +2873,7 @@ function rndrCalendar(){
   const today=new Date();today.setHours(0,0,0,0);
   const nowYr=today.getFullYear(),nowMo=today.getMonth()+1;
 
-  // Fix 15: Immer aktuellen Monat + alle Monate mit Sessions zeigen
+ 
   // Zeige bis zu 12 Monate rückwirkend ab heute als Orientierungsrahmen
   const monthSet=new Set();
   // Aktueller Monat immer
@@ -3547,7 +3319,7 @@ async function editSess(id){
     }
   }
 
-  // v13: Session NICHT sofort löschen – erst beim Speichern via _editPendingId
+ 
   _editPendingId=String(id);
   showToast('✏️','Session geladen – Änderungen speichern');
 }
@@ -3909,7 +3681,7 @@ function openFsFish(fish){
   const avgL=rows.length?(rows.reduce((s,c)=>s+c.length,0)/rows.length).toFixed(1):'–';
   const mm=MMM[fish];
   document.getElementById('fs-fish-meta').textContent=`${rows.length} Fänge · ×${FMULT[fish]||'1.0'}${mm?' · MM:'+mm+'cm':''}`;
-  // Fix 7: Empty State
+ 
   if(!rows.length){
     document.getElementById('fs-fish-content').innerHTML=`<div class="empty"><div class="empty-ico">${fIco(fish)}</div><div class="empty-t">Noch kein ${fish} gefangen</div><div class="empty-s">Erfasse deine erste ${fish}-Session um hier Statistiken zu sehen.</div></div>`;
     return;
@@ -3930,7 +3702,7 @@ function openFsBait(bait){
   document.getElementById('fs-bait-title').textContent=bait;
   const rows=sessions.flatMap(s=>s.catches.filter(c=>c.bait===bait).map(c=>({...c,date:s.date,water:s.water})));
   document.getElementById('fs-bait-meta').textContent=`${rows.length} Fänge mit ${bait}`;
-  // Fix 7: Empty State
+ 
   if(!rows.length){
     document.getElementById('fs-bait-content').innerHTML=`<div class="empty"><div class="empty-ico">🪝</div><div class="empty-t">Keine Fänge mit ${bait}</div><div class="empty-s">Sobald du Fänge mit diesem Köder loggst, erscheinen hier Details und Keywords.</div></div>`;
     return;
@@ -4184,7 +3956,9 @@ async function _renderTideCal(river,startDate){
 
   try{
     const url=`https://marine-api.open-meteo.com/v1/marine?latitude=${r.lat}&longitude=${r.lon}&hourly=wave_height,ocean_current_velocity&start_date=${startDate}&end_date=${startDate}&timezone=auto`;
-    const resp=await fetch(url);const data=await resp.json();
+  try{
+    const resp=await fetch(url);if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const data=await resp.json();
     const h=data.hourly;
     const labels=(h?.time||[]).map(t=>t.slice(11,16));
     const heights=(h?.wave_height||[]).map(v=>v!=null?Math.round(v*100)/100:null);
@@ -4215,6 +3989,9 @@ async function _renderTideCal(river,startDate){
       }});
     });
   }catch(e){
+    document.getElementById('fs-tide-body').innerHTML=navHtml+`<div class="fc-sec" style="margin-top:12px;text-align:center;color:var(--text-light);padding:24px;">Tidendaten nicht verfügbar</div>`;
+  }
+}catch(e){
     document.getElementById('fs-tide-body').innerHTML=navHtml+`<div class="fc-sec" style="margin-top:12px;text-align:center;color:var(--text-light);padding:24px;">Tidendaten nicht verfügbar</div>`;
   }
 }
@@ -4508,7 +4285,7 @@ function calcBiteProb(day){
   const withData=allC.filter(c=>c._s.pressure);
 
   // ── Fallback wenn keine historischen Daten ──
-  // Fix 9: Fallback nach Angeltyp, nicht immer Hecht/Barsch
+ 
   const _fallbackFish=()=>{
     const t=profile?.angeltyp||'Allround';
     if(t==='Friedfisch')return['Karpfen','Brasse','Schleie'];
@@ -4607,7 +4384,7 @@ function doExp(type){
   if(type==='all'){
     const dateStr=new Date().toISOString().slice(0,10);
     dlBlob(new Blob([JSON.stringify({version:13,exportDate:new Date().toISOString(),profile,sessions,favs},null,2)],{type:'application/json'}),`fishing_buddy_${dateStr}_backup.json`);
-    localStorage.setItem('fb_last_backup',String(Date.now())); // Fix 8: Timestamp merken
+    localStorage.setItem('fb_last_backup',String(Date.now()));
     _chkBackupReminder(); // Dot sofort ausblenden
     showToast('📦','Backup heruntergeladen!');
   }
@@ -4702,7 +4479,7 @@ function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').tex
       if(age>6*60*60*1000){
         _fcData=null;_fcHourlyData=null;
       } else {
-        // Fix 6: Cache noch frisch → vorladen für Offline
+       
         await loadFcCache();
       }
     }
@@ -4734,7 +4511,7 @@ function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').tex
       }catch(e){/* Hintergrund-Fehler ignorieren */}
     }, 2000); // 2s Verzögerung → App erst initialisiert
   }
-  // Fix 1: Keine stillen Demo-Daten. Leeres Fangbuch = echter Zustand für neue Nutzer.
+ 
   // Demo-Daten sind nur via ?demo=1 URL-Parameter ladbar.
   if(!sessions.length&&new URLSearchParams(location.search).get('demo')==='1'){
     _loadDemoData();
