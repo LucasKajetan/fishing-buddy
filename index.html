@@ -2119,6 +2119,116 @@ function addBaitKw(bait,note){
   saveFavs();
 }
 
+// _extractPhrases: Unigrams + Bigrams (z.B. „Fox rage" wenn erstes Wort groß)
+function _extractPhrases(note){
+  if(!note)return[];
+  const words=note.split(/[\s,;\/]+/)
+    .map(w=>w.replace(/[.!?()"""]+/g,'').trim())
+    .filter(w=>w.length>=2&&!STOPWORDS.has(w.toLowerCase()));
+  const unigrams=words.filter(w=>
+    /^[A-Z]\d{2,3}$/i.test(w)||
+    /^\d+(cm|mm|g|m)$/i.test(w)||
+    w.length>=3
+  );
+  const bigrams=[];
+  for(let i=0;i<words.length-1;i++){
+    const a=words[i],b=words[i+1];
+    if(a.length>=2&&b.length>=2&&/^[A-ZÄÖÜ]/.test(a)){
+      bigrams.push(a+' '+b);
+    }
+  }
+  return[...bigrams,...unigrams];
+}
+
+// dHide: verzögertes Ausblenden eines Dropdown-Containers (200ms Delay)
+function dHide(id){
+  setTimeout(()=>{const el=document.getElementById(id);if(el)el.style.display='none';},200);
+}
+
+// ── GEWÄSSER-CHIPS ──────────────────────────────────────────
+function rndrWChips(fv){
+  const el=document.getElementById('w-chips');if(!el)return;
+  let chips=topFavs('waters',5);
+  if(fv)chips=chips.filter(w=>w.toLowerCase().includes(fv.toLowerCase()));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(w=>{
+    const s=w.replace(/'/g,"\\'");
+    return`<button class="chip cw" onmousedown="wSel('${s}')">${w}</button>`;
+  }).join('');
+}
+function wSel(v){
+  document.getElementById('s-water').value=v;
+  document.getElementById('w-chips').style.display='none';
+  // Fisch-Chips für alle bestehenden Fang-Blöcke aktualisieren
+  for(let i=1;i<=catchCount;i++)rndrFChips(i,'');
+}
+
+// ── STARTZEIT-CHIPS (Uhrzeit-Vorschläge) ───────────────────
+function rndrStartChips(){
+  // Absichtlich leer – Uhrzeit-Chips entfernt (AP v14)
+  const el=document.getElementById('start-chips');
+  if(el)el.style.display='none';
+}
+function startSel(v){
+  document.getElementById('s-start').value=v;
+  document.getElementById('start-chips').style.display='none';
+}
+
+// ── FISCH-CHIPS (Top 5, Gewässer-Kontext > globale Favs) ───
+function rndrFChips(id,fv){
+  const el=document.getElementById('fc-'+id);if(!el)return;
+  const ctx=ctxIdx();
+  const water=document.getElementById('s-water')?.value?.trim()||'';
+  let chips=[],isCtx=false;
+  // 1. Kontext: häufigste Fischarten an diesem Gewässer
+  if(water&&ctx.wF[water]&&Object.keys(ctx.wF[water]).length){
+    chips=topN(ctx.wF[water],5);isCtx=true;
+  }
+  // 2. Fallback: globale Top-5 aus allen Sessions (nur eigene Daten)
+  if(!chips.length){
+    chips=topFavs('fish',5);
+  }
+  if(!chips.length){el.style.display='none';return;}
+  if(fv)chips=chips.filter(f=>f.toLowerCase().includes(fv.toLowerCase()));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(f=>{
+    const s=f.replace(/'/g,"\\'");
+    return`<button class="chip${isCtx?' cc':''}" onmousedown="fSel(${id},'${s}')">${fIco(f)} ${f}</button>`;
+  }).join('');
+}
+
+// ── KÖDER-CHIPS (Top 5, Fischart-Kontext > globale Favs) ───
+function rndrBChips(id,fv){
+  const el=document.getElementById('bc-'+id);if(!el)return;
+  const ctx=ctxIdx();
+  const ft=document.getElementById('ft-'+id)?.value?.trim()||'';
+  let chips=[],isCtx=false;
+  // 1. Kontext: häufigste Köder für diese Fischart
+  if(ft&&ctx.fB[ft]&&Object.keys(ctx.fB[ft]).length){
+    chips=topN(ctx.fB[ft],5);isCtx=true;
+  }
+  // 2. Fallback: globale Top-5 eigene Köder
+  if(!chips.length){
+    chips=topFavs('bait',5);
+  }
+  if(!chips.length){el.style.display='none';return;}
+  if(fv)chips=chips.filter(b=>b.toLowerCase().includes(fv.toLowerCase()));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(b=>{
+    const s=b.replace(/'/g,"\\'");
+    return`<button class="chip${isCtx?' cc':''}" onmousedown="bSel(${id},'${s}')">🪝 ${b}</button>`;
+  }).join('');
+}
+function bSel(id,v){
+  const el=document.getElementById('fb-'+id);if(!el)return;
+  el.value=v;
+  document.getElementById('bc-'+id).style.display='none';
+  updNoteChips(id);
+}
+
 // Fix 3c: Notiz-Chips – nur gelernte Phrases, Bigrams zuerst
 function rndrNChips(id,fv){
   const el=document.getElementById('nc-'+id);if(!el)return;
