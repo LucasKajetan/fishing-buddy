@@ -262,6 +262,141 @@ body{
 }
 .fc-ov-back:hover{background:rgba(255,255,255,.25);}
 
+/* ── WETTER-DASHBOARD: Helles Theme (v17) ── */
+
+/* Dashboard-Kacheln auf page-forecast */
+.fc-dash{padding:16px 16px 24px;display:flex;flex-direction:column;gap:12px;}
+.fc-kachel{
+  background:#fff;border-radius:var(--r);border:1px solid rgba(200,221,208,.4);
+  box-shadow:var(--sh-sm);cursor:pointer;overflow:hidden;
+  transition:transform .15s,box-shadow .15s;
+  display:flex;align-items:center;gap:14px;padding:16px 18px;
+}
+.fc-kachel:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
+.fc-kachel:active{transform:scale(.98);}
+.fc-kachel-ico{font-size:28px;flex-shrink:0;}
+.fc-kachel-info{flex:1;min-width:0;}
+.fc-kachel-title{font-size:15px;font-weight:700;color:var(--text-dark);}
+.fc-kachel-sub{font-size:12px;color:var(--text-light);margin-top:2px;}
+.fc-kachel-val{font-size:22px;font-weight:700;color:var(--green-deep);text-align:right;flex-shrink:0;}
+.fc-kachel-arrow{font-size:18px;color:var(--text-light);flex-shrink:0;}
+/* Breite Vorhersage-Kachel */
+.fc-kachel.wide{
+  flex-direction:column;align-items:stretch;gap:0;padding:0;
+}
+.fc-kachel.wide .fc-kachel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px 12px;
+}
+.fc-kachel.wide .fc-kachel-days{
+  padding:0 6px 12px;
+}
+/* Mini-Tagesreihe in Vorhersage-Kachel */
+.fc-mini-days{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;}
+.fc-mini-days::-webkit-scrollbar{display:none;}
+.fc-mini-day{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:8px 6px;border-radius:10px;cursor:pointer;min-width:46px;
+  transition:background .15s;flex-shrink:0;
+}
+.fc-mini-day:hover{background:var(--green-mist);}
+.fc-mini-day.today{background:var(--green-deep);}
+.fc-mini-day.today *{color:#fff!important;}
+.fc-mini-dow{font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;}
+.fc-mini-ico{font-size:18px;}
+.fc-mini-tmp{font-size:11px;font-weight:600;color:var(--text-dark);}
+.fc-mini-bite{font-size:10px;font-weight:700;color:var(--green-mid);}
+
+/* ── DETAIL-OVERLAY: Helles Design ── */
+#fs-fc-day{background:#f5f7f5;}
+
+/* Overlay-Header (helles Design) */
+.fc-detail-hdr{
+  background:#fff;border-bottom:1px solid rgba(200,221,208,.4);
+  padding:16px 18px 14px;position:relative;flex-shrink:0;
+}
+.fc-detail-hdr-row1{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.fc-detail-date{font-family:var(--fs);font-size:22px;font-weight:700;color:var(--text-dark);}
+.fc-detail-wx{text-align:right;}
+.fc-detail-wx-ico{font-size:28px;line-height:1;}
+.fc-detail-wx-tmp{font-size:20px;font-weight:700;color:var(--text-dark);}
+.fc-detail-wx-desc{font-size:11px;color:var(--text-light);margin-top:1px;}
+/* Info-Band: Beißindex · Wind · Mond */
+.fc-detail-band{
+  display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;
+}
+.fc-detail-chip{
+  background:var(--green-mist);border-radius:20px;padding:4px 10px;
+  font-size:11px;font-weight:600;color:var(--green-deep);white-space:nowrap;
+}
+.fc-detail-chip.bite-hi{background:#d4f4e2;color:#1a5c33;}
+.fc-detail-chip.bite-mid{background:#fef3cd;color:#8a6820;}
+.fc-detail-chip.bite-lo{background:var(--cream-dark);color:var(--text-mid);}
+/* X-Button im hellen Overlay */
+.fc-detail-close{
+  position:absolute;top:12px;right:12px;
+  background:var(--cream-dark);border:none;
+  width:32px;height:32px;border-radius:50%;cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;
+  color:var(--text-mid);transition:background .15s;
+}
+.fc-detail-close:hover{background:var(--green-pale);color:var(--green-deep);}
+/* Swipe-Dots (helle Variante) */
+.fc-day-dots{display:flex;gap:6px;justify-content:center;padding:6px 0 2px;}
+.fc-day-dot{width:6px;height:6px;border-radius:50%;background:rgba(74,124,89,.2);transition:all .2s;}
+.fc-day-dot.on{background:var(--green-mid);width:16px;border-radius:3px;}
+
+/* Scrollbereich im Detail */
+.fc-detail-scroll{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;padding:12px 14px 32px;scrollbar-width:none;
+  background:#f5f7f5;
+}
+.fc-detail-scroll::-webkit-scrollbar{display:none;}
+
+/* Sektionen (helles Design) */
+.fc-sec{
+  background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:12px;
+  border:1px solid rgba(200,221,208,.35);box-shadow:0 1px 4px rgba(45,74,53,.06);
+}
+.fc-sec-title{
+  font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;
+  color:var(--text-light);margin-bottom:10px;
+}
+/* GROSSE Charts für bessere Ablesbarkeit */
+.fc-canvas-wrap{position:relative;height:160px;width:100%;}
+.fc-rain-wrap{position:relative;height:100px;width:100%;}
+
+/* Fisch-Insights helles Design */
+.fc-insight-bar-bg{flex:1;background:var(--cream-dark);border-radius:4px;height:8px;overflow:hidden;}
+.fc-insight-bar-fill{height:100%;border-radius:4px;}
+
+/* Beißindex Back-Button (Legacy entfernt) */
+.fc-ov-back{display:none;}
+
+/* Mondkalender Overlay */
+.fc-moon-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;}
+.fc-moon-cell{
+  display:flex;flex-direction:column;align-items:center;padding:6px 2px;
+  border-radius:8px;cursor:default;
+}
+.fc-moon-cell.today{background:var(--green-mist);}
+.fc-moon-cell-dow{font-size:9px;color:var(--text-light);font-weight:600;text-transform:uppercase;}
+.fc-moon-cell-ico{font-size:18px;line-height:1;margin:2px 0;}
+.fc-moon-cell-day{font-size:11px;color:var(--text-dark);font-weight:500;}
+.fc-moon-cell-pct{font-size:9px;color:var(--text-light);}
+
+/* Tide Overlay */
+.fc-tide-canvas-wrap{position:relative;height:180px;width:100%;margin-bottom:8px;}
+.fc-tide-day-nav{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px;}
+.fc-tide-day-nav::-webkit-scrollbar{display:none;}
+.fc-tide-day-btn{
+  padding:6px 12px;border:1.5px solid var(--green-pale);border-radius:20px;
+  font-size:11px;font-weight:600;font-family:var(--fa);cursor:pointer;
+  background:#fff;color:var(--text-mid);white-space:nowrap;transition:all .15s;
+}
+.fc-tide-day-btn.on{background:var(--green-deep);color:#fff;border-color:var(--green-deep);}
+
 /* TOAST: immer über Tab-Bar */
 .toast{
   position:absolute;
@@ -412,6 +547,45 @@ body{
 .goal-progress{font-size:13px;font-weight:700;color:var(--green-deep);display:flex;justify-content:space-between;}
 
 /* „Weitere Statistiken" CTA-Kachel am Ende */
+/* ── GOAL WALKOUT OVERLAY ── */
+#goal-walkout{
+  position:absolute;inset:0;z-index:220;
+  background:rgba(10,18,12,.96);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;cursor:pointer;overflow:hidden;
+}
+#goal-walkout.on{display:flex;}
+/* Lichtstrahlen */
+#goal-walkout::before{
+  content:'';position:absolute;inset:-50%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(212,166,64,.12) 3%,transparent 6%,rgba(212,166,64,.08) 9%,transparent 12%,rgba(255,210,80,.15) 15%,transparent 18%,rgba(212,166,64,.10) 21%,transparent 24%,rgba(255,220,80,.08) 27%,transparent 30%,rgba(212,166,64,.12) 33%,transparent 36%);
+  animation:rayRotate 8s linear infinite;
+  pointer-events:none;
+}
+@keyframes rayRotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+/* Glow-Ring um Text */
+@keyframes goalGlow{0%,100%{text-shadow:0 0 20px rgba(212,166,64,.6),0 0 60px rgba(212,166,64,.3);}50%{text-shadow:0 0 40px rgba(255,220,80,.9),0 0 100px rgba(212,166,64,.5),0 0 160px rgba(212,166,64,.2);}}
+@keyframes goalSlideUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+@keyframes goalPulseRing{0%{box-shadow:0 0 0 0 rgba(212,166,64,.7);}70%{box-shadow:0 0 0 24px rgba(212,166,64,.0);}100%{box-shadow:0 0 0 0 rgba(212,166,64,.0);}}
+.goal-walkout-badge{
+  font-size:80px;margin-bottom:16px;
+  animation:goalSlideUp .6s cubic-bezier(.22,1,.36,1) both;
+}
+.goal-walkout-label{
+  font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(212,166,64,.7);margin-bottom:10px;
+  animation:goalSlideUp .6s .1s cubic-bezier(.22,1,.36,1) both;
+}
+.goal-walkout-title{
+  font-family:var(--fs);font-size:26px;font-weight:700;
+  color:#f5c842;line-height:1.3;padding:0 24px;
+  animation:goalSlideUp .6s .2s cubic-bezier(.22,1,.36,1) both, goalGlow 2s .8s ease-in-out infinite;
+}
+.goal-walkout-tap{
+  font-size:12px;color:rgba(255,255,255,.4);margin-top:32px;letter-spacing:.5px;
+  animation:goalSlideUp .6s .5s cubic-bezier(.22,1,.36,1) both;
+}
+
 .st-mehr-kachel{
   background:linear-gradient(135deg,var(--green-deep) 0%,var(--green-mid) 100%);
   border-radius:var(--r);padding:20px 18px;margin-bottom:14px;
@@ -978,6 +1152,15 @@ input[type=file]{display:none;}
 </head>
 <body>
 <div class="phone" id="frame">
+
+<!-- GOAL WALKOUT OVERLAY -->
+<div id="goal-walkout" onclick="dismissGoalWalkout()" role="dialog" aria-modal="true" aria-label="Ziel erreicht">
+  <canvas id="goal-kcanvas" style="position:absolute;inset:0;pointer-events:none;width:100%;height:100%;"></canvas>
+  <div class="goal-walkout-badge" id="gwalk-badge">🏆</div>
+  <div class="goal-walkout-label">ZIEL ERREICHT</div>
+  <div class="goal-walkout-title" id="gwalk-title"></div>
+  <div class="goal-walkout-tap">Tippe um fortzufahren</div>
+</div>
 <div class="offbanner" id="off-banner">📡 Kein Internet – alle Funktionen laufen weiter</div>
 <div class="sbar"><span class="t" id="live-time">09:41</span><div style="display:flex;gap:6px;align-items:center;"><span>●●●</span><span id="netind" style="font-size:11px;">Offline</span><span>🔋</span></div></div>
 
@@ -1220,7 +1403,7 @@ input[type=file]{display:none;}
           oninput="updMoon()"
           onchange="updMoon()">
       </div>
-      <div class="erow">
+      <div id="new-moon-wx-row" class="erow">
         <div class="ec" onclick="showPage('stats')" role="button" tabindex="0">
           <div class="ei" id="moon-ico">🌕</div>
           <div><div class="elbl">Mondphase</div><div class="ev" id="moon-txt">Vollmond</div><div class="esub" id="moon-pct">100%</div></div>
@@ -1228,6 +1411,12 @@ input[type=file]{display:none;}
         <div class="ec" onclick="fetchWx()" role="button" tabindex="0" id="wx-card">
           <div class="ei" id="wx-ico">🌡️</div>
           <div><div class="elbl">Wetter</div><div class="ev" id="wx-val" style="font-size:11px;color:var(--text-light);line-height:1.5;">Tippen zum Laden</div></div>
+        </div>
+      </div>
+      <!-- Silent Weather Bestätigung (Reduziert-Modus) -->
+      <div id="silent-wx-hint" style="display:none;padding:8px 0 2px;">
+        <div style="font-size:11px;color:var(--green-mid);font-weight:600;display:flex;align-items:center;gap:6px;">
+          <span>✓</span><span id="silent-wx-txt">Wetterdaten automatisch im Hintergrund erfasst</span>
         </div>
       </div>
       <!-- GPS: hidden after load -->
@@ -1247,7 +1436,7 @@ input[type=file]{display:none;}
       <div class="ig" style="margin-bottom:10px;">
         <label class="il" for="s-water">Gewässer</label>
         <input type="text" class="if" id="s-water" placeholder="z.B. Dümmer See"
-          onfocus="rndrWChips('')" oninput="rndrWChips(this.value)" onblur="dHide('w-chips')" autocomplete="off">
+          onfocus="rndrWChips('')" oninput="rndrWChips(this.value)" onblur="dHide('w-chips');_autoTabWater()" autocomplete="off">
         <div class="crow" id="w-chips" style="display:none;" role="listbox"></div>
       </div>
       <div class="g2" style="margin-bottom:10px;">
@@ -1261,8 +1450,9 @@ input[type=file]{display:none;}
           <input type="time" class="if" id="s-end">
         </div>
       </div>
-      <!-- Manual weather – fallback (hidden when GPS loaded) -->
-      <div id="manual-wx">
+      <!-- Manual weather – fallback (hidden when GPS loaded, hidden in reduced mode) -->
+      <div id="new-manual-wx-wrap">
+        <div id="manual-wx">
         <div class="g2" style="margin-bottom:10px;">
           <div class="ig">
             <label class="il" for="s-wx">Wetter</label>
@@ -1276,6 +1466,7 @@ input[type=file]{display:none;}
           </div>
         </div>
       </div>
+      </div><!-- /new-manual-wx-wrap -->
       <!-- Sichttiefe / Trübung -->
       <div class="ig">
         <label class="il" for="s-clarity">Sichttiefe / Trübung</label>
@@ -1332,10 +1523,55 @@ input[type=file]{display:none;}
   <div class="fsov-scroll" id="fs-more-body"></div>
 </div>
 
-<!-- AP4: FORECAST DAY DETAIL OVERLAY -->
-<div class="fsov" id="fs-fc-day" role="dialog" aria-modal="true" aria-label="Vorhersage-Detail" style="z-index:115;background:#051525;">
-  <div id="fc-day-hero" class="fc-ov-bg" style="flex-shrink:0;position:relative;"></div>
-  <div class="fc-ov-scroll" id="fc-day-body"></div>
+<!-- AP4: FORECAST DAY DETAIL OVERLAY – Helles Theme -->
+<div class="fsov" id="fs-fc-day" role="dialog" aria-modal="true" aria-label="Vorhersage-Detail" style="z-index:115;background:#f5f7f5;">
+  <div id="fc-day-hero" class="fc-detail-hdr" style="flex-shrink:0;position:relative;"></div>
+  <div class="fc-detail-scroll" id="fc-day-body"></div>
+</div>
+
+<!-- Mondkalender Overlay -->
+<div class="fsov" id="fs-moon-cal" role="dialog" aria-modal="true" style="z-index:115;">
+  <div class="fshdr" style="position:relative;">
+    <div><div class="fstitle">🌙 Mondkalender</div><div class="fsmeta" id="fs-moon-meta"></div></div>
+    <button class="xbtn" onclick="closeFs('moon-cal')">✕</button>
+  </div>
+  <div class="fsov-scroll" id="fs-moon-body"></div>
+</div>
+
+<!-- Tidenkalender Overlay -->
+<div class="fsov" id="fs-tide-cal" role="dialog" aria-modal="true" style="z-index:115;">
+  <div class="fshdr" style="position:relative;">
+    <div><div class="fstitle">🌊 Tidenkalender</div><div class="fsmeta" id="fs-tide-meta">Weser · Elbe · Ems</div></div>
+    <button class="xbtn" onclick="closeFs('tide-cal')">✕</button>
+  </div>
+  <div class="fsov-scroll" id="fs-tide-body"></div>
+</div>
+
+<!-- Wind Overlay -->
+<div class="fsov" id="fs-wx-wind" role="dialog" aria-modal="true" style="z-index:115;">
+  <div class="fshdr" style="position:relative;">
+    <div><div class="fstitle">💨 Windverlauf</div><div class="fsmeta" id="fs-wind-meta"></div></div>
+    <button class="xbtn" onclick="closeFs('wx-wind')">✕</button>
+  </div>
+  <div class="fsov-scroll" id="fs-wind-body"></div>
+</div>
+
+<!-- Regen Overlay -->
+<div class="fsov" id="fs-wx-rain" role="dialog" aria-modal="true" style="z-index:115;">
+  <div class="fshdr" style="position:relative;">
+    <div><div class="fstitle">🌧 Regenverlauf</div><div class="fsmeta" id="fs-rain-meta"></div></div>
+    <button class="xbtn" onclick="closeFs('wx-rain')">✕</button>
+  </div>
+  <div class="fsov-scroll" id="fs-rain-body"></div>
+</div>
+
+<!-- Temperatur Overlay -->
+<div class="fsov" id="fs-wx-temp" role="dialog" aria-modal="true" style="z-index:115;">
+  <div class="fshdr" style="position:relative;">
+    <div><div class="fstitle">🌡 Temperatur</div><div class="fsmeta" id="fs-temp-meta"></div></div>
+    <button class="xbtn" onclick="closeFs('wx-temp')">✕</button>
+  </div>
+  <div class="fsov-scroll" id="fs-temp-body"></div>
 </div>
 
 <!-- PAGE: DETAIL -->
@@ -1435,18 +1671,54 @@ let _inputMode='full'; // 'full' | 'reduced'
 
 function setInputMode(mode){
   _inputMode=mode;
+  const reduced=mode==='reduced';
+
   // Toggle-Buttons updaten
   const btnFull=document.getElementById('mode-full');
   const btnRed=document.getElementById('mode-reduced');
-  if(btnFull){btnFull.style.background=mode==='full'?'var(--green-deep)':'transparent';btnFull.style.color=mode==='full'?'#fff':'var(--text-mid)';}
-  if(btnRed){btnRed.style.background=mode==='reduced'?'var(--green-deep)':'transparent';btnRed.style.color=mode==='reduced'?'#fff':'var(--text-mid)';}
+  if(btnFull){btnFull.style.background=!reduced?'var(--green-deep)':'transparent';btnFull.style.color=!reduced?'#fff':'var(--text-mid)';}
+  if(btnRed){btnRed.style.background=reduced?'var(--green-deep)':'transparent';btnRed.style.color=reduced?'#fff':'var(--text-mid)';}
+
+  // Mond + Wetter-Karte ausblenden im reduzierten Modus
+  const moonWxRow=document.getElementById('new-moon-wx-row');
+  const manualWxWrap=document.getElementById('new-manual-wx-wrap');
+  if(moonWxRow)moonWxRow.style.display=reduced?'none':'';
+  if(manualWxWrap)manualWxWrap.style.display=reduced?'none':'';
+
+  // Silent Weather Hint
+  const hint=document.getElementById('silent-wx-hint');
+  if(hint)hint.style.display=reduced?'block':'none';
+
+  // Im reduzierten Modus: Wetter sofort im Hintergrund laden
+  if(reduced&&!_lastWx){
+    _silentFetchWx();
+  }
+
   // Alle Fang-Blöcke aktualisieren
   for(let i=1;i<=catchCount;i++){
-    const reduced=mode==='reduced';
     ['bait-row','note-row','photo-row'].forEach(key=>{
       const el=document.getElementById(`catch-${key}-${i}`);
       if(el)el.style.display=reduced?'none':'';
     });
+  }
+}
+
+// Silent Weather: Hintergrund-Fetch ohne UI-Feedback außer dem Hint
+async function _silentFetchWx(){
+  const txtEl=document.getElementById('silent-wx-txt');
+  try{
+    const coords=_plzCoords||gpsCoords;
+    if(!coords&&profile?.plz)await resolvePlzCoords(profile.plz);
+    const c=_plzCoords||gpsCoords;
+    if(!c)return;
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weathercode,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation&timezone=auto`;
+    const r=await fetch(url);
+    const data=await r.json();
+    const curr=data.current||{};
+    applyWxData(curr,'Auto ✓');
+    if(txtEl)txtEl.textContent='Wetterdaten automatisch erfasst ✓';
+  }catch(e){
+    if(txtEl)txtEl.textContent='Wetter offline – wird bei Verbindung geladen';
   }
 }
 let _shareData={},gpsCoords=null,kAF=null,cAF=null,_confRes=null,_curPhotoId=null;
@@ -2254,7 +2526,8 @@ function addCatch(){
         <label class="il" for="fl-${id}">Länge (cm)</label>
         <input type="number" class="if" id="fl-${id}" placeholder="65" min="1" max="300" step="0.5"
           inputmode="decimal"
-          oninput="chkMMF(${id})">
+          oninput="chkMMF(${id})"
+          onblur="_autoTabLength(${id})">
       </div>
       <div class="ig">
         <label class="il" for="ftime-${id}">Uhrzeit</label>
@@ -2325,14 +2598,36 @@ function addCatch(){
 
 // Fix 2b: Auto-Focus auf Länge nach Fischart-Auswahl
 // inputmode="decimal" im HTML-Input ist Voraussetzung für iOS-Tastatur
+// ── AUTO-TAB WORKFLOW ────────────────────────────────────────
+// Gewässer → Start-Zeit (keine Tastatur öffnen, da time-picker)
+function _autoTabWater(){
+  const waterVal=document.getElementById('s-water').value.trim();
+  if(!waterVal)return; // leer → kein auto-tab
+  // Chips vorhanden? → kein direkter Fokus (Nutzer wählt noch)
+  const chips=document.getElementById('w-chips');
+  if(chips&&chips.style.display!=='none'&&chips.children.length)return;
+  setTimeout(()=>{
+    const startEl=document.getElementById('s-start');
+    if(startEl)startEl.focus(); // time-picker öffnet sich
+  },200);
+}
+
+// Länge → Uhrzeit-Feld (nach Eingabe + Tab/Enter)
+function _autoTabLength(id){
+  const lenEl=document.getElementById('fl-'+id);
+  if(!lenEl||!lenEl.value)return;
+  setTimeout(()=>{
+    const timeEl=document.getElementById('ftime-'+id);
+    if(timeEl)timeEl.focus(); // time-widget öffnet sich automatisch
+  },100);
+}
+
 function _focusLength(id){
   const el=document.getElementById('fl-'+id);
   if(!el)return;
-  // Kurzer Delay damit Chip-Dropdown geschlossen ist
   setTimeout(()=>{
     el.setAttribute('inputmode','decimal');
     el.focus({preventScroll:false});
-    // iOS-Workaround: temporäre readOnly-Manipulation zwingt Tastatur auf
     if(/iPhone|iPad/i.test(navigator.userAgent)){
       el.setAttribute('readonly','readonly');
       setTimeout(()=>{el.removeAttribute('readonly');el.focus();},50);
@@ -2340,15 +2635,12 @@ function _focusLength(id){
   },100);
 }
 
-// Favoriten-Auswahl Fischart → Auto-Focus auf Länge (Fix 2b)
 function favFishSel(id,v){
   document.getElementById('ft-'+id).value=v;
   document.getElementById('fc-'+id).style.display='none';
-  chkMMF(id);
-  rndrBChips(id,'');
-  _focusLength(id);
+  chkMMF(id);rndrBChips(id,'');
+  _focusLength(id); // Länge: keine Chips → Tastatur öffnet sofort
 }
-// fSel überschreiben für Auto-Focus (Fix 2b)
 function fSel(id,v){
   document.getElementById('ft-'+id).value=v;
   document.getElementById('fc-'+id).style.display='none';
@@ -2356,7 +2648,6 @@ function fSel(id,v){
   _focusLength(id);
 }
 
-// Favoriten-Auswahl Köder
 function favBaitSel(id,v){
   document.getElementById('fb-'+id).value=v;
   document.getElementById('bc-'+id).style.display='none';
@@ -2477,17 +2768,24 @@ async function saveSess(){
     sessions.unshift(sess);
     await saveOneSess(sess);
 
+    // v13 Edit-Safety: Original erst JETZT löschen
     if(_editPendingId){
       sessions=sessions.filter(x=>String(x.id)!==String(_editPendingId));
       await idbD('sessions',String(_editPendingId));
       _editPendingId=null;
     }
 
-    // Fix: resetForm navigiert immer zum Fangbuch
+    // Ziel-Check: wurde ein Ziel gerade erreicht?
+    const justReached=_checkGoalAchieved(catches);
+
     if(catches.length>0&&!effSk){
-      showSuc(catches,waterVal); // disSuc() ruft resetForm() + showPage('fangbuch')
+      if(justReached){
+        // Walkout zuerst, dann normales Overlay
+        showGoalWalkout(justReached,()=>showSuc(catches,waterVal));
+      } else {
+        showSuc(catches,waterVal);
+      }
     } else {
-      const msg=sk?'🪝 Schneider gespeichert':effSk?'🪝 Als Schneider gespeichert':'✅ Session gespeichert!';
       showToast(effSk||sk?'🪝':'✅', sk?'Schneider-Session gespeichert':effSk?'Als Schneider gespeichert':'Session gespeichert!');
       resetForm();
       showPage('fangbuch');
@@ -2539,6 +2837,90 @@ function showSuc(catches,water){
 function doShare(){const{ft,total,water,count}=_shareData;const name=profile?profile.name.split(' ')[0]+'s':'Mein';const wt=water&&water!=='Unbekanntes Gewässer'?` am ${water}`:'';navigator.share({title:'Fishing Buddy',text:`Petri Heil! 🎣 Gerade ${count} ${ft}${count!==1?'e':''}${wt} geloggt. ${name} ${ft}-Counter: ${total}! – Fishing Buddy 🎣`}).catch(()=>{});}
 function animCnt(cur,tgt){if(cur>=tgt){const n=document.getElementById('cnt-num');n.textContent=tgt;n.classList.add('pulse');setTimeout(()=>n.classList.remove('pulse'),400);return;}const p=document.getElementById('p1');p.textContent='+1';p.style.animation='none';void p.offsetWidth;p.classList.add('fly');setTimeout(()=>{p.classList.remove('fly');const n=document.getElementById('cnt-num');n.textContent=cur+1;n.classList.add('pulse');setTimeout(()=>n.classList.remove('pulse'),350);cAF=setTimeout(()=>animCnt(cur+1,tgt),tgt-cur>5?200:350);},440);}
 function disSuc(){document.getElementById('sucov').classList.remove('on');stopK();if(cAF)clearTimeout(cAF);resetForm();showPage('fangbuch');} // v9: → Fangbuch
+
+// ── GOAL WALKOUT ─────────────────────────────────────────────
+let _gwalkCallback=null;
+let _gwalkKaf=null;
+
+// Prüft ob ein Ziel durch die neuen Fänge gerade erreicht wurde
+function _checkGoalAchieved(newCatches){
+  if(!profile?.goals?.length)return null;
+  const curYear=new Date().getFullYear();
+  const yearSessions=sessions.filter(s=>s.date?.startsWith(String(curYear)));
+  const allYearCatches=yearSessions.flatMap(s=>s.catches);
+
+  for(const g of profile.goals){
+    const target=g.count||1;
+    // Vorher-Zähler (vor dieser Session = alle außer der gerade gespeicherten)
+    const prevSessions=yearSessions.slice(1); // sessions[0] ist gerade gespeichert
+    const prevCount=prevSessions.flatMap(s=>s.catches).filter(c=>{
+      if(c.type!==g.fish)return false;
+      if(g.minLen>0&&c.length<g.minLen)return false;
+      return true;
+    }).length;
+    const newCount=newCatches.filter(c=>{
+      if(c.type!==g.fish)return false;
+      if(g.minLen>0&&c.length<g.minLen)return false;
+      return true;
+    }).length;
+    const totalNow=prevCount+newCount;
+    // Genau in dieser Session die 100% Schwelle überschritten
+    if(prevCount<target&&totalNow>=target){
+      return g;
+    }
+  }
+  return null;
+}
+
+function showGoalWalkout(goal,onDismiss){
+  _gwalkCallback=onDismiss;
+  const ov=document.getElementById('goal-walkout');
+  if(!ov)return;
+  document.getElementById('gwalk-title').textContent=`${goal.count}× ${goal.fish}${goal.minLen>0?' ab '+goal.minLen+'cm':''}`;
+  ov.classList.add('on');
+  // Konfetti auf goal-kcanvas
+  _launchGoalConfetti();
+}
+
+function dismissGoalWalkout(){
+  const ov=document.getElementById('goal-walkout');
+  if(ov)ov.classList.remove('on');
+  if(_gwalkKaf){cancelAnimationFrame(_gwalkKaf);_gwalkKaf=null;}
+  const cb=_gwalkCallback;_gwalkCallback=null;
+  if(cb)cb();
+}
+
+function _launchGoalConfetti(){
+  const c=document.getElementById('goal-kcanvas');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  // Canvas-Größe auf tatsächliche Darstellungsgröße setzen
+  c.width=c.offsetWidth||390;c.height=c.offsetHeight||844;
+  const GCOLORS=['#f5c842','#fff8dc','#ffd700','#fffacd','#e8c84a','#ffffff','#4A7C59','#7BAE8A'];
+  const ps=Array.from({length:160},()=>({
+    x:Math.random()*c.width,y:-40-Math.random()*400,
+    w:3+Math.random()*9,h:3+Math.random()*9,
+    col:GCOLORS[Math.floor(Math.random()*GCOLORS.length)],
+    sp:1.5+Math.random()*4,si:Math.random()*.3-.15,
+    an:Math.random()*Math.PI*2,vx:(Math.random()-.5)*2,
+    gv:.035+Math.random()*.065
+  }));
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    let any=false;
+    ps.forEach(p=>{
+      p.y+=p.sp;p.sp+=p.gv;p.an+=p.si;p.x+=p.vx;
+      if(p.y<c.height+40)any=true;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.an);
+      ctx.fillStyle=p.col;ctx.globalAlpha=Math.max(0,1-p.y/(c.height*.85));
+      if(p.w>7){ctx.beginPath();ctx.arc(0,0,p.w/2,0,Math.PI*2);ctx.fill();}
+      else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    if(any)_gwalkKaf=requestAnimationFrame(draw);
+  }
+  draw();
+}
 function launchK(){const c=document.getElementById('kcanvas'),ctx=c.getContext('2d');c.width=390;c.height=844;const ps=Array.from({length:130},()=>({x:Math.random()*390,y:-30-Math.random()*300,w:4+Math.random()*8,h:4+Math.random()*8,col:KONF[Math.floor(Math.random()*KONF.length)],sp:1.8+Math.random()*3.5,si:Math.random()*.25-.125,an:Math.random()*Math.PI*2,vx:(Math.random()-.5)*1.5,gv:.04+Math.random()*.06}));function draw(){ctx.clearRect(0,0,390,844);let any=false;ps.forEach(p=>{p.y+=p.sp;p.sp+=p.gv;p.an+=p.si;p.x+=p.vx;if(p.y<920)any=true;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.an);ctx.fillStyle=p.col;ctx.globalAlpha=Math.max(0,1-p.y/750);if(p.w>8){ctx.beginPath();ctx.arc(0,0,p.w/2,0,Math.PI*2);ctx.fill();}else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(any)kAF=requestAnimationFrame(draw);}draw();}
 function stopK(){if(kAF)cancelAnimationFrame(kAF);document.getElementById('kcanvas').getContext('2d').clearRect(0,0,390,844);}
 
@@ -3595,9 +3977,8 @@ function rndrForecast(){
   const coords=_plzCoords||gpsCoords;
 
   if(!coords&&!_fcData){
-    // Fix 6: Versuche Offline-Cache aus IDB zu laden
     loadFcCache().then(()=>{
-      if(_fcData&&_fcHourlyData){renderFcDays(_fcData);showToast('📡','Offline – letzte Vorhersage');return;}
+      if(_fcData&&_fcHourlyData){_renderFcDashboard();showToast('📡','Offline – letzte Vorhersage');return;}
       el.innerHTML=`<div style="text-align:center;padding:40px 24px;">
         <div style="font-size:48px;margin-bottom:16px;opacity:.45;">🔮</div>
         <div style="font-size:16px;font-weight:600;color:var(--text-dark);margin-bottom:8px;">Standort wird benötigt</div>
@@ -3609,89 +3990,291 @@ function rndrForecast(){
     return;
   }
 
-  if(_fcData&&_fcHourlyData){renderFcDays(_fcData);return;}
+  if(_fcData&&_fcHourlyData){_renderFcDashboard();return;}
 
   el.innerHTML='<div style="text-align:center;padding:50px;color:var(--text-light);">🔄 Lade Vorhersage…</div>';
   const lat=coords.lat,lon=coords.lon;
-  // Parallel: Daily + Hourly (für Detail-Overlay)
   Promise.all([
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant,precipitation_sum,surface_pressure_mean&timezone=auto&forecast_days=7`).then(r=>r.json()),
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,precipitation_probability,weathercode,surface_pressure&timezone=auto&forecast_days=7`).then(r=>r.json())
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant,precipitation_sum,surface_pressure_mean&timezone=auto&forecast_days=14`).then(r=>r.json()),
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,precipitation_probability,weathercode,surface_pressure&timezone=auto&forecast_days=14`).then(r=>r.json())
   ])
   .then(([daily,hourly])=>{
     _fcData=daily;_fcHourlyData=hourly;
-    saveFcCache(); // Fix 6: Offline-Cache persistieren
-    saveFcTimestamp();
-    renderFcDays(daily);
+    saveFcCache();saveFcTimestamp();
+    _renderFcDashboard();
   })
   .catch(async()=>{
-    // Fix 6: Offline-Fallback – gecachte Vorhersage aus IDB laden
-    await loadFcCache(); // befüllt _fcData und _fcHourlyData
-    if(_fcData&&_fcHourlyData){
-      renderFcDays(_fcData);
-      showToast('📡','Offline – zeige letzte Vorhersage');
-    } else {
-      el.innerHTML='<div style="text-align:center;padding:40px 24px;"><div style="font-size:44px;margin-bottom:12px;opacity:.4;">📡</div><div style="font-size:15px;font-weight:600;color:var(--text-dark);margin-bottom:8px;">Keine Verbindung</div><p style="font-size:12px;color:var(--text-light);line-height:1.6;">Vorhersage wird geladen sobald du wieder online bist.</p></div>';
-    }
+    await loadFcCache();
+    if(_fcData&&_fcHourlyData){_renderFcDashboard();showToast('📡','Offline – letzte Vorhersage');}
+    else el.innerHTML='<div style="text-align:center;padding:40px 24px;"><div style="font-size:44px;margin-bottom:12px;opacity:.4;">📡</div><div style="font-size:15px;font-weight:600;color:var(--text-dark);margin-bottom:8px;">Keine Verbindung</div></div>';
   });
 }
 
-function renderFcDays(data){
+function _renderFcDashboard(){
   const el=document.getElementById('fc-con');
-  const d=data.daily;if(!d){el.innerHTML='<div style="text-align:center;padding:40px;">Keine Daten.</div>';return;}
+  const d=_fcData?.daily;if(!d)return;
   const days=d.time.map((t,i)=>({
     date:t,wc:d.weathercode[i],
     tmax:d.temperature_2m_max[i],tmin:d.temperature_2m_min[i],
     wind:d.windspeed_10m_max[i],windDir:d.winddirection_10m_dominant?.[i],
     precip:d.precipitation_sum[i],pres:d.surface_pressure_mean?.[i]
   }));
-  const probs=days.map(day=>calcBiteProb(day));
-  const DOW7=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const coords=_plzCoords||gpsCoords;
+  const isTideRegion=coords&&(
+    (Math.abs(coords.lat-53.07)<1.2&&Math.abs(coords.lon-8.8)<1.5)||  // Weser/Bremen
+    (Math.abs(coords.lat-53.5)<1.0&&Math.abs(coords.lon-9.8)<1.2)||   // Elbe/Hamburg
+    (Math.abs(coords.lat-53.3)<0.8&&Math.abs(coords.lon-7.2)<0.8)     // Ems
+  );
 
-  const days_html=days.map((day,i)=>{
-    const p=probs[i];
-    const dow=DOW7[new Date(day.date+'T12:00:00').getDay()];
+  // Mini-Tage für Vorhersage-Kachel
+  const miniDays=days.slice(0,14).map((day,i)=>{
     const isToday=i===0;
-    // Bite-Ring SVG
-    const r=22,circ=2*Math.PI*r;
-    const pctColor=p.pct>=70?'#4A7C59':p.pct>=40?'#C4963A':'#CBD5D0';
-    const dashArr=`${(p.pct/100*circ).toFixed(1)} ${circ.toFixed(1)}`;
-    const ringHtml=`<div class="bite-ring">
-      <svg width="52" height="52" viewBox="0 0 52 52">
-        <circle cx="26" cy="26" r="${r}" fill="none" stroke="var(--cream-dark)" stroke-width="4"/>
-        <circle cx="26" cy="26" r="${r}" fill="none" stroke="${pctColor}" stroke-width="4" stroke-dasharray="${dashArr}" stroke-linecap="round"/>
-      </svg>
-      <div class="bite-ring-val" style="color:${pctColor};">${p.pct}%</div>
-    </div>`;
-
-    return`<div class="fc-day" onclick="openFcDayDetail(${i},'${day.date}')" role="button" tabindex="0" aria-label="${dow} ${day.date.slice(5)} – Beißindex ${p.pct}%">
-      <div style="display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid rgba(200,221,208,.3);">
-        <div class="fc-date">
-          <div style="font-weight:700;font-size:13px;">${isToday?'Heute':dow}</div>
-          <div style="font-size:11px;color:var(--text-light);">${day.date.slice(5).replace('-','.')}</div>
-        </div>
-        <div class="fc-ico">${wxIco(day.wc)}</div>
-        <div class="fc-info" style="flex:1;min-width:0;">
-          <div class="fc-tmp" style="font-size:13px;font-weight:500;">
-            ${Math.round(day.tmax)}° / ${Math.round(day.tmin)}°
-            · ${Math.round(day.wind)} km/h ${windArrow(day.windDir)}${windLabel(day.windDir)}
-            ${day.pres?`· ${Math.round(day.pres)}hPa`:''}
-          </div>
-          ${p.topFish.length?`<div style="font-size:11px;color:var(--green-mid);font-weight:600;margin-top:3px;">${p.topFish.slice(0,2).join(' · ')}</div>`:''}
-        </div>
-        ${ringHtml}
-      </div>
+    const dow=isToday?'Heu':DOW[new Date(day.date+'T12:00:00').getDay()];
+    const bp=calcBiteProb(day);
+    return`<div class="fc-mini-day${isToday?' today':''}" onclick="openFcDayDetail(${i},'${day.date}')">
+      <div class="fc-mini-dow">${dow}</div>
+      <div class="fc-mini-ico">${wxIco(day.wc)}</div>
+      <div class="fc-mini-tmp">${Math.round(day.tmax??0)}°</div>
+      <div class="fc-mini-bite" style="color:${bp.pct>=70?'var(--green-mid)':bp.pct>=40?'var(--gold)':'var(--text-light)'};">${bp.pct}%</div>
     </div>`;
   }).join('');
 
-  el.innerHTML=`
-    <div class="slbl">7-Tage Vorhersage <span style="font-size:9px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-light);">→ Tag antippen für Details</span></div>
-    <div class="card" style="padding:0 16px;">${days_html}</div>
-    <div class="card" style="font-size:12px;color:var(--text-mid);line-height:1.7;margin-top:10px;">
-      <strong>Beißindex-Berechnung</strong><br>
-      Kombiniert 7 Faktoren: Luftdruck (30%), Drucktendenz (25%), Windstärke (15%), Temperatur (15%), Mondphase (10%), Bewölkung (5%). Gewichtet durch deine ${sessions.flatMap(s=>s.catches).length} historischen Fänge.
-    </div>`;
+  // Heute-Werte für Chip-Kacheln
+  const today=days[0];
+  const hourlyToday=_fcHourlyData?.hourly?.time?.map((t,i)=>({
+    temp:_fcHourlyData.hourly.temperature_2m?.[i],
+    wind:_fcHourlyData.hourly.windspeed_10m?.[i],
+    rain:_fcHourlyData.hourly.precipitation_probability?.[i]
+  })).filter((_,i)=>_fcHourlyData.hourly.time[i]?.startsWith(today.date))||[];
+  const avgWind=hourlyToday.length?Math.round(hourlyToday.filter(x=>x.wind!=null).reduce((a,x)=>a+x.wind,0)/Math.max(1,hourlyToday.filter(x=>x.wind!=null).length)):today.wind;
+  const maxRain=hourlyToday.length?Math.max(...hourlyToday.map(x=>x.rain||0)):Math.round((today.precip||0)*10);
+
+  el.innerHTML=`<div class="fc-dash">
+    <!-- Vorhersage-Kachel (breit) -->
+    <div class="fc-kachel wide">
+      <div class="fc-kachel-head">
+        <div>
+          <div class="fc-kachel-title">☀️ 14-Tage Vorhersage</div>
+          <div class="fc-kachel-sub">Tap für Details · Swipe zum Wechseln</div>
+        </div>
+        <div style="font-size:13px;color:var(--text-light);">›</div>
+      </div>
+      <div class="fc-kachel-days">
+        <div class="fc-mini-days">${miniDays}</div>
+      </div>
+    </div>
+
+    <!-- Mondkalender -->
+    <div class="fc-kachel" onclick="openMoonCal()">
+      <div class="fc-kachel-ico">🌙</div>
+      <div class="fc-kachel-info">
+        <div class="fc-kachel-title">Mondkalender</div>
+        <div class="fc-kachel-sub">${getMoon(today.date).name} · ${getMoon(today.date).illum}% beleuchtet</div>
+      </div>
+      <div class="fc-kachel-arrow">›</div>
+    </div>
+
+    ${isTideRegion?`<!-- Tidenkalender -->
+    <div class="fc-kachel" onclick="openTideCal()">
+      <div class="fc-kachel-ico">🌊</div>
+      <div class="fc-kachel-info">
+        <div class="fc-kachel-title">Tidenkalender</div>
+        <div class="fc-kachel-sub">Weser · Elbe · Ems</div>
+      </div>
+      <div class="fc-kachel-arrow">›</div>
+    </div>`:''}
+
+    <!-- Wind-Kachel -->
+    <div class="fc-kachel" onclick="openWxChart('wind')">
+      <div class="fc-kachel-ico">💨</div>
+      <div class="fc-kachel-info">
+        <div class="fc-kachel-title">Wind heute</div>
+        <div class="fc-kachel-sub">${windLabel(today.windDir)} · max ${Math.round(today.wind||0)} km/h</div>
+      </div>
+      <div class="fc-kachel-val">${Math.round(avgWind||0)}</div>
+    </div>
+
+    <!-- Regen-Kachel -->
+    <div class="fc-kachel" onclick="openWxChart('rain')">
+      <div class="fc-kachel-ico">🌧</div>
+      <div class="fc-kachel-info">
+        <div class="fc-kachel-title">Niederschlag</div>
+        <div class="fc-kachel-sub">Regenwahrscheinlichkeit heute</div>
+      </div>
+      <div class="fc-kachel-val" style="font-size:18px;">${maxRain}%</div>
+    </div>
+
+    <!-- Temp-Kachel -->
+    <div class="fc-kachel" onclick="openWxChart('temp')">
+      <div class="fc-kachel-ico">🌡</div>
+      <div class="fc-kachel-info">
+        <div class="fc-kachel-title">Temperatur</div>
+        <div class="fc-kachel-sub">${Math.round(today.tmin??0)}° – ${Math.round(today.tmax??0)}° heute</div>
+      </div>
+      <div class="fc-kachel-val">${Math.round(today.tmax??0)}°</div>
+    </div>
+  </div>`;
 }
+
+// ── Mondkalender Overlay ────────────────────────────────────
+function openMoonCal(){
+  openFs('moon-cal');
+  const today=new Date();today.setHours(0,0,0,0);
+  const DOW_S=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  let html='';
+  // 3 Monate: Vormonat, aktuell, nächst
+  for(let mo=-1;mo<=2;mo++){
+    const d=new Date(today.getFullYear(),today.getMonth()+mo,1);
+    const yr=d.getFullYear(),m=d.getMonth();
+    const MNAMES=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+    const lastDay=new Date(yr,m+1,0).getDate();
+    const firstDow=(new Date(yr,m,1).getDay()+6)%7;
+    html+=`<div style="margin-bottom:20px;">
+      <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green-mid);margin-bottom:8px;">${MNAMES[m]} ${yr}</div>
+      <div class="fc-moon-grid">
+        ${DOW_S.map(d=>`<div style="font-size:9px;font-weight:700;color:var(--text-light);text-align:center;padding:4px 0;text-transform:uppercase;">${d}</div>`).join('')}
+        ${Array(firstDow).fill('<div></div>').join('')}
+        ${Array.from({length:lastDay},(_,i)=>{
+          const day=new Date(yr,m,i+1);
+          const ds=`${yr}-${String(m+1).padStart(2,'0')}-${String(i+1).padStart(2,'0')}`;
+          const moon=getMoon(ds);
+          const isToday=day.getTime()===today.getTime();
+          return`<div class="fc-moon-cell${isToday?' today':''}">
+            <div class="fc-moon-cell-ico">${moon.icon}</div>
+            <div class="fc-moon-cell-day" style="${isToday?'font-weight:700;color:var(--green-deep);':''}">${i+1}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+  document.getElementById('fs-moon-meta').textContent='Mondphasen-Kalender';
+  document.getElementById('fs-moon-body').innerHTML=html;
+}
+
+// ── Tidenkalender Overlay ───────────────────────────────────
+let _tideRiver='weser';
+async function openTideCal(){
+  openFs('tide-cal');
+  document.getElementById('fs-tide-body').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">🔄 Lade Tidendaten…</div>';
+  await _renderTideCal(_tideRiver,new Date().toISOString().split('T')[0]);
+}
+async function _renderTideCal(river,startDate){
+  _tideRiver=river;
+  const RIVERS={
+    weser:{lat:53.54,lon:8.58,name:'Weser (Bremerhaven)'},
+    elbe:{lat:53.89,lon:8.67,name:'Elbe (Cuxhaven)'},
+    ems:{lat:53.33,lon:7.19,name:'Ems (Emden)'}
+  };
+  const r=RIVERS[river]||RIVERS.weser;
+  const endDate=new Date(startDate);endDate.setDate(endDate.getDate()+6);
+  const endStr=endDate.toISOString().split('T')[0];
+
+  // Tage-Buttons
+  const days=[];const d=new Date(startDate);
+  for(let i=0;i<7;i++){days.push(d.toISOString().split('T')[0]);d.setDate(d.getDate()+1);}
+  const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const today=new Date().toISOString().split('T')[0];
+  const navHtml=`<div class="fc-tide-day-nav">
+    ${['weser','elbe','ems'].map(rv=>`<button class="fc-tide-day-btn${rv===river?' on':''}" onclick="_renderTideCal('${rv}','${startDate}')">${RIVERS[rv].name.split(' ')[0]}</button>`).join('')}
+  </div>
+  <div class="fc-tide-day-nav" style="margin-top:6px;">
+    ${days.map(ds=>`<button class="fc-tide-day-btn${ds===startDate?' on':''}" onclick="_renderTideCal('${river}','${ds}')">${DOW[new Date(ds+'T12:00:00').getDay()]} ${ds.slice(8)}</button>`).join('')}
+  </div>`;
+
+  try{
+    const url=`https://marine-api.open-meteo.com/v1/marine?latitude=${r.lat}&longitude=${r.lon}&hourly=wave_height,ocean_current_velocity&start_date=${startDate}&end_date=${startDate}&timezone=auto`;
+    const resp=await fetch(url);const data=await resp.json();
+    const h=data.hourly;
+    const labels=(h?.time||[]).map(t=>t.slice(11,16));
+    const heights=(h?.wave_height||[]).map(v=>v!=null?Math.round(v*100)/100:null);
+
+    document.getElementById('fs-tide-body').innerHTML=`
+      ${navHtml}
+      <div style="margin-top:12px;">
+        <div class="fc-sec">
+          <div class="fc-sec-title">🌊 ${r.name} · ${startDate}</div>
+          <div class="fc-tide-canvas-wrap"><canvas id="tide-main-chart"></canvas></div>
+          <div style="font-size:10px;color:var(--text-light);margin-top:6px;text-align:center;">Wellenhöhe Nordseeästuar · Open-Meteo Marine</div>
+        </div>
+      </div>`;
+
+    requestAnimationFrame(()=>{
+      const c=document.getElementById('tide-main-chart');if(!c||typeof Chart==='undefined')return;
+      new Chart(c,{type:'line',data:{labels,datasets:[{
+        label:'m',data:heights,
+        borderColor:'#2a8cba',backgroundColor:'rgba(42,140,186,.15)',
+        fill:true,tension:.5,pointRadius:2,pointBackgroundColor:'#2a8cba',borderWidth:2.5
+      }]},options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:ctx=>`${ctx.parsed.y}m`}}},
+        scales:{
+          x:{ticks:{color:'#8a9a8f',font:{size:9},maxRotation:0,maxTicksLimit:12},grid:{color:'rgba(0,0,0,.04)'}},
+          y:{ticks:{color:'#8a9a8f',font:{size:10},callback:v=>v+'m'},grid:{color:'rgba(0,0,0,.05)'}}
+        }
+      }});
+    });
+  }catch(e){
+    document.getElementById('fs-tide-body').innerHTML=navHtml+`<div class="fc-sec" style="margin-top:12px;text-align:center;color:var(--text-light);padding:24px;">Tidendaten nicht verfügbar</div>`;
+  }
+}
+
+// ── Einzel-Kachel Wetter-Charts ────────────────────────────
+function openWxChart(type){
+  if(!_fcHourlyData)return;
+  const today=_fcData?.daily?.time?.[0];
+  const h=_fcHourlyData.hourly;
+  const hours=h.time.filter(t=>t.startsWith(today));
+  const idxs=h.time.map((t,i)=>t.startsWith(today)?i:-1).filter(i=>i>=0);
+  const labels=hours.map(t=>t.slice(11,16));
+
+  let ovId,bodyId,data,color,type2,yOpts,title;
+  if(type==='wind'){
+    ovId='wx-wind';bodyId='fs-wind-body';title='💨 Windverlauf';
+    data=idxs.map(i=>h.windspeed_10m?.[i]!=null?Math.round(h.windspeed_10m[i]):null);
+    color='#4a90d9';type2='line';
+    document.getElementById('fs-wind-meta').textContent=`Max ${Math.round(Math.max(...data.filter(Boolean)))} km/h`;
+    yOpts={min:0,ticks:{callback:v=>v+' km/h'}};
+  } else if(type==='rain'){
+    ovId='wx-rain';bodyId='fs-rain-body';title='🌧 Regenwahrscheinlichkeit';
+    data=idxs.map(i=>h.precipitation_probability?.[i]??null);
+    color='rgba(74,144,217,.7)';type2='bar';
+    document.getElementById('fs-rain-meta').textContent=`Max ${Math.max(...data.filter(Boolean))}%`;
+    yOpts={min:0,max:100,ticks:{callback:v=>v+'%'}};
+  } else {
+    ovId='wx-temp';bodyId='fs-temp-body';title='🌡 Temperaturverlauf';
+    data=idxs.map(i=>h.temperature_2m?.[i]!=null?Math.round(h.temperature_2m[i]*10)/10:null);
+    color='#e07030';type2='line';
+    document.getElementById('fs-temp-meta').textContent=`${Math.round(Math.min(...data.filter(Boolean)))}° – ${Math.round(Math.max(...data.filter(Boolean)))}°`;
+    yOpts={ticks:{callback:v=>v+'°'}};
+  }
+
+  openFs(ovId);
+  document.getElementById(bodyId).innerHTML=`
+    <div class="fc-sec">
+      <div class="fc-sec-title">${title} · Heute</div>
+      <div style="position:relative;height:220px;width:100%;"><canvas id="wx-single-chart"></canvas></div>
+    </div>`;
+
+  requestAnimationFrame(()=>{
+    const c=document.getElementById('wx-single-chart');if(!c||typeof Chart==='undefined')return;
+    const ds=type2==='bar'
+      ?{label:'',data,backgroundColor:color,borderRadius:4,borderSkipped:false}
+      :{label:'',data,borderColor:color,backgroundColor:color.replace(')',', .15)').replace('rgba','rgba').replace('#','rgba('+parseInt(color.slice(1,3),16)+','+parseInt(color.slice(3,5),16)+','+parseInt(color.slice(5,7),16)+','),fill:true,tension:.4,pointRadius:3,borderWidth:2.5};
+    new Chart(c,{type:type2,data:{labels,datasets:[ds]},options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(30,50,40,.9)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)'}},
+      scales:{
+        x:{ticks:{color:'#8a9a8f',font:{size:10},maxRotation:0,maxTicksLimit:8},grid:{color:'rgba(0,0,0,.04)'}},
+        y:{...yOpts,ticks:{...yOpts.ticks,color:'#8a9a8f',font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}}
+      }
+    }});
+  });
+}
+
+// Alias (alter renderFcDays → wird nicht mehr direkt genutzt)
+function renderFcDays(data){_fcData=data;_renderFcDashboard();}
+
 
 // ── AP4: iPhone-style Wetter-Overlay mit Chart.js + Swipe + Tide ──────────────
 let _fcDayIdx=0; // aktueller Tag im Forecast-Overlay
