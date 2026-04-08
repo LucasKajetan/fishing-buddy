@@ -491,6 +491,35 @@ position:relative;}
 .goal-bar-fill{height:100%;border-radius:6px;background:var(--green-mid);transition:width .6s ease;}
 .goal-card.achieved .goal-bar-fill{background:#d4a640;}
 .goal-progress{font-size:13px;font-weight:700;color:var(--green-deep);display:flex;justify-content:space-between;}
+/* Ziel-Typ-Selector (Stückzahl / Korridor / PB) */
+.goal-type-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px;}
+.goal-type-btn{
+  padding:10px 4px;border:1.5px solid var(--cream-dark);border-radius:var(--rs);
+  background:#fff;font-size:11px;font-weight:600;font-family:var(--fa);
+  cursor:pointer;text-align:center;color:var(--text-light);
+  transition:all .18s;line-height:1.4;
+}
+.goal-type-btn .gt-ico{font-size:18px;display:block;margin-bottom:4px;}
+.goal-type-btn.sel{
+  border-color:var(--green-mid);background:var(--green-mist);
+  color:var(--green-deep);box-shadow:0 0 0 2px rgba(74,124,89,.18);
+}
+/* Dynamische Felder je nach Typ */
+.goal-fields{display:grid;gap:8px;margin-bottom:14px;}
+.goal-fields.g2{grid-template-columns:1fr 1fr;}
+.goal-fields.g3{grid-template-columns:1fr 1fr 1fr;}
+/* Mehr-Stats Toggle */
+.ms-toggle{
+  display:flex;background:var(--cream-dark);border-radius:20px;
+  padding:3px;margin-bottom:16px;gap:0;
+}
+.ms-toggle-btn{
+  flex:1;padding:7px 0;border:none;border-radius:18px;
+  font-size:12px;font-weight:600;font-family:var(--fa);
+  cursor:pointer;background:transparent;color:var(--text-mid);
+  transition:all .2s;
+}
+.ms-toggle-btn.on{background:#fff;color:var(--green-deep);box-shadow:0 1px 4px rgba(45,74,53,.15);}
 
 /* „Weitere Statistiken" CTA-Kachel am Ende */
 /* ── GOAL WALKOUT OVERLAY ── */
@@ -729,7 +758,11 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fb-cal-day.skunked:hover{background:rgba(200,60,60,.22);}
 .fb-cal-day.has-catch .fb-cal-dot{background:var(--green-mid);}
 .fb-cal-day.skunked .fb-cal-dot{background:#d07070;}
-.fb-cal-dot{width:4px;height:4px;border-radius:50%;margin-top:1px;flex-shrink:0;display:none;}
+.fb-cal-dot{
+  position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
+  width:4px;height:4px;border-radius:50%;
+  display:none;flex-shrink:0;
+}
 .fb-cal-day.has-catch .fb-cal-dot,
 .fb-cal-day.skunked .fb-cal-dot{display:block;}
 .fb-cal-num{line-height:1;}
@@ -751,17 +784,23 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 }
 .fb-card:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
 .fb-card:active{transform:scale(.99);}
-/* linker Indikator-Balken */
-
- /* rot für Schneider */
 /* Hauptinhalt */
-.fb-card-content{flex:1;min-width:0;padding:10px 12px;}
-.fb-card-row1{display:flex;align-items:baseline;gap:6px;margin-bottom:3px;}
-.fb-date{font-family:var(--fa);font-size:13px;font-weight:700;color:var(--text-dark);}
-.fb-water{font-family:var(--fa);font-size:13px;font-weight:400;color:var(--text-mid);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;}
+.fb-card-content{flex:1;min-width:0;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;}
+.fb-card-row1{display:flex;align-items:baseline;gap:6px;margin-bottom:2px;}
+.fb-date{font-family:var(--fa);font-size:12px;font-weight:700;color:var(--text-dark);white-space:nowrap;flex-shrink:0;}
+/* Gewässer nimmt verfügbare Breite → immer bündig links, Überlauf abgeschnitten */
+.fb-water{
+  font-family:var(--fa);font-size:13px;font-weight:600;color:var(--text-dark);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  flex:1;min-width:0;
+}
+/* Uhrzeit und Fischart in zweiter Zeile, selbe Schriftgröße */
+.fb-card-row2{display:flex;align-items:center;gap:6px;}
+.fb-time{font-size:11px;font-weight:400;color:var(--text-light);white-space:nowrap;flex-shrink:0;}
+.fb-fish{font-size:11px;font-weight:400;color:var(--text-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;}
 
-/* rechter Fang-Zähler */
-.fb-cnt-col{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 14px 0 8px;flex-shrink:0;}
+/* rechter Fang-Zähler – feste Breite damit linke Spalte immer gleich viel Platz hat */
+.fb-cnt-col{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 14px 0 8px;flex-shrink:0;min-width:44px;}
 .fb-cnt{font-size:28px;font-weight:700;color:var(--green-deep);line-height:1;}
 .fb-cnt.skunked-cnt{color:#d06060;}
 .fb-cnt-lbl{font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-light);margin-top:1px;text-align:center;}
@@ -951,8 +990,27 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .obig{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
 .oblbl{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);}
 
-.obif:focus{outline:none;border-color:var(--green-mid);}
+/* Onboarding-Inputs identisch zu .if */
+.obif{background:var(--beige);border:1.5px solid var(--cream-dark);border-radius:var(--rs);padding:13px 14px;font-size:15px;font-family:var(--fa);color:var(--text-dark);font-weight:500;width:100%;transition:border-color .2s,background .2s;-webkit-appearance:none;appearance:none;}
+.obif:focus{outline:none;border-color:var(--green-mid);background:#fff;}
+.obif::placeholder{color:var(--text-light);font-weight:400;}
 select.obif{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234A7C59' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+
+/* ── CLEAR-BUTTON für .if Felder ── */
+.if-wrap{position:relative;display:flex;flex-direction:column;}
+.if-wrap>.if,.if-wrap>.obif{padding-right:36px;} /* Platz für ✕ */
+.if-clear{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  width:20px;height:20px;border-radius:50%;
+  background:var(--cream-dark);border:none;cursor:pointer;
+  font-size:11px;color:var(--text-mid);
+  display:none;align-items:center;justify-content:center;
+  transition:background .15s,opacity .15s;
+  line-height:1;padding:0;
+  z-index:2;
+}
+.if-clear:hover{background:var(--green-pale);color:var(--green-deep);}
+.if-clear.visible{display:flex;}
 .obtgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:2px;}
 .obtbtn{padding:18px 6px;border-radius:var(--rs);border:2.5px solid var(--cream-dark);background:#fff;font-size:12px;font-weight:600;font-family:var(--fa);cursor:pointer;text-align:center;color:var(--text-light);transition:all .2s;position:relative;}
 .obtbtn .ico{font-size:26px;display:block;margin-bottom:6px;}
@@ -1109,6 +1167,7 @@ input[type=file]{display:none;}
       <div class="burg-sec">
         <div class="burg-slbl">Profil</div>
         <button class="bitem" onclick="openProfileEdit();closeBurg()"><span class="bitem-ico">👤</span><div><div class="bitem-txt" id="burg-pname">–</div><div class="bitem-sub" id="burg-psub">Profil bearbeiten</div></div></button>
+        <button class="bitem" onclick="openGoalEdit();closeBurg()"><span class="bitem-ico">🎯</span><div><div class="bitem-txt">Ziele bearbeiten</div><div class="bitem-sub">Saisonziele hinzufügen &amp; löschen</div></div></button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Daten</div>
@@ -2726,29 +2785,44 @@ let _gwalkCallback=null;
 let _gwalkKaf=null;
 
 // Prüft ob ein Ziel durch die neuen Fänge gerade erreicht wurde
+// Hilfsfunktion: prüft ob ein Fang ein Ziel qualifiziert (typ-bewusst)
+function _catchQualifiesForGoal(c, g){
+  if(c.type !== g.fish) return false;
+  const t = g.type || 'count'; // Rückwärtskompatibilität für alte Ziele ohne type
+  if(t === 'count'){
+    // Stückzahl: minLen optional, kein maxLen
+    if(g.minLen > 0 && c.length < g.minLen) return false;
+    return true;
+  }
+  if(t === 'range'){
+    // Größen-Korridor: Länge muss zwischen min und max liegen
+    if(g.minLen > 0 && c.length < g.minLen) return false;
+    if(g.maxLen > 0 && c.length > g.maxLen) return false;
+    return true;
+  }
+  if(t === 'pb'){
+    // Personal Best: mind. 1 Fang über Ziel-Länge
+    if(c.length < g.minLen) return false;
+    return true;
+  }
+  return false;
+}
+
 function _checkGoalAchieved(newCatches){
-  if(!profile?.goals?.length)return null;
-  const curYear=new Date().getFullYear();
-  const yearSessions=sessions.filter(s=>s.date?.startsWith(String(curYear)));
-  const allYearCatches=yearSessions.flatMap(s=>s.catches);
+  if(!profile?.goals?.length) return null;
+  const curYear = new Date().getFullYear();
+  const yearSessions = sessions.filter(s => s.date?.startsWith(String(curYear)));
+  // sessions[0] ist die gerade gespeicherte Session → für Vorher-Berechnung überspringen
+  const prevSessions = yearSessions.slice(1);
 
   for(const g of profile.goals){
-    const target=g.count||1;
-    // Vorher-Zähler (vor dieser Session = alle außer der gerade gespeicherten)
-    const prevSessions=yearSessions.slice(1); // sessions[0] ist gerade gespeichert
-    const prevCount=prevSessions.flatMap(s=>s.catches).filter(c=>{
-      if(c.type!==g.fish)return false;
-      if(g.minLen>0&&c.length<g.minLen)return false;
-      return true;
-    }).length;
-    const newCount=newCatches.filter(c=>{
-      if(c.type!==g.fish)return false;
-      if(g.minLen>0&&c.length<g.minLen)return false;
-      return true;
-    }).length;
-    const totalNow=prevCount+newCount;
-    // Genau in dieser Session die 100% Schwelle überschritten
-    if(prevCount<target&&totalNow>=target){
+    const target = g.count || 1;
+    const prevCount = prevSessions.flatMap(s => s.catches)
+      .filter(c => _catchQualifiesForGoal(c, g)).length;
+    const newCount = newCatches.filter(c => _catchQualifiesForGoal(c, g)).length;
+    const totalNow = prevCount + newCount;
+    // Schwelle wurde genau in dieser Session erreicht
+    if(prevCount < target && totalNow >= target){
       return g;
     }
   }
@@ -2759,9 +2833,9 @@ function showGoalWalkout(goal,onDismiss){
   _gwalkCallback=onDismiss;
   const ov=document.getElementById('goal-walkout');
   if(!ov)return;
-  document.getElementById('gwalk-title').textContent=`${goal.count}× ${goal.fish}${goal.minLen>0?' ab '+goal.minLen+'cm':''}`;
+  // Label direkt aus Ziel-Objekt (deckt alle Typen ab)
+  document.getElementById('gwalk-title').textContent=goal.label||`${goal.count}× ${goal.fish}`;
   ov.classList.add('on');
-  // Konfetti auf goal-kcanvas
   _launchGoalConfetti();
 }
 
@@ -2930,17 +3004,15 @@ function rndrFangbuch(){
       const ends=daySess.map(s=>s.end).filter(Boolean).sort();
       const timeSpan=starts.length&&ends.length?starts[0]+'–'+ends[ends.length-1]:'–';
 
-      // Zwei Chips: Uhrzeit + Fischarten (kein Icon, kein Luftdruck)
-      let chipsHtml='<span class="fb-chip fb-chip-gray">⏱ '+timeSpan+'</span>';
+      // Zweite Zeile: Uhrzeit + Fischarten als Text (kein Chip-Design)
+      let timeLabel=isSkunked?'Schneider':timeSpan;
+      let fishLabel='';
       if(!isSkunked){
         const freq={};allCatches.forEach(c=>{if(c.type)freq[c.type]=(freq[c.type]||0)+1;});
-        // Fischart-Chips ohne fIco – nur Text
-        const topFish=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([f])=>f).join(' · ');
-        if(topFish)chipsHtml+='<span class="fb-chip fb-chip-blue">'+topFish+'</span>';
+        fishLabel=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([f])=>f).join(' · ');
       }
 
       const indClass=isSkunked?'skunked':'success';
-      // Skunk: nur rotes „–" ohne Label-Text
       const cntClass=isSkunked?'fb-cnt skunked-cnt':'fb-cnt';
       const cntContent=isSkunked?'–':totalCnt;
       const cntLbl=isSkunked?'':('Fang'+(totalCnt!==1?'e':''));
@@ -2955,7 +3027,10 @@ function rndrFangbuch(){
             '<span class="fb-date">'+dateLabel+'</span>'+
             '<span class="fb-water">'+waterLabel+'</span>'+
           '</div>'+
-          '<div class="fb-chips">'+chipsHtml+'</div>'+
+          '<div class="fb-card-row2">'+
+            '<span class="fb-time">⏱ '+timeLabel+'</span>'+
+            (fishLabel?'<span class="fb-fish">'+fishLabel+'</span>':'')+
+          '</div>'+
         '</div>'+
         '<div class="fb-cnt-col">'+
           '<div class="'+cntClass+'">'+cntContent+'</div>'+
@@ -3190,11 +3265,11 @@ async function openDayDetail(dateKey){
       <div class="dd-hero-v16-inner">
         <div class="dd-hero-v16-date">${fmtDow(dateKey)}, ${parseInt(dy)}. ${MON_FULL[parseInt(mo)-1]} ${dateKey.split('-')[0]}</div>
         <div class="dd-hero-v16-water">${waterLabel}</div>
-        <div style="display:flex;align-items:center;gap:16px;">
-          <div>
+        <div style="display:flex;align-items:flex-end;gap:16px;margin-top:4px;">
+          <div style="flex:1;min-width:0;">
             <div class="dd-hero-v16-time">${timeSpan}</div>
           </div>
-          <div style="margin-left:auto;text-align:right;">
+          <div style="text-align:right;flex-shrink:0;padding-bottom:2px;">
             <div class="dd-hero-v16-cnt">${isSkunked?'–':totalCnt}</div>
             <div class="dd-hero-v16-cnt-lbl">${isSkunked?'Schneider':'Fänge'}</div>
           </div>
@@ -3552,59 +3627,83 @@ function rndrStats(){
 }
 
 // ── „Weitere Statistiken" Hub-Overlay ─────────────────────
+// Saison-State für „Weitere Statistiken" (unabhängig von _statSeason)
+let _msSeason = 'year';
+
 function openMoreStats(){
   openFs('more-stats');
-  const curYear=new Date().getFullYear();
-  const filtered=_statSeason==='year'
-    ?sessions.filter(s=>s.date&&s.date.startsWith(String(curYear)))
-    :sessions;
+  _renderMoreStats();
+}
 
-  const total=filtered.length;
-  const suSess=filtered.filter(s=>!s.skunked);
-  const skSess=filtered.filter(s=>s.skunked);
-  const autoSk=filtered.filter(s=>s.autoSkunked).length;
-  const rate=total?Math.round(suSess.length/total*100):0;
-  const allC=filtered.flatMap(s=>s.catches);
-  const freq={};allC.forEach(c=>{if(c.type)freq[c.type]=(freq[c.type]||0)+1;});
-  const topF=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6);
+function _renderMoreStats(){
+  const curYear = new Date().getFullYear();
+  const isYear = _msSeason === 'year';
+  const filtered = isYear
+    ? sessions.filter(s => s.date && s.date.startsWith(String(curYear)))
+    : sessions;
 
-  document.getElementById('fs-more-meta').textContent=`${_statSeason==='year'?'Saison '+curYear:'Gesamt'}`;
+  const total = filtered.length;
+  const suSess = filtered.filter(s => !s.skunked);
+  const skSess = filtered.filter(s => s.skunked);
+  const autoSk = filtered.filter(s => s.autoSkunked).length;
+  const rate = total ? Math.round(suSess.length / total * 100) : 0;
+  const allC = filtered.flatMap(s => s.catches);
+  const freq = {}; allC.forEach(c => { if(c.type) freq[c.type] = (freq[c.type]||0)+1; });
+  const topF = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0,6);
 
-  // Ziel-Kacheln
-  const goals=profile?.goals||[];
-  let goalsHtml='';
+  document.getElementById('fs-more-meta').textContent =
+    isYear ? `Saison ${curYear}` : 'Gesamt';
+
+  // Ziel-Kacheln mit _catchQualifiesForGoal (typ-bewusst)
+  const goals = profile?.goals || [];
+  let goalsHtml = '';
   if(goals.length){
-    goalsHtml=`<div class="slbl">🎯 Saisonziele</div>`;
-    goals.forEach(g=>{
-      // Fortschritt berechnen
-      const qualifying=allC.filter(c=>{
-        if(c.type!==g.fish)return false;
-        if(g.minLen>0&&c.length<g.minLen)return false;
-        return true;
-      }).length;
-      const target=g.count||1;
-      const pct=Math.min(100,Math.round(qualifying/target*100));
-      const achieved=qualifying>=target;
-      goalsHtml+=`<div class="goal-card${achieved?' achieved':''}">
-        <div class="goal-name">${achieved?'✅ ':''}${g.label||`${g.count}× ${g.fish}`}</div>
-        <div class="goal-sub">${achieved?'Ziel erreicht! 🎉':`${g.minLen>0?'ab '+g.minLen+'cm · ':''}`}</div>
+    goalsHtml = `<div class="slbl">🎯 Saisonziele</div>`;
+    goals.forEach(g => {
+      const target = g.count || 1;
+      const qualifying = allC.filter(c => _catchQualifiesForGoal(c, g)).length;
+      const pct = Math.min(100, Math.round(qualifying / target * 100));
+      const achieved = qualifying >= target;
+      const gType = g.type || 'count';
+
+      // Typ-spezifische Beschreibung
+      let typeDesc = '';
+      if(gType === 'range') typeDesc = `${g.minLen}–${g.maxLen>0?g.maxLen:'∞'} cm · `;
+      else if(gType === 'pb') typeDesc = `über ${g.minLen} cm · `;
+      else if(g.minLen > 0) typeDesc = `ab ${g.minLen} cm · `;
+
+      // Typ-Badge
+      const typeBadge = gType==='pb'?'🏆 PB':gType==='range'?'📏 Korridor':'🎣 Stückzahl';
+
+      goalsHtml += `<div class="goal-card${achieved?' achieved':''}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+          <div class="goal-name" style="margin-bottom:0;">${achieved?'✅ ':''}${g.label}</div>
+          <span style="font-size:10px;color:var(--text-light);white-space:nowrap;margin-left:8px;margin-top:2px;">${typeBadge}</span>
+        </div>
+        <div class="goal-sub">${achieved?'Ziel erreicht! 🎉':typeDesc+(!isYear?'Gesamt':'Saison '+curYear)}</div>
         <div class="goal-bar"><div class="goal-bar-fill" style="width:${pct}%;"></div></div>
         <div class="goal-progress">
-          <span>${qualifying} / ${target} gefangen</span>
+          <span>${qualifying} / ${target}${gType==='pb'?' cm':' Fänge'}</span>
           <span>${pct}%</span>
         </div>
       </div>`;
     });
   } else {
-    goalsHtml=`<div class="slbl">🎯 Saisonziele</div>
+    goalsHtml = `<div class="slbl">🎯 Saisonziele</div>
     <div class="card" style="text-align:center;padding:20px;color:var(--text-light);">
       <div style="font-size:28px;margin-bottom:8px;">🎯</div>
       <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Noch keine Ziele definiert</div>
-      <div style="font-size:11px;">Im Profil können Saisonziele gesetzt werden.</div>
+      <div style="font-size:11px;">Über das Menü → Ziele bearbeiten hinzufügen.</div>
     </div>`;
   }
 
-  document.getElementById('fs-more-body').innerHTML=`
+  document.getElementById('fs-more-body').innerHTML = `
+    <!-- Saison-Toggle -->
+    <div class="ms-toggle">
+      <button class="ms-toggle-btn${isYear?' on':''}" onclick="_msSeason='year';_renderMoreStats()">Saison ${curYear}</button>
+      <button class="ms-toggle-btn${!isYear?' on':''}" onclick="_msSeason='all';_renderMoreStats()">Gesamt</button>
+    </div>
+
     <!-- Erfolgsquote -->
     <div class="slbl">Erfolgsquote</div>
     <div class="card" style="margin-bottom:14px;">
@@ -3617,17 +3716,19 @@ function openMoreStats(){
       </div>
       <div class="st-pbar" style="margin-top:12px;"><div class="st-pbar-fill" style="width:${rate}%"></div></div>
     </div>
+
     <!-- Fischverteilung Donut -->
-    ${topF.length?`<div class="slbl">Fischverteilung</div>
-    <div class="st-chart-card" style="margin-bottom:14px;"><canvas id="chart-species-more" height="170"></canvas></div>`:''}
+    ${topF.length ? `<div class="slbl">Fischverteilung</div>
+    <div class="st-chart-card" style="margin-bottom:14px;"><canvas id="chart-species-more" height="170"></canvas></div>` : ''}
+
     <!-- Ziele -->
     ${goalsHtml}`;
 
-  requestAnimationFrame(()=>{
-    if(typeof Chart==='undefined')return;
-    const c=document.getElementById('chart-species-more');
-    if(c&&topF.length){
-      new Chart(c,{type:'doughnut',data:{labels:topF.map(e=>e[0]),datasets:[{data:topF.map(e=>e[1]),backgroundColor:['#2D4A35','#4A7C59','#7BAE8A','#C4963A','#B45A46','#C8DDD0'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,cutout:'62%',plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12,padding:8,color:'#4A5C4F'}}}}});
+  requestAnimationFrame(() => {
+    if(typeof Chart === 'undefined') return;
+    const c = document.getElementById('chart-species-more');
+    if(c && topF.length){
+      new Chart(c, {type:'doughnut',data:{labels:topF.map(e=>e[0]),datasets:[{data:topF.map(e=>e[1]),backgroundColor:['#2D4A35','#4A7C59','#7BAE8A','#C4963A','#B45A46','#C8DDD0'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,cutout:'62%',plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12,padding:8,color:'#4A5C4F'}}}}});
     }
   });
 }
@@ -3659,36 +3760,134 @@ async function delGoal(gid){
 
 // Profil-Edit Ziel hinzufügen
 function openAddGoal(){
-  const ok=showConf?null:null; // dummy
-  // Einfacher Inline-Ansatz: showConf + addGoal
   const modal=document.createElement('div');
-  modal.style.cssText='position:absolute;inset:0;z-index:200;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;';
-  modal.innerHTML=`<div style="width:100%;background:#fff;border-radius:20px 20px 0 0;padding:20px 18px 32px;">
-    <div style="font-size:16px;font-weight:700;margin-bottom:14px;">Neues Ziel</div>
-    <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:8px;margin-bottom:14px;">
-      <div><div class="il" style="margin-bottom:4px;">Fischart</div>
-        <select class="if" id="ag-fish" style="font-size:13px;padding:8px 10px;">${FISH.map(f=>`<option>${f}</option>`).join('')}</select></div>
-      <div><div class="il" style="margin-bottom:4px;">Anzahl</div>
-        <input type="number" class="if" id="ag-cnt" placeholder="20" inputmode="numeric" style="font-size:13px;padding:8px 10px;"></div>
-      <div><div class="il" style="margin-bottom:4px;">Mind. cm</div>
-        <input type="number" class="if" id="ag-len" placeholder="0" inputmode="numeric" style="font-size:13px;padding:8px 10px;"></div>
+  modal.id='goal-add-modal';
+  modal.style.cssText='position:absolute;inset:0;z-index:200;background:rgba(0,0,0,.52);display:flex;align-items:flex-end;';
+  modal.innerHTML=`<div style="width:100%;background:#fff;border-radius:20px 20px 0 0;padding:20px 18px 36px;max-height:85vh;overflow-y:auto;">
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Neues Ziel</div>
+    <div style="font-size:12px;color:var(--text-light);margin-bottom:14px;">Wähle Zieltyp und Fischart</div>
+
+    <!-- Zieltyp-Auswahl -->
+    <div class="il" style="margin-bottom:8px;">Zieltyp</div>
+    <div class="goal-type-row">
+      <button class="goal-type-btn sel" id="gt-count" onclick="selGoalType('count')">
+        <span class="gt-ico">🎣</span>Stückzahl
+      </button>
+      <button class="goal-type-btn" id="gt-range" onclick="selGoalType('range')">
+        <span class="gt-ico">📏</span>Größen-Korridor
+      </button>
+      <button class="goal-type-btn" id="gt-pb" onclick="selGoalType('pb')">
+        <span class="gt-ico">🏆</span>Personal Best
+      </button>
     </div>
-    <div style="display:flex;gap:10px;">
-      <button onclick="this.closest('div[style*=inset]').remove()" style="flex:1;padding:12px;background:var(--cream-dark);border:none;border-radius:var(--rs);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;">Abbrechen</button>
-      <button onclick="saveNewGoal(this.closest('div[style*=inset]'))" style="flex:1;padding:12px;background:var(--green-deep);border:none;border-radius:var(--rs);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;color:#fff;">Speichern</button>
+
+    <!-- Fischart -->
+    <div class="ig" style="margin-bottom:12px;">
+      <div class="il">Fischart</div>
+      <select class="if" id="ag-fish">${FISH.map(f=>`<option>${f}</option>`).join('')}</select>
+    </div>
+
+    <!-- Dynamische Felder je nach Typ -->
+    <div id="ag-fields-count" class="goal-fields g2">
+      <div class="ig">
+        <div class="il">Anzahl Fische</div>
+        <input type="number" class="if" id="ag-cnt" placeholder="z.B. 100" min="1" inputmode="numeric">
+      </div>
+      <div class="ig">
+        <div class="il">Mind. Länge (optional)</div>
+        <input type="number" class="if" id="ag-min-c" placeholder="0 = egal" min="0" inputmode="numeric">
+      </div>
+    </div>
+
+    <div id="ag-fields-range" class="goal-fields g3" style="display:none;">
+      <div class="ig">
+        <div class="il">Anzahl</div>
+        <input type="number" class="if" id="ag-cnt-r" placeholder="z.B. 10" min="1" inputmode="numeric">
+      </div>
+      <div class="ig">
+        <div class="il">Von (cm)</div>
+        <input type="number" class="if" id="ag-min-r" placeholder="z.B. 70" min="0" inputmode="numeric">
+      </div>
+      <div class="ig">
+        <div class="il">Bis (cm)</div>
+        <input type="number" class="if" id="ag-max-r" placeholder="z.B. 79" min="0" inputmode="numeric">
+      </div>
+    </div>
+
+    <div id="ag-fields-pb" class="goal-fields g2" style="display:none;">
+      <div class="ig">
+        <div class="il">Ziel-Länge (cm)</div>
+        <input type="number" class="if" id="ag-pb-len" placeholder="z.B. 107" min="1" inputmode="numeric">
+      </div>
+      <div class="ig" style="align-self:flex-end;">
+        <div class="il" style="color:var(--green-mid);">Personal Best</div>
+        <div id="ag-pb-current" style="font-size:13px;padding:13px 14px;background:var(--green-mist);border-radius:var(--rs);color:var(--green-deep);font-weight:600;">Lade…</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button onclick="document.getElementById('goal-add-modal').remove()" style="flex:1;padding:12px;background:var(--cream-dark);border:none;border-radius:var(--rs);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;">Abbrechen</button>
+      <button onclick="saveNewGoal()" style="flex:1;padding:12px;background:var(--green-deep);border:none;border-radius:var(--rs);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;color:#fff;">Speichern ✓</button>
     </div>
   </div>`;
   document.getElementById('frame').appendChild(modal);
+  // Aktuellen PB für die vorgewählte Fischart laden
+  _updatePbHint();
+  document.getElementById('ag-fish').addEventListener('change',_updatePbHint);
 }
-async function saveNewGoal(modal){
+
+// Aktuellen Personal Best der Fischart anzeigen
+function _updatePbHint(){
   const fish=document.getElementById('ag-fish')?.value;
-  const cnt=parseInt(document.getElementById('ag-cnt')?.value)||0;
-  const len=parseInt(document.getElementById('ag-len')?.value)||0;
-  if(!fish||cnt<=0){showToast('⚠️','Fischart und Anzahl erforderlich!',true);return;}
+  const el=document.getElementById('ag-pb-current');
+  if(!el)return;
+  if(!fish){el.textContent='–';return;}
+  const best=sessions.flatMap(s=>s.catches).filter(c=>c.type===fish&&c.length>0)
+    .reduce((max,c)=>c.length>max?c.length:max,0);
+  el.textContent=best>0?`Aktuell: ${best} cm`:'Noch kein Fang';
+}
+
+// Zieltyp-Tab wechseln
+let _goalType='count';
+function selGoalType(type){
+  _goalType=type;
+  ['count','range','pb'].forEach(t=>{
+    document.getElementById('gt-'+t)?.classList.toggle('sel',t===type);
+    const f=document.getElementById('ag-fields-'+t);
+    if(f)f.style.display=t===type?'':'none';
+  });
+}
+
+async function saveNewGoal(){
+  const fish=document.getElementById('ag-fish')?.value;
+  if(!fish){showToast('⚠️','Fischart auswählen!',true);return;}
   if(!profile.goals)profile.goals=[];
-  profile.goals.push({fish,count:cnt,minLen:len,label:`${cnt}× ${fish}${len>0?' ab '+len+'cm':''}`,id:_newId()});
+
+  let goal;
+  if(_goalType==='count'){
+    const cnt=parseInt(document.getElementById('ag-cnt')?.value)||0;
+    const minLen=parseInt(document.getElementById('ag-min-c')?.value)||0;
+    if(cnt<1){showToast('⚠️','Anzahl eingeben!',true);return;}
+    const label=`${cnt}× ${fish}${minLen>0?' ab '+minLen+'cm':''}`;
+    goal={type:'count',fish,count:cnt,minLen,maxLen:0,label,id:_newId()};
+  } else if(_goalType==='range'){
+    const cnt=parseInt(document.getElementById('ag-cnt-r')?.value)||0;
+    const minLen=parseInt(document.getElementById('ag-min-r')?.value)||0;
+    const maxLen=parseInt(document.getElementById('ag-max-r')?.value)||0;
+    if(cnt<1){showToast('⚠️','Anzahl eingeben!',true);return;}
+    if(minLen>0&&maxLen>0&&maxLen<minLen){showToast('⚠️','Max muss ≥ Min sein!',true);return;}
+    const label=`${cnt}× ${fish} ${minLen>0?minLen+'–'+(maxLen>0?maxLen:'∞')+'cm':''}`.trim();
+    goal={type:'range',fish,count:cnt,minLen,maxLen,label,id:_newId()};
+  } else {
+    const pbLen=parseInt(document.getElementById('ag-pb-len')?.value)||0;
+    if(pbLen<1){showToast('⚠️','Ziel-Länge eingeben!',true);return;}
+    const label=`PB ${fish} über ${pbLen}cm`;
+    goal={type:'pb',fish,count:1,minLen:pbLen,maxLen:0,label,id:_newId()};
+  }
+
+  profile.goals.push(goal);
   await saveProfile();
-  modal.remove();
+  document.getElementById('goal-add-modal')?.remove();
   showToast('🎯','Ziel gespeichert!');
 }
 
@@ -4551,6 +4750,65 @@ function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').tex
 // ═══════════════════════════════════════════════════════════
 // BOOT
 // ═══════════════════════════════════════════════════════════
+// ── CLEAR-BUTTON: Event-Delegator für alle .if Felder ──────
+// Läuft einmalig nach DOM-Init; kein Hardcoding in jedem Input
+(function initClearButtons(){
+  // Wrapper-Funktion: Input in .if-wrap hüllen und ✕-Button anfügen
+  function wrapInput(inp){
+    if(inp.closest('.if-wrap'))return; // bereits gewrappt
+    // Selects und type=date/time/number/checkbox/file überspringen
+    if(inp.tagName==='SELECT')return;
+    if(['date','time','file','checkbox','radio'].includes(inp.type))return;
+    const wrap=document.createElement('div');
+    wrap.className='if-wrap';
+    inp.parentNode.insertBefore(wrap,inp);
+    wrap.appendChild(inp);
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='if-clear';
+    btn.textContent='✕';
+    btn.setAttribute('aria-label','Feld löschen');
+    btn.setAttribute('tabindex','-1');
+    wrap.appendChild(btn);
+    // Sichtbarkeit steuern
+    function sync(){btn.classList.toggle('visible',inp.value.length>0);}
+    inp.addEventListener('input',sync);
+    inp.addEventListener('change',sync);
+    // Klick löscht Feld + feuert input-Event für Chips
+    btn.addEventListener('mousedown',e=>{
+      e.preventDefault(); // verhindert Blur des Inputs
+      inp.value='';
+      inp.dispatchEvent(new Event('input',{bubbles:true}));
+      inp.focus();
+      btn.classList.remove('visible');
+    });
+    sync(); // Initialzustand
+  }
+
+  function scanAndWrap(){
+    document.querySelectorAll('input.if, input.obif').forEach(wrapInput);
+  }
+
+  // Sofort wrappen was da ist
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',scanAndWrap);
+  } else {
+    scanAndWrap();
+  }
+
+  // MutationObserver für dynamisch hinzugefügte Fang-Blöcke (addCatch)
+  const obs=new MutationObserver(muts=>{
+    muts.forEach(m=>{
+      m.addedNodes.forEach(node=>{
+        if(node.nodeType!==1)return;
+        node.querySelectorAll('input.if, input.obif').forEach(wrapInput);
+        if(node.matches?.('input.if, input.obif'))wrapInput(node);
+      });
+    });
+  });
+  obs.observe(document.body||document.documentElement,{childList:true,subtree:true});
+})();
+
 (async function boot(){
   // Ladeindikator sofort zeigen (Fix 16)
   const fbList=document.getElementById('fangbuch-list');
