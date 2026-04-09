@@ -1975,9 +1975,9 @@ function applyWxData(c,sourceLabel){
   const dirPart=wDir||'';
   const presPart=c.surface_pressure!=null?`${Math.round(c.surface_pressure)}hPa`:'–';
   document.getElementById('wx-val').textContent=[datePart,tempPart,windPart,dirPart,presPart].filter(Boolean).join(' | ');
-  const tempEl=document.getElementById('s-temp');if(tempEl)tempEl.value=Math.round(c.temperature_2m);
+  const tempEl=document.getElementById('s-temp');if(tempEl&&c.temperature_2m!=null)tempEl.value=Math.round(c.temperature_2m);
   const wi=document.getElementById('s-wx');
-  if(wi){if(wc<=1)wi.value='☀️ Sonnig';else if(wc<=3)wi.value='⛅ Bewölkt';else if(wc<=67)wi.value='🌧 Regen';else if(wc<=77)wi.value='🌫 Nebel';else wi.value='💨 Windig';}
+  if(wi){if(wc<=1)wi.value='☀️ Sonnig';else if(wc<=3)wi.value='⛅ Bewölkt';else if(wc<=49)wi.value='🌫 Nebel';else if(wc<=67)wi.value='🌧 Regen';else if(wc<=77)wi.value='🌨 Schnee';else if(wc<=86)wi.value='🌧 Schauer';else wi.value='⛈ Gewitter';}
   const strip=document.getElementById('gps-strip');
   if(strip){document.getElementById('gps-txt').textContent=sourceLabel;strip.classList.add('ok');setTimeout(()=>strip.style.display='none',2000);}
 }
@@ -2328,7 +2328,7 @@ async function resolvePlzCoords(plz){
     if(!r.ok)return;
     const data=await r.json();
     if(data&&data[0]){
-      _plzCoords={lat:parseFloat(data[0].lat).toFixed(4),lon:parseFloat(data[0].lon).toFixed(4),city:data[0].display_name.split(',')[0]||plz};
+      _plzCoords={lat:parseFloat(data[0].lat).toFixed(4),lon:parseFloat(data[0].lon).toFixed(4),city:(data[0].display_name||'').split(',')[0]||plz};
       // Wetter-Card aktualisieren: PLZ-Stadt anzeigen
       const wxVal=document.getElementById('wx-val');
       if(wxVal&&wxVal.textContent==='Tippen zum Laden'){
@@ -4493,7 +4493,7 @@ function windLabel(deg){
   const d=['N','NO','O','SO','S','SW','W','NW'];
   return d[Math.round(deg/45)%8];
 }
-function wxIco(wc){if(wc==null)return'🌡️';if(wc<=1)return'☀️';if(wc<=3)return'⛅';if(wc<=67)return'🌧';if(wc<=77)return'🌨';return'🌫';}
+function wxIco(wc){if(wc==null)return'🌡️';if(wc<=1)return'☀️';if(wc<=3)return'⛅';if(wc<=49)return'🌫';if(wc<=67)return'🌧';if(wc<=77)return'🌨';if(wc<=82)return'🌧';if(wc<=86)return'🌨';return'⛈';}
 
 function rndrForecast(){
   const el=document.getElementById('fc-con');
@@ -4695,28 +4695,33 @@ function openMoonCal(){
 }
 
 // ── Tidenkalender Overlay ───────────────────────────────────
+// BSH API (Bundesamt für Seeschifffahrt und Hydrographie)
+// Liefert echte Tidenvorhersagen für deutsche Küsten- und Tidenflüsse
+// Kostenlos, ohne API-Key, offizielle Bundesdaten
 let _tideRiver='weser';
+let _bshCache={}; // {river: {data, ts}}
+
 async function openTideCal(){
   openFs('tide-cal');
-  document.getElementById('fs-tide-body').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">🔄 Lade Pegeldaten…</div>';
+  document.getElementById('fs-tide-body').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">🔄 Lade Tidendaten…</div>';
   await _renderTideCal(_tideRiver,new Date().toISOString().split('T')[0]);
 }
 
 async function _renderTideCal(river,startDate){
   _tideRiver=river;
 
-  // Pegelonline WSV: feste UUIDs (stabiler als Stationsnamen in der URL)
+  // BSH Stationen (Nordsee-Tidenpegel)
   const STATIONS={
-    weser:{uuid:'59ab7fc9-4f71-46ab-a1db-04f86d8b3c95',label:'Weser',display:'Weser · Bremen Oslebshausen'},
-    elbe: {uuid:'1c62f913-902d-4bfb-a9b0-9f5b6ca885f0',label:'Elbe', display:'Elbe · Hamburg St. Pauli'},
-    ems:  {uuid:'14578b9b-640a-4299-82d8-21d4cdd6dfa3',label:'Ems',  display:'Ems · Emden'}
+    weser:{bsh:'DE__502P',label:'Weser',display:'Weser · Bremen Oslebshausen'},
+    elbe: {bsh:'DE__508P',label:'Elbe', display:'Elbe · Hamburg St. Pauli'},
+    ems:  {bsh:'DE__507P',label:'Ems',  display:'Ems · Emden'}
   };
   const st=STATIONS[river]||STATIONS.weser;
-  const BASE='https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/';
 
-  // 7-Tage-Navigation
-  const days=[];const d=new Date(startDate);
-  for(let i=0;i<7;i++){days.push(d.toISOString().split('T')[0]);d.setDate(d.getDate()+1);}
+  // Tages-Navigation: Heute + 3 Tage (BSH-Vorhersage-Horizont ~4 Tage)
+  const today=new Date();today.setHours(0,0,0,0);
+  const days=[];
+  for(let i=0;i<4;i++){const d=new Date(today);d.setDate(d.getDate()+i);days.push(d.toISOString().split('T')[0]);}
   const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
 
   const navHtml=`
@@ -4726,68 +4731,82 @@ async function _renderTideCal(river,startDate){
           onclick="_renderTideCal('${rv}','${startDate}')">${s.label}</button>`).join('')}
     </div>
     <div class="fc-tide-day-nav" style="margin-top:6px;">
-      ${days.map(ds=>`
+      ${days.map((ds,i)=>`
         <button class="fc-tide-day-btn${ds===startDate?' on':''}"
           onclick="_renderTideCal('${river}','${ds}')">
-          ${DOW[new Date(ds+'T12:00:00').getDay()]} ${ds.slice(8)}</button>`).join('')}
+          ${i===0?'Heute':DOW[new Date(ds+'T12:00:00').getDay()]+' '+ds.slice(8)}</button>`).join('')}
     </div>`;
 
   const bodyEl=document.getElementById('fs-tide-body');
-  bodyEl.innerHTML=navHtml+`<div style="text-align:center;padding:24px;color:var(--text-light);">🔄 Lade Pegeldaten…</div>`;
+  bodyEl.innerHTML=navHtml+`<div style="text-align:center;padding:24px;color:var(--text-light);">🔄 Lade Tidendaten…</div>`;
 
   try{
-    // Pegelonline liefert Rohdaten der letzten 30 Tage maximal.
-    // Wir laden 3 Tage zurück + gewählter Tag (= bis zu 4 Tage, ~15-Minuten-Intervall)
-    const fetchStart=new Date(startDate);fetchStart.setDate(fetchStart.getDate()-1);
-    const fetchEnd  =new Date(startDate);fetchEnd.setDate(fetchEnd.getDate()+1);
-    const isoStart=fetchStart.toISOString().replace(/\.\d{3}Z$/,'+01:00').replace('Z','+01:00');
-    const isoEnd  =fetchEnd.toISOString().replace(/\.\d{3}Z$/,'+01:00').replace('Z','+01:00');
+    // BSH-Daten laden (30 Min Cache pro Fluss)
+    const cached=_bshCache[river];
+    if(!cached||Date.now()-cached.ts>30*60*1000){
+      const url=`https://wasserstand-nordsee.bsh.de/data/${st.bsh}.json`;
+      const resp=await fetch(url);
+      if(!resp.ok)throw new Error(`BSH HTTP ${resp.status}`);
+      _bshCache[river]={data:await resp.json(),ts:Date.now()};
+    }
+    const bsh=_bshCache[river].data;
 
-    // UUID direkt in der URL verwenden – kein Encoding-Problem
-    const url=`${BASE}${st.uuid}/W/measurements.json`+
-      `?start=${encodeURIComponent(startDate+'T00:00:00+01:00')}`+
-      `&end=${encodeURIComponent(startDate+'T23:59:00+01:00')}`;
+    // Kurvendaten für gewählten Tag filtern
+    const curve=bsh.curve_forecast||bsh.curveforecast||[];
+    const dayCurve=curve.filter(p=>(p.timestamp||'').slice(0,10)===startDate);
 
-    const resp=await fetch(url);
-    if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
-    const data=await resp.json();
+    if(!dayCurve.length)throw new Error('Keine Tidendaten für diesen Tag');
 
-    if(!Array.isArray(data)||!data.length)throw new Error('Keine Messwerte');
+    // Werte extrahieren: Vorhersage bevorzugt, Messung als Fallback
+    const labels=dayCurve.map(p=>(p.timestamp||'').slice(11,16));
+    const values=dayCurve.map(p=>{
+      const v=p.curveforecast!=null?p.curveforecast:(p.measurement!=null?p.measurement:p.astro);
+      return v!=null?Math.round(v):null;
+    });
+    const measValues=dayCurve.map(p=>p.measurement!=null?Math.round(p.measurement):null);
+    const hasMeas=measValues.some(v=>v!=null);
 
-    // Zeitstempel + cm-Werte
-    const timestamps=data.map(m=>m.timestamp);
-    const labels    =data.map(m=>m.timestamp.slice(11,16)); // HH:MM
-    const values    =data.map(m=>m.value!=null?Math.round(m.value):null);
-    const validVals =values.filter(v=>v!=null);
+    const validVals=values.filter(v=>v!=null);
     if(!validVals.length)throw new Error('Alle Werte null');
-
     const vMin=Math.min(...validVals)-30;
     const vMax=Math.max(...validVals)+30;
 
-    // Scrollbare Breite: ~6px pro 15-Min-Intervall → 24h = 96 Punkte × 6px = 576px min.
-    const PX=Math.max(4, Math.round(960/data.length)); // adaptiv aber min 960px
-    const chartW=Math.max(data.length*PX, 360);
+    // HW/NW-Zeiten aus BSH-Vorhersage für diesen Tag
+    const hwNw=(bsh.hwnw_forecast||bsh.hwnwforecast||[]).filter(e=>(e.timestamp||'').slice(0,10)===startDate);
 
-    // Hoch- und Niedrigwasser markieren (lokale Extrema)
-    const tidalMarks=[];
-    for(let i=1;i<values.length-1;i++){
-      const v=values[i],p=values[i-1],n=values[i+1];
-      if(v!=null&&p!=null&&n!=null){
-        if(v>p&&v>n)tidalMarks.push({idx:i,type:'HW',v});
-        if(v<p&&v<n)tidalMarks.push({idx:i,type:'NW',v});
-      }
-    }
+    // HW/NW-Info-Chips (für Angler besonders wichtig)
+    const hwNwHtml=hwNw.length?`
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;margin-bottom:4px;">
+        ${hwNw.map(e=>{
+          const time=(e.timestamp||'').slice(11,16);
+          const isHW=e.event==='HW';
+          return`<div style="background:${isHW?'rgba(192,64,64,.1)':'rgba(42,122,176,.1)'};padding:6px 12px;border-radius:10px;font-size:12px;font-weight:500;">
+            <span style="font-weight:700;color:${isHW?'#c04040':'#2a7ab0'};">${isHW?'▲ HW':'▼ NW'}</span>
+            <span style="margin-left:4px;">${time} Uhr</span>
+            <span style="margin-left:4px;opacity:.7;">${e.value!=null?e.value+' cm':''}</span>
+          </div>`;
+        }).join('')}
+      </div>`:'';
+
+    // Chart-Breite adaptiv
+    const PX=Math.max(4,Math.round(960/dayCurve.length));
+    const chartW=Math.max(dayCurve.length*PX,360);
+
+    // MHW/MNW Referenzlinien
+    const mhw=bsh.mhw!=null?bsh.mhw:null;
+    const mnw=bsh.mnw!=null?bsh.mnw:null;
 
     bodyEl.innerHTML=navHtml+`
       <div style="margin-top:12px;">
         <div class="fc-sec">
           <div class="fc-sec-title">🌊 ${st.display} · ${startDate}</div>
+          ${hwNwHtml}
           <div id="hover-tide" class="fc-hover-info"></div>
-          <div id="scroll-tide" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;">
+          <div id="scroll-tide" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;margin-top:8px;">
             <canvas id="tide-main-chart" style="height:220px;display:block;"></canvas>
           </div>
           <div style="font-size:10px;color:var(--text-light);margin-top:8px;text-align:center;">
-            Wasserstand cm über Pegelnull · Pegelonline WSV · 15-Min-Intervall
+            Wasserstand cm · BSH Tidenvorhersage · 10-Min-Intervall
           </div>
         </div>
       </div>`;
@@ -4798,17 +4817,40 @@ async function _renderTideCal(river,startDate){
       c.width=chartW;c.height=220;
       c.style.width=chartW+'px';c.style.height='220px';
 
-      // Hoch-/Niedrigwasser-Annotationen als Plugin
+      // HW/NW-Annotationen direkt im Chart
       const hwAnnotPlugin={id:'hwAnnot',afterDatasetsDraw(chart){
         const ctx=chart.ctx;
-        tidalMarks.forEach(({idx,type,v})=>{
+        hwNw.forEach(e=>{
+          const time=(e.timestamp||'').slice(11,16);
+          const idx=labels.findIndex(l=>l===time);
+          if(idx<0||e.value==null)return;
           const x=chart.scales.x.getPixelForIndex(idx);
-          const y=chart.scales.y.getPixelForValue(v);
+          const y=chart.scales.y.getPixelForValue(e.value);
+          const isHW=e.event==='HW';
           ctx.save();
-          ctx.fillStyle=type==='HW'?'#c04040':'#2a7ab0';
+          ctx.fillStyle=isHW?'#c04040':'#2a7ab0';
           ctx.font='bold 9px system-ui';
           ctx.textAlign='center';
-          ctx.fillText(`${type} ${v}cm`,x,type==='HW'?y-10:y+18);
+          ctx.fillText(`${isHW?'HW':'NW'} ${e.value}cm`,x,isHW?y-10:y+18);
+          // Marker-Punkt
+          ctx.beginPath();
+          ctx.arc(x,y,4,0,Math.PI*2);
+          ctx.fill();
+          ctx.restore();
+        });
+      }};
+
+      // MHW/MNW Referenzlinien
+      const refPlugin={id:'refLines',beforeDatasetsDraw(chart){
+        const ctx=chart.ctx;const area=chart.chartArea;if(!area)return;
+        [{val:mhw,label:'MHW',color:'rgba(192,64,64,.25)'},{val:mnw,label:'MNW',color:'rgba(42,122,176,.25)'}]
+          .filter(r=>r.val!=null&&r.val>=vMin&&r.val<=vMax).forEach(ref=>{
+          const y=chart.scales.y.getPixelForValue(ref.val);
+          ctx.save();
+          ctx.strokeStyle=ref.color;ctx.lineWidth=1;ctx.setLineDash([4,4]);
+          ctx.beginPath();ctx.moveTo(area.left,y);ctx.lineTo(area.right,y);ctx.stroke();
+          ctx.setLineDash([]);ctx.fillStyle=ref.color;ctx.font='8px system-ui';ctx.textAlign='left';
+          ctx.fillText(ref.label+' '+ref.val,area.left+2,y-3);
           ctx.restore();
         });
       }};
@@ -4823,27 +4865,37 @@ async function _renderTideCal(river,startDate){
         } else el.style.opacity='0';
       }};
 
+      // Datasets: Vorhersage + optional Messwerte
+      const datasets=[{
+        label:'Vorhersage',data:values,
+        borderColor:'#2a8cba',backgroundColor:'rgba(42,140,186,.18)',
+        fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,
+        pointBackgroundColor:'#2a8cba',borderWidth:2.5
+      }];
+      if(hasMeas){
+        datasets.push({
+          label:'Messung',data:measValues,
+          borderColor:'#1a6a3a',backgroundColor:'rgba(0,0,0,0)',
+          fill:false,tension:.4,pointRadius:0,pointHoverRadius:3,
+          borderWidth:1.5,borderDash:[3,3]
+        });
+      }
+
       new Chart(c,{
         type:'line',
-        data:{labels,datasets:[{
-          label:'cm',data:values,
-          borderColor:'#2a8cba',backgroundColor:'rgba(42,140,186,.18)',
-          fill:true,tension:.4,
-          pointRadius:0,pointHoverRadius:4,
-          pointBackgroundColor:'#2a8cba',borderWidth:2.5
-        }]},
-        plugins:[hoverPlugin,hwAnnotPlugin],
+        data:{labels,datasets},
+        plugins:[hoverPlugin,hwAnnotPlugin,refPlugin],
         options:{
           responsive:false,maintainAspectRatio:false,
           plugins:{
-            legend:{display:false},
+            legend:{display:hasMeas,labels:{boxWidth:12,font:{size:10}}},
             tooltip:{mode:'index',intersect:false,
-              callbacks:{label:c=>`${c.parsed.y} cm`},
+              callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y} cm`},
               backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'}
           },
           scales:{
             x:{ticks:{color:'#6a7a6f',font:{size:9},maxRotation:0,
-              callback:(_,i)=>(i%8===0)?labels[i]:''},  // jede 2h
+              callback:(_,i)=>(i%6===0)?labels[i]:''},
               grid:{color:'rgba(0,0,0,.05)'}},
             y:{min:vMin,max:vMax,
               ticks:{color:'#6a7a6f',font:{size:10},callback:v=>v+' cm'},
@@ -4857,8 +4909,8 @@ async function _renderTideCal(river,startDate){
     bodyEl.innerHTML=navHtml+`
       <div class="fc-sec" style="margin-top:12px;text-align:center;color:var(--text-light);padding:24px;">
         <div style="font-size:28px;margin-bottom:8px;">🌊</div>
-        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Pegeldaten nicht verfügbar</div>
-        <div style="font-size:11px;opacity:.7;">Pegelonline WSV · ${st.display}</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Tidendaten nicht verfügbar</div>
+        <div style="font-size:11px;opacity:.7;">BSH · ${st.display}</div>
         <div style="font-size:10px;margin-top:8px;opacity:.5;">${e.message||'Verbindung prüfen'}</div>
       </div>`;
   }
@@ -5271,7 +5323,7 @@ function wxDesc(wc){
   if(wc==null)return'';
   if(wc<=1)return'Klar';if(wc<=3)return'Bewölkt';
   if(wc<=49)return'Neblig';if(wc<=67)return'Regen';
-  if(wc<=77)return'Schnee';return'Gewitter';
+  if(wc<=77)return'Schnee';if(wc<=86)return'Schauer';return'Gewitter';
 }
 
 // ── AP4: Verfeinerter Beißindex-Algorithmus ───────────────────
