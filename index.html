@@ -287,34 +287,33 @@ position:relative;}
   background:#fff;border-bottom:1px solid rgba(200,221,208,.4);
   padding:10px 16px 12px;position:relative;
 }
-/* Zeile 1: X-Button allein oben rechts, dann Datum darunter */
+/* X-Button: allein oben rechts */
 .fc-detail-close{
   position:absolute;top:10px;right:12px;
   background:var(--cream-dark);border:none;
   width:30px;height:30px;border-radius:50%;cursor:pointer;
   font-size:15px;display:flex;align-items:center;justify-content:center;
-  color:var(--text-mid);transition:background .15s;
-  z-index:2;
+  color:var(--text-mid);transition:background .15s;z-index:2;
 }
 .fc-detail-close:hover{background:var(--green-pale);color:var(--green-deep);}
-/* Datum-Block (oben links, etwas nach unten gerückt via padding-top) */
+/* Zeile 1: Datum, etwas nach unten gerückt (Platz für X) */
 .fc-detail-hdr-row1{
   display:flex;align-items:flex-end;gap:0;
-  padding-top:4px;margin-bottom:10px;
-  padding-right:40px; /* Platz für X */
+  padding-top:30px;       /* unter dem X-Button */
+  margin-bottom:8px;
+  padding-right:40px;
 }
 .fc-detail-date{
   font-family:var(--fs);font-size:20px;font-weight:700;color:var(--text-dark);line-height:1.2;
 }
 .fc-detail-date-sub{font-size:13px;color:var(--text-light);margin-left:6px;padding-bottom:2px;}
-/* Zeile 2: Icon+Temp rechtsbündig, darunter Beschreibung+Wind */
+/* Zeile 2: Icon+Temp links, Beschreibung+Wind rechts daneben */
 .fc-detail-wx-row{
-  display:flex;justify-content:flex-end;align-items:flex-start;
-  gap:10px;margin-bottom:8px;
+  display:flex;align-items:flex-start;gap:12px;margin-bottom:8px;
 }
-.fc-detail-wx-right{text-align:right;}
-.fc-detail-wx-ico{font-size:30px;line-height:1;}
-.fc-detail-wx-tmp{font-size:26px;font-weight:700;color:var(--text-dark);line-height:1.1;}
+.fc-detail-wx-ico{font-size:30px;line-height:1;flex-shrink:0;}
+.fc-detail-wx-right{flex:1;}
+.fc-detail-wx-tmp{font-size:26px;font-weight:700;color:var(--text-dark);line-height:1;}
 .fc-detail-wx-desc{font-size:13px;color:var(--text-mid);margin-top:3px;}
 .fc-detail-wx-wind{font-size:12px;color:var(--text-light);margin-top:2px;}
 /* Info-Band Chips */
@@ -780,8 +779,8 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   cursor:pointer;transition:background .15s,transform .1s;
   position:relative;font-size:13px;font-weight:500;
   color:var(--text-dark);
-  overflow:hidden;box-sizing:border-box;
-  /* kein margin – gap übernimmt den Abstand */
+  /* overflow:visible damit der absolut positionierte Dot nicht abgeschnitten wird */
+  overflow:visible;box-sizing:border-box;
 }
 .fb-cal-day:hover{background:var(--green-mist);}
 .fb-cal-day.empty{cursor:default;color:transparent;pointer-events:none;background:transparent;}
@@ -905,8 +904,8 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .dd-hero-v16-stat{background:rgba(255,255,255,.07);padding:10px 10px;text-align:center;}
 .dd-hero-v16-stat-val{font-size:15px;font-weight:700;}
 .dd-hero-v16-stat-lbl{font-size:9px;opacity:.55;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
-/* Minimaler Abstand zwischen Hero und Bedingungen */
-.dd-body-pad{padding:12px 16px 0;}
+/* Kein seitliches Padding im Day-Detail Body */
+.dd-body-pad{padding:12px 0 0;}
 /* Wetter-Kacheln anklickbar */
 
 .dd-wx-tile:hover{background:rgba(74,124,89,.12);border-radius:8px;}
@@ -1826,6 +1825,17 @@ function updMoon(){
 }
 
 // Historisches Wetter für Vergangenheitsdaten nachladen
+// ── API-Weiche: forecast (<90 Tage) vs. archive (≥90 Tage) ─
+function _wxUrl(lat,lon,dateStr,fields){
+  const today=new Date();today.setHours(0,0,0,0);
+  const d=new Date(dateStr+'T00:00:00');
+  const diffDays=Math.round((today-d)/86400000);
+  const base=diffDays>=90
+    ?`https://archive-api.open-meteo.com/v1/archive`
+    :`https://api.open-meteo.com/v1/forecast`;
+  return`${base}?latitude=${lat}&longitude=${lon}&hourly=${fields}&start_date=${dateStr}&end_date=${dateStr}&timezone=auto`;
+}
+
 async function _tryLoadHistoricalWeather(dateStr){
   const today=new Date();today.setHours(0,0,0,0);
   const d=new Date(dateStr+'T00:00:00');
@@ -1835,7 +1845,8 @@ async function _tryLoadHistoricalWeather(dateStr){
   if(!coords&&profile?.plz)await resolvePlzCoords(profile.plz);
   const c2=_plzCoords||gpsCoords;
   if(!c2)return;
-  const url=`https://api.open-meteo.com/v1/forecast?latitude=${c2.lat}&longitude=${c2.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation,weathercode&start_date=${dateStr}&end_date=${dateStr}&timezone=auto`;
+  const url=_wxUrl(c2.lat,c2.lon,dateStr,
+    'temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation,weathercode');
   const strip=document.getElementById('gps-strip');
   if(strip){strip.style.display='flex';document.getElementById('gps-txt').textContent='Lade historisches Wetter…';}
   try{
@@ -1854,7 +1865,7 @@ async function _tryLoadHistoricalWeather(dateStr){
       weathercode:h.weathercode?Math.round(avg(h.weathercode)):1
     };
     applyWxData(wx,`Historisch ${dateStr} ✓`);
-    // Manuelle Felder ausblenden – historische Daten wurden automatisch geladen
+    // Manuelle Felder ausblenden – historische Daten automatisch geladen
     const manWrap=document.getElementById('new-manual-wx-wrap');
     if(manWrap)manWrap.style.display='none';
     if(strip)strip.style.display='none';
@@ -1932,10 +1943,13 @@ function applyWxData(c,sourceLabel){
   const wDir=c.winddirection_10m!=null?windLabel(c.winddirection_10m):'';
   _lastWx={temp:c.temperature_2m,windSpeed:c.windspeed_10m,windDir:c.winddirection_10m,pressure:c.surface_pressure,humidity:c.relativehumidity_2m,clouds:c.cloudcover,precip:c.precipitation,code:wc};
   document.getElementById('wx-ico').textContent=wIcon;
-  // Detaillierte wx-val Anzeige: Datum der Daten + Temp + Wind + Druck
-  const dateVal=document.getElementById('s-date')?.value;
-  const dateHint=dateVal?dateVal.slice(5).replace('-','.'):'';
-  document.getElementById('wx-val').innerHTML=
+  // Detaillierte wx-val Anzeige: Datum DD.MM.YYYY + Temp + Wind + Druck
+  const dateVal=document.getElementById('s-date')?.value; // YYYY-MM-DD
+  let dateHint='';
+  if(dateVal){
+    const[yr,mo,dy]=dateVal.split('-');
+    dateHint=`${dy}.${mo}.${yr} ✓`;
+  }  document.getElementById('wx-val').innerHTML=
     `<span style="font-weight:700;color:var(--text-dark)">${c.temperature_2m!=null?Math.round(c.temperature_2m)+'°C':'–'}</span>`+
     ` · 💨 ${c.windspeed_10m!=null?Math.round(c.windspeed_10m):'-'} km/h${wDir?' '+wDir:''}`+
     ` · ${c.surface_pressure!=null?Math.round(c.surface_pressure):'-'} hPa`+
@@ -2040,25 +2054,77 @@ function obAddGoal(){
   const el=document.getElementById('ob-goals-list');
   const row=document.createElement('div');
   row.id='ob-goal-'+idx;
-  row.style.cssText='background:var(--cream);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;border:1px solid var(--cream-dark);position:relative;';
-  row.innerHTML=`<button onclick="document.getElementById('ob-goal-${idx}').remove()" style="position:absolute;top:8px;right:8px;background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-light);">✕</button>
-    <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:8px;margin-right:24px;">
-      <div>
-        <div class="il" style="margin-bottom:4px;">Fischart</div>
-        <select class="if" id="og-fish-${idx}" style="font-size:13px;padding:8px 10px;">
-          ${FISH.map(f=>`<option>${f}</option>`).join('')}
-        </select>
-      </div>
-      <div>
+  row.style.cssText='background:var(--cream);border-radius:var(--rs);padding:12px 14px;margin-bottom:12px;border:1px solid var(--cream-dark);position:relative;';
+  // Zieltyp-State für diesen Block
+  row.innerHTML=`
+    <button onclick="document.getElementById('ob-goal-${idx}').remove()" style="position:absolute;top:8px;right:8px;background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-light);">✕</button>
+
+    <!-- Fischart -->
+    <div class="ig" style="margin-bottom:10px;">
+      <div class="il" style="margin-bottom:4px;">Fischart</div>
+      <select class="if" id="og-fish-${idx}">${FISH.map(f=>`<option>${f}</option>`).join('')}</select>
+    </div>
+
+    <!-- Zieltyp-Buttons -->
+    <div class="il" style="margin-bottom:6px;">Zieltyp</div>
+    <div class="goal-type-row" style="margin-bottom:10px;">
+      <button class="goal-type-btn sel" id="og-type-count-${idx}" onclick="obSelType(${idx},'count')">
+        <span class="gt-ico">🎣</span>Stückzahl
+      </button>
+      <button class="goal-type-btn" id="og-type-range-${idx}" onclick="obSelType(${idx},'range')">
+        <span class="gt-ico">📏</span>Korridor
+      </button>
+      <button class="goal-type-btn" id="og-type-pb-${idx}" onclick="obSelType(${idx},'pb')">
+        <span class="gt-ico">🏆</span>PB
+      </button>
+    </div>
+
+    <!-- Felder: Stückzahl -->
+    <div id="og-fields-count-${idx}" class="goal-fields g2">
+      <div class="ig">
         <div class="il" style="margin-bottom:4px;">Anzahl</div>
-        <input type="number" class="if" id="og-cnt-${idx}" placeholder="20" min="1" max="999" style="font-size:13px;padding:8px 10px;" inputmode="numeric">
+        <input type="number" class="if" id="og-cnt-${idx}" placeholder="z.B. 20" min="1" inputmode="numeric">
       </div>
-      <div>
-        <div class="il" style="margin-bottom:4px;">Mind. cm</div>
-        <input type="number" class="if" id="og-len-${idx}" placeholder="60" min="0" max="300" style="font-size:13px;padding:8px 10px;" inputmode="numeric">
+      <div class="ig">
+        <div class="il" style="margin-bottom:4px;">Mind. cm (opt.)</div>
+        <input type="number" class="if" id="og-min-c-${idx}" placeholder="0" min="0" inputmode="numeric">
+      </div>
+    </div>
+
+    <!-- Felder: Korridor -->
+    <div id="og-fields-range-${idx}" class="goal-fields g3" style="display:none;">
+      <div class="ig">
+        <div class="il" style="margin-bottom:4px;">Anzahl</div>
+        <input type="number" class="if" id="og-cnt-r-${idx}" placeholder="10" min="1" inputmode="numeric">
+      </div>
+      <div class="ig">
+        <div class="il" style="margin-bottom:4px;">Von cm</div>
+        <input type="number" class="if" id="og-min-r-${idx}" placeholder="70" min="0" inputmode="numeric">
+      </div>
+      <div class="ig">
+        <div class="il" style="margin-bottom:4px;">Bis cm</div>
+        <input type="number" class="if" id="og-max-r-${idx}" placeholder="79" min="0" inputmode="numeric">
+      </div>
+    </div>
+
+    <!-- Felder: PB -->
+    <div id="og-fields-pb-${idx}" class="goal-fields g2" style="display:none;">
+      <div class="ig">
+        <div class="il" style="margin-bottom:4px;">Ziel-Länge cm</div>
+        <input type="number" class="if" id="og-pb-${idx}" placeholder="107" min="1" inputmode="numeric">
       </div>
     </div>`;
   el.appendChild(row);
+}
+
+function obSelType(idx, type){
+  ['count','range','pb'].forEach(t=>{
+    document.getElementById(`og-type-${t}-${idx}`)?.classList.toggle('sel', t===type);
+    const f=document.getElementById(`og-fields-${t}-${idx}`);
+    if(f)f.style.display=t===type?'':'none';
+  });
+  // Typ-State speichern per data-Attribut
+  document.getElementById('ob-goal-'+idx)?.setAttribute('data-type', type);
 }
 
 function obNext(){
@@ -2068,15 +2134,32 @@ function obNext(){
     obData.plz=document.getElementById('ob-plz').value.trim();
   }
   else if(obStep===3){
-    // Ziele sammeln
+    // Ziele aus neuem UI sammeln (identisch zu saveNewGoal-Logik)
     const goals=[];
     for(let i=1;i<=_obGoalIdx;i++){
-      const el=document.getElementById('ob-goal-'+i);
-      if(!el)continue;
+      const rowEl=document.getElementById('ob-goal-'+i);
+      if(!rowEl)continue;
       const fish=document.getElementById('og-fish-'+i)?.value;
-      const cnt=parseInt(document.getElementById('og-cnt-'+i)?.value)||0;
-      const len=parseInt(document.getElementById('og-len-'+i)?.value)||0;
-      if(fish&&cnt>0)goals.push({fish,count:cnt,minLen:len,label:`${cnt}× ${fish}${len>0?' ab '+len+'cm':''}`,id:_newId()});
+      if(!fish)continue;
+      const type=rowEl.getAttribute('data-type')||'count';
+      let goal=null;
+      if(type==='count'){
+        const cnt=parseInt(document.getElementById('og-cnt-'+i)?.value)||0;
+        const minLen=parseInt(document.getElementById('og-min-c-'+i)?.value)||0;
+        if(cnt<1)continue;
+        goal={type:'count',fish,count:cnt,minLen,maxLen:0,label:`${cnt}× ${fish}${minLen>0?' ab '+minLen+'cm':''}`,id:_newId()};
+      } else if(type==='range'){
+        const cnt=parseInt(document.getElementById('og-cnt-r-'+i)?.value)||0;
+        const minLen=parseInt(document.getElementById('og-min-r-'+i)?.value)||0;
+        const maxLen=parseInt(document.getElementById('og-max-r-'+i)?.value)||0;
+        if(cnt<1)continue;
+        goal={type:'range',fish,count:cnt,minLen,maxLen,label:`${cnt}× ${fish} ${minLen}–${maxLen>0?maxLen:'∞'}cm`,id:_newId()};
+      } else {
+        const pbLen=parseInt(document.getElementById('og-pb-'+i)?.value)||0;
+        if(pbLen<1)continue;
+        goal={type:'pb',fish,count:1,minLen:pbLen,maxLen:0,label:`PB ${fish} über ${pbLen}cm`,id:_newId()};
+      }
+      if(goal)goals.push(goal);
     }
     profile={...obData,goals};
     saveProfile();
@@ -3419,8 +3502,15 @@ async function openDayDetail(dateKey){
 async function reloadWeatherForDay(dateKey){
   const daySess=sessions.filter(s=>String(s.date)===String(dateKey));
   if(!daySess.length)return;
-  // fetchMissingWeather zeigt den sync-progress Balken selbst an
+  // Fortschrittsbalken sofort einblenden (auch wenn alle Sessions bereits Wetter haben,
+  // aber das Datum älter als 90 Tage ist – fetchMissingWeather erkennt fehlende Daten)
+  const bar=document.getElementById('sync-progress');
+  const txt=document.getElementById('sync-progress-txt');
+  const fill=document.getElementById('sync-progress-fill');
+  if(bar){bar.classList.add('on');if(fill)fill.style.width='10%';if(txt)txt.textContent='Lade Wetterdaten…';}
   await fetchMissingWeather(daySess);
+  // fetchMissingWeather blendet bar selbst aus, aber sicherheitshalber:
+  setTimeout(()=>{if(bar)bar.classList.remove('on');if(fill)fill.style.width='0%';},1400);
   openDayDetail(dateKey); // Overlay neu aufbauen
 }
 
@@ -3476,9 +3566,10 @@ async function fetchMissingWeather(sessList){
 
   for(const sess of missing){
     try{
-      // Datum dynamisch aus Session – funktioniert für 2024, 2025, 2026 und alle Jahre
       const date=sess.date; // Format: YYYY-MM-DD
-      const url=`https://api.open-meteo.com/v1/forecast?latitude=${_plzCoords.lat}&longitude=${_plzCoords.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation&start_date=${date}&end_date=${date}&timezone=auto`;
+      // Weiche: >90 Tage → archive-api, sonst forecast
+      const url=_wxUrl(_plzCoords.lat,_plzCoords.lon,date,
+        'temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation');
       const r=await fetch(url);if(!r.ok)continue;
       const data=await r.json();
       const h=data.hourly;
@@ -3900,8 +3991,8 @@ function _renderMoreStats(){
 
 // Ziele auch im Profil-Edit verwalten
 function openGoalEdit(){
-  openFs('goals');
-  _renderGoalEdit();
+  openFs('goals');   // fs-goals Overlay einblenden
+  _renderGoalEdit(); // Inhalt rendern
 }
 
 function _renderGoalEdit(){
@@ -4052,12 +4143,13 @@ async function saveNewGoal(){
   if(!profile.goals)profile.goals=[];
 
   let goal;
+  const goalYear=new Date().getFullYear(); // Saison-Jahr beim Anlegen
   if(_goalType==='count'){
     const cnt=parseInt(document.getElementById('ag-cnt')?.value)||0;
     const minLen=parseInt(document.getElementById('ag-min-c')?.value)||0;
     if(cnt<1){showToast('⚠️','Anzahl eingeben!',true);return;}
     const label=`${cnt}× ${fish}${minLen>0?' ab '+minLen+'cm':''}`;
-    goal={type:'count',fish,count:cnt,minLen,maxLen:0,label,id:_newId()};
+    goal={type:'count',fish,count:cnt,minLen,maxLen:0,label,year:goalYear,id:_newId()};
   } else if(_goalType==='range'){
     const cnt=parseInt(document.getElementById('ag-cnt-r')?.value)||0;
     const minLen=parseInt(document.getElementById('ag-min-r')?.value)||0;
@@ -4065,12 +4157,12 @@ async function saveNewGoal(){
     if(cnt<1){showToast('⚠️','Anzahl eingeben!',true);return;}
     if(minLen>0&&maxLen>0&&maxLen<minLen){showToast('⚠️','Max muss ≥ Min sein!',true);return;}
     const label=`${cnt}× ${fish} ${minLen>0?minLen+'–'+(maxLen>0?maxLen:'∞')+'cm':''}`.trim();
-    goal={type:'range',fish,count:cnt,minLen,maxLen,label,id:_newId()};
+    goal={type:'range',fish,count:cnt,minLen,maxLen,label,year:goalYear,id:_newId()};
   } else {
     const pbLen=parseInt(document.getElementById('ag-pb-len')?.value)||0;
     if(pbLen<1){showToast('⚠️','Ziel-Länge eingeben!',true);return;}
     const label=`PB ${fish} über ${pbLen}cm`;
-    goal={type:'pb',fish,count:1,minLen:pbLen,maxLen:0,label,id:_newId()};
+    goal={type:'pb',fish,count:1,minLen:pbLen,maxLen:0,label,year:goalYear,id:_newId()};
   }
 
   profile.goals.push(goal);
@@ -4503,150 +4595,370 @@ function openMoonCal(){
 let _tideRiver='weser';
 async function openTideCal(){
   openFs('tide-cal');
-  document.getElementById('fs-tide-body').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">🔄 Lade Tidendaten…</div>';
+  document.getElementById('fs-tide-body').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">🔄 Lade Pegeldaten…</div>';
   await _renderTideCal(_tideRiver,new Date().toISOString().split('T')[0]);
 }
+
 async function _renderTideCal(river,startDate){
   _tideRiver=river;
-  // Pegelonline Stationen: offizielle WSV Pegel-REST-API
+
+  // Pegelonline WSV: Stationskurznamen (direkt im URL verwendbar)
   const STATIONS={
-    weser:{id:'4880060',name:'Weser (Bremerhaven)',label:'Weser'},
-    elbe:{id:'5950050',name:'Elbe (Cuxhaven)',label:'Elbe'},
-    ems:{id:'4884380',name:'Ems (Emden)',label:'Ems'}
+    weser:{name:'BREMEN OSLEBSHAUSEN',label:'Weser',display:'Weser · Bremen Oslebshausen'},
+    elbe: {name:'ST. PAULI',          label:'Elbe', display:'Elbe · St. Pauli (Hamburg)'},
+    ems:  {name:'EMDEN',              label:'Ems',  display:'Ems · Emden'}
   };
   const st=STATIONS[river]||STATIONS.weser;
+  const BASE='https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/';
 
+  // 7-Tage-Navigation
   const days=[];const d=new Date(startDate);
   for(let i=0;i<7;i++){days.push(d.toISOString().split('T')[0]);d.setDate(d.getDate()+1);}
   const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
 
-  const navHtml=`<div class="fc-tide-day-nav">
-    ${Object.entries(STATIONS).map(([rv,s])=>`<button class="fc-tide-day-btn${rv===river?' on':''}" onclick="_renderTideCal('${rv}','${startDate}')">${s.label}</button>`).join('')}
-  </div>
-  <div class="fc-tide-day-nav" style="margin-top:6px;">
-    ${days.map(ds=>`<button class="fc-tide-day-btn${ds===startDate?' on':''}" onclick="_renderTideCal('${river}','${ds}')">${DOW[new Date(ds+'T12:00:00').getDay()]} ${ds.slice(8)}</button>`).join('')}
-  </div>`;
+  const navHtml=`
+    <div class="fc-tide-day-nav">
+      ${Object.entries(STATIONS).map(([rv,s])=>`
+        <button class="fc-tide-day-btn${rv===river?' on':''}"
+          onclick="_renderTideCal('${rv}','${startDate}')">${s.label}</button>`).join('')}
+    </div>
+    <div class="fc-tide-day-nav" style="margin-top:6px;">
+      ${days.map(ds=>`
+        <button class="fc-tide-day-btn${ds===startDate?' on':''}"
+          onclick="_renderTideCal('${river}','${ds}')">
+          ${DOW[new Date(ds+'T12:00:00').getDay()]} ${ds.slice(8)}</button>`).join('')}
+    </div>`;
 
-  document.getElementById('fs-tide-body').innerHTML=navHtml+`<div style="text-align:center;padding:24px;color:var(--text-light);">🔄 Lade Pegeldaten…</div>`;
+  const bodyEl=document.getElementById('fs-tide-body');
+  bodyEl.innerHTML=navHtml+`<div style="text-align:center;padding:24px;color:var(--text-light);">🔄 Lade Pegeldaten…</div>`;
 
   try{
-    // Pegelonline: Messwerte für den gewählten Tag (start/end als ISO)
-    const start=startDate+'T00:00:00+01:00';
-    const end=startDate+'T23:59:00+01:00';
-    const url=`https://pegelonline.wsv.de/webservices/rest-api/v2/stations/${st.id}/W/measurements.json?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+    // Pegelonline liefert Rohdaten der letzten 30 Tage maximal.
+    // Wir laden 3 Tage zurück + gewählter Tag (= bis zu 4 Tage, ~15-Minuten-Intervall)
+    const fetchStart=new Date(startDate);fetchStart.setDate(fetchStart.getDate()-1);
+    const fetchEnd  =new Date(startDate);fetchEnd.setDate(fetchEnd.getDate()+1);
+    const isoStart=fetchStart.toISOString().replace(/\.\d{3}Z$/,'+01:00').replace('Z','+01:00');
+    const isoEnd  =fetchEnd.toISOString().replace(/\.\d{3}Z$/,'+01:00').replace('Z','+01:00');
+
+    // Stationsnamen URL-encodieren (Leerzeichen → %20, Punkte bleiben)
+    const stationPath=encodeURIComponent(st.name);
+    const url=`${BASE}${stationPath}/W/measurements.json`+
+      `?start=${encodeURIComponent(startDate+'T00:00:00+01:00')}`+
+      `&end=${encodeURIComponent(startDate+'T23:59:00+01:00')}`;
+
     const resp=await fetch(url);
-    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
     const data=await resp.json();
 
-    if(!Array.isArray(data)||!data.length)throw new Error('no data');
+    if(!Array.isArray(data)||!data.length)throw new Error('Keine Messwerte');
 
-    // Zeitstempel + Wasserstand (cm) extrahieren
-    const labels=data.map(m=>m.timestamp.slice(11,16));
-    const values=data.map(m=>m.value!=null?Math.round(m.value):null);
-    const validVals=values.filter(v=>v!=null);
-    const vMin=Math.min(...validVals)-20;
-    const vMax=Math.max(...validVals)+20;
+    // Zeitstempel + cm-Werte
+    const timestamps=data.map(m=>m.timestamp);
+    const labels    =data.map(m=>m.timestamp.slice(11,16)); // HH:MM
+    const values    =data.map(m=>m.value!=null?Math.round(m.value):null);
+    const validVals =values.filter(v=>v!=null);
+    if(!validVals.length)throw new Error('Alle Werte null');
 
-    document.getElementById('fs-tide-body').innerHTML=`
-      ${navHtml}
+    const vMin=Math.min(...validVals)-30;
+    const vMax=Math.max(...validVals)+30;
+
+    // Scrollbare Breite: ~6px pro 15-Min-Intervall → 24h = 96 Punkte × 6px = 576px min.
+    const PX=Math.max(4, Math.round(960/data.length)); // adaptiv aber min 960px
+    const chartW=Math.max(data.length*PX, 360);
+
+    // Hoch- und Niedrigwasser markieren (lokale Extrema)
+    const tidalMarks=[];
+    for(let i=1;i<values.length-1;i++){
+      const v=values[i],p=values[i-1],n=values[i+1];
+      if(v!=null&&p!=null&&n!=null){
+        if(v>p&&v>n)tidalMarks.push({idx:i,type:'HW',v});
+        if(v<p&&v<n)tidalMarks.push({idx:i,type:'NW',v});
+      }
+    }
+
+    bodyEl.innerHTML=navHtml+`
       <div style="margin-top:12px;">
         <div class="fc-sec">
-          <div class="fc-sec-title">🌊 ${st.name} · ${startDate}</div>
+          <div class="fc-sec-title">🌊 ${st.display} · ${startDate}</div>
           <div id="hover-tide" class="fc-hover-info"></div>
-          <div class="fc-tide-canvas-wrap"><canvas id="tide-main-chart"></canvas></div>
-          <div style="font-size:10px;color:var(--text-light);margin-top:6px;text-align:center;">Pegelstand cm · Pegelonline WSV</div>
+          <div id="scroll-tide" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;">
+            <canvas id="tide-main-chart" style="height:220px;display:block;"></canvas>
+          </div>
+          <div style="font-size:10px;color:var(--text-light);margin-top:8px;text-align:center;">
+            Wasserstand cm über Pegelnull · Pegelonline WSV · 15-Min-Intervall
+          </div>
         </div>
       </div>`;
 
     requestAnimationFrame(()=>{
-      const c=document.getElementById('tide-main-chart');if(!c||typeof Chart==='undefined')return;
-      function tidehoverPlugin(){
-        return{id:'tideHP',afterDatasetsDraw(chart){
-          const active=chart.tooltip?.dataPoints;
-          const el=document.getElementById('hover-tide');if(!el)return;
-          if(active?.length){el.textContent=`${active[0].label} Uhr · ${active[0].parsed.y} cm`;el.style.opacity='1';}
-          else el.style.opacity='0';
-        }};
-      }
-      new Chart(c,{type:'line',
-        data:{labels,datasets:[{label:'cm',data:values,
+      const c=document.getElementById('tide-main-chart');
+      if(!c||typeof Chart==='undefined')return;
+      c.style.width=chartW+'px';
+
+      // Hoch-/Niedrigwasser-Annotationen als Plugin
+      const hwAnnotPlugin={id:'hwAnnot',afterDatasetsDraw(chart){
+        const ctx=chart.ctx;
+        tidalMarks.forEach(({idx,type,v})=>{
+          const x=chart.scales.x.getPixelForIndex(idx);
+          const y=chart.scales.y.getPixelForValue(v);
+          ctx.save();
+          ctx.fillStyle=type==='HW'?'#c04040':'#2a7ab0';
+          ctx.font='bold 9px system-ui';
+          ctx.textAlign='center';
+          ctx.fillText(`${type} ${v}cm`,x,type==='HW'?y-10:y+18);
+          ctx.restore();
+        });
+      }};
+
+      // Hover-Info
+      const hoverPlugin={id:'tideHover',afterDatasetsDraw(chart){
+        const active=chart.tooltip?.dataPoints;
+        const el=document.getElementById('hover-tide');if(!el)return;
+        if(active?.length){
+          el.textContent=`${active[0].label} Uhr · ${active[0].parsed.y} cm`;
+          el.style.opacity='1';
+        } else el.style.opacity='0';
+      }};
+
+      new Chart(c,{
+        type:'line',
+        data:{labels,datasets:[{
+          label:'cm',data:values,
           borderColor:'#2a8cba',backgroundColor:'rgba(42,140,186,.18)',
-          fill:true,tension:.4,pointRadius:1,pointHoverRadius:4,
-          pointBackgroundColor:'#2a8cba',borderWidth:2.5}]},
-        plugins:[tidehoverPlugin()],
-        options:{responsive:true,maintainAspectRatio:false,
-          plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,
-            callbacks:{label:c=>`${c.parsed.y} cm`},
-            backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'}},
+          fill:true,tension:.4,
+          pointRadius:0,pointHoverRadius:4,
+          pointBackgroundColor:'#2a8cba',borderWidth:2.5
+        }]},
+        plugins:[hoverPlugin,hwAnnotPlugin],
+        options:{
+          responsive:false,maintainAspectRatio:false,
+          plugins:{
+            legend:{display:false},
+            tooltip:{mode:'index',intersect:false,
+              callbacks:{label:c=>`${c.parsed.y} cm`},
+              backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'}
+          },
           scales:{
-            x:{ticks:{color:'#8a9a8f',font:{size:9},maxRotation:0,
-              callback:(_,i)=>i%4===0?labels[i]:''},grid:{color:'rgba(0,0,0,.04)'}},
+            x:{ticks:{color:'#6a7a6f',font:{size:9},maxRotation:0,
+              callback:(_,i)=>(i%8===0)?labels[i]:''},  // jede 2h
+              grid:{color:'rgba(0,0,0,.05)'}},
             y:{min:vMin,max:vMax,
-              ticks:{color:'#8a9a8f',font:{size:10},callback:v=>v+' cm'},
-              grid:{color:'rgba(0,0,0,.05)'}}
-          }}});
+              ticks:{color:'#6a7a6f',font:{size:10},callback:v=>v+' cm'},
+              grid:{color:'rgba(0,0,0,.06)'}}
+          }
+        }
+      });
     });
+
   }catch(e){
-    document.getElementById('fs-tide-body').innerHTML=navHtml+`
+    bodyEl.innerHTML=navHtml+`
       <div class="fc-sec" style="margin-top:12px;text-align:center;color:var(--text-light);padding:24px;">
         <div style="font-size:28px;margin-bottom:8px;">🌊</div>
         <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Pegeldaten nicht verfügbar</div>
-        <div style="font-size:11px;">Pegelonline WSV · Nur mit Internetverbindung</div>
+        <div style="font-size:11px;opacity:.7;">Pegelonline WSV · ${st.display}</div>
+        <div style="font-size:10px;margin-top:8px;opacity:.5;">${e.message||'Verbindung prüfen'}</div>
       </div>`;
   }
 }
 
 // ── Einzel-Kachel Wetter-Charts ────────────────────────────
-function openWxChart(type){
+async function openWxChart(type){
   if(!_fcHourlyData)return;
-  const today=_fcData?.daily?.time?.[0];
-  const h=_fcHourlyData.hourly;
-  const hours=h.time.filter(t=>t.startsWith(today));
-  const idxs=h.time.map((t,i)=>t.startsWith(today)?i:-1).filter(i=>i>=0);
-  const labels=hours.map(t=>t.slice(11,16));
+  const ovId2=type==='wind'?'wx-wind':type==='rain'?'wx-rain':'wx-temp';
+  openFs(ovId2);
 
-  let ovId,bodyId,data,color,type2,yOpts,title;
+  // ── Lade 5 Tage Vergangenheit + 14 Tage Zukunft (20 Tage gesamt) ──
+  const coords=_plzCoords||gpsCoords;
+  if(!coords){showToast('⚠️','Standort nicht verfügbar',true);return;}
+
+  const todayDate=new Date();todayDate.setHours(0,0,0,0);
+  const startDate=new Date(todayDate);startDate.setDate(startDate.getDate()-5);
+  const endDate=new Date(todayDate);endDate.setDate(endDate.getDate()+14);
+  const startStr=startDate.toISOString().split('T')[0];
+  const endStr=endDate.toISOString().split('T')[0];
+  const todayStr=todayDate.toISOString().split('T')[0];
+
+  let ovId,bodyId,metaId,title;
   if(type==='wind'){
-    ovId='wx-wind';bodyId='fs-wind-body';title='💨 Windverlauf';
-    data=idxs.map(i=>h.windspeed_10m?.[i]!=null?Math.round(h.windspeed_10m[i]):null);
-    color='#4a90d9';type2='line';
-    document.getElementById('fs-wind-meta').textContent=`Max ${Math.round(Math.max(...data.filter(Boolean)))} km/h`;
-    yOpts={min:0,ticks:{callback:v=>v+' km/h'}};
+    ovId='wx-wind';bodyId='fs-wind-body';metaId='fs-wind-meta';title='💨 Wind';
   } else if(type==='rain'){
-    ovId='wx-rain';bodyId='fs-rain-body';title='🌧 Regenwahrscheinlichkeit';
-    data=idxs.map(i=>h.precipitation_probability?.[i]??null);
-    color='rgba(74,144,217,.7)';type2='bar';
-    document.getElementById('fs-rain-meta').textContent=`Max ${Math.max(...data.filter(Boolean))}%`;
-    yOpts={min:0,max:100,ticks:{callback:v=>v+'%'}};
+    ovId='wx-rain';bodyId='fs-rain-body';metaId='fs-rain-meta';title='🌧 Regen';
   } else {
-    ovId='wx-temp';bodyId='fs-temp-body';title='🌡 Temperaturverlauf';
-    data=idxs.map(i=>h.temperature_2m?.[i]!=null?Math.round(h.temperature_2m[i]*10)/10:null);
-    color='#e07030';type2='line';
-    document.getElementById('fs-temp-meta').textContent=`${Math.round(Math.min(...data.filter(Boolean)))}° – ${Math.round(Math.max(...data.filter(Boolean)))}°`;
-    yOpts={ticks:{callback:v=>v+'°'}};
+    ovId='wx-temp';bodyId='fs-temp-body';metaId='fs-temp-meta';title='🌡 Temperatur';
   }
 
-  openFs(ovId);
-  document.getElementById(bodyId).innerHTML=`
-    <div class="fc-sec">
-      <div class="fc-sec-title">${title} · Heute</div>
-      <div style="position:relative;height:220px;width:100%;"><canvas id="wx-single-chart"></canvas></div>
-    </div>`;
+  const bodyEl=document.getElementById(bodyId);
+  if(bodyEl)bodyEl.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-light);">🔄 Lade 20-Tage-Verlauf…</div>`;
+  if(metaId&&document.getElementById(metaId))document.getElementById(metaId).textContent='5 Tage zurück · 14 Tage voraus';
 
-  requestAnimationFrame(()=>{
-    const c=document.getElementById('wx-single-chart');if(!c||typeof Chart==='undefined')return;
-    const ds=type2==='bar'
-      ?{label:'',data,backgroundColor:color,borderRadius:4,borderSkipped:false}
-      :{label:'',data,borderColor:color,backgroundColor:color.replace(')',', .15)').replace('rgba','rgba').replace('#','rgba('+parseInt(color.slice(1,3),16)+','+parseInt(color.slice(3,5),16)+','+parseInt(color.slice(5,7),16)+','),fill:true,tension:.4,pointRadius:3,borderWidth:2.5};
-    new Chart(c,{type:type2,data:{labels,datasets:[ds]},options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(30,50,40,.9)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.8)'}},
-      scales:{
-        x:{ticks:{color:'#8a9a8f',font:{size:10},maxRotation:0,maxTicksLimit:8},grid:{color:'rgba(0,0,0,.04)'}},
-        y:{...yOpts,ticks:{...yOpts.ticks,color:'#8a9a8f',font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}}
-      }
-    }});
-  });
+  try{
+    // Forecast für Zukunft + Archive für Vergangenheit in einem Call (forecast nimmt start_date)
+    const fields='temperature_2m,windspeed_10m,winddirection_10m,windgusts_10m,precipitation_probability,weathercode';
+    const pastUrl=`https://archive-api.open-meteo.com/v1/archive?latitude=${coords.lat}&longitude=${coords.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,precipitation&start_date=${startStr}&end_date=${todayStr}&timezone=auto`;
+    const futureUrl=`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&hourly=${fields}&start_date=${todayStr}&end_date=${endStr}&timezone=auto`;
+
+    const [pastResp,futureResp]=await Promise.all([fetch(pastUrl),fetch(futureUrl)]);
+    const [pastData,futureData]=await Promise.all([pastResp.json(),futureResp.json()]);
+
+    // Kombiniere past + future (today im future überschreibt past)
+    const ph=pastData.hourly||{};
+    const fh=futureData.hourly||{};
+
+    // Merge: alle Stunden von startStr bis endStr
+    const allTimes=[...(ph.time||[]),...(fh.time||[]).filter(t=>!t.startsWith(todayStr))];
+    // Index-Maps
+    const pIdx={};(ph.time||[]).forEach((t,i)=>pIdx[t]=i);
+    const fIdx={};(fh.time||[]).forEach((t,i)=>fIdx[t]=i);
+
+    const labels=allTimes.map(t=>t.slice(11,16)); // HH:MM
+    // Day separators: day label for first hour of each day
+    const dayLabels=allTimes.map((t,i)=>{
+      const isFirst=i===0||allTimes[i-1].slice(0,10)!==t.slice(0,10);
+      if(!isFirst)return '';
+      const ds=t.slice(0,10);
+      const d=new Date(ds+'T12:00:00');
+      const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
+      return ds===todayStr?'Heute':DOW[d.getDay()]+' '+ds.slice(8);
+    });
+
+    function getVal(t,key,src){
+      if(src==='past'){const i=pIdx[t];return i!=null?ph[key]?.[i]:null;}
+      const i=fIdx[t];return i!=null?fh[key]?.[i]:null;
+    }
+    function buildArr(key){
+      return allTimes.map(t=>t<todayStr?getVal(t,key,'past'):getVal(t,key,'future'));
+    }
+
+    const temps=buildArr('temperature_2m').map(v=>v!=null?parseFloat(v.toFixed(1)):null);
+    const winds=buildArr('windspeed_10m').map(v=>v!=null?Math.round(v):null);
+    const gusts=buildArr('windgusts_10m').map(v=>v!=null?Math.round(v):null);
+    const dirs=buildArr('winddirection_10m').map(v=>v!=null?windLabel(v):'');
+    const rains=buildArr('precipitation_probability').map(v=>v!=null?v:null);
+
+    // Pixel pro Stunde
+    const PX_PER_HR=28;
+    const chartW=Math.max(allTimes.length*PX_PER_HR,400);
+
+    // Index des heutigen Tages für Auto-Scroll
+    const todayHourIdx=allTimes.findIndex(t=>t.startsWith(todayStr));
+    const scrollTarget=todayHourIdx>0?todayHourIdx*PX_PER_HR-60:0;
+
+    // Helles Theme
+    const TICK='#6a7a6f';const GRID='rgba(0,0,0,.06)';
+    const TT={mode:'index',intersect:false,backgroundColor:'rgba(40,60,50,.88)',
+      titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'};
+
+    function buildChart(canvasId,scrollId,cfg){
+      const el=document.getElementById(canvasId);if(!el)return;
+      el.style.width=chartW+'px';
+      const chart=new Chart(el,{...cfg,options:{...cfg.options,responsive:false,maintainAspectRatio:false}});
+      // Auto-Scroll zum heutigen Tag
+      const wrap=document.getElementById(scrollId);
+      if(wrap)requestAnimationFrame(()=>wrap.scrollLeft=scrollTarget);
+      return chart;
+    }
+
+    // Tages-Trennlinien als annotation-ähnliche vertikale Linien via afterDraw plugin
+    function dayLinesPlugin(times){
+      return{id:'dayLines',afterDraw(chart){
+        const ctx=chart.ctx;
+        ctx.save();
+        times.forEach((t,i)=>{
+          const lbl=dayLabels[i];if(!lbl)return;
+          const x=chart.scales.x.getPixelForIndex(i);
+          ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=1;
+          ctx.setLineDash([4,4]);
+          ctx.beginPath();ctx.moveTo(x,chart.chartArea.top);ctx.lineTo(x,chart.chartArea.bottom);ctx.stroke();
+          // Day label
+          if(t.startsWith(todayStr)){
+            ctx.fillStyle='rgba(74,124,89,.7)';
+          } else {
+            ctx.fillStyle='rgba(100,120,110,.5)';
+          }
+          ctx.font='bold 9px system-ui';ctx.textAlign='center';
+          ctx.fillText(lbl,x,chart.chartArea.top-2);
+          ctx.restore();ctx.save();
+        });
+        ctx.restore();
+      }};
+    }
+
+    // Hover-Info Plugin
+    function hoverDiv(divId,fmtFn){
+      return{id:'hD_'+divId,afterDatasetsDraw(chart){
+        const active=chart.tooltip?.dataPoints;
+        const el=document.getElementById(divId);if(!el)return;
+        if(active?.length){el.textContent=fmtFn(active[0].dataIndex,active[0].parsed.y,active);el.style.opacity='1';}
+        else el.style.opacity='0';
+      }};
+    }
+
+    if(type==='wind'){
+      bodyEl.innerHTML=`<div class="fc-sec" style="margin-top:0;">
+        <div class="fc-sec-title">${title} – 5 Tage zurück · Heute · 14 Tage voraus</div>
+        <div id="hover-wx-wind" class="fc-hover-info"></div>
+        <div id="scroll-wx-wind" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;">
+          <canvas id="wx-wind-chart" style="height:180px;display:block;"></canvas>
+        </div>
+      </div>`;
+      requestAnimationFrame(()=>{
+        buildChart('wx-wind-chart','scroll-wx-wind',{type:'line',
+          data:{labels,datasets:[
+            {label:'Wind',data:winds,borderColor:'#4a90d9',backgroundColor:'rgba(74,144,217,.15)',fill:true,tension:.35,pointRadius:1,borderWidth:2.5},
+            {label:'Böen',data:gusts,borderColor:'#a0c4f0',backgroundColor:'transparent',fill:false,tension:.35,pointRadius:0,borderWidth:1.5,borderDash:[3,3]}
+          ]},
+          plugins:[dayLinesPlugin(allTimes),hoverDiv('hover-wx-wind',(i,v,all)=>{const g=all.find(p=>p.datasetIndex===1)?.parsed.y;return`${allTimes[i].slice(11,16)} · ${v}${g?' (Böen '+g+')':''} km/h ${dirs[i]||''}`;})],
+          options:{layout:{padding:{top:16}},plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.datasetIndex===0?`Wind: ${c.parsed.y} km/h · ${dirs[c.dataIndex]||''}`:`Böen: ${c.parsed.y} km/h`}}},
+            scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:0,callback:(_,i)=>i%6===0?labels[i]:''},grid:{color:GRID}},
+              y:{min:0,ticks:{color:TICK,font:{size:10},callback:v=>v+' km/h'},grid:{color:GRID}}}}
+        });
+      });
+    } else if(type==='rain'){
+      bodyEl.innerHTML=`<div class="fc-sec" style="margin-top:0;">
+        <div class="fc-sec-title">${title} – 5 Tage zurück · Heute · 14 Tage voraus</div>
+        <div id="hover-wx-rain" class="fc-hover-info"></div>
+        <div id="scroll-wx-rain" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;">
+          <canvas id="wx-rain-chart" style="height:130px;display:block;"></canvas>
+        </div>
+      </div>`;
+      requestAnimationFrame(()=>{
+        buildChart('wx-rain-chart','scroll-wx-rain',{type:'bar',
+          data:{labels,datasets:[{label:'%',data:rains,
+            backgroundColor:'rgba(74,144,220,.65)',borderColor:'rgba(74,144,220,.9)',
+            borderWidth:0,borderRadius:2,borderSkipped:false}]},
+          plugins:[dayLinesPlugin(allTimes),hoverDiv('hover-wx-rain',(i,v)=>`${allTimes[i].slice(11,16)} · ${v}% Regen`)],
+          options:{layout:{padding:{top:16}},plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}%`}}},
+            scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:0,callback:(_,i)=>i%6===0?labels[i]:''},grid:{color:GRID}},
+              y:{min:0,max:100,ticks:{color:TICK,font:{size:10},callback:v=>v+'%'},grid:{color:GRID}}}}
+        });
+      });
+    } else {
+      // Temperatur
+      const tMin=Math.min(...temps.filter(v=>v!=null))-2;
+      const tMax=Math.max(...temps.filter(v=>v!=null))+2;
+      bodyEl.innerHTML=`<div class="fc-sec" style="margin-top:0;">
+        <div class="fc-sec-title">${title} – 5 Tage zurück · Heute · 14 Tage voraus</div>
+        <div id="hover-wx-temp" class="fc-hover-info"></div>
+        <div id="scroll-wx-temp" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;">
+          <canvas id="wx-temp-chart" style="height:180px;display:block;"></canvas>
+        </div>
+      </div>`;
+      requestAnimationFrame(()=>{
+        buildChart('wx-temp-chart','scroll-wx-temp',{type:'line',
+          data:{labels,datasets:[{label:'°C',data:temps,
+            borderColor:'#e07030',backgroundColor:'rgba(224,112,48,.15)',
+            fill:true,tension:.35,pointRadius:1,borderWidth:2.5}]},
+          plugins:[dayLinesPlugin(allTimes),hoverDiv('hover-wx-temp',(i,v)=>`${allTimes[i].slice(11,16)} · ${v}°C`)],
+          options:{layout:{padding:{top:16}},plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}°C`}}},
+            scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:0,callback:(_,i)=>i%6===0?labels[i]:''},grid:{color:GRID}},
+              y:{min:tMin,max:tMax,ticks:{color:TICK,font:{size:10},callback:v=>v+'°'},grid:{color:GRID}}}}
+        });
+      });
+    }
+  }catch(e){
+    const bodyEl2=document.getElementById(bodyId);
+    if(bodyEl2)bodyEl2.innerHTML=`<div class="fc-sec" style="margin-top:0;text-align:center;padding:24px;color:var(--text-light);">Daten nicht verfügbar · Verbindung prüfen</div>`;
+  }
 }
 
 // Alias (alter renderFcDays → wird nicht mehr direkt genutzt)
@@ -4727,12 +5039,9 @@ async function _renderFcDay(dayIdx){
         <div class="fc-detail-date-sub">${yr}</div>
       </div>
       <div class="fc-detail-wx-row">
-        <div style="flex:1;"></div>
+        <div class="fc-detail-wx-ico">${wxIco(wc)}</div>
         <div class="fc-detail-wx-right">
-          <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;">
-            <div class="fc-detail-wx-ico">${wxIco(wc)}</div>
-            <div class="fc-detail-wx-tmp">${tmax!=null?Math.round(tmax)+'°':'–'}</div>
-          </div>
+          <div class="fc-detail-wx-tmp">${tmax!=null?Math.round(tmax)+'°':'–'}</div>
           <div class="fc-detail-wx-desc">${wxDesc(wc)}${tmin!=null?' · ↕ '+Math.round(tmin)+'–'+Math.round(tmax)+'°':''}</div>
           <div class="fc-detail-wx-wind">💨 ${windMax!=null?Math.round(windMax):'–'} km/h ${windLabel(windDir)}</div>
         </div>
@@ -5027,12 +5336,20 @@ async function handleImp(e){const file=e.target.files[0];if(!file)return;const r
   await saveSessions();applyProf();rndrFangbuch();
   showToast('✅',`${newSessions.length} neue Sessions importiert · ${data.sessions.length-newSessions.length} Duplikate übersprungen`);
   e.target.value='';
-  // Auto-Sync für importierte Sessions ohne Wetterdaten
+  // Auto-Sync: Wetter für importierte Sessions nachladen (mit Ladebalken)
   setTimeout(async()=>{
     const needsWx=newSessions.filter(s=>!s.pressure&&!s.windSpeed&&s.date);
     if(!needsWx.length)return;
     if(!_plzCoords&&profile?.plz)await resolvePlzCoords(profile.plz);
-    if(_plzCoords)await fetchMissingWeather(needsWx);
+    if(!_plzCoords)return;
+    // Ladebalken manuell starten (fetchMissingWeather zeigt ihn intern)
+    const bar=document.getElementById('sync-progress');
+    const txt=document.getElementById('sync-progress-txt');
+    const fill=document.getElementById('sync-progress-fill');
+    if(bar){bar.classList.add('on');if(fill)fill.style.width='2%';if(txt)txt.textContent=`Wetterdaten für ${needsWx.length} Sessions laden…`;}
+    await fetchMissingWeather(needsWx);
+    // Fangbuch neu rendern damit Wetter-Badges erscheinen
+    rndrFangbuch();
   },1500);
 };reader.readAsText(file);}
 
