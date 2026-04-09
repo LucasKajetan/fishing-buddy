@@ -1220,7 +1220,7 @@ input[type=file]{display:none;}
     </div>
     <!-- Schritt 3: Ziele -->
     <div id="obs3" style="display:none;">
-      <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;font-weight:500;">Setze dir deine Ziele für diese Saison. Du kannst sie jederzeit anpassen.</p>
+      <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;font-weight:500;">Setze dir deine Ziele für diese Saison. Falls dein Wunschziel nicht dabei ist oder du einen Änderungswunsch hast, kontaktiere uns gerne!</p>
       <div id="ob-goals-list"></div>
       <button onclick="obAddGoal()" style="width:100%;padding:11px;background:var(--green-mist);border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);margin-top:4px;">+ Weiteres Ziel</button>
     </div>
@@ -2076,14 +2076,26 @@ function obAddGoal(){
   const row=document.createElement('div');
   row.id='ob-goal-'+idx;
   row.style.cssText='background:var(--cream);border-radius:var(--rs);padding:12px 14px;margin-bottom:12px;border:1px solid var(--cream-dark);position:relative;';
-  // Zieltyp-State für diesen Block
+
+  // Intelligente Fisch-Vorauswahl
+  let presetFish='Barsch';
+  if(idx===1){
+    const typ=obData.angeltyp||'';
+    if(typ==='Friedfisch')presetFish='Karpfen';
+    else if(typ==='Raubfisch')presetFish='Hecht';
+    else presetFish='Barsch';
+  } else {
+    const prevFish=document.getElementById('og-fish-'+(idx-1))?.value;
+    if(prevFish)presetFish=prevFish;
+  }
+
   row.innerHTML=`
     <button onclick="document.getElementById('ob-goal-${idx}').remove()" style="position:absolute;top:8px;right:8px;background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-light);">✕</button>
 
     <!-- Fischart -->
     <div class="ig" style="margin-bottom:10px;">
       <div class="il" style="margin-bottom:4px;">Fischart</div>
-      <select class="if" id="og-fish-${idx}">${FISH.map(f=>`<option>${f}</option>`).join('')}</select>
+      <select class="if" id="og-fish-${idx}">${FISH.map(f=>`<option${f===presetFish?' selected':''}>${f}</option>`).join('')}</select>
     </div>
 
     <!-- Zieltyp-Buttons -->
@@ -2136,6 +2148,8 @@ function obAddGoal(){
       </div>
     </div>`;
   el.appendChild(row);
+  // Auto-Scroll zum neuen Ziel-Block
+  setTimeout(()=>row.scrollIntoView({behavior:'smooth',block:'start'}),50);
 }
 
 function obSelType(idx, type){
@@ -4936,9 +4950,10 @@ async function openWxChart(type){
     const TT={mode:'index',intersect:false,backgroundColor:'rgba(40,60,50,.88)',
       titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'};
 
-    function buildChart(canvasId,scrollId,cfg){
+    function buildChart(canvasId,scrollId,cfg,h=180){
       const el=document.getElementById(canvasId);if(!el)return;
-      el.style.width=chartW+'px';
+      el.width=chartW;el.height=h;
+      el.style.width=chartW+'px';el.style.height=h+'px';
       const chart=new Chart(el,{...cfg,options:{...cfg.options,responsive:false,maintainAspectRatio:false}});
       // Auto-Scroll zum heutigen Tag
       const wrap=document.getElementById(scrollId);
@@ -5002,7 +5017,7 @@ async function openWxChart(type){
           options:{layout:{padding:{top:16}},plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.datasetIndex===0?`Wind: ${c.parsed.y} km/h · ${dirs[c.dataIndex]||''}`:`Böen: ${c.parsed.y} km/h`}}},
             scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:0,callback:(_,i)=>i%6===0?labels[i]:''},grid:{color:GRID}},
               y:{min:0,ticks:{color:TICK,font:{size:10},callback:v=>v+' km/h'},grid:{color:GRID}}}}
-        });
+        },180);
       });
     } else if(type==='rain'){
       bodyEl.innerHTML=`<div class="fc-sec" style="margin-top:0;">
@@ -5021,7 +5036,7 @@ async function openWxChart(type){
           options:{layout:{padding:{top:16}},plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}%`}}},
             scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:0,callback:(_,i)=>i%6===0?labels[i]:''},grid:{color:GRID}},
               y:{min:0,max:100,ticks:{color:TICK,font:{size:10},callback:v=>v+'%'},grid:{color:GRID}}}}
-        });
+        },130);
       });
     } else {
       // Temperatur
@@ -5043,7 +5058,7 @@ async function openWxChart(type){
           options:{layout:{padding:{top:16}},plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}°C`}}},
             scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:0,callback:(_,i)=>i%6===0?labels[i]:''},grid:{color:GRID}},
               y:{min:tMin,max:tMax,ticks:{color:TICK,font:{size:10},callback:v=>v+'°'},grid:{color:GRID}}}}
-        });
+        },180);
       });
     }
   }catch(e){
@@ -5217,9 +5232,10 @@ async function _renderFcDay(dayIdx){
         else el.style.opacity='0';
       }};
     }
-    const mkChart=(id,cfg)=>{
+    const mkChart=(id,cfg,h=160)=>{
       const el=document.getElementById(id);if(!el)return;
-      el.style.width=chartW+'px';
+      el.width=chartW;el.height=h;
+      el.style.width=chartW+'px';el.style.height=h+'px';
       new Chart(el,{...cfg,options:{...cfg.options,responsive:false,maintainAspectRatio:false}});
     };
 
@@ -5228,27 +5244,27 @@ async function _renderFcDay(dayIdx){
       mkChart('fc-temp-chart',{type:'line',data:{labels,datasets:[mkLineDs(temps,'#e07030','Temp')]},
         plugins:[hoverPlugin('hover-temp',(i,v)=>`${labels[i]}:00 · ${v}°C`)],
         options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}°C`}}},
-          scales:mkScales({ticks:{callback:v=>v+'°'},minMax:{min:tMin,max:tMax}})}});
+          scales:mkScales({ticks:{callback:v=>v+'°'},minMax:{min:tMin,max:tMax}})}},160);
     }
     if(rains.some(v=>v!=null)){
       mkChart('fc-rain-chart',{type:'bar',data:{labels,datasets:[{label:'%',data:rains,
         backgroundColor:'rgba(74,144,220,.6)',borderColor:'rgba(74,144,220,.9)',borderWidth:1,borderRadius:3,borderSkipped:false}]},
         plugins:[hoverPlugin('hover-rain',(i,v)=>`${labels[i]}:00 · ${v}% Regen`)],
         options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}%`}}},
-          scales:mkScales({ticks:{callback:v=>v+'%'},minMax:{min:0,max:100}})}});
+          scales:mkScales({ticks:{callback:v=>v+'%'},minMax:{min:0,max:100}})}},100);
     }
     if(winds.some(v=>v!=null)){
       mkChart('fc-wind-chart',{type:'line',data:{labels,datasets:[mkLineDs(winds,'#4a90d9','Wind'),mkLineDs(gusts,'#a0c8f0','Böen',false)]},
         plugins:[hoverPlugin('hover-wind',(i,v,all)=>{const g=all.find(p=>p.datasetIndex===1)?.parsed.y;return`${labels[i]}:00 · ${v}${g?' (Böen '+g+')':''} km/h ${windDirs[i]||''}`;})],
         options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.datasetIndex===0?`Wind: ${c.parsed.y} km/h · ${windDirs[c.dataIndex]||''}`:`Böen: ${c.parsed.y} km/h`}}},
-          scales:mkScales({ticks:{callback:v=>v+' km/h'},minMax:{min:0}})}});
+          scales:mkScales({ticks:{callback:v=>v+' km/h'},minMax:{min:0}})}},160);
     }
     if(presses.some(v=>v!=null)){
       const pMin=Math.min(...presses.filter(Boolean))-3,pMax=Math.max(...presses.filter(Boolean))+3;
       mkChart('fc-pres-chart',{type:'line',data:{labels,datasets:[mkLineDs(presses,'#5a9e7a','hPa')]},
         plugins:[hoverPlugin('hover-pres',(i,v)=>`${labels[i]}:00 · ${v} hPa`)],
         options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y} hPa`}}},
-          scales:mkScales({ticks:{callback:v=>v+' hPa'},minMax:{min:pMin,max:pMax}})}});
+          scales:mkScales({ticks:{callback:v=>v+' hPa'},minMax:{min:pMin,max:pMax}})}},160);
     }
   });
 }
