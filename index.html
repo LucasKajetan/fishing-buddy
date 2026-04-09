@@ -690,6 +690,8 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .ssbtn{display:flex;gap:8px;margin-top:2px;}
 .ssb{flex:1;padding:15px 10px;border-radius:var(--rs);border:2px solid var(--cream-dark);background:#fff;font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;transition:all .2s;text-align:center;color:var(--text-light);}
 .ssb.sc2{border-color:var(--green-mid);background:var(--green-mist);color:var(--green-deep);}
+/* Schneider aktiv – gleiche Intensität wie sc2, aber in Rot-Ton */
+.ssb.ss2{border-color:#c06060;background:#fdf0f0;color:#9b3030;}
 .ssb
 .cc{background:var(--green-mist);border:1.5px solid var(--green-pale);border-radius:var(--r);padding:16px;margin-bottom:10px;}
 .ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
@@ -773,14 +775,14 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 }
 .fb-cal-day{
   aspect-ratio:1;
-  min-height:34px;
+  min-height:34px;max-height:44px;   /* feste Höhe – Inhalt darf NICHT wachsen */
   border-radius:6px;display:flex;
   flex-direction:column;align-items:center;justify-content:center;
   cursor:pointer;transition:background .15s,transform .1s;
   position:relative;font-size:13px;font-weight:500;
   color:var(--text-dark);
-  /* overflow:visible damit der absolut positionierte Dot nicht abgeschnitten wird */
-  overflow:visible;box-sizing:border-box;
+  overflow:hidden;   /* Dot ist absolut innerhalb dieser Höhe */
+  box-sizing:border-box;
 }
 .fb-cal-day:hover{background:var(--green-mist);}
 .fb-cal-day.empty{cursor:default;color:transparent;pointer-events:none;background:transparent;}
@@ -803,9 +805,9 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fb-cal-day.has-catch .fb-cal-dot{background:var(--green-mid);}
 .fb-cal-day.skunked .fb-cal-dot{background:#d07070;}
 .fb-cal-dot{
-  position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
   width:4px;height:4px;border-radius:50%;
-  display:none;flex-shrink:0;
+  display:none;
 }
 .fb-cal-day.has-catch .fb-cal-dot,
 .fb-cal-day.skunked .fb-cal-dot{display:block;}
@@ -1037,8 +1039,23 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .obov.hidden{display:none;}
 .obhdr{padding:40px 30px 20px;color:#fff;flex-shrink:0;}
 .obdots{display:flex;gap:6px;margin-bottom:24px;}
-.oddot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s;}
-.oddot.on{background:var(--gold);width:24px;border-radius:4px;}
+.oddot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35);transition:all .3s;border:1.5px solid rgba(255,255,255,.25);}
+.oddot.on{background:var(--gold);width:28px;border-radius:5px;border-color:var(--gold);}
+
+/* Onboarding Abschluss-Overlay */
+.ob-finish-ov{
+  position:absolute;inset:0;z-index:300;
+  background:var(--green-deep);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 32px;text-align:center;
+  animation:obFadeIn .4s ease;
+}
+@keyframes obFadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.ob-finish-ico{font-size:72px;margin-bottom:20px;animation:obBounce .6s ease .2s both;}
+@keyframes obBounce{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.ob-finish-title{font-family:var(--fs);font-size:26px;font-weight:700;color:#fff;margin-bottom:14px;line-height:1.3;}
+.ob-finish-sub{font-size:15px;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:32px;}
+.ob-finish-btn{padding:16px 36px;background:var(--gold);color:var(--green-deep);border:none;border-radius:var(--rs);font-size:16px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.25);}
 .obtit{font-family:var(--fs);font-size:28px;font-weight:600;color:#fff;line-height:1.25;margin-bottom:8px;}
 .obsub{font-size:14px;color:rgba(255,255,255,.65);line-height:1.6;}
 .obbody{flex:1;background:var(--cream);border-radius:28px 28px 0 0;padding:28px 24px 36px;overflow-y:auto;}
@@ -1184,9 +1201,11 @@ input[type=file]{display:none;}
   </div>
   <div class="obbody">
     <div id="obs0">
+      <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;font-weight:500;">Wie sollen wir dich nennen?</p>
       <div class="obig"><label class="oblbl" for="ob-name">Dein Name</label><input type="text" class="obif" id="ob-name" placeholder="z.B. Klaus Fischer" oninput="obChk()" autocomplete="given-name"></div>
     </div>
     <div id="obs1" style="display:none;">
+      <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;font-weight:500;">Wie gehst du am liebsten angeln?</p>
       <div class="oblbl" style="margin-bottom:12px;">Dein Angelstil</div>
       <div class="obtgrid">
         <button class="obtbtn" id="ot-Friedfisch" onclick="selTyp('Friedfisch')"><span class="ico">🐠</span>Friedfisch</button>
@@ -1195,20 +1214,18 @@ input[type=file]{display:none;}
       </div>
     </div>
     <div id="obs2" style="display:none;">
+      <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;font-weight:500;">Warum die PLZ? Wir laden Wetter- und Tidekalender-Daten automatisch für dein Revier – ohne GPS-Pflicht.</p>
       <div class="obig">
         <label class="oblbl" for="ob-plz">Postleitzahl (PLZ)</label>
         <input type="text" class="obif" id="ob-plz" placeholder="z.B. 49377"
           inputmode="numeric" maxlength="5" pattern="[0-9]{5}"
           oninput="obChk()" autocomplete="postal-code">
         <div id="ob-plz-err" style="display:none;font-size:11px;color:var(--red);font-weight:600;margin-top:6px;"></div>
-        <p style="font-size:11px;color:var(--text-light);margin-top:8px;line-height:1.6;">
-          Deine PLZ ermöglicht automatische Wetter- und Beißindex-Vorhersagen – ohne Standort-Tracking.
-        </p>
       </div>
     </div>
     <!-- Schritt 3: Ziele -->
     <div id="obs3" style="display:none;">
-      <p style="font-size:12px;color:var(--text-light);margin-bottom:12px;line-height:1.6;">Definiere Fangsaison-Ziele. Du kannst diese jederzeit im Profil anpassen.</p>
+      <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;font-weight:500;">Setze dir deine Ziele für diese Saison. Du kannst sie jederzeit anpassen.</p>
       <div id="ob-goals-list"></div>
       <button onclick="obAddGoal()" style="width:100%;padding:11px;background:var(--green-mist);border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);margin-top:4px;">+ Weiteres Ziel</button>
     </div>
@@ -1413,7 +1430,7 @@ input[type=file]{display:none;}
       <div class="ig" style="margin-bottom:10px;">
         <label class="il" for="s-date">Datum</label>
         <input type="date" class="if" id="s-date"
-          oninput="updMoon()"
+          oninput="updMoon();_onDateChange(this.value)"
           onchange="updMoon()">
       </div>
       <!-- Wetter-Karte (nur wenn nicht Reduziert) -->
@@ -1534,6 +1551,12 @@ input[type=file]{display:none;}
 
 <!-- Mondkalender Overlay -->
 <div class="fsov" id="fs-moon-cal" role="dialog" aria-modal="true" style="z-index:115;">
+  <div class="fshdr">
+    <div><div class="fstitle">🌙 Mondkalender</div><div class="fsmeta" id="fs-moon-meta"></div></div>
+    <button class="xbtn" onclick="closeFs('moon-cal')">✕</button>
+  </div>
+  <div class="fsov-scroll" id="fs-moon-body"></div>
+</div>
 
 <!-- Ziele bearbeiten Overlay -->
 <div class="fsov" id="fs-goals" role="dialog" aria-modal="true" aria-label="Ziele bearbeiten">
@@ -1543,13 +1566,6 @@ input[type=file]{display:none;}
   </div>
   <div class="fsov-scroll" id="fs-goals-body"></div>
 </div>
-  <div class="fshdr">
-    <div><div class="fstitle">🌙 Mondkalender</div><div class="fsmeta" id="fs-moon-meta"></div></div>
-    <button class="xbtn" onclick="closeFs('moon-cal')">✕</button>
-  </div>
-  <div class="fsov-scroll" id="fs-moon-body"></div>
-</div>
-
 <!-- Tidenkalender Overlay -->
 <div class="fsov" id="fs-tide-cal" role="dialog" aria-modal="true" style="z-index:115;">
   <div class="fshdr">
@@ -1560,7 +1576,7 @@ input[type=file]{display:none;}
 </div>
 
 <!-- Wind Overlay -->
-<div class="fsov" id="fs-wx-wind" role="dialog" aria-modal="true" style="z-index:115;">
+<div class="fsov" id="fs-wx-wind" role="dialog" aria-modal="true" style="z-index:115;background:#f5f7f5;">
   <div class="fshdr">
     <div><div class="fstitle">💨 Windverlauf</div><div class="fsmeta" id="fs-wind-meta"></div></div>
     <button class="xbtn" onclick="closeFs('wx-wind')">✕</button>
@@ -1569,7 +1585,7 @@ input[type=file]{display:none;}
 </div>
 
 <!-- Regen Overlay -->
-<div class="fsov" id="fs-wx-rain" role="dialog" aria-modal="true" style="z-index:115;">
+<div class="fsov" id="fs-wx-rain" role="dialog" aria-modal="true" style="z-index:115;background:#f5f7f5;">
   <div class="fshdr">
     <div><div class="fstitle">🌧 Regenverlauf</div><div class="fsmeta" id="fs-rain-meta"></div></div>
     <button class="xbtn" onclick="closeFs('wx-rain')">✕</button>
@@ -1824,6 +1840,20 @@ function updMoon(){
   if(v)_tryLoadHistoricalWeather(v);
 }
 
+// Automatischer Wetter-Load bei Datumsfeld-Änderung
+// (Guard _lastWx kurz zurücksetzen damit jedes neue Datum frisch geladen wird)
+function _onDateChange(newDate){
+  if(!newDate)return;
+  const today=new Date();today.setHours(0,0,0,0);
+  const chosen=new Date(newDate+'T00:00:00');
+  if(chosen>=today)return; // nur Vergangenheit
+  // Wetter-Kachel zurücksetzen
+  document.getElementById('wx-ico').textContent='🌡️';
+  document.getElementById('wx-val').textContent='Lädt…';
+  _lastWx=null; // Guard aufheben → _tryLoadHistoricalWeather lädt neu
+  _tryLoadHistoricalWeather(newDate);
+}
+
 // Historisches Wetter für Vergangenheitsdaten nachladen
 // ── API-Weiche: forecast (<90 Tage) vs. archive (≥90 Tage) ─
 function _wxUrl(lat,lon,dateStr,fields){
@@ -1943,17 +1973,15 @@ function applyWxData(c,sourceLabel){
   const wDir=c.winddirection_10m!=null?windLabel(c.winddirection_10m):'';
   _lastWx={temp:c.temperature_2m,windSpeed:c.windspeed_10m,windDir:c.winddirection_10m,pressure:c.surface_pressure,humidity:c.relativehumidity_2m,clouds:c.cloudcover,precip:c.precipitation,code:wc};
   document.getElementById('wx-ico').textContent=wIcon;
-  // Detaillierte wx-val Anzeige: Datum DD.MM.YYYY + Temp + Wind + Druck
-  const dateVal=document.getElementById('s-date')?.value; // YYYY-MM-DD
-  let dateHint='';
-  if(dateVal){
-    const[yr,mo,dy]=dateVal.split('-');
-    dateHint=`${dy}.${mo}.${yr} ✓`;
-  }  document.getElementById('wx-val').innerHTML=
-    `<span style="font-weight:700;color:var(--text-dark)">${c.temperature_2m!=null?Math.round(c.temperature_2m)+'°C':'–'}</span>`+
-    ` · 💨 ${c.windspeed_10m!=null?Math.round(c.windspeed_10m):'-'} km/h${wDir?' '+wDir:''}`+
-    ` · ${c.surface_pressure!=null?Math.round(c.surface_pressure):'-'} hPa`+
-    (dateHint?` <span style="color:var(--text-light);font-size:10px;">(${dateHint})</span>`:'');
+  // Strikte Anzeige: DD.MM.YY | Temp°C | Windkm/h | Richtung | LuftdruckhPa
+  const dateVal=document.getElementById('s-date')?.value;
+  let datePart='';
+  if(dateVal){const[yr,mo,dy]=dateVal.split('-');datePart=`${dy}.${mo}.${yr.slice(2)}`;}
+  const tempPart=c.temperature_2m!=null?`${Math.round(c.temperature_2m)}°C`:'–';
+  const windPart=c.windspeed_10m!=null?`${Math.round(c.windspeed_10m)}km/h`:'–';
+  const dirPart=wDir||'';
+  const presPart=c.surface_pressure!=null?`${Math.round(c.surface_pressure)}hPa`:'–';
+  document.getElementById('wx-val').textContent=[datePart,tempPart,windPart,dirPart,presPart].filter(Boolean).join(' | ');
   const tempEl=document.getElementById('s-temp');if(tempEl)tempEl.value=Math.round(c.temperature_2m);
   const wi=document.getElementById('s-wx');
   if(wi){if(wc<=1)wi.value='☀️ Sonnig';else if(wc<=3)wi.value='⛅ Bewölkt';else if(wc<=67)wi.value='🌧 Regen';else if(wc<=77)wi.value='🌫 Nebel';else wi.value='💨 Windig';}
@@ -2188,7 +2216,51 @@ function obNext(){
   setTimeout(()=>document.getElementById('obs'+obStep)?.querySelector('input,select')?.focus(),100);
 }
 function selTyp(t){obData.angeltyp=t;document.querySelectorAll('.obtbtn').forEach(b=>{b.classList.toggle('sel',b.id==='ot-'+t);b.setAttribute('aria-pressed',String(b.id==='ot-'+t));});obChk();}
-function finOb(){document.getElementById('onboarding').classList.add('hidden');applyProf();}
+function finOb(){
+  // Abschluss-Overlay mit Animation
+  const obEl=document.getElementById('onboarding');
+  const finish=document.createElement('div');
+  finish.className='ob-finish-ov';
+  finish.innerHTML=`
+    <div class="ob-finish-ico">🎣</div>
+    <div class="ob-finish-title">Alles bereit!<br>Viel Erfolg beim Angeln.</div>
+    <div class="ob-finish-sub">Trage jetzt deinen ersten Fang ein und beobachte,<br>wie sich dein persönliches Angelbuch füllt.</div>
+    <button class="ob-finish-btn" onclick="_finishOb()">Loslegen →</button>`;
+  obEl.appendChild(finish);
+  obEl.classList.remove('hidden');
+  // Konfetti-artiger Hintergrundeffekt
+  _obConfetti(finish);
+  // Auto-Dismiss nach 4 Sekunden
+  window._obFinishTimer=setTimeout(_finishOb, 4000);
+}
+
+function _finishOb(){
+  clearTimeout(window._obFinishTimer);
+  document.getElementById('onboarding').classList.add('hidden');
+  applyProf();
+}
+
+function _obConfetti(container){
+  const colors=['#f5c842','#5fd090','#fff','#80c8ff','#ffaa60'];
+  for(let i=0;i<22;i++){
+    const dot=document.createElement('div');
+    const size=Math.random()*6+4;
+    dot.style.cssText=`
+      position:absolute;width:${size}px;height:${size}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}%;top:${Math.random()*60}%;
+      opacity:0;animation:obParticle ${1.2+Math.random()*1.2}s ease ${Math.random()*.8}s forwards;
+      pointer-events:none;`;
+    container.appendChild(dot);
+  }
+  if(!document.getElementById('ob-particle-style')){
+    const st=document.createElement('style');
+    st.id='ob-particle-style';
+    st.textContent=`@keyframes obParticle{0%{opacity:0;transform:translateY(0) scale(0)}40%{opacity:.9;transform:translateY(-40px) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(.5)}}`;
+    document.head.appendChild(st);
+  }
+}
 function applyProf(){
   if(!profile)return;
   document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v21`;
@@ -2862,13 +2934,19 @@ async function saveSess(){
               ti=document.getElementById('ftime-'+i),tk=document.getElementById('ftak-'+i),
               tb=document.getElementById('fb-'+i),tn=document.getElementById('fn-'+i);
         if(!te)continue;
-        const type=te.value.trim(),len=parseFloat(le?.value);
+        const type=te.value.trim(),lenVal=le?.value?.trim(),len=parseFloat(lenVal);
+        // Wenn Fischart vorhanden aber Länge fehlt → Abbruch mit Fokus
+        if(type&&(!lenVal||isNaN(len)||len<=0)){
+          showToast('⚠️',`Bitte Länge für ${type} eingeben!`,true);
+          if(le){le.focus();le.scrollIntoView({behavior:'smooth',block:'center'});}
+          return; // _saving wird im finally-Block zurückgesetzt
+        }
         if(type&&!isNaN(len)&&len>0){
           const bait=tb?.value.trim()||'',note=tn?.value.trim()||'';
           const pk=(window._pm||{})[i]||null;
           catches.push({type,length:len,time:ti?.value||'',taken:tk?.checked||false,bait,baitNote:note,score:fScore(type,len),photoKey:pk});
           addFav('fish',type);if(bait)addFav('bait',bait);if(bait&&note)addBaitKw(bait,note);
-        } else if(te.value.trim()||le?.value){
+        } else if(type||lenVal){
           skippedCatches++;
         }
       }
@@ -3452,7 +3530,7 @@ async function openDayDetail(dateKey){
             <button onclick="delSessFromDetail('${s.id}','${dateKey}')" style="padding:6px 10px;background:rgba(200,60,60,.12);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:#c04040;">🗑️</button>
           </div>
         </div>
-        <div style="padding:0 14px;">${catchRows}</div>
+        <div style="padding:0;">${catchRows}</div>
       </div>`;
     });
   }
@@ -3482,7 +3560,7 @@ async function openDayDetail(dateKey){
     </div>
     <div class="dd-body-pad">
     ${wxHtml}
-    <div class="slbl">Fänge</div>
+    <div class="slbl" style="padding-left:16px;">Fänge</div>
     ${sessionsHtml}
     </div>`;
 
@@ -3917,31 +3995,45 @@ function _renderMoreStats(){
 
   if(goals.length){
     if(isYear){
-      // Saison-Ansicht: einfache Liste wie bisher
+      // Saison-Ansicht: nur Fänge des aktuellen Jahres gegen Ziele
       goalsHtml = `<div class="slbl">🎯 Saisonziele ${curYear}</div>`;
       goals.forEach(g => {
-        goalsHtml += _goalCardHtml(g, allC, isYear, curYear);
+        // Ziel-Jahres-Filter: Ziel-Jahr respektieren wenn vorhanden
+        const targetYear = g.year || curYear;
+        const gCatches = sessions
+          .filter(s => s.date?.startsWith(String(targetYear)))
+          .flatMap(s => s.catches);
+        goalsHtml += _goalCardHtml(g, gCatches, isYear, targetYear);
       });
     } else {
-      // Gesamt-Ansicht: nach Jahren gruppiert (neuestes Jahr zuerst)
+      // Gesamt-Ansicht: Ziele nach ihrem eigenen Jahr gruppiert
       goalsHtml = `<div class="slbl">🎯 Historische Zielerfüllung</div>`;
 
-      // Alle Jahre aus Sessions ermitteln
-      const allYears = [...new Set(sessions.map(s => s.date?.slice(0,4)).filter(Boolean))]
+      // Alle Jahre aus Zielen UND Sessions ermitteln
+      const goalYears = [...new Set(goals.map(g => g.year || curYear))];
+      const sessionYears = [...new Set(sessions.map(s => s.date?.slice(0,4)).filter(Boolean))];
+      const allYears = [...new Set([...goalYears.map(String), ...sessionYears])]
         .sort((a,b) => parseInt(b)-parseInt(a));
 
       if(!allYears.length){
         goalsHtml += `<div class="card" style="text-align:center;padding:16px;color:var(--text-light);font-size:12px;">Noch keine Sessions vorhanden.</div>`;
       } else {
         allYears.forEach(yr => {
-          const yrCatches = sessions.filter(s => s.date?.startsWith(yr)).flatMap(s => s.catches);
+          // Nur Ziele die zu diesem Jahr gehören
+          const yrGoals = goals.filter(g => String(g.year || curYear) === String(yr));
+          if(!yrGoals.length) return; // kein Jahr-Block wenn keine Ziele
+          // Fänge exakt dieses Jahres
+          const yrCatches = sessions.filter(s => s.date?.startsWith(String(yr))).flatMap(s => s.catches);
           goalsHtml += `<div style="margin-bottom:8px;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--green-mid);padding:8px 0 6px;border-bottom:1px solid var(--green-pale);margin-bottom:8px;">${yr === String(curYear)?'Saison '+yr+' (aktuell)':'Saison '+yr}</div>`;
-          goals.forEach(g => {
+            <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--green-mid);padding:8px 0 6px;border-bottom:1px solid var(--green-pale);margin-bottom:8px;">${String(yr) === String(curYear)?'Saison '+yr+' (aktuell)':'Saison '+yr}</div>`;
+          yrGoals.forEach(g => {
             goalsHtml += _goalCardHtml(g, yrCatches, true, parseInt(yr));
           });
           goalsHtml += `</div>`;
         });
+        if(goalsHtml === `<div class="slbl">🎯 Historische Zielerfüllung</div>`){
+          goalsHtml += `<div class="card" style="text-align:center;padding:16px;color:var(--text-light);font-size:12px;">Ziele ohne Jahres-Zuordnung. Lege neue Ziele an um sie hier zu sehen.</div>`;
+        }
       }
     }
   } else {
@@ -4003,29 +4095,34 @@ function _renderGoalEdit(){
   if(meta) meta.textContent = `${goals.length} Ziel${goals.length !== 1 ? 'e' : ''}`;
 
   if(!goals.length){
-    body.innerHTML = `<div class="card" style="text-align:center;padding:28px 20px;margin:16px;">
-      <div style="font-size:36px;margin-bottom:10px;">🎯</div>
-      <div style="font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:6px;">Noch keine Ziele</div>
-      <div style="font-size:12px;color:var(--text-light);margin-bottom:18px;">Definiere Saisonziele um deinen Fortschritt zu tracken.</div>
-      <button onclick="openAddGoal()" style="width:100%;padding:12px;background:var(--green-deep);border:none;border-radius:var(--rs);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;color:#fff;">+ Erstes Ziel anlegen</button>
-    </div>`;
+    body.innerHTML = `
+      <div style="text-align:center;padding:40px 24px;">
+        <div style="font-size:48px;margin-bottom:14px;">🎯</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text-dark);margin-bottom:8px;">Noch keine Ziele</div>
+        <div style="font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:24px;">Definiere Saisonziele um deinen Fortschritt zu tracken.</div>
+        <button onclick="openAddGoal()" style="width:100%;padding:15px;background:var(--green-deep);border:none;border-radius:var(--rs);font-size:15px;font-weight:600;font-family:var(--fa);cursor:pointer;color:#fff;box-shadow:0 4px 14px rgba(45,74,53,.3);">+ Erstes Ziel anlegen</button>
+      </div>`;
     return;
   }
 
+  const curYear = new Date().getFullYear();
   body.innerHTML = `
-    <div style="padding:14px 16px 0;">
+    <div style="padding:16px 16px 0;">
       ${goals.map(g => {
         const gType = g.type || 'count';
         const typeBadge = gType==='pb'?'🏆 PB':gType==='range'?'📏 Korridor':'🎣 Stückzahl';
-        return `<div style="background:#fff;border-radius:var(--r);padding:12px 14px;margin-bottom:10px;border:1px solid rgba(200,221,208,.4);box-shadow:var(--sh-sm);display:flex;align-items:center;gap:12px;">
+        const yrBadge = g.year ? `<span style="font-size:10px;color:var(--text-light);margin-left:6px;">${g.year}</span>` : '';
+        return `<div style="background:#fff;border-radius:var(--r);padding:14px 16px;margin-bottom:10px;border:1px solid rgba(200,221,208,.4);box-shadow:var(--sh-sm);display:flex;align-items:center;gap:14px;">
           <div style="flex:1;min-width:0;">
-            <div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:2px;">${g.label}</div>
-            <div style="font-size:11px;color:var(--text-light);">${typeBadge}</div>
+            <div style="font-size:14px;font-weight:700;color:var(--text-dark);margin-bottom:3px;line-height:1.3;">${g.label}${yrBadge}</div>
+            <div style="font-size:11px;color:var(--text-light);font-weight:600;letter-spacing:.4px;">${typeBadge}</div>
           </div>
-          <button onclick="delGoal('${g.id}')" style="background:var(--cream-dark);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" aria-label="Ziel löschen">🗑️</button>
+          <button onclick="delGoal('${g.id}')" style="background:rgba(200,60,60,.1);border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;" aria-label="Ziel löschen" onmouseover="this.style.background='rgba(200,60,60,.2)'" onmouseout="this.style.background='rgba(200,60,60,.1)'">🗑️</button>
         </div>`;
       }).join('')}
-      <button onclick="openAddGoal()" style="width:100%;padding:12px;background:var(--green-mist);border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);margin-bottom:16px;">+ Weiteres Ziel hinzufügen</button>
+    </div>
+    <div style="padding:4px 16px 24px;">
+      <button onclick="openAddGoal()" style="width:100%;padding:14px;background:var(--green-mist);border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);">+ Weiteres Ziel hinzufügen</button>
     </div>`;
 }
 
@@ -4338,7 +4435,6 @@ function _renderFsFish(){
           <div class="frt">
             <div class="flv">${c.length}</div>
             <div class="flu">cm</div>
-            <div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score||fScore(fish,c.length)}</div>
           </div>
         </div>`;
       }).join('')}
@@ -4602,11 +4698,11 @@ async function openTideCal(){
 async function _renderTideCal(river,startDate){
   _tideRiver=river;
 
-  // Pegelonline WSV: Stationskurznamen (direkt im URL verwendbar)
+  // Pegelonline WSV: feste UUIDs (stabiler als Stationsnamen in der URL)
   const STATIONS={
-    weser:{name:'BREMEN OSLEBSHAUSEN',label:'Weser',display:'Weser · Bremen Oslebshausen'},
-    elbe: {name:'ST. PAULI',          label:'Elbe', display:'Elbe · St. Pauli (Hamburg)'},
-    ems:  {name:'EMDEN',              label:'Ems',  display:'Ems · Emden'}
+    weser:{uuid:'59ab7fc9-4f71-46ab-a1db-04f86d8b3c95',label:'Weser',display:'Weser · Bremen Oslebshausen'},
+    elbe: {uuid:'1c62f913-902d-4bfb-a9b0-9f5b6ca885f0',label:'Elbe', display:'Elbe · Hamburg St. Pauli'},
+    ems:  {uuid:'14578b9b-640a-4299-82d8-21d4cdd6dfa3',label:'Ems',  display:'Ems · Emden'}
   };
   const st=STATIONS[river]||STATIONS.weser;
   const BASE='https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/';
@@ -4640,9 +4736,8 @@ async function _renderTideCal(river,startDate){
     const isoStart=fetchStart.toISOString().replace(/\.\d{3}Z$/,'+01:00').replace('Z','+01:00');
     const isoEnd  =fetchEnd.toISOString().replace(/\.\d{3}Z$/,'+01:00').replace('Z','+01:00');
 
-    // Stationsnamen URL-encodieren (Leerzeichen → %20, Punkte bleiben)
-    const stationPath=encodeURIComponent(st.name);
-    const url=`${BASE}${stationPath}/W/measurements.json`+
+    // UUID direkt in der URL verwenden – kein Encoding-Problem
+    const url=`${BASE}${st.uuid}/W/measurements.json`+
       `?start=${encodeURIComponent(startDate+'T00:00:00+01:00')}`+
       `&end=${encodeURIComponent(startDate+'T23:59:00+01:00')}`;
 
@@ -4861,23 +4956,26 @@ async function openWxChart(type){
     // Tages-Trennlinien als annotation-ähnliche vertikale Linien via afterDraw plugin
     function dayLinesPlugin(times){
       return{id:'dayLines',afterDraw(chart){
+        if(!chart.chartArea)return;
         const ctx=chart.ctx;
         ctx.save();
         times.forEach((t,i)=>{
           const lbl=dayLabels[i];if(!lbl)return;
           const x=chart.scales.x.getPixelForIndex(i);
-          ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=1;
+          // Trennlinie
+          ctx.strokeStyle='rgba(0,0,0,.10)';
+          ctx.lineWidth=1;
           ctx.setLineDash([4,4]);
-          ctx.beginPath();ctx.moveTo(x,chart.chartArea.top);ctx.lineTo(x,chart.chartArea.bottom);ctx.stroke();
-          // Day label
-          if(t.startsWith(todayStr)){
-            ctx.fillStyle='rgba(74,124,89,.7)';
-          } else {
-            ctx.fillStyle='rgba(100,120,110,.5)';
-          }
-          ctx.font='bold 9px system-ui';ctx.textAlign='center';
-          ctx.fillText(lbl,x,chart.chartArea.top-2);
-          ctx.restore();ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(x,chart.chartArea.top);
+          ctx.lineTo(x,chart.chartArea.bottom);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          // Tag-Label über dem Chart
+          ctx.fillStyle=t.startsWith(todayStr)?'rgba(74,124,89,.85)':'rgba(90,110,100,.55)';
+          ctx.font='bold 9px system-ui,sans-serif';
+          ctx.textAlign='center';
+          ctx.fillText(lbl,x,chart.chartArea.top-3);
         });
         ctx.restore();
       }};
@@ -4905,7 +5003,7 @@ async function openWxChart(type){
         buildChart('wx-wind-chart','scroll-wx-wind',{type:'line',
           data:{labels,datasets:[
             {label:'Wind',data:winds,borderColor:'#4a90d9',backgroundColor:'rgba(74,144,217,.15)',fill:true,tension:.35,pointRadius:1,borderWidth:2.5},
-            {label:'Böen',data:gusts,borderColor:'#a0c4f0',backgroundColor:'transparent',fill:false,tension:.35,pointRadius:0,borderWidth:1.5,borderDash:[3,3]}
+            {label:'Böen',data:gusts,borderColor:'#a0c4f0',backgroundColor:'rgba(160,196,240,0)',fill:false,tension:.35,pointRadius:0,borderWidth:1.5,borderDash:[3,3]}
           ]},
           plugins:[dayLinesPlugin(allTimes),hoverDiv('hover-wx-wind',(i,v,all)=>{const g=all.find(p=>p.datasetIndex===1)?.parsed.y;return`${allTimes[i].slice(11,16)} · ${v}${g?' (Böen '+g+')':''} km/h ${dirs[i]||''}`;})],
           options:{layout:{padding:{top:16}},plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.datasetIndex===0?`Wind: ${c.parsed.y} km/h · ${dirs[c.dataIndex]||''}`:`Böen: ${c.parsed.y} km/h`}}},
@@ -5107,8 +5205,14 @@ async function _renderFcDay(dayIdx){
       x:{ticks:{color:TICK,font:{size:10},maxRotation:0,callback:(_,i)=>i%2===0?labels[i]:''},grid:{color:GRID}},
       y:{ticks:{color:TICK,font:{size:10},...(yOpts.ticks||{})},grid:{color:GRID},...(yOpts.minMax||{})}
     });
+    // hex→rgba Helper damit backgroundColor immer valid ist
+    function hex2rgba(hex,a){
+      const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+      return`rgba(${r},${g},${b},${a})`;
+    }
     const mkLineDs=(data,color,label,fill=true)=>({
-      label,data,borderColor:color,backgroundColor:fill?color+'22':'transparent',
+      label,data,borderColor:color,
+      backgroundColor:fill?hex2rgba(color,.14):'rgba(0,0,0,0)',
       fill,tension:.35,pointRadius:2,pointHoverRadius:5,pointBackgroundColor:color,borderWidth:2.5
     });
     const TT={mode:'index',intersect:false,backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'};
