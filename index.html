@@ -4795,7 +4795,8 @@ async function _renderTideCal(river,startDate){
     requestAnimationFrame(()=>{
       const c=document.getElementById('tide-main-chart');
       if(!c||typeof Chart==='undefined')return;
-      c.style.width=chartW+'px';
+      c.width=chartW;c.height=220;
+      c.style.width=chartW+'px';c.style.height='220px';
 
       // Hoch-/Niedrigwasser-Annotationen als Plugin
       const hwAnnotPlugin={id:'hwAnnot',afterDatasetsDraw(chart){
@@ -4865,33 +4866,28 @@ async function _renderTideCal(river,startDate){
 
 // ── Einzel-Kachel Wetter-Charts ────────────────────────────
 async function openWxChart(type){
-  if(!_fcHourlyData)return;
-  const ovId2=type==='wind'?'wx-wind':type==='rain'?'wx-rain':'wx-temp';
-  openFs(ovId2);
-
-  // ── Lade 5 Tage Vergangenheit + 14 Tage Zukunft (20 Tage gesamt) ──
+  // Koordinaten prüfen (nicht _fcHourlyData – wir laden eigene 20-Tage-Daten)
   const coords=_plzCoords||gpsCoords;
-  if(!coords){showToast('⚠️','Standort nicht verfügbar',true);return;}
+  if(!coords){showToast('⚠️','PLZ im Profil hinterlegen für Wetter-Charts',true);return;}
 
-  const todayDate=new Date();todayDate.setHours(0,0,0,0);
-  const startDate=new Date(todayDate);startDate.setDate(startDate.getDate()-5);
-  const endDate=new Date(todayDate);endDate.setDate(endDate.getDate()+14);
-  const startStr=startDate.toISOString().split('T')[0];
-  const endStr=endDate.toISOString().split('T')[0];
-  const todayStr=todayDate.toISOString().split('T')[0];
+  const ovId2=type==='wind'?'wx-wind':type==='rain'?'wx-rain':'wx-temp';
+  const bodyId=type==='wind'?'fs-wind-body':type==='rain'?'fs-rain-body':'fs-temp-body';
+  const metaId=type==='wind'?'fs-wind-meta':type==='rain'?'fs-rain-meta':'fs-temp-meta';
+  const title=type==='wind'?'💨 Wind':type==='rain'?'🌧 Regen':'🌡 Temperatur';
 
-  let ovId,bodyId,metaId,title;
-  if(type==='wind'){
-    ovId='wx-wind';bodyId='fs-wind-body';metaId='fs-wind-meta';title='💨 Wind';
-  } else if(type==='rain'){
-    ovId='wx-rain';bodyId='fs-rain-body';metaId='fs-rain-meta';title='🌧 Regen';
-  } else {
-    ovId='wx-temp';bodyId='fs-temp-body';metaId='fs-temp-meta';title='🌡 Temperatur';
-  }
-
+  // Overlay ZUERST öffnen, dann Lade-Spinner setzen
+  openFs(ovId2);
   const bodyEl=document.getElementById(bodyId);
   if(bodyEl)bodyEl.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-light);">🔄 Lade 20-Tage-Verlauf…</div>`;
   if(metaId&&document.getElementById(metaId))document.getElementById(metaId).textContent='5 Tage zurück · 14 Tage voraus';
+
+  // Datums-Berechnung: 5 Tage zurück bis 14 Tage voraus
+  const todayDate=new Date();todayDate.setHours(0,0,0,0);
+  const startDateObj=new Date(todayDate);startDateObj.setDate(startDateObj.getDate()-5);
+  const endDateObj=new Date(todayDate);endDateObj.setDate(endDateObj.getDate()+14);
+  const startStr=startDateObj.toISOString().split('T')[0];
+  const endStr=endDateObj.toISOString().split('T')[0];
+  const todayStr=todayDate.toISOString().split('T')[0];
 
   try{
     // Forecast für Zukunft + Archive für Vergangenheit in einem Call (forecast nimmt start_date)
@@ -5206,7 +5202,8 @@ async function _renderFcDay(dayIdx){
     </div>
     ${insightsHtml}`;
 
-  requestAnimationFrame(()=>{
+  // Charts nach Overlay-Transition rendern (320ms transition delay)
+  setTimeout(()=>{
     if(typeof Chart==='undefined')return;
     const TICK='#6a7a6f',GRID='rgba(0,0,0,.07)';
     const mkScales=(yOpts)=>({
@@ -5266,44 +5263,7 @@ async function _renderFcDay(dayIdx){
         options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y} hPa`}}},
           scales:mkScales({ticks:{callback:v=>v+' hPa'},minMax:{min:pMin,max:pMax}})}},160);
     }
-  });
-}
-
-// Tide-Daten für Weser Bremen (Bremerhaven ~8.58°O, 53.54°N = Tidepegel)
-async function _loadTide(dateStr){
-  const infoEl=document.getElementById('fc-tide-info');
-  try{
-    // Open-Meteo Marine: Wellenhöhe als Tide-Proxy (Nordsee-Ästuar)
-    const url=`https://marine-api.open-meteo.com/v1/marine?latitude=53.54&longitude=8.58&hourly=ocean_current_velocity,wave_height&start_date=${dateStr}&end_date=${dateStr}&timezone=auto`;
-    const r=await fetch(url);
-    const data=await r.json();
-    const h=data.hourly;
-    if(!h||!h.wave_height){if(infoEl)infoEl.textContent='Keine Tidendaten verfügbar.';return;}
-
-    const labels=h.time.map(t=>t.slice(11,16));
-    const heights=h.wave_height.map(v=>v!=null?Math.round(v*100)/100:null);
-
-    const tc=document.getElementById('fc-tide-chart');
-    if(!tc||typeof Chart==='undefined')return;
-    if(infoEl)infoEl.textContent='Pegelverlauf Bremerhaven (Wellenhöhe Nordseeästuar)';
-
-    new Chart(tc,{
-      type:'line',
-      data:{labels,datasets:[{
-        label:'m',data:heights,
-        borderColor:'#60c8ff',backgroundColor:'rgba(96,200,255,.18)',
-        fill:true,tension:.5,pointRadius:0,borderWidth:2
-      }]},
-      options:{
-        responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(0,20,40,.85)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.75)'}},
-        scales:{
-          x:{ticks:{color:'rgba(255,255,255,.45)',font:{size:9},maxRotation:0,maxTicksLimit:8},grid:{color:'rgba(255,255,255,.06)'}},
-          y:{ticks:{color:'rgba(255,255,255,.45)',font:{size:9},callback:v=>v+'m'},grid:{color:'rgba(255,255,255,.08)'}}
-        }
-      }
-    });
-  }catch(e){if(infoEl)infoEl.textContent='Tidendaten nicht verfügbar.';}
+  }, 350);
 }
 
 // Wetterbeschreibung aus WMO-Code
