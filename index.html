@@ -285,29 +285,40 @@ position:relative;}
 /* ── Day-Detail: Header scrollt MIT dem Inhalt ── */
 .fc-detail-hdr{
   background:#fff;border-bottom:1px solid rgba(200,221,208,.4);
-  padding:14px 16px 12px;position:relative;
-  /* kein flex-shrink:0 → scrollt mit */
+  padding:10px 16px 12px;position:relative;
 }
-/* Zeile 1: links Datum+Tag, rechts Wetter+Temp */
+/* Zeile 1: X-Button allein oben rechts, dann Datum darunter */
+.fc-detail-close{
+  position:absolute;top:10px;right:12px;
+  background:var(--cream-dark);border:none;
+  width:30px;height:30px;border-radius:50%;cursor:pointer;
+  font-size:15px;display:flex;align-items:center;justify-content:center;
+  color:var(--text-mid);transition:background .15s;
+  z-index:2;
+}
+.fc-detail-close:hover{background:var(--green-pale);color:var(--green-deep);}
+/* Datum-Block (oben links, etwas nach unten gerückt via padding-top) */
 .fc-detail-hdr-row1{
-  display:flex;justify-content:space-between;align-items:flex-start;
-  margin-bottom:6px;padding-right:40px; /* Platz für X-Button */
+  display:flex;align-items:flex-end;gap:0;
+  padding-top:4px;margin-bottom:10px;
+  padding-right:40px; /* Platz für X */
 }
 .fc-detail-date{
-  font-family:var(--fs);font-size:19px;font-weight:700;color:var(--text-dark);
-  line-height:1.15;
+  font-family:var(--fs);font-size:20px;font-weight:700;color:var(--text-dark);line-height:1.2;
 }
-.fc-detail-date-sub{font-size:12px;color:var(--text-light);margin-top:1px;}
-.fc-detail-wx{text-align:right;flex-shrink:0;}
-.fc-detail-wx-ico{font-size:26px;line-height:1;}
-.fc-detail-wx-tmp{font-size:22px;font-weight:700;color:var(--text-dark);line-height:1;}
-/* Zeile 2: Beschreibung + Wind */
-.fc-detail-desc-row{
-  font-size:12px;color:var(--text-mid);margin-bottom:6px;
-  display:flex;align-items:center;gap:8px;
+.fc-detail-date-sub{font-size:13px;color:var(--text-light);margin-left:6px;padding-bottom:2px;}
+/* Zeile 2: Icon+Temp rechtsbündig, darunter Beschreibung+Wind */
+.fc-detail-wx-row{
+  display:flex;justify-content:flex-end;align-items:flex-start;
+  gap:10px;margin-bottom:8px;
 }
+.fc-detail-wx-right{text-align:right;}
+.fc-detail-wx-ico{font-size:30px;line-height:1;}
+.fc-detail-wx-tmp{font-size:26px;font-weight:700;color:var(--text-dark);line-height:1.1;}
+.fc-detail-wx-desc{font-size:13px;color:var(--text-mid);margin-top:3px;}
+.fc-detail-wx-wind{font-size:12px;color:var(--text-light);margin-top:2px;}
 /* Info-Band Chips */
-.fc-detail-band{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:4px;}
+.fc-detail-band{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:4px;}
 .fc-detail-chip{
   background:var(--green-mist);border-radius:20px;padding:4px 10px;
   font-size:11px;font-weight:600;color:var(--green-deep);white-space:nowrap;
@@ -315,21 +326,12 @@ position:relative;}
 .fc-detail-chip.bite-hi{background:#d4f4e2;color:#1a5c33;}
 .fc-detail-chip.bite-mid{background:#fef3cd;color:#8a6820;}
 .fc-detail-chip.bite-lo{background:var(--cream-dark);color:var(--text-mid);}
-/* X-Button */
-.fc-detail-close{
-  position:absolute;top:12px;right:12px;
-  background:var(--cream-dark);border:none;
-  width:30px;height:30px;border-radius:50%;cursor:pointer;
-  font-size:15px;display:flex;align-items:center;justify-content:center;
-  color:var(--text-mid);transition:background .15s;
-}
-.fc-detail-close:hover{background:var(--green-pale);color:var(--green-deep);}
 /* Swipe-Dots */
 .fc-day-dots{display:flex;gap:6px;justify-content:center;padding:8px 0 4px;}
 .fc-day-dot{width:6px;height:6px;border-radius:50%;background:rgba(74,124,89,.2);transition:all .2s;}
 .fc-day-dot.on{background:var(--green-mid);width:16px;border-radius:3px;}
 
-/* Scrollbereich – jetzt das GANZE Overlay (Header + Body zusammen) */
+/* Scrollbereich – Header + Body zusammen */
 .fc-detail-scroll{
   flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
   overscroll-behavior-y:contain;scrollbar-width:none;
@@ -337,7 +339,7 @@ position:relative;}
 }
 .fc-detail-scroll::-webkit-scrollbar{display:none;}
 
-/* Sektionen – helles Design */
+/* Sektionen */
 .fc-sec{
   background:#fff;border-radius:14px;padding:14px 16px;margin:0 14px 12px;
   border:1px solid rgba(200,221,208,.35);box-shadow:0 1px 4px rgba(45,74,53,.06);
@@ -346,17 +348,29 @@ position:relative;}
   font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;
   color:var(--text-light);margin-bottom:10px;
 }
-/* GROSSE Charts */
-.fc-canvas-wrap{position:relative;height:170px;width:100%;}
-.fc-rain-wrap{position:relative;height:110px;width:100%;}
+/* Scrollbare Chart-Container – overflow-x scroll für Multi-Tag-View */
+.fc-canvas-wrap{
+  position:relative;height:170px;
+  overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.fc-canvas-wrap::-webkit-scrollbar{display:none;}
+.fc-canvas-wrap canvas{display:block;}
+.fc-rain-wrap{
+  position:relative;height:110px;
+  overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.fc-rain-wrap::-webkit-scrollbar{display:none;}
+.fc-rain-wrap canvas{display:block;}
 
-/* Chart Hover-Info-Div */
+/* Chart Hover-Info */
 .fc-hover-info{
-  min-height:36px;padding:6px 10px;margin-bottom:6px;
+  min-height:34px;padding:5px 10px;margin-bottom:6px;
   background:var(--green-mist);border-radius:8px;
   font-size:13px;font-weight:600;color:var(--green-deep);
-  display:flex;align-items:center;gap:8px;
-  transition:opacity .2s;
+  display:flex;align-items:center;gap:8px;transition:opacity .2s;
 }
 .fc-hover-info:empty{opacity:0;}
 
@@ -815,24 +829,35 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 }
 .fb-card:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
 .fb-card:active{transform:scale(.99);}
-/* Hauptinhalt */
-.fb-card-content{flex:1;min-width:0;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;}
-.fb-card-row1{display:flex;align-items:baseline;gap:6px;margin-bottom:2px;}
-.fb-date{font-family:var(--fa);font-size:12px;font-weight:700;color:var(--text-dark);white-space:nowrap;flex-shrink:0;}
-/* Gewässer nimmt verfügbare Breite → immer bündig links, Überlauf abgeschnitten */
+/* Hauptinhalt – nimmt volle Breite, Inhalt unten bündig */
+.fb-card-content{
+  flex:1;min-width:0;padding:10px 10px 10px 12px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+/* Zeile 1: Datum links (shrink:0) + Gewässer nimmt Rest */
+.fb-card-row1{display:flex;align-items:baseline;gap:5px;margin-bottom:2px;}
+.fb-date{
+  font-family:var(--fa);font-size:11px;font-weight:700;
+  color:var(--text-dark);white-space:nowrap;flex-shrink:0;
+}
 .fb-water{
-  font-family:var(--fa);font-size:13px;font-weight:600;color:var(--text-dark);
+  font-family:var(--fa);font-size:13px;font-weight:700;color:var(--text-dark);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   flex:1;min-width:0;
 }
-/* Uhrzeit und Fischart in zweiter Zeile, selbe Schriftgröße */
-.fb-card-row2{display:flex;align-items:center;gap:6px;}
+/* Zeile 2: Uhrzeit + Fischart */
+.fb-card-row2{display:flex;align-items:center;gap:5px;}
 .fb-time{font-size:11px;font-weight:400;color:var(--text-light);white-space:nowrap;flex-shrink:0;}
-.fb-fish{font-size:11px;font-weight:400;color:var(--text-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;}
-
-/* rechter Fang-Zähler – feste Breite damit linke Spalte immer gleich viel Platz hat */
-.fb-cnt-col{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 14px 0 8px;flex-shrink:0;min-width:44px;}
-.fb-cnt{font-size:28px;font-weight:700;color:var(--green-deep);line-height:1;}
+.fb-fish{
+  font-size:11px;font-weight:400;color:var(--text-light);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;
+}
+/* Rechter Fang-Zähler – feste Breite, ebenfalls unten bündig */
+.fb-cnt-col{
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:10px 14px 10px 6px;flex-shrink:0;min-width:42px;
+}
+.fb-cnt{font-size:26px;font-weight:700;color:var(--green-deep);line-height:1;}
 .fb-cnt.skunked-cnt{color:#d06060;}
 .fb-cnt-lbl{font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-light);margin-top:1px;text-align:center;}
 
@@ -1375,8 +1400,8 @@ input[type=file]{display:none;}
 <div class="page on" id="page-new">
   <div class="sc">
     <div id="warn-wrap" aria-live="polite"></div>
-
-    <!-- Eingabe-Modus Toggle -->
+    <!-- Seitentitel (dynamisch: "Fang melden" vs. "Session bearbeiten") -->
+    <div id="new-page-title" style="font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:12px;font-family:var(--fs);">Fang melden</div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
       <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);">Eingabe-Modus</div>
       <div style="display:flex;gap:0;background:var(--cream-dark);border-radius:20px;padding:2px;">
@@ -1451,13 +1476,6 @@ input[type=file]{display:none;}
           </div>
         </div>
       </div><!-- /new-manual-wx-wrap -->
-      <!-- Sichttiefe – im Reduziert-Modus ausgeblendet -->
-      <div id="new-clarity-wrap">
-        <label class="il" for="s-clarity">Sichttiefe / Trübung</label>
-        <input type="text" class="if" id="s-clarity" placeholder="z.B. Klar · optional"
-          onfocus="rndrClarityChips()" onblur="dHide('clarity-chips')" autocomplete="off">
-        <div class="crow" id="clarity-chips" style="display:none;" role="listbox"></div>
-      </div>
     </div>
 
     <div class="slbl">Erfolgreich gewesen?</div>
@@ -1517,6 +1535,15 @@ input[type=file]{display:none;}
 
 <!-- Mondkalender Overlay -->
 <div class="fsov" id="fs-moon-cal" role="dialog" aria-modal="true" style="z-index:115;">
+
+<!-- Ziele bearbeiten Overlay -->
+<div class="fsov" id="fs-goals" role="dialog" aria-modal="true" aria-label="Ziele bearbeiten">
+  <div class="fshdr">
+    <div><div class="fstitle">🎯 Ziele bearbeiten</div><div class="fsmeta" id="fs-goals-meta"></div></div>
+    <button class="xbtn" onclick="closeFs('goals')">✕</button>
+  </div>
+  <div class="fsov-scroll" id="fs-goals-body"></div>
+</div>
   <div class="fshdr">
     <div><div class="fstitle">🌙 Mondkalender</div><div class="fsmeta" id="fs-moon-meta"></div></div>
     <button class="xbtn" onclick="closeFs('moon-cal')">✕</button>
@@ -1668,10 +1695,8 @@ function setInputMode(mode){
   // Wetter-Karte + manuelle Felder ausblenden im reduzierten Modus
   const moonWxRow=document.getElementById('new-moon-wx-row');
   const manualWxWrap=document.getElementById('new-manual-wx-wrap');
-  const clarityWrap=document.getElementById('new-clarity-wrap');
   if(moonWxRow)moonWxRow.style.display=reduced?'none':'';
   if(manualWxWrap)manualWxWrap.style.display=reduced?'none':'';
-  if(clarityWrap)clarityWrap.style.display=reduced?'none':'';
 
   // Silent Weather Hint
   const hint=document.getElementById('silent-wx-hint');
@@ -1723,7 +1748,6 @@ const FICONS={Hecht:'🐟',Zander:'🐠',Barsch:'🐡',Karpfen:'🦈',Forelle:'�
 const FMULT={Barsch:2.0,Zander:1.3,Hecht:1.0};
 const MMM={Hecht:50,Zander:45,Barsch:20,Karpfen:35,Forelle:25,Bachforelle:25,Regenbogenforelle:25,Aal:45,Schleie:25,Äsche:30,Wels:60};
 const ATYP={Friedfisch:['Karpfen','Brachse','Schleie','Rotauge','Brassen'],Raubfisch:['Hecht','Zander','Barsch','Wels','Aal'],Allround:['Hecht','Zander','Barsch','Karpfen','Forelle']};
-const CLARITY=['Klar','Leicht trüb','Milchig-trüb','Dreckig-trüb','Kaffeebraun','Grünlich'];
 const STOPWORDS=new Set(['auf','mit','den','dem','die','das','der','und','oder','bei','am','an','im','in','zu','zum','zur','ein','eine','aus','von','ich','es','er','sie','wir','für','ist','hat','war','einen','einem','einer','nach','über','unter','durch','gegen','ohne','trotz']);
 const SZ_DISC='Angaben ohne Gewähr – stets beim zuständigen Fischereiverband prüfen.';
 const KONF=['#C4963A','#E8B54A','#7BAE8A','#2D4A35','#C8DDD0','#F5E8CC','#4A7C59','#F8F5EF'];
@@ -1905,35 +1929,56 @@ function getMoon(ds){
 function applyWxData(c,sourceLabel){
   const wc=c.weathercode||0;
   const wIcon=wc<=1?'☀️':wc<=3?'⛅':wc<=67?'🌧':wc<=77?'🌨':'🌫';
+  const wDir=c.winddirection_10m!=null?windLabel(c.winddirection_10m):'';
   _lastWx={temp:c.temperature_2m,windSpeed:c.windspeed_10m,windDir:c.winddirection_10m,pressure:c.surface_pressure,humidity:c.relativehumidity_2m,clouds:c.cloudcover,precip:c.precipitation,code:wc};
   document.getElementById('wx-ico').textContent=wIcon;
-  document.getElementById('wx-val').textContent=`${c.temperature_2m}°C · ${c.windspeed_10m}km/h · ${Math.round(c.surface_pressure||0)}hPa`;
+  // Detaillierte wx-val Anzeige: Datum der Daten + Temp + Wind + Druck
+  const dateVal=document.getElementById('s-date')?.value;
+  const dateHint=dateVal?dateVal.slice(5).replace('-','.'):'';
+  document.getElementById('wx-val').innerHTML=
+    `<span style="font-weight:700;color:var(--text-dark)">${c.temperature_2m!=null?Math.round(c.temperature_2m)+'°C':'–'}</span>`+
+    ` · 💨 ${c.windspeed_10m!=null?Math.round(c.windspeed_10m):'-'} km/h${wDir?' '+wDir:''}`+
+    ` · ${c.surface_pressure!=null?Math.round(c.surface_pressure):'-'} hPa`+
+    (dateHint?` <span style="color:var(--text-light);font-size:10px;">(${dateHint})</span>`:'');
   const tempEl=document.getElementById('s-temp');if(tempEl)tempEl.value=Math.round(c.temperature_2m);
   const wi=document.getElementById('s-wx');
   if(wi){if(wc<=1)wi.value='☀️ Sonnig';else if(wc<=3)wi.value='⛅ Bewölkt';else if(wc<=67)wi.value='🌧 Regen';else if(wc<=77)wi.value='🌫 Nebel';else wi.value='💨 Windig';}
-  // F4: manual-wx bleibt sichtbar und bearbeitbar – wird nur mit Daten befüllt
-  // (kein display:none mehr)
   const strip=document.getElementById('gps-strip');
   if(strip){document.getElementById('gps-txt').textContent=sourceLabel;strip.classList.add('ok');setTimeout(()=>strip.style.display='none',2000);}
 }
 
 async function fetchWx(){
+  // ── Datum prüfen: Vergangenheit → historisch, sonst aktuell ──
+  const dateVal=document.getElementById('s-date')?.value;
+  if(dateVal){
+    const today=new Date();today.setHours(0,0,0,0);
+    const chosen=new Date(dateVal+'T00:00:00');
+    if(chosen<today){
+      // Vergangenheit: historische Wetterdaten laden
+      // _lastWx-Guard kurz aufheben damit expliziter Klick immer lädt
+      const saved=_lastWx;_lastWx=null;
+      await _tryLoadHistoricalWeather(dateVal);
+      if(!_lastWx)_lastWx=saved; // Fehler → alten Zustand wiederherstellen
+      return;
+    }
+  }
+
   const strip=document.getElementById('gps-strip');
   strip.style.display='flex';
   document.getElementById('gps-txt').textContent='Wetter wird geladen…';
   document.getElementById('wx-val').textContent='Lädt…';
 
-  // Strategie 1: PLZ-Koordinaten (kein GPS-Prompt nötig)
+  // Strategie 1: PLZ-Koordinaten
   if(_plzCoords){
     const url=`https://api.open-meteo.com/v1/forecast?latitude=${_plzCoords.lat}&longitude=${_plzCoords.lon}&current=temperature_2m,weathercode,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation&timezone=auto`;
     try{
       const r=await fetch(url);const data=await r.json();const c=data.current||{};
-      applyWxData(c,`${_plzCoords.city} ✓`);
+      applyWxData(c,`${_plzCoords.city||'PLZ'} ✓`);
       return;
     }catch(e){}
   }
 
-  // Strategie 2: GPS (Fallback)
+  // Strategie 2: GPS-Fallback
   if(!navigator.geolocation){
     strip.style.display='none';
     document.getElementById('wx-val').textContent='PLZ ungültig – manuell eintragen';
@@ -2220,25 +2265,44 @@ function addBaitKw(bait,note){
   saveFavs();
 }
 
-// _extractPhrases: Unigrams + Bigrams (z.B. „Fox rage" wenn erstes Wort groß)
+// _extractPhrases: Unigrams + Bigrams + Trigrams
+// Längere Phrasen (z.B. "Fox Rage Olive 13cm") werden bevorzugt über Einzelwörter
 function _extractPhrases(note){
   if(!note)return[];
   const words=note.split(/[\s,;\/]+/)
     .map(w=>w.replace(/[.!?()"""]+/g,'').trim())
     .filter(w=>w.length>=2&&!STOPWORDS.has(w.toLowerCase()));
-  const unigrams=words.filter(w=>
-    /^[A-Z]\d{2,3}$/i.test(w)||
-    /^\d+(cm|mm|g|m)$/i.test(w)||
-    w.length>=3
-  );
-  const bigrams=[];
-  for(let i=0;i<words.length-1;i++){
-    const a=words[i],b=words[i+1];
-    if(a.length>=2&&b.length>=2&&/^[A-ZÄÖÜ]/.test(a)){
-      bigrams.push(a+' '+b);
+  if(!words.length)return[];
+
+  const results=[];
+  const usedIndices=new Set();
+
+  // Trigrams (3 Wörter) – erstes Wort groß
+  for(let i=0;i<words.length-2;i++){
+    const a=words[i],b=words[i+1],c=words[i+2];
+    if(/^[A-ZÄÖÜ]/.test(a)&&a.length>=2&&b.length>=2&&c.length>=2){
+      results.push(a+' '+b+' '+c);
+      usedIndices.add(i);usedIndices.add(i+1);usedIndices.add(i+2);
     }
   }
-  return[...bigrams,...unigrams];
+  // Bigrams (2 Wörter) – erstes Wort groß, nur wenn Wörter noch nicht in Trigram
+  for(let i=0;i<words.length-1;i++){
+    if(usedIndices.has(i)&&usedIndices.has(i+1))continue;
+    const a=words[i],b=words[i+1];
+    if(/^[A-ZÄÖÜ]/.test(a)&&a.length>=2&&b.length>=2){
+      results.push(a+' '+b);
+      usedIndices.add(i);usedIndices.add(i+1);
+    }
+  }
+  // Unigrams (einzelne Wörter) – nur wenn nicht bereits in Phrase
+  for(let i=0;i<words.length;i++){
+    if(usedIndices.has(i))continue;
+    const w=words[i];
+    if(/^[A-Z]\d{2,3}$/i.test(w)||/^\d+(cm|mm|g|m)$/i.test(w)||w.length>=3){
+      results.push(w);
+    }
+  }
+  return results;
 }
 
 // dHide: verzögertes Ausblenden eines Dropdown-Containers (200ms Delay)
@@ -2330,36 +2394,42 @@ function bSel(id,v){
   updNoteChips(id);
 }
 
-// Fix 3c: Notiz-Chips – nur gelernte Phrases, Bigrams zuerst
+// Notiz-Chips – gelernte Phrasen, Top 5, längere Phrasen zuerst
+// usedPhrases: bereits in diesem Notiz-Feld eingefügte Phrasen (Set pro catch-id)
+const _usedNoteChips={};
+
 function rndrNChips(id,fv){
   const el=document.getElementById('nc-'+id);if(!el)return;
   const bait=document.getElementById('fb-'+id)?.value?.trim();
-  const ctx=ctxIdx();
-  // bKw aus ctxIdx nutzt noch alten tokenize → wir bevorzugen favs.baitKeywords
-  const favsKw=(bait&&favs.baitKeywords?.[bait]&&Object.keys(favs.baitKeywords[bait]).length)
-    ?topN(favs.baitKeywords[bait],5):[];
-  const chips=favsKw; // nur eigene gelernte Phrasen
-  if(!chips.length){el.style.display='none';el.innerHTML='';return;}
-  if(fv&&!chips.some(c=>c.toLowerCase().includes(fv.toLowerCase()))){el.style.display='none';return;}
+  if(!bait||!favs.baitKeywords?.[bait]){el.style.display='none';el.innerHTML='';return;}
+
+  // Alle Phrasen nach Score, längere bevorzugt (Länge × Häufigkeit)
+  const kws=favs.baitKeywords[bait];
+  const scored=Object.entries(kws)
+    .map(([ph,cnt])=>({ph,score:cnt*(ph.includes(' ')?ph.split(' ').length:1)}))
+    .sort((a,b)=>b.score-a.score);
+
+  // Bereits verwendete rausfiltern
+  const used=_usedNoteChips[id]||new Set();
+  let chips=scored.filter(x=>!used.has(x.ph)).slice(0,5).map(x=>x.ph);
+
+  if(fv)chips=chips.filter(c=>c.toLowerCase().includes(fv.toLowerCase()));
+  if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
   el.innerHTML=chips.map(n=>{
     const s=n.replace(/'/g,"\\'");
     return`<button class="chip cc" onmousedown="nSel(${id},'${s}')">${n}</button>`;
   }).join('');
 }
+
 function nSel(id,v){
   const el=document.getElementById('fn-'+id);if(!el)return;
   el.value=el.value?el.value.trimEnd()+' '+v:v;
-  document.getElementById('nc-'+id).style.display='none';
+  // Chip als verwendet markieren und sofort neu rendern (nächster rückt nach)
+  if(!_usedNoteChips[id])_usedNoteChips[id]=new Set();
+  _usedNoteChips[id].add(v);
+  rndrNChips(id,'');
 }
-
-// CLARITY CHIPS
-function rndrClarityChips(){
-  const el=document.getElementById('clarity-chips');if(!el)return;
-  el.style.display='flex';
-  el.innerHTML=CLARITY.map(c=>{const s=c.replace(/'/g,"\\'");return`<button class="chip ct" onmousedown="clarSel('${s}')">${c}</button>`;}).join('');
-}
-function clarSel(v){document.getElementById('s-clarity').value=v;document.getElementById('clarity-chips').style.display='none';}
 
 // Fix 1c: Prüft ob Fang-Uhrzeit innerhalb Session-Start/Ende liegt
 function chkCatchTime(id){
@@ -2597,17 +2667,11 @@ function _autoTabWater(){
 }
 
 // Länge → Uhrzeit-Feld (nach Eingabe + Tab/Enter)
+// _autoTabLength: bei blur aus Längenfeld nichts tun.
+// Der Nutzer tippt selbst ins nächste Feld; Chips erscheinen sofort via onfocus.
+// Kein focus()-Zwang → kein aggressives Aufpoppen des time-Widgets.
 function _autoTabLength(id){
-  const lenEl=document.getElementById('fl-'+id);
-  if(!lenEl||!lenEl.value)return;
-  setTimeout(()=>{
-    const timeEl=document.getElementById('ftime-'+id);
-    if(!timeEl)return;
-    // Cursor ins Feld setzen, aber time-Widget NICHT erzwingen.
-    // showPicker() / click() würde das native Widget öffnen → absichtlich weggelassen.
-    // Nur focus() damit der Nutzer direkt tippen kann – kein Popup.
-    timeEl.focus({preventScroll:true});
-  },120);
+  // intentionally empty – no forced focus
 }
 
 function _focusLength(id){
@@ -2650,16 +2714,9 @@ function addNoteChip(id,val){
 
 // Notiz-Chips aktualisieren wenn Köder gewechselt wird
 function updNoteChips(id){
-  const el=document.getElementById('nc-'+id);if(!el)return;
-  const bait=document.getElementById('fb-'+id)?.value?.trim()||'';
-  const favsKw=(bait&&favs.baitKeywords?.[bait]&&Object.keys(favs.baitKeywords[bait]).length)
-    ?topN(favs.baitKeywords[bait],5):[];
-  if(!favsKw.length){el.style.display='none';el.innerHTML='';return;}
-  el.style.display='flex';
-  el.innerHTML=favsKw.map(c=>{
-    const safe=c.replace(/'/g,"\'");
-    return`<button class="fav-btn fav-btn-note" onmousedown="addNoteChip(${id},'${safe}')">${c}</button>`;
-  }).join('');
+  // _usedNoteChips für diesen Block zurücksetzen (neuer Köder = neue Vorschläge)
+  delete _usedNoteChips[id];
+  rndrNChips(id,'');
 }
 
 function updCR(id){
@@ -2692,8 +2749,7 @@ async function saveSess(){
     const water=waterVal||'';
     const wx=document.getElementById('s-wx').value;
     const temp=document.getElementById('s-temp').value;
-    const clarity=document.getElementById('s-clarity').value.trim();
-
+  
     if(!date||!start){showToast('⚠️','Datum und Startzeit erforderlich!',true);return;}
 
     // Pflichtfeld Gewässer
@@ -2747,7 +2803,7 @@ async function saveSess(){
       temp:temp?parseFloat(temp):(_lastWx?.temp||null),
       lat:gpsCoords?.lat||null,lon:gpsCoords?.lon||null,
       moonIcon:moon.icon,moonName:moon.name,moonIllum:moon.illum,
-      skunked:effSk,autoSkunked:!sk&&effSk,clarity:clarity||null,
+      skunked:effSk,autoSkunked:!sk&&effSk,
       pressure:_lastWx?.pressure||null,windSpeed:_lastWx?.windSpeed||null,
       windDir:_lastWx?.windDir||null,humidity:_lastWx?.humidity||null,
       clouds:_lastWx?.clouds||null,precip:_lastWx?.precip||null,
@@ -2756,19 +2812,27 @@ async function saveSess(){
     sessions.unshift(sess);
     await saveOneSess(sess);
 
-    // v13 Edit-Safety: Original erst JETZT löschen
+    // Edit-Safety: Original erst JETZT löschen
+    const wasEditing=!!_editPendingId;
     if(_editPendingId){
       sessions=sessions.filter(x=>String(x.id)!==String(_editPendingId));
       await idbD('sessions',String(_editPendingId));
       _editPendingId=null;
     }
 
-    // Ziel-Check: wurde ein Ziel gerade erreicht?
+    // Bei Edit: kein Walkout, kein Overlay – einfach Toast + zurück ins Fangbuch
+    if(wasEditing){
+      showToast('✅','Session aktualisiert ✓');
+      resetForm();
+      showPage('fangbuch');
+      return;
+    }
+
+    // Ziel-Check: nur bei neuen Sessions
     const justReached=_checkGoalAchieved(catches);
 
     if(catches.length>0&&!effSk){
       if(justReached){
-        // Walkout zuerst, dann normales Overlay
         showGoalWalkout(justReached,()=>showSuc(catches,waterVal));
       } else {
         showSuc(catches,waterVal);
@@ -2784,17 +2848,23 @@ async function saveSess(){
   }
 }
 function resetForm(){
- 
   _editPendingId=null;
+  // Seitentitel zurücksetzen
+  const titleEl=document.getElementById('new-page-title');
+  if(titleEl)titleEl.textContent='Fang melden';
+  const saveBtn=document.querySelector('#page-new .btn[onclick="saveSess()"]');
+  if(saveBtn)saveBtn.textContent='Session speichern ✓';
   document.getElementById('catches-con').innerHTML='';
   document.getElementById('s-water').value='';document.getElementById('w-chips').style.display='none';
-  document.getElementById('s-temp').value='';document.getElementById('s-clarity').value='';
-  document.getElementById('clarity-chips').style.display='none';document.getElementById('start-chips').style.display='none';
+  document.getElementById('s-temp').value='';
+  document.getElementById('start-chips').style.display='none';
   document.getElementById('manual-wx').style.display='';
   gpsCoords=null;_lastWx=null;
   const gs=document.getElementById('gps-strip');gs.style.display='none';gs.classList.remove('ok');
   document.getElementById('wx-ico').textContent='🌡️';document.getElementById('wx-val').textContent='Tippen zum Laden';
   catchCount=0;sucMode='catch';setSuc('catch');window._pm={};
+  // Notiz-Chip-Used-Set zurücksetzen
+  Object.keys(_usedNoteChips).forEach(k=>delete _usedNoteChips[k]);
   const n=new Date();
   document.getElementById('s-date').value=n.toISOString().split('T')[0];
   document.getElementById('s-start').value=n.getHours().toString().padStart(2,'0')+':00';
@@ -3349,7 +3419,7 @@ async function openDayDetail(dateKey){
 async function reloadWeatherForDay(dateKey){
   const daySess=sessions.filter(s=>String(s.date)===String(dateKey));
   if(!daySess.length)return;
-  showToast('🌡️','Lade Wetterdaten…');
+  // fetchMissingWeather zeigt den sync-progress Balken selbst an
   await fetchMissingWeather(daySess);
   openDayDetail(dateKey); // Overlay neu aufbauen
 }
@@ -3516,7 +3586,6 @@ async function editSess(id){
   if(fv('s-end'))fv('s-end').value=s.end||'';
   if(fv('s-water'))fv('s-water').value=s.water||'';
   if(fv('s-temp'))fv('s-temp').value=s.temp!=null?s.temp:'';
-  if(fv('s-clarity'))fv('s-clarity').value=s.clarity||'';
   if(fv('s-wx')&&s.weather){
     const opt=[...fv('s-wx').options].find(o=>o.value===s.weather||o.text===s.weather);
     if(opt)fv('s-wx').value=opt.value;
@@ -3571,6 +3640,12 @@ async function editSess(id){
 
  
   _editPendingId=String(id);
+  // Seitentitel dynamisch ändern
+  const titleEl=document.getElementById('new-page-title');
+  if(titleEl)titleEl.textContent='Session bearbeiten';
+  // Save-Button Text anpassen
+  const saveBtn=document.querySelector('#page-new .btn[onclick="saveSess()"]');
+  if(saveBtn)saveBtn.textContent='Änderungen speichern ✓';
   showToast('✏️','Session geladen – Änderungen speichern');
 }
 
@@ -3700,6 +3775,32 @@ function openMoreStats(){
   _renderMoreStats();
 }
 
+// Ziel-Kachel HTML erzeugen (wiederverwendbar für Saison + Gesamt-Ansicht)
+function _goalCardHtml(g, catches, isYear, yr){
+  const target = g.count || 1;
+  const qualifying = catches.filter(c => _catchQualifiesForGoal(c, g)).length;
+  const pct = Math.min(100, Math.round(qualifying / target * 100));
+  const achieved = qualifying >= target;
+  const gType = g.type || 'count';
+  let typeDesc = '';
+  if(gType === 'range') typeDesc = `${g.minLen}–${g.maxLen>0?g.maxLen:'∞'} cm · `;
+  else if(gType === 'pb') typeDesc = `über ${g.minLen} cm · `;
+  else if(g.minLen > 0) typeDesc = `ab ${g.minLen} cm · `;
+  const typeBadge = gType==='pb'?'🏆 PB':gType==='range'?'📏 Korridor':'🎣 Stückzahl';
+  return `<div class="goal-card${achieved?' achieved':''}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+      <div class="goal-name" style="margin-bottom:0;">${achieved?'✅ ':''}${g.label}</div>
+      <span style="font-size:10px;color:var(--text-light);white-space:nowrap;margin-left:8px;margin-top:2px;">${typeBadge}</span>
+    </div>
+    <div class="goal-sub">${achieved?'Ziel erreicht! 🎉':typeDesc+'Saison '+yr}</div>
+    <div class="goal-bar"><div class="goal-bar-fill" style="width:${pct}%;"></div></div>
+    <div class="goal-progress">
+      <span>${qualifying} / ${target}${gType==='pb'?' cm':' Fänge'}</span>
+      <span>${pct}%</span>
+    </div>
+  </div>`;
+}
+
 function _renderMoreStats(){
   const curYear = new Date().getFullYear();
   const isYear = _msSeason === 'year';
@@ -3722,43 +3823,42 @@ function _renderMoreStats(){
   // Ziel-Kacheln mit _catchQualifiesForGoal (typ-bewusst)
   const goals = profile?.goals || [];
   let goalsHtml = '';
+
   if(goals.length){
-    goalsHtml = `<div class="slbl">🎯 Saisonziele</div>`;
-    goals.forEach(g => {
-      const target = g.count || 1;
-      const qualifying = allC.filter(c => _catchQualifiesForGoal(c, g)).length;
-      const pct = Math.min(100, Math.round(qualifying / target * 100));
-      const achieved = qualifying >= target;
-      const gType = g.type || 'count';
+    if(isYear){
+      // Saison-Ansicht: einfache Liste wie bisher
+      goalsHtml = `<div class="slbl">🎯 Saisonziele ${curYear}</div>`;
+      goals.forEach(g => {
+        goalsHtml += _goalCardHtml(g, allC, isYear, curYear);
+      });
+    } else {
+      // Gesamt-Ansicht: nach Jahren gruppiert (neuestes Jahr zuerst)
+      goalsHtml = `<div class="slbl">🎯 Historische Zielerfüllung</div>`;
 
-      // Typ-spezifische Beschreibung
-      let typeDesc = '';
-      if(gType === 'range') typeDesc = `${g.minLen}–${g.maxLen>0?g.maxLen:'∞'} cm · `;
-      else if(gType === 'pb') typeDesc = `über ${g.minLen} cm · `;
-      else if(g.minLen > 0) typeDesc = `ab ${g.minLen} cm · `;
+      // Alle Jahre aus Sessions ermitteln
+      const allYears = [...new Set(sessions.map(s => s.date?.slice(0,4)).filter(Boolean))]
+        .sort((a,b) => parseInt(b)-parseInt(a));
 
-      // Typ-Badge
-      const typeBadge = gType==='pb'?'🏆 PB':gType==='range'?'📏 Korridor':'🎣 Stückzahl';
-
-      goalsHtml += `<div class="goal-card${achieved?' achieved':''}">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
-          <div class="goal-name" style="margin-bottom:0;">${achieved?'✅ ':''}${g.label}</div>
-          <span style="font-size:10px;color:var(--text-light);white-space:nowrap;margin-left:8px;margin-top:2px;">${typeBadge}</span>
-        </div>
-        <div class="goal-sub">${achieved?'Ziel erreicht! 🎉':typeDesc+(!isYear?'Gesamt':'Saison '+curYear)}</div>
-        <div class="goal-bar"><div class="goal-bar-fill" style="width:${pct}%;"></div></div>
-        <div class="goal-progress">
-          <span>${qualifying} / ${target}${gType==='pb'?' cm':' Fänge'}</span>
-          <span>${pct}%</span>
-        </div>
-      </div>`;
-    });
+      if(!allYears.length){
+        goalsHtml += `<div class="card" style="text-align:center;padding:16px;color:var(--text-light);font-size:12px;">Noch keine Sessions vorhanden.</div>`;
+      } else {
+        allYears.forEach(yr => {
+          const yrCatches = sessions.filter(s => s.date?.startsWith(yr)).flatMap(s => s.catches);
+          goalsHtml += `<div style="margin-bottom:8px;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--green-mid);padding:8px 0 6px;border-bottom:1px solid var(--green-pale);margin-bottom:8px;">${yr === String(curYear)?'Saison '+yr+' (aktuell)':'Saison '+yr}</div>`;
+          goals.forEach(g => {
+            goalsHtml += _goalCardHtml(g, yrCatches, true, parseInt(yr));
+          });
+          goalsHtml += `</div>`;
+        });
+      }
+    }
   } else {
     goalsHtml = `<div class="slbl">🎯 Saisonziele</div>
     <div class="card" style="text-align:center;padding:20px;color:var(--text-light);">
       <div style="font-size:28px;margin-bottom:8px;">🎯</div>
       <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Noch keine Ziele definiert</div>
-      <div style="font-size:11px;">Über das Menü → Ziele bearbeiten hinzufügen.</div>
+      <div style="font-size:11px;">Über Menü → Ziele bearbeiten hinzufügen.</div>
     </div>`;
   }
 
@@ -3800,27 +3900,50 @@ function _renderMoreStats(){
 
 // Ziele auch im Profil-Edit verwalten
 function openGoalEdit(){
-  const goals=profile?.goals||[];
-  const body=document.getElementById('fs-profile-edit-body');
-  if(!body)return;
-  const sec=document.createElement('div');
-  sec.innerHTML=`<div class="slbl" style="margin-top:16px;">🎯 Saisonziele</div>
-    <div id="pe-goals-list">
-      ${goals.map((g,i)=>`<div class="goal-card" style="margin-bottom:8px;display:flex;align-items:center;gap:10px;padding:10px 14px;">
-        <div style="flex:1;font-size:13px;font-weight:600;">${g.label}</div>
-        <button onclick="delGoal('${g.id}')" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-light);">🗑️</button>
-      </div>`).join('')}
-    </div>
-    <button onclick="openAddGoal()" style="width:100%;padding:11px;background:var(--green-mist);border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);">+ Ziel hinzufügen</button>`;
-  body.appendChild(sec);
+  openFs('goals');
+  _renderGoalEdit();
+}
+
+function _renderGoalEdit(){
+  const goals = profile?.goals || [];
+  const body = document.getElementById('fs-goals-body');
+  const meta = document.getElementById('fs-goals-meta');
+  if(!body) return;
+  if(meta) meta.textContent = `${goals.length} Ziel${goals.length !== 1 ? 'e' : ''}`;
+
+  if(!goals.length){
+    body.innerHTML = `<div class="card" style="text-align:center;padding:28px 20px;margin:16px;">
+      <div style="font-size:36px;margin-bottom:10px;">🎯</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:6px;">Noch keine Ziele</div>
+      <div style="font-size:12px;color:var(--text-light);margin-bottom:18px;">Definiere Saisonziele um deinen Fortschritt zu tracken.</div>
+      <button onclick="openAddGoal()" style="width:100%;padding:12px;background:var(--green-deep);border:none;border-radius:var(--rs);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;color:#fff;">+ Erstes Ziel anlegen</button>
+    </div>`;
+    return;
+  }
+
+  body.innerHTML = `
+    <div style="padding:14px 16px 0;">
+      ${goals.map(g => {
+        const gType = g.type || 'count';
+        const typeBadge = gType==='pb'?'🏆 PB':gType==='range'?'📏 Korridor':'🎣 Stückzahl';
+        return `<div style="background:#fff;border-radius:var(--r);padding:12px 14px;margin-bottom:10px;border:1px solid rgba(200,221,208,.4);box-shadow:var(--sh-sm);display:flex;align-items:center;gap:12px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:2px;">${g.label}</div>
+            <div style="font-size:11px;color:var(--text-light);">${typeBadge}</div>
+          </div>
+          <button onclick="delGoal('${g.id}')" style="background:var(--cream-dark);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" aria-label="Ziel löschen">🗑️</button>
+        </div>`;
+      }).join('')}
+      <button onclick="openAddGoal()" style="width:100%;padding:12px;background:var(--green-mist);border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);margin-bottom:16px;">+ Weiteres Ziel hinzufügen</button>
+    </div>`;
 }
 
 async function delGoal(gid){
-  if(!profile?.goals)return;
-  profile.goals=profile.goals.filter(g=>g.id!==gid);
+  if(!profile?.goals) return;
+  profile.goals = profile.goals.filter(g => g.id !== gid);
   await saveProfile();
   showToast('🗑️','Ziel gelöscht');
-  openGoalEdit();
+  _renderGoalEdit(); // Overlay sofort aktualisieren
 }
 
 // Profil-Edit Ziel hinzufügen
@@ -3954,6 +4077,7 @@ async function saveNewGoal(){
   await saveProfile();
   document.getElementById('goal-add-modal')?.remove();
   showToast('🎯','Ziel gespeichert!');
+  _renderGoalEdit(); // Overlay aktualisieren falls offen
 }
 
 // rndrChartsSeason (bereinigt – nur noch wenn direkt benötigt)
@@ -4046,28 +4170,86 @@ function openFsHours(){
   });
 }
 
+let _fsFishSeason = 'year'; // 'year' | 'all'
+let _fsFishName = '';
+
 function openFsFish(fish){
+  _fsFishName = fish;
   openFs('fish');
-  document.getElementById('fs-fish-title').textContent=fish;
-  const rows=[];sessions.forEach(s=>{s.catches.filter(c=>c.type===fish).forEach(c=>rows.push({...c,date:s.date,water:s.water}));});
-  rows.sort((a,b)=>b.length-a.length);
-  const maxL=rows.length?rows[0].length:0;
-  const avgL=rows.length?(rows.reduce((s,c)=>s+c.length,0)/rows.length).toFixed(1):'–';
-  const mm=MMM[fish];
-  document.getElementById('fs-fish-meta').textContent=`${rows.length} Fänge · ×${FMULT[fish]||'1.0'}${mm?' · MM:'+mm+'cm':''}`;
- 
+  document.getElementById('fs-fish-title').textContent = fish;
+  _renderFsFish();
+}
+
+function _renderFsFish(){
+  const fish = _fsFishName;
+  if(!fish) return;
+  const curYear = new Date().getFullYear();
+  const isYear = _fsFishSeason === 'year';
+
+  // Quell-Sessions filtern
+  const srcSessions = isYear
+    ? sessions.filter(s => s.date?.startsWith(String(curYear)))
+    : sessions;
+
+  const rows = [];
+  srcSessions.forEach(s => {
+    s.catches.filter(c => c.type === fish).forEach(c => rows.push({...c, date:s.date, water:s.water}));
+  });
+  rows.sort((a,b) => b.length - a.length);
+
+  const mm = MMM[fish];
+  document.getElementById('fs-fish-meta').textContent =
+    `${rows.length} Fänge · ×${FMULT[fish]||'1.0'}${mm?' · MM:'+mm+'cm':''}`;
+
+  // Toggle HTML
+  const toggleHtml = `<div class="ms-toggle" style="margin:12px 16px 0;">
+    <button class="ms-toggle-btn${isYear?' on':''}" onclick="_fsFishSeason='year';_renderFsFish()">Saison ${curYear}</button>
+    <button class="ms-toggle-btn${!isYear?' on':''}" onclick="_fsFishSeason='all';_renderFsFish()">Gesamt</button>
+  </div>`;
+
   if(!rows.length){
-    document.getElementById('fs-fish-content').innerHTML=`<div class="empty"><div class="empty-ico">${fIco(fish)}</div><div class="empty-t">Noch kein ${fish} gefangen</div><div class="empty-s">Erfasse deine erste ${fish}-Session um hier Statistiken zu sehen.</div></div>`;
+    document.getElementById('fs-fish-content').innerHTML = toggleHtml +
+      `<div class="empty" style="padding-top:24px;"><div class="empty-ico">${fIco(fish)}</div><div class="empty-t">Kein ${fish} in ${isYear?'Saison '+curYear:'diesem Zeitraum'}</div><div class="empty-s">${isYear?'Wechsle zu "Gesamt" um alle Fänge zu sehen.':'Noch keine Einträge vorhanden.'}</div></div>`;
     return;
   }
-  const sclasses={};rows.forEach(c=>{const cls=Math.floor(c.length/10)*10;const k=cls+'er';sclasses[k]=(sclasses[k]||0)+1;});
-  const maxSC=Math.max(...Object.values(sclasses),1);
-  const scHTML=Object.entries(sclasses).sort((a,b)=>parseInt(b[0])-parseInt(a[0])).map(([lbl,cnt])=>`<div class="scrow"><div class="sclbl">${lbl}</div><div class="scbar"><div class="scfill" style="width:${Math.round(cnt/maxSC*100)}%"></div></div><div class="sccnt">${cnt}×</div></div>`).join('');
-  document.getElementById('fs-fish-content').innerHTML=`
-    ${scHTML?`<div class="slbl">Größenklassen</div><div class="card" style="padding:14px 18px;">${scHTML}</div>`:''}
-    <div class="slbl">Alle ${fish}-Fänge</div>
+
+  const sclasses = {};
+  rows.forEach(c => {
+    const cls = Math.floor(c.length / 10) * 10;
+    const k = cls + 'er';
+    sclasses[k] = (sclasses[k]||0) + 1;
+  });
+  const maxSC = Math.max(...Object.values(sclasses), 1);
+  const scHTML = Object.entries(sclasses)
+    .sort((a,b) => parseInt(b[0]) - parseInt(a[0]))
+    .map(([lbl,cnt]) => `<div class="scrow">
+      <div class="sclbl">${lbl}</div>
+      <div class="scbar"><div class="scfill" style="width:${Math.round(cnt/maxSC*100)}%"></div></div>
+      <div class="sccnt">${cnt}×</div>
+    </div>`).join('');
+
+  document.getElementById('fs-fish-content').innerHTML = toggleHtml + `
+    ${scHTML ? `<div class="slbl">Größenklassen</div><div class="card" style="padding:14px 18px;">${scHTML}</div>` : ''}
+    <div class="slbl">Alle ${fish}-Fänge${isYear?' · '+curYear:''}</div>
     <div class="card">
-      ${rows.map((c,i)=>{const m2=chkMM(fish,c.length);return`<div class="fr"><div class="fa2" style="${i===0?'background:var(--gold-l);':''}">${i===0?'🏆':fIco(fish)}</div><div style="flex:1;"><div class="fn">${fmtDate(c.date)}</div><div class="fme">${c.water} · ${c.time} Uhr</div>${c.bait?`<div class="fme" style="color:var(--green-mid);">🪝 ${c.bait}${c.baitNote?' – '+c.baitNote:''}</div>`:''}<span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>${m2&&!m2.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ unter MM</span>`:''}</div><div class="frt"><div class="flv">${c.length}</div><div class="flu">cm</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score||fScore(fish,c.length)}</div></div></div>`;}).join('')}
+      ${rows.map((c,i) => {
+        const m2 = chkMM(fish, c.length);
+        return `<div class="fr">
+          <div class="fa2" style="${i===0?'background:var(--gold-l);':''}">${i===0?'🏆':fIco(fish)}</div>
+          <div style="flex:1;">
+            <div class="fn">${fmtDate(c.date)}</div>
+            <div class="fme">${c.water} · ${c.time} Uhr</div>
+            ${c.bait?`<div class="fme" style="color:var(--green-mid);">🪝 ${c.bait}${c.baitNote?' – '+c.baitNote:''}</div>`:''}
+            <span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>
+            ${m2&&!m2.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ unter MM</span>`:''}
+          </div>
+          <div class="frt">
+            <div class="flv">${c.length}</div>
+            <div class="flu">cm</div>
+            <div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score||fScore(fish,c.length)}</div>
+          </div>
+        </div>`;
+      }).join('')}
     </div>`;
 }
 
@@ -4142,7 +4324,7 @@ function rndrForecast(){
   const lat=coords.lat,lon=coords.lon;
   Promise.all([
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant,precipitation_sum,surface_pressure_mean&timezone=auto&forecast_days=14`).then(r=>r.json()),
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,precipitation_probability,weathercode,surface_pressure&timezone=auto&forecast_days=14`).then(r=>r.json())
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,windgusts_10m,precipitation_probability,weathercode,surface_pressure&timezone=auto&forecast_days=14`).then(r=>r.json())
   ])
   .then(([daily,hourly])=>{
     _fcData=daily;_fcHourlyData=hourly;
@@ -4326,66 +4508,91 @@ async function openTideCal(){
 }
 async function _renderTideCal(river,startDate){
   _tideRiver=river;
-  const RIVERS={
-    weser:{lat:53.54,lon:8.58,name:'Weser (Bremerhaven)'},
-    elbe:{lat:53.89,lon:8.67,name:'Elbe (Cuxhaven)'},
-    ems:{lat:53.33,lon:7.19,name:'Ems (Emden)'}
+  // Pegelonline Stationen: offizielle WSV Pegel-REST-API
+  const STATIONS={
+    weser:{id:'4880060',name:'Weser (Bremerhaven)',label:'Weser'},
+    elbe:{id:'5950050',name:'Elbe (Cuxhaven)',label:'Elbe'},
+    ems:{id:'4884380',name:'Ems (Emden)',label:'Ems'}
   };
-  const r=RIVERS[river]||RIVERS.weser;
-  const endDate=new Date(startDate);endDate.setDate(endDate.getDate()+6);
-  const endStr=endDate.toISOString().split('T')[0];
+  const st=STATIONS[river]||STATIONS.weser;
 
-  // Tage-Buttons
   const days=[];const d=new Date(startDate);
   for(let i=0;i<7;i++){days.push(d.toISOString().split('T')[0]);d.setDate(d.getDate()+1);}
   const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
-  const today=new Date().toISOString().split('T')[0];
+
   const navHtml=`<div class="fc-tide-day-nav">
-    ${['weser','elbe','ems'].map(rv=>`<button class="fc-tide-day-btn${rv===river?' on':''}" onclick="_renderTideCal('${rv}','${startDate}')">${RIVERS[rv].name.split(' ')[0]}</button>`).join('')}
+    ${Object.entries(STATIONS).map(([rv,s])=>`<button class="fc-tide-day-btn${rv===river?' on':''}" onclick="_renderTideCal('${rv}','${startDate}')">${s.label}</button>`).join('')}
   </div>
   <div class="fc-tide-day-nav" style="margin-top:6px;">
     ${days.map(ds=>`<button class="fc-tide-day-btn${ds===startDate?' on':''}" onclick="_renderTideCal('${river}','${ds}')">${DOW[new Date(ds+'T12:00:00').getDay()]} ${ds.slice(8)}</button>`).join('')}
   </div>`;
 
+  document.getElementById('fs-tide-body').innerHTML=navHtml+`<div style="text-align:center;padding:24px;color:var(--text-light);">🔄 Lade Pegeldaten…</div>`;
+
   try{
-    const url=`https://marine-api.open-meteo.com/v1/marine?latitude=${r.lat}&longitude=${r.lon}&hourly=wave_height,ocean_current_velocity&start_date=${startDate}&end_date=${startDate}&timezone=auto`;
-  try{
-    const resp=await fetch(url);if(!resp.ok)throw new Error('HTTP '+resp.status);
+    // Pegelonline: Messwerte für den gewählten Tag (start/end als ISO)
+    const start=startDate+'T00:00:00+01:00';
+    const end=startDate+'T23:59:00+01:00';
+    const url=`https://pegelonline.wsv.de/webservices/rest-api/v2/stations/${st.id}/W/measurements.json?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+    const resp=await fetch(url);
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
     const data=await resp.json();
-    const h=data.hourly;
-    const labels=(h?.time||[]).map(t=>t.slice(11,16));
-    const heights=(h?.wave_height||[]).map(v=>v!=null?Math.round(v*100)/100:null);
+
+    if(!Array.isArray(data)||!data.length)throw new Error('no data');
+
+    // Zeitstempel + Wasserstand (cm) extrahieren
+    const labels=data.map(m=>m.timestamp.slice(11,16));
+    const values=data.map(m=>m.value!=null?Math.round(m.value):null);
+    const validVals=values.filter(v=>v!=null);
+    const vMin=Math.min(...validVals)-20;
+    const vMax=Math.max(...validVals)+20;
 
     document.getElementById('fs-tide-body').innerHTML=`
       ${navHtml}
       <div style="margin-top:12px;">
         <div class="fc-sec">
-          <div class="fc-sec-title">🌊 ${r.name} · ${startDate}</div>
+          <div class="fc-sec-title">🌊 ${st.name} · ${startDate}</div>
+          <div id="hover-tide" class="fc-hover-info"></div>
           <div class="fc-tide-canvas-wrap"><canvas id="tide-main-chart"></canvas></div>
-          <div style="font-size:10px;color:var(--text-light);margin-top:6px;text-align:center;">Wellenhöhe Nordseeästuar · Open-Meteo Marine</div>
+          <div style="font-size:10px;color:var(--text-light);margin-top:6px;text-align:center;">Pegelstand cm · Pegelonline WSV</div>
         </div>
       </div>`;
 
     requestAnimationFrame(()=>{
       const c=document.getElementById('tide-main-chart');if(!c||typeof Chart==='undefined')return;
-      new Chart(c,{type:'line',data:{labels,datasets:[{
-        label:'m',data:heights,
-        borderColor:'#2a8cba',backgroundColor:'rgba(42,140,186,.15)',
-        fill:true,tension:.5,pointRadius:2,pointBackgroundColor:'#2a8cba',borderWidth:2.5
-      }]},options:{
-        responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:ctx=>`${ctx.parsed.y}m`}}},
-        scales:{
-          x:{ticks:{color:'#8a9a8f',font:{size:9},maxRotation:0,maxTicksLimit:12},grid:{color:'rgba(0,0,0,.04)'}},
-          y:{ticks:{color:'#8a9a8f',font:{size:10},callback:v=>v+'m'},grid:{color:'rgba(0,0,0,.05)'}}
-        }
-      }});
+      function tidehoverPlugin(){
+        return{id:'tideHP',afterDatasetsDraw(chart){
+          const active=chart.tooltip?.dataPoints;
+          const el=document.getElementById('hover-tide');if(!el)return;
+          if(active?.length){el.textContent=`${active[0].label} Uhr · ${active[0].parsed.y} cm`;el.style.opacity='1';}
+          else el.style.opacity='0';
+        }};
+      }
+      new Chart(c,{type:'line',
+        data:{labels,datasets:[{label:'cm',data:values,
+          borderColor:'#2a8cba',backgroundColor:'rgba(42,140,186,.18)',
+          fill:true,tension:.4,pointRadius:1,pointHoverRadius:4,
+          pointBackgroundColor:'#2a8cba',borderWidth:2.5}]},
+        plugins:[tidehoverPlugin()],
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,
+            callbacks:{label:c=>`${c.parsed.y} cm`},
+            backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'}},
+          scales:{
+            x:{ticks:{color:'#8a9a8f',font:{size:9},maxRotation:0,
+              callback:(_,i)=>i%4===0?labels[i]:''},grid:{color:'rgba(0,0,0,.04)'}},
+            y:{min:vMin,max:vMax,
+              ticks:{color:'#8a9a8f',font:{size:10},callback:v=>v+' cm'},
+              grid:{color:'rgba(0,0,0,.05)'}}
+          }}});
     });
   }catch(e){
-    document.getElementById('fs-tide-body').innerHTML=navHtml+`<div class="fc-sec" style="margin-top:12px;text-align:center;color:var(--text-light);padding:24px;">Tidendaten nicht verfügbar</div>`;
-  }
-}catch(e){
-    document.getElementById('fs-tide-body').innerHTML=navHtml+`<div class="fc-sec" style="margin-top:12px;text-align:center;color:var(--text-light);padding:24px;">Tidendaten nicht verfügbar</div>`;
+    document.getElementById('fs-tide-body').innerHTML=navHtml+`
+      <div class="fc-sec" style="margin-top:12px;text-align:center;color:var(--text-light);padding:24px;">
+        <div style="font-size:28px;margin-bottom:8px;">🌊</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Pegeldaten nicht verfügbar</div>
+        <div style="font-size:11px;">Pegelonline WSV · Nur mit Internetverbindung</div>
+      </div>`;
   }
 }
 
@@ -4494,6 +4701,7 @@ async function _renderFcDay(dayIdx){
     temp:h.temperature_2m?.[i],
     wind:h.windspeed_10m?.[i],
     windDirH:h.winddirection_10m?.[i],
+    gusts:h.windgusts_10m?.[i],
     rainProb:h.precipitation_probability?.[i],
     pressure:h.surface_pressure?.[i]??pres,
     wc:h.weathercode?.[i]
@@ -4505,59 +4713,55 @@ async function _renderFcDay(dayIdx){
   const MON_FULL=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
   const isToday=dayIdx===0;
   const dayLabel=isToday?'Heute':dow;
-  const dateLabel=`${parseInt(dy)}. ${MON_FULL[parseInt(mo)-1]} ${yr}`;
 
-  // Beißindex Chip-Klasse
   const biteClass=bp.pct>=70?'bite-hi':bp.pct>=40?'bite-mid':'bite-lo';
   const biteLabel=bp.pct>=70?'Sehr gut':bp.pct>=50?'Gut':bp.pct>=30?'Mäßig':'Schlecht';
-
-  // Swipe-Dots
   const dots=Array.from({length:_fcDayCount},(_,i)=>`<div class="fc-day-dot${i===dayIdx?' on':''}"></div>`).join('');
 
-  // ── Hero (scrollt mit) ──
+  // ── Hero: neues Layout ──
   document.getElementById('fc-day-hero').innerHTML=`
     <div class="fc-detail-hdr">
       <button class="fc-detail-close" onclick="closeFs('fc-day')" aria-label="Schließen">✕</button>
       <div class="fc-detail-hdr-row1">
-        <div>
-          <div class="fc-detail-date">${dayLabel}, ${parseInt(dy)}. ${MON_FULL[parseInt(mo)-1]}</div>
-          <div class="fc-detail-date-sub">${yr}</div>
-        </div>
-        <div class="fc-detail-wx">
-          <div class="fc-detail-wx-ico">${wxIco(wc)}</div>
-          <div class="fc-detail-wx-tmp">${tmax!=null?Math.round(tmax)+'°':'–'}</div>
-        </div>
+        <div class="fc-detail-date">${dayLabel}, ${parseInt(dy)}. ${MON_FULL[parseInt(mo)-1]}</div>
+        <div class="fc-detail-date-sub">${yr}</div>
       </div>
-      <div class="fc-detail-desc-row">
-        <span>${wxDesc(wc)}</span>
-        <span style="color:var(--text-light);">·</span>
-        <span>💨 ${windMax!=null?Math.round(windMax):'–'} km/h ${windLabel(windDir)}</span>
-        ${tmin!=null?`<span style="color:var(--text-light);">·</span><span>↕ ${Math.round(tmin)}–${Math.round(tmax)}°</span>`:''}
+      <div class="fc-detail-wx-row">
+        <div style="flex:1;"></div>
+        <div class="fc-detail-wx-right">
+          <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;">
+            <div class="fc-detail-wx-ico">${wxIco(wc)}</div>
+            <div class="fc-detail-wx-tmp">${tmax!=null?Math.round(tmax)+'°':'–'}</div>
+          </div>
+          <div class="fc-detail-wx-desc">${wxDesc(wc)}${tmin!=null?' · ↕ '+Math.round(tmin)+'–'+Math.round(tmax)+'°':''}</div>
+          <div class="fc-detail-wx-wind">💨 ${windMax!=null?Math.round(windMax):'–'} km/h ${windLabel(windDir)}</div>
+        </div>
       </div>
       <div class="fc-detail-band">
         <span class="fc-detail-chip ${biteClass}">🎣 ${bp.pct}% · ${biteLabel}</span>
         <span class="fc-detail-chip">💨 ${windMax!=null?Math.round(windMax):'–'} km/h</span>
         <span class="fc-detail-chip">🌙 ${moon.icon} ${moon.illum}%</span>
       </div>
-      <div class="fc-day-dots" style="margin-top:10px;">${dots}</div>
+      <div class="fc-day-dots" style="margin-top:8px;">${dots}</div>
     </div>`;
 
   // ── Daten für Charts ──
   const labels=hoursOfDay.map(x=>`${String(x.hour).padStart(2,'0')}`);
   const temps=hoursOfDay.map(x=>x.temp!=null?parseFloat(x.temp.toFixed(1)):null);
   const winds=hoursOfDay.map(x=>x.wind!=null?Math.round(x.wind):null);
+  const gusts=hoursOfDay.map(x=>x.gusts!=null?Math.round(x.gusts):null);
   const windDirs=hoursOfDay.map(x=>x.windDirH!=null?windLabel(x.windDirH):'');
   const rains=hoursOfDay.map(x=>x.rainProb!=null?x.rainProb:null);
   const presses=hoursOfDay.map(x=>x.pressure!=null?Math.round(x.pressure):null);
+  const chartW=Math.max(labels.length*28,360);
 
-  // Fisch-Insights
   const fishInsights=bp.fishInsights||[];
   const insightsHtml=fishInsights.length?`
     <div class="fc-sec">
       <div class="fc-sec-title">🎣 Fisch-Wahrscheinlichkeiten</div>
       ${fishInsights.map(fi=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
         <div style="font-size:13px;font-weight:600;color:var(--text-dark);min-width:72px;">${fi.fish}</div>
-        <div class="fc-insight-bar-bg" style="flex:1;background:var(--cream-dark);border-radius:4px;height:8px;overflow:hidden;">
+        <div style="flex:1;background:var(--cream-dark);border-radius:4px;height:8px;overflow:hidden;">
           <div style="height:100%;width:${fi.pct}%;background:${fi.pct>=70?'var(--green-mid)':fi.pct>=40?'var(--gold)':'var(--cream-dark)'};border-radius:4px;"></div>
         </div>
         <div style="font-size:12px;font-weight:700;color:${fi.pct>=70?'var(--green-deep)':fi.pct>=40?'var(--gold)':'var(--text-light)'};min-width:32px;text-align:right;">${fi.pct}%</div>
@@ -4568,137 +4772,77 @@ async function _renderFcDay(dayIdx){
     <div class="fc-sec" style="margin-top:0;">
       <div class="fc-sec-title">🌡 Temperatur</div>
       <div id="hover-temp" class="fc-hover-info"></div>
-      <div class="fc-canvas-wrap"><canvas id="fc-temp-chart"></canvas></div>
+      <div class="fc-canvas-wrap"><canvas id="fc-temp-chart" style="width:${chartW}px;height:160px;"></canvas></div>
     </div>
     <div class="fc-sec">
       <div class="fc-sec-title">🌧 Regenwahrscheinlichkeit</div>
       <div id="hover-rain" class="fc-hover-info"></div>
-      <div class="fc-rain-wrap"><canvas id="fc-rain-chart"></canvas></div>
+      <div class="fc-rain-wrap"><canvas id="fc-rain-chart" style="width:${chartW}px;height:100px;"></canvas></div>
     </div>
     <div class="fc-sec">
-      <div class="fc-sec-title">💨 Wind</div>
+      <div class="fc-sec-title">💨 Wind + Böen</div>
       <div id="hover-wind" class="fc-hover-info"></div>
-      <div class="fc-canvas-wrap"><canvas id="fc-wind-chart"></canvas></div>
+      <div class="fc-canvas-wrap"><canvas id="fc-wind-chart" style="width:${chartW}px;height:160px;"></canvas></div>
     </div>
     <div class="fc-sec">
       <div class="fc-sec-title">📊 Luftdruck</div>
       <div id="hover-pres" class="fc-hover-info"></div>
-      <div class="fc-canvas-wrap"><canvas id="fc-pres-chart"></canvas></div>
+      <div class="fc-canvas-wrap"><canvas id="fc-pres-chart" style="width:${chartW}px;height:160px;"></canvas></div>
     </div>
     ${insightsHtml}`;
 
-  // Chart.js: helles Theme mit Hover-Info-Divs
   requestAnimationFrame(()=>{
     if(typeof Chart==='undefined')return;
-
-    // Helles Theme – gemeinsame Defaults
-    const TICK_COLOR='#6a7a6f';
-    const GRID_COLOR='rgba(0,0,0,.07)';
+    const TICK='#6a7a6f',GRID='rgba(0,0,0,.07)';
     const mkScales=(yOpts)=>({
-      x:{
-        ticks:{color:TICK_COLOR,font:{size:10},maxRotation:0,
-          callback:(_,i)=>i%2===0?labels[i]:''}, // jede 2. Stunde
-        grid:{color:GRID_COLOR}
-      },
-      y:{
-        ticks:{color:TICK_COLOR,font:{size:10},...(yOpts.ticks||{})},
-        grid:{color:GRID_COLOR},
-        ...(yOpts.minMax||{})
-      }
+      x:{ticks:{color:TICK,font:{size:10},maxRotation:0,callback:(_,i)=>i%2===0?labels[i]:''},grid:{color:GRID}},
+      y:{ticks:{color:TICK,font:{size:10},...(yOpts.ticks||{})},grid:{color:GRID},...(yOpts.minMax||{})}
     });
-    const mkLineDs=(data,color,label)=>({
-      label,data,
-      borderColor:color,
-      backgroundColor:color+'22',
-      fill:true,tension:.35,
-      pointRadius:3,pointHoverRadius:5,
-      pointBackgroundColor:color,
-      borderWidth:2.5
+    const mkLineDs=(data,color,label,fill=true)=>({
+      label,data,borderColor:color,backgroundColor:fill?color+'22':'transparent',
+      fill,tension:.35,pointRadius:2,pointHoverRadius:5,pointBackgroundColor:color,borderWidth:2.5
     });
-    // Hover-Info-Handler
+    const TT={mode:'index',intersect:false,backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'};
     function hoverPlugin(divId,fmtFn){
-      return{id:'hoverDiv_'+divId,afterDatasetsDraw(chart){
+      return{id:'hP_'+divId,afterDatasetsDraw(chart){
         const active=chart.tooltip?.dataPoints;
-        const el=document.getElementById(divId);
-        if(!el)return;
-        if(active?.length){
-          const idx=active[0].dataIndex;
-          el.textContent=fmtFn(idx,active[0].parsed.y);
-          el.style.opacity='1';
-        } else {
-          el.style.opacity='0';
-        }
+        const el=document.getElementById(divId);if(!el)return;
+        if(active?.length){el.textContent=fmtFn(active[0].dataIndex,active[0].parsed.y,active);el.style.opacity='1';}
+        else el.style.opacity='0';
       }};
     }
+    const mkChart=(id,cfg)=>{
+      const el=document.getElementById(id);if(!el)return;
+      el.style.width=chartW+'px';
+      new Chart(el,{...cfg,options:{...cfg.options,responsive:false,maintainAspectRatio:false}});
+    };
 
-    // Temperatur
-    const tc=document.getElementById('fc-temp-chart');
-    if(tc&&temps.some(v=>v!=null)){
-      const tMin=Math.min(...temps.filter(v=>v!=null))-2;
-      const tMax=Math.max(...temps.filter(v=>v!=null))+2;
-      new Chart(tc,{type:'line',
-        data:{labels,datasets:[mkLineDs(temps,'#e07030','°C')]},
+    if(temps.some(v=>v!=null)){
+      const tMin=Math.min(...temps.filter(v=>v!=null))-2,tMax=Math.max(...temps.filter(v=>v!=null))+2;
+      mkChart('fc-temp-chart',{type:'line',data:{labels,datasets:[mkLineDs(temps,'#e07030','Temp')]},
         plugins:[hoverPlugin('hover-temp',(i,v)=>`${labels[i]}:00 · ${v}°C`)],
-        options:{responsive:true,maintainAspectRatio:false,
-          plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,
-            callbacks:{label:c=>`${c.parsed.y}°C`},
-            backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)',
-          }},
-          scales:mkScales({ticks:{callback:v=>v+'°'},minMax:{min:tMin,max:tMax}})
-        }
-      });
+        options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}°C`}}},
+          scales:mkScales({ticks:{callback:v=>v+'°'},minMax:{min:tMin,max:tMax}})}});
     }
-
-    // Regen
-    const rc=document.getElementById('fc-rain-chart');
-    if(rc&&rains.some(v=>v!=null)){
-      new Chart(rc,{type:'bar',
-        data:{labels,datasets:[{label:'%',data:rains,
-          backgroundColor:'rgba(74,144,220,.55)',borderColor:'rgba(74,144,220,.8)',
-          borderWidth:1,borderRadius:3,borderSkipped:false}]},
+    if(rains.some(v=>v!=null)){
+      mkChart('fc-rain-chart',{type:'bar',data:{labels,datasets:[{label:'%',data:rains,
+        backgroundColor:'rgba(74,144,220,.6)',borderColor:'rgba(74,144,220,.9)',borderWidth:1,borderRadius:3,borderSkipped:false}]},
         plugins:[hoverPlugin('hover-rain',(i,v)=>`${labels[i]}:00 · ${v}% Regen`)],
-        options:{responsive:true,maintainAspectRatio:false,
-          plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,
-            callbacks:{label:c=>`${c.parsed.y}%`},
-            backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)',
-          }},
-          scales:mkScales({ticks:{callback:v=>v+'%'},minMax:{min:0,max:100}})
-        }
-      });
+        options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}%`}}},
+          scales:mkScales({ticks:{callback:v=>v+'%'},minMax:{min:0,max:100}})}});
     }
-
-    // Wind (inkl. Richtung im Hover)
-    const wc2=document.getElementById('fc-wind-chart');
-    if(wc2&&winds.some(v=>v!=null)){
-      new Chart(wc2,{type:'line',
-        data:{labels,datasets:[mkLineDs(winds,'#4a90d9','km/h')]},
-        plugins:[hoverPlugin('hover-wind',(i,v)=>`${labels[i]}:00 · ${v} km/h ${windDirs[i]||''}`)],
-        options:{responsive:true,maintainAspectRatio:false,
-          plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,
-            callbacks:{label:c=>`${c.parsed.y} km/h · ${windDirs[c.dataIndex]||''}`},
-            backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)',
-          }},
-          scales:mkScales({ticks:{callback:v=>v+' km/h'},minMax:{min:0}})
-        }
-      });
+    if(winds.some(v=>v!=null)){
+      mkChart('fc-wind-chart',{type:'line',data:{labels,datasets:[mkLineDs(winds,'#4a90d9','Wind'),mkLineDs(gusts,'#a0c8f0','Böen',false)]},
+        plugins:[hoverPlugin('hover-wind',(i,v,all)=>{const g=all.find(p=>p.datasetIndex===1)?.parsed.y;return`${labels[i]}:00 · ${v}${g?' (Böen '+g+')':''} km/h ${windDirs[i]||''}`;})],
+        options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.datasetIndex===0?`Wind: ${c.parsed.y} km/h · ${windDirs[c.dataIndex]||''}`:`Böen: ${c.parsed.y} km/h`}}},
+          scales:mkScales({ticks:{callback:v=>v+' km/h'},minMax:{min:0}})}});
     }
-
-    // Luftdruck
-    const pc=document.getElementById('fc-pres-chart');
-    if(pc&&presses.some(v=>v!=null)){
-      const pMin=Math.min(...presses.filter(Boolean))-3;
-      const pMax=Math.max(...presses.filter(Boolean))+3;
-      new Chart(pc,{type:'line',
-        data:{labels,datasets:[mkLineDs(presses,'#5a9e7a','hPa')]},
+    if(presses.some(v=>v!=null)){
+      const pMin=Math.min(...presses.filter(Boolean))-3,pMax=Math.max(...presses.filter(Boolean))+3;
+      mkChart('fc-pres-chart',{type:'line',data:{labels,datasets:[mkLineDs(presses,'#5a9e7a','hPa')]},
         plugins:[hoverPlugin('hover-pres',(i,v)=>`${labels[i]}:00 · ${v} hPa`)],
-        options:{responsive:true,maintainAspectRatio:false,
-          plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,
-            callbacks:{label:c=>`${c.parsed.y} hPa`},
-            backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)',
-          }},
-          scales:mkScales({ticks:{callback:v=>v+' hPa'},minMax:{min:pMin,max:pMax}})
-        }
-      });
+        options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y} hPa`}}},
+          scales:mkScales({ticks:{callback:v=>v+' hPa'},minMax:{min:pMin,max:pMax}})}});
     }
   });
 }
@@ -4863,14 +5007,34 @@ function doExp(type){
 }
 function dlBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
 function trigImp(){document.getElementById('imp-inp').click();}
-async function handleImp(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async ev=>{closeExp();let data;try{data=JSON.parse(ev.target.result);}catch(err){showToast('❌','Ungültige JSON-Datei!',true);return;}if(!data.sessions||!Array.isArray(data.sessions)){showToast('❌','Kein gültiges Fishing Buddy Backup!',true);return;}const ok=await showConf('📥','Backup importieren',`${data.sessions.length} Sessions gefunden.\n\nBestehende Daten überschreiben?`,'Ja, importieren');if(!ok){e.target.value='';return;}sessions=data.sessions;if(data.profile){profile=data.profile;await saveProfile();}if(data.favs){favs=data.favs;await saveFavs();}await saveSessions();applyProf();showToast('✅',`${sessions.length} Sessions importiert!`);e.target.value='';
-        // Auto-Sync nach Import im Hintergrund
-        setTimeout(async()=>{
-          const needsWx=sessions.filter(s=>!s.pressure&&!s.windSpeed&&s.date);
-          if(!needsWx.length)return;
-          if(!_plzCoords&&profile?.plz)await resolvePlzCoords(profile.plz);
-          if(_plzCoords)await fetchMissingWeather(needsWx);
-        },1500);};reader.readAsText(file);}
+async function handleImp(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async ev=>{closeExp();let data;try{data=JSON.parse(ev.target.result);}catch(err){showToast('❌','Ungültige JSON-Datei!',true);return;}if(!data.sessions||!Array.isArray(data.sessions)){showToast('❌','Kein gültiges Fishing Buddy Backup!',true);return;}
+  const ok=await showConf('📥','Backup importieren',`${data.sessions.length} Sessions gefunden.\n\nWie soll importiert werden?`,'Zusammenführen');
+  if(!ok){e.target.value='';return;}
+  // Merge: bestehende Sessions + importierte, Duplikate nach ID entfernen
+  const existingIds=new Set(sessions.map(s=>String(s.id)));
+  const newSessions=data.sessions.filter(s=>!existingIds.has(String(s.id)));
+  sessions=[...sessions,...newSessions];
+  // Sortiere absteigend nach Datum
+  sessions.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  if(data.profile&&!profile){profile=data.profile;await saveProfile();}
+  if(data.favs){
+    // Favs zusammenführen statt überschreiben
+    if(data.favs.waters)favs.waters=[...new Set([...(favs.waters||[]),...(data.favs.waters||[])])];
+    if(data.favs.fish)favs.fish=[...new Set([...(favs.fish||[]),...(data.favs.fish||[])])];
+    if(data.favs.bait)favs.bait=[...new Set([...(favs.bait||[]),...(data.favs.bait||[])])];
+    await saveFavs();
+  }
+  await saveSessions();applyProf();rndrFangbuch();
+  showToast('✅',`${newSessions.length} neue Sessions importiert · ${data.sessions.length-newSessions.length} Duplikate übersprungen`);
+  e.target.value='';
+  // Auto-Sync für importierte Sessions ohne Wetterdaten
+  setTimeout(async()=>{
+    const needsWx=newSessions.filter(s=>!s.pressure&&!s.windSpeed&&s.date);
+    if(!needsWx.length)return;
+    if(!_plzCoords&&profile?.plz)await resolvePlzCoords(profile.plz);
+    if(_plzCoords)await fetchMissingWeather(needsWx);
+  },1500);
+};reader.readAsText(file);}
 
 // ═══════════════════════════════════════════════════════════
 // CONFIRM
