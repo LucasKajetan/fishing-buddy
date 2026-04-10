@@ -391,6 +391,51 @@ position:relative;}
 }
 .fc-tide-day-btn.on{background:var(--green-deep);color:#fff;border-color:var(--green-deep);}
 
+/* ── 14-Tage Vorhersage-Tabelle ── */
+.fc14-hdr,.fc14-row{
+  display:grid;grid-template-columns:60px 28px 34px 38px 40px 44px 38px 36px;
+  align-items:center;gap:4px;padding:8px 10px;font-size:11px;
+}
+.fc14-hdr{
+  background:var(--green-deep);color:rgba(255,255,255,.8);
+  font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.4px;
+  position:sticky;top:0;z-index:2;padding:10px 10px;
+  border-radius:14px 14px 0 0;
+}
+.fc14-row{border-bottom:1px solid rgba(200,221,208,.25);}
+.fc14-row:last-child{border-bottom:none;}
+.fc14-date{font-weight:600;color:var(--text-dark);line-height:1.2;}
+.fc14-wx{font-size:16px;text-align:center;}
+.fc14-moon{text-align:center;line-height:1.2;}
+.fc14-wind{text-align:center;font-weight:600;color:var(--blue-t);line-height:1.2;}
+.fc14-rain{text-align:center;color:var(--blue-t);font-weight:500;}
+.fc14-temp{text-align:center;line-height:1.2;color:var(--text-mid);}
+.fc14-pres{text-align:center;color:var(--text-light);font-size:10px;}
+.fc14-bite{text-align:center;font-size:12px;}
+
+/* ── Wetter-Overlay 14-Tage Tabellen ── */
+.wx14-hdr,.wx14-row{
+  display:grid;align-items:center;gap:6px;padding:10px 14px;font-size:12px;
+}
+.wx14-hdr{
+  background:var(--green-deep);color:rgba(255,255,255,.8);
+  font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.4px;
+  position:sticky;top:0;z-index:2;
+  border-radius:14px 14px 0 0;
+}
+.wx14-row{border-bottom:1px solid rgba(200,221,208,.2);}
+.wx14-row:last-child{border-bottom:none;}
+.wx14-date{font-weight:600;color:var(--text-dark);}
+.wx14-val{text-align:center;color:var(--text-mid);}
+/* 3-Spalten (Regen, Temp) */
+.wx14-hdr:has(.wx14-val:nth-child(3):last-child),
+.wx14-row:has(.wx14-val:nth-child(3):last-child){grid-template-columns:1fr 1fr 1fr;}
+/* 4-Spalten (Wind) */
+.wx14-hdr:has(.wx14-val:nth-child(4):last-child),
+.wx14-row:has(.wx14-val:nth-child(4):last-child){grid-template-columns:1fr 1fr 1fr 1fr;}
+/* Fallback: gleiche Breite für alle Kinder */
+.wx14-hdr,.wx14-row{grid-template-columns:repeat(auto-fit,minmax(50px,1fr));}
+
 /* TOAST: immer über Tab-Bar, blockiert keine Klicks */
 .toast{
   position:absolute;
@@ -1235,7 +1280,7 @@ input[type=file]{display:none;}
     <div class="burg-hdr">
       <div style="font-size:32px;margin-bottom:8px;">🎣</div>
       <div class="burg-n" id="burg-name">Fishing Buddy</div>
-      <div class="burg-s" id="burg-sub">v33 · Local-First PWA</div>
+      <div class="burg-s" id="burg-sub">v34 · Local-First PWA</div>
     </div>
     <div class="burg-body">
       <div class="burg-sec">
@@ -1262,7 +1307,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v33 · IndexedDB · PWA</div>
+    <div class="burg-ver">Fishing Buddy v34 · IndexedDB · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -1399,7 +1444,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">100% Offline · v33</div>
+      <div class="hlogo-s" id="hdr-sub">100% Offline · v34</div>
     </div>
     <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus">+</button>
   </div>
@@ -2270,7 +2315,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v33`;
+  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v34`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -4518,7 +4563,7 @@ function rndrForecast(){
   el.innerHTML='<div style="text-align:center;padding:50px;color:var(--text-light);">🔄 Lade Vorhersage…</div>';
   const lat=coords.lat,lon=coords.lon;
   Promise.all([
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant,precipitation_sum,surface_pressure_mean&timezone=auto&forecast_days=14`).then(r=>r.json()),
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant,precipitation_sum,precipitation_probability_max,surface_pressure_mean&timezone=auto&forecast_days=14`).then(r=>r.json()),
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,windgusts_10m,precipitation_probability,weathercode,surface_pressure&timezone=auto&forecast_days=14`).then(r=>r.json())
   ])
   .then(([daily,hourly])=>{
@@ -4744,7 +4789,7 @@ async function _renderTideCal(river,startDate){
     // BSH-Daten laden (30 Min Cache pro Fluss)
     const cached=_bshCache[river];
     if(!cached||Date.now()-cached.ts>30*60*1000){
-      const url=`https://wasserstand-nordsee.bsh.de/data/${st.bsh}.json`;
+      const url='https://api.allorigins.win/raw?url='+encodeURIComponent(`https://wasserstand-nordsee.bsh.de/data/${st.bsh}.json`);
       const resp=await fetch(url);
       if(!resp.ok)throw new Error(`BSH HTTP ${resp.status}`);
       _bshCache[river]={data:await resp.json(),ts:Date.now()};
@@ -4916,202 +4961,132 @@ async function _renderTideCal(river,startDate){
   }
 }
 
-// ── Einzel-Kachel Wetter-Charts ────────────────────────────
+// ── Einzel-Kachel Wetter-Overlays (14-Tage Tages-Graph + Tabelle) ──────
 async function openWxChart(type){
-  // Koordinaten prüfen (nicht _fcHourlyData – wir laden eigene 20-Tage-Daten)
-  const coords=_plzCoords||gpsCoords;
-  if(!coords){showToast('⚠️','PLZ im Profil hinterlegen für Wetter-Charts',true);return;}
+  if(!_fcData||!_fcData.daily){showToast('⚠️','Vorhersage noch nicht geladen',true);return;}
 
   const ovId2=type==='wind'?'wx-wind':type==='rain'?'wx-rain':'wx-temp';
   const bodyId=type==='wind'?'fs-wind-body':type==='rain'?'fs-rain-body':'fs-temp-body';
   const metaId=type==='wind'?'fs-wind-meta':type==='rain'?'fs-rain-meta':'fs-temp-meta';
-  const title=type==='wind'?'💨 Wind':type==='rain'?'🌧 Regen':'🌡 Temperatur';
 
-  // Overlay ZUERST öffnen, dann Lade-Spinner setzen
   openFs(ovId2);
+  if(metaId&&document.getElementById(metaId))document.getElementById(metaId).textContent='14-Tage Vorhersage';
+
   const bodyEl=document.getElementById(bodyId);
-  if(bodyEl)bodyEl.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text-light);">🔄 Lade 20-Tage-Verlauf…</div>`;
-  if(metaId&&document.getElementById(metaId))document.getElementById(metaId).textContent='5 Tage zurück · 14 Tage voraus';
+  if(!bodyEl)return;
 
-  // Datums-Berechnung: 5 Tage zurück bis 14 Tage voraus
-  const todayDate=new Date();todayDate.setHours(0,0,0,0);
-  const startDateObj=new Date(todayDate);startDateObj.setDate(startDateObj.getDate()-5);
-  const endDateObj=new Date(todayDate);endDateObj.setDate(endDateObj.getDate()+14);
-  const startStr=startDateObj.toISOString().split('T')[0];
-  const endStr=endDateObj.toISOString().split('T')[0];
-  const todayStr=todayDate.toISOString().split('T')[0];
+  const d=_fcData.daily;
+  const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const labels=d.time.map((t,i)=>{
+    const dt=new Date(t+'T12:00:00');
+    return i===0?'Heute':DOW[dt.getDay()]+' '+t.slice(8);
+  });
 
-  try{
-    // Forecast für Zukunft + Archive für Vergangenheit in einem Call (forecast nimmt start_date)
-    const fields='temperature_2m,windspeed_10m,winddirection_10m,windgusts_10m,precipitation_probability,weathercode';
-    const pastUrl=`https://archive-api.open-meteo.com/v1/archive?latitude=${coords.lat}&longitude=${coords.lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,precipitation&start_date=${startStr}&end_date=${todayStr}&timezone=auto`;
-    const futureUrl=`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&hourly=${fields}&start_date=${todayStr}&end_date=${endStr}&timezone=auto`;
+  const TICK='#6a7a6f',GRID='rgba(0,0,0,.06)';
+  const TT={mode:'index',intersect:false,backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'};
 
-    const [pastResp,futureResp]=await Promise.all([fetch(pastUrl),fetch(futureUrl)]);
-    const [pastData,futureData]=await Promise.all([pastResp.json(),futureResp.json()]);
+  if(type==='wind'){
+    const winds=d.windspeed_10m_max.map(v=>v!=null?Math.round(v):null);
+    const gusts=(d.windgusts_10m_max||[]).map(v=>v!=null?Math.round(v):null);
+    const dirs=(d.winddirection_10m_dominant||[]).map(v=>windLabel(v));
 
-    // Kombiniere past + future (today im future überschreibt past)
-    const ph=pastData.hourly||{};
-    const fh=futureData.hourly||{};
+    // Tabelle
+    const tblRows=d.time.map((t,i)=>{
+      const bg=i===0?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
+      return`<div class="wx14-row" style="${bg}">
+        <div class="wx14-date">${labels[i]}</div>
+        <div class="wx14-val">${winds[i]!=null?winds[i]:'–'}</div>
+        <div class="wx14-val">${gusts[i]!=null?gusts[i]:'–'}</div>
+        <div class="wx14-val">${dirs[i]||'–'}</div>
+      </div>`;
+    }).join('');
 
-    // Merge: alle Stunden von startStr bis endStr
-    const allTimes=[...(ph.time||[]),...(fh.time||[]).filter(t=>!t.startsWith(todayStr))];
-    // Index-Maps
-    const pIdx={};(ph.time||[]).forEach((t,i)=>pIdx[t]=i);
-    const fIdx={};(fh.time||[]).forEach((t,i)=>fIdx[t]=i);
+    bodyEl.innerHTML=`
+      <div class="fc-sec" style="margin-top:0;">
+        <div class="fc-sec-title">💨 Wind + Böen · 14 Tage</div>
+        <canvas id="wx-wind-chart" style="width:100%;height:200px;"></canvas>
+      </div>
+      <div class="fc-sec" style="padding:0;overflow:hidden;">
+        <div class="wx14-hdr"><div class="wx14-date">Tag</div><div class="wx14-val">km/h</div><div class="wx14-val">Böen</div><div class="wx14-val">Richt.</div></div>
+        ${tblRows}
+      </div>`;
 
-    const labels=allTimes.map(t=>t.slice(11,16)); // HH:MM
-    // Day separators: day label for first hour of each day
-    const dayLabels=allTimes.map((t,i)=>{
-      const isFirst=i===0||allTimes[i-1].slice(0,10)!==t.slice(0,10);
-      if(!isFirst)return '';
-      const ds=t.slice(0,10);
-      const d=new Date(ds+'T12:00:00');
-      const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
-      return ds===todayStr?'Heute':DOW[d.getDay()]+' '+ds.slice(8);
+    requestAnimationFrame(()=>{
+      const c=document.getElementById('wx-wind-chart');if(!c||typeof Chart==='undefined')return;
+      const datasets=[{label:'Wind',data:winds,borderColor:'#4a90d9',backgroundColor:'rgba(74,144,217,.15)',fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2.5}];
+      if(gusts.some(v=>v!=null))datasets.push({label:'Böen',data:gusts,borderColor:'#a0c4f0',backgroundColor:'rgba(0,0,0,0)',fill:false,tension:.35,pointRadius:2,borderWidth:1.5,borderDash:[4,4]});
+      new Chart(c,{type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:gusts.some(v=>v!=null),labels:{boxWidth:12,font:{size:10}}},tooltip:{...TT,callbacks:{label:c2=>`${c2.dataset.label}: ${c2.parsed.y} km/h${dirs[c2.dataIndex]?' · '+dirs[c2.dataIndex]:''}`}}},
+        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:0,ticks:{color:TICK,font:{size:10},callback:v=>v+' km/h'},grid:{color:GRID}}}}});
     });
 
-    function getVal(t,key,src){
-      if(src==='past'){const i=pIdx[t];return i!=null?ph[key]?.[i]:null;}
-      const i=fIdx[t];return i!=null?fh[key]?.[i]:null;
-    }
-    function buildArr(key){
-      return allTimes.map(t=>t<todayStr?getVal(t,key,'past'):getVal(t,key,'future'));
-    }
+  } else if(type==='rain'){
+    const precip=d.precipitation_sum.map(v=>v!=null?Math.round(v*10)/10:null);
+    const rainPct=(d.precipitation_probability_max||[]).map(v=>v!=null?v:null);
 
-    const temps=buildArr('temperature_2m').map(v=>v!=null?parseFloat(v.toFixed(1)):null);
-    const winds=buildArr('windspeed_10m').map(v=>v!=null?Math.round(v):null);
-    const gusts=buildArr('windgusts_10m').map(v=>v!=null?Math.round(v):null);
-    const dirs=buildArr('winddirection_10m').map(v=>v!=null?windLabel(v):'');
-    const rains=buildArr('precipitation_probability').map(v=>v!=null?v:null);
-
-    // Pixel pro Stunde
-    const PX_PER_HR=28;
-    const chartW=Math.max(allTimes.length*PX_PER_HR,400);
-
-    // Index des heutigen Tages für Auto-Scroll
-    const todayHourIdx=allTimes.findIndex(t=>t.startsWith(todayStr));
-    const scrollTarget=todayHourIdx>0?todayHourIdx*PX_PER_HR-60:0;
-
-    // Helles Theme
-    const TICK='#6a7a6f';const GRID='rgba(0,0,0,.06)';
-    const TT={mode:'index',intersect:false,backgroundColor:'rgba(40,60,50,.88)',
-      titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'};
-
-    function buildChart(canvasId,scrollId,cfg,h=180){
-      const el=document.getElementById(canvasId);if(!el)return;
-      el.width=chartW;el.height=h;
-      el.style.width=chartW+'px';el.style.height=h+'px';
-      const chart=new Chart(el,{...cfg,options:{...cfg.options,responsive:false,maintainAspectRatio:false}});
-      // Auto-Scroll zum heutigen Tag
-      const wrap=document.getElementById(scrollId);
-      if(wrap)requestAnimationFrame(()=>wrap.scrollLeft=scrollTarget);
-      return chart;
-    }
-
-    // Tages-Trennlinien als annotation-ähnliche vertikale Linien via afterDraw plugin
-    function dayLinesPlugin(times){
-      return{id:'dayLines',afterDraw(chart){
-        if(!chart.chartArea)return;
-        const ctx=chart.ctx;
-        ctx.save();
-        times.forEach((t,i)=>{
-          const lbl=dayLabels[i];if(!lbl)return;
-          const x=chart.scales.x.getPixelForIndex(i);
-          // Trennlinie
-          ctx.strokeStyle='rgba(0,0,0,.10)';
-          ctx.lineWidth=1;
-          ctx.setLineDash([4,4]);
-          ctx.beginPath();
-          ctx.moveTo(x,chart.chartArea.top);
-          ctx.lineTo(x,chart.chartArea.bottom);
-          ctx.stroke();
-          ctx.setLineDash([]);
-          // Tag-Label über dem Chart
-          ctx.fillStyle=t.startsWith(todayStr)?'rgba(74,124,89,.85)':'rgba(90,110,100,.55)';
-          ctx.font='bold 9px system-ui,sans-serif';
-          ctx.textAlign='center';
-          ctx.fillText(lbl,x,chart.chartArea.top-3);
-        });
-        ctx.restore();
-      }};
-    }
-
-    // Hover-Info Plugin
-    function hoverDiv(divId,fmtFn){
-      return{id:'hD_'+divId,afterDatasetsDraw(chart){
-        const active=chart.tooltip?.dataPoints;
-        const el=document.getElementById(divId);if(!el)return;
-        if(active?.length){el.textContent=fmtFn(active[0].dataIndex,active[0].parsed.y,active);el.style.opacity='1';}
-        else el.style.opacity='0';
-      }};
-    }
-
-    if(type==='wind'){
-      bodyEl.innerHTML=`<div class="fc-sec" style="margin-top:0;">
-        <div class="fc-sec-title">${title} – 5 Tage zurück · Heute · 14 Tage voraus</div>
-        <div id="hover-wx-wind" class="fc-hover-info"></div>
-        <div id="scroll-wx-wind" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;">
-          <canvas id="wx-wind-chart" style="height:180px;display:block;"></canvas>
-        </div>
+    const tblRows=d.time.map((t,i)=>{
+      const bg=i===0?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
+      return`<div class="wx14-row" style="${bg}">
+        <div class="wx14-date">${labels[i]}</div>
+        <div class="wx14-val">${rainPct[i]!=null?rainPct[i]+'%':'–'}</div>
+        <div class="wx14-val">${precip[i]!=null?precip[i]+' mm':'–'}</div>
       </div>`;
-      requestAnimationFrame(()=>{
-        buildChart('wx-wind-chart','scroll-wx-wind',{type:'line',
-          data:{labels,datasets:[
-            {label:'Wind',data:winds,borderColor:'#4a90d9',backgroundColor:'rgba(74,144,217,.15)',fill:true,tension:.35,pointRadius:1,borderWidth:2.5},
-            {label:'Böen',data:gusts,borderColor:'#a0c4f0',backgroundColor:'rgba(160,196,240,0)',fill:false,tension:.35,pointRadius:0,borderWidth:1.5,borderDash:[3,3]}
-          ]},
-          plugins:[dayLinesPlugin(allTimes),hoverDiv('hover-wx-wind',(i,v,all)=>{const g=all.find(p=>p.datasetIndex===1)?.parsed.y;return`${allTimes[i].slice(11,16)} · ${v}${g?' (Böen '+g+')':''} km/h ${dirs[i]||''}`;})],
-          options:{layout:{padding:{top:16}},plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.datasetIndex===0?`Wind: ${c.parsed.y} km/h · ${dirs[c.dataIndex]||''}`:`Böen: ${c.parsed.y} km/h`}}},
-            scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:0,callback:(_,i)=>i%6===0?labels[i]:''},grid:{color:GRID}},
-              y:{min:0,ticks:{color:TICK,font:{size:10},callback:v=>v+' km/h'},grid:{color:GRID}}}}
-        },180);
-      });
-    } else if(type==='rain'){
-      bodyEl.innerHTML=`<div class="fc-sec" style="margin-top:0;">
-        <div class="fc-sec-title">${title} – 5 Tage zurück · Heute · 14 Tage voraus</div>
-        <div id="hover-wx-rain" class="fc-hover-info"></div>
-        <div id="scroll-wx-rain" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;">
-          <canvas id="wx-rain-chart" style="height:130px;display:block;"></canvas>
-        </div>
+    }).join('');
+
+    bodyEl.innerHTML=`
+      <div class="fc-sec" style="margin-top:0;">
+        <div class="fc-sec-title">🌧 Niederschlag · 14 Tage</div>
+        <canvas id="wx-rain-chart" style="width:100%;height:180px;"></canvas>
+      </div>
+      <div class="fc-sec" style="padding:0;overflow:hidden;">
+        <div class="wx14-hdr"><div class="wx14-date">Tag</div><div class="wx14-val">Wahrsch.</div><div class="wx14-val">Menge</div></div>
+        ${tblRows}
       </div>`;
-      requestAnimationFrame(()=>{
-        buildChart('wx-rain-chart','scroll-wx-rain',{type:'bar',
-          data:{labels,datasets:[{label:'%',data:rains,
-            backgroundColor:'rgba(74,144,220,.65)',borderColor:'rgba(74,144,220,.9)',
-            borderWidth:0,borderRadius:2,borderSkipped:false}]},
-          plugins:[dayLinesPlugin(allTimes),hoverDiv('hover-wx-rain',(i,v)=>`${allTimes[i].slice(11,16)} · ${v}% Regen`)],
-          options:{layout:{padding:{top:16}},plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}%`}}},
-            scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:0,callback:(_,i)=>i%6===0?labels[i]:''},grid:{color:GRID}},
-              y:{min:0,max:100,ticks:{color:TICK,font:{size:10},callback:v=>v+'%'},grid:{color:GRID}}}}
-        },130);
-      });
-    } else {
-      // Temperatur
-      const tMin=Math.min(...temps.filter(v=>v!=null))-2;
-      const tMax=Math.max(...temps.filter(v=>v!=null))+2;
-      bodyEl.innerHTML=`<div class="fc-sec" style="margin-top:0;">
-        <div class="fc-sec-title">${title} – 5 Tage zurück · Heute · 14 Tage voraus</div>
-        <div id="hover-wx-temp" class="fc-hover-info"></div>
-        <div id="scroll-wx-temp" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;">
-          <canvas id="wx-temp-chart" style="height:180px;display:block;"></canvas>
-        </div>
+
+    requestAnimationFrame(()=>{
+      const c=document.getElementById('wx-rain-chart');if(!c||typeof Chart==='undefined')return;
+      new Chart(c,{type:'bar',data:{labels,datasets:[{label:'mm',data:precip,
+        backgroundColor:'rgba(74,144,220,.65)',borderColor:'rgba(74,144,220,.9)',borderWidth:0,borderRadius:4,borderSkipped:false}]},
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c2=>`${c2.parsed.y} mm`}}},
+          scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:0,ticks:{color:TICK,font:{size:10},callback:v=>v+' mm'},grid:{color:GRID}}}}});
+    });
+
+  } else {
+    // Temperatur
+    const tmax=d.temperature_2m_max.map(v=>v!=null?Math.round(v*10)/10:null);
+    const tmin=d.temperature_2m_min.map(v=>v!=null?Math.round(v*10)/10:null);
+
+    const tblRows=d.time.map((t,i)=>{
+      const bg=i===0?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
+      return`<div class="wx14-row" style="${bg}">
+        <div class="wx14-date">${labels[i]}</div>
+        <div class="wx14-val">${tmin[i]!=null?tmin[i]+'°':'–'}</div>
+        <div class="wx14-val" style="font-weight:700;">${tmax[i]!=null?tmax[i]+'°':'–'}</div>
       </div>`;
-      requestAnimationFrame(()=>{
-        buildChart('wx-temp-chart','scroll-wx-temp',{type:'line',
-          data:{labels,datasets:[{label:'°C',data:temps,
-            borderColor:'#e07030',backgroundColor:'rgba(224,112,48,.15)',
-            fill:true,tension:.35,pointRadius:1,borderWidth:2.5}]},
-          plugins:[dayLinesPlugin(allTimes),hoverDiv('hover-wx-temp',(i,v)=>`${allTimes[i].slice(11,16)} · ${v}°C`)],
-          options:{layout:{padding:{top:16}},plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}°C`}}},
-            scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:0,callback:(_,i)=>i%6===0?labels[i]:''},grid:{color:GRID}},
-              y:{min:tMin,max:tMax,ticks:{color:TICK,font:{size:10},callback:v=>v+'°'},grid:{color:GRID}}}}
-        },180);
-      });
-    }
-  }catch(e){
-    const bodyEl2=document.getElementById(bodyId);
-    if(bodyEl2)bodyEl2.innerHTML=`<div class="fc-sec" style="margin-top:0;text-align:center;padding:24px;color:var(--text-light);">Daten nicht verfügbar · Verbindung prüfen</div>`;
+    }).join('');
+
+    bodyEl.innerHTML=`
+      <div class="fc-sec" style="margin-top:0;">
+        <div class="fc-sec-title">🌡 Temperatur · 14 Tage</div>
+        <canvas id="wx-temp-chart" style="width:100%;height:200px;"></canvas>
+      </div>
+      <div class="fc-sec" style="padding:0;overflow:hidden;">
+        <div class="wx14-hdr"><div class="wx14-date">Tag</div><div class="wx14-val">Min</div><div class="wx14-val">Max</div></div>
+        ${tblRows}
+      </div>`;
+
+    requestAnimationFrame(()=>{
+      const c=document.getElementById('wx-temp-chart');if(!c||typeof Chart==='undefined')return;
+      const vMin=Math.floor(Math.min(...tmin.filter(v=>v!=null))-2);
+      const vMax=Math.ceil(Math.max(...tmax.filter(v=>v!=null))+2);
+      new Chart(c,{type:'line',data:{labels,datasets:[
+        {label:'Max',data:tmax,borderColor:'#e07030',backgroundColor:'rgba(224,112,48,.15)',fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2.5},
+        {label:'Min',data:tmin,borderColor:'#6a9ec0',backgroundColor:'rgba(106,158,192,.1)',fill:true,tension:.35,pointRadius:2,borderWidth:1.5}
+      ]},options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:true,labels:{boxWidth:12,font:{size:10}}},tooltip:{...TT,callbacks:{label:c2=>`${c2.dataset.label}: ${c2.parsed.y}°C`}}},
+        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:10},stepSize:5,callback:v=>Math.round(v)+'°'},grid:{color:GRID}}}}});
+    });
   }
 }
 
@@ -5119,203 +5094,85 @@ async function openWxChart(type){
 function renderFcDays(data){_fcData=data;_renderFcDashboard();}
 
 
-// ── AP4: iPhone-style Wetter-Overlay mit Chart.js + Swipe + Tide ──────────────
-let _fcDayIdx=0; // aktueller Tag im Forecast-Overlay
-let _fcDayCount=0;
-let _swipeStartX=0,_swipeStartY=0;
+// ── 14-Tage Vorhersage-Übersicht (Tabelle) ──────────────────
 
 function openFcDayDetail(dayIdx,dateStr){
-  if(!_fcHourlyData||!_fcData)return;
-  _fcDayIdx=dayIdx;
-  _fcDayCount=_fcData?.daily?.time?.length||14;
+  if(!_fcData)return;
   openFs('fc-day');
-  _renderFcDay(dayIdx);
-
-  // Swipe-Geste – am Scroll-Container hängen
-  const el=document.getElementById('fc-day-scroll')||document.getElementById('fs-fc-day');
-  if(!el)return;
-  el.ontouchstart=e=>{_swipeStartX=e.touches[0].clientX;_swipeStartY=e.touches[0].clientY;};
-  el.ontouchend=e=>{
-    const dx=e.changedTouches[0].clientX-_swipeStartX;
-    const dy=Math.abs(e.changedTouches[0].clientY-_swipeStartY);
-    if(Math.abs(dx)>48&&dy<80){
-      if(dx<0&&_fcDayIdx<_fcDayCount-1){_fcDayIdx++;_renderFcDay(_fcDayIdx);}
-      else if(dx>0&&_fcDayIdx>0){_fcDayIdx--;_renderFcDay(_fcDayIdx);}
-    }
-  };
+  _renderFc14Table();
 }
 
-async function _renderFcDay(dayIdx){
-  const h=_fcHourlyData.hourly;
+function _renderFc14Table(){
   const dayData=_fcData?.daily;
-  if(!h||!h.time||!dayData)return;
-
-  const dateStr=dayData.time[dayIdx];
-  const tmax=dayData.temperature_2m_max[dayIdx];
-  const tmin=dayData.temperature_2m_min[dayIdx];
-  const windMax=dayData.windspeed_10m_max[dayIdx];
-  const windDir=dayData.winddirection_10m_dominant?.[dayIdx];
-  const pres=dayData.surface_pressure_mean?.[dayIdx];
-  const precip=dayData.precipitation_sum[dayIdx];
-  const wc=dayData.weathercode[dayIdx];
-  const bp=calcBiteProb({date:dateStr,wc,tmax,wind:windMax,windDir,pres});
-  const moon=getMoon(dateStr);
-
-  // Stunden dieses Tages
-  const hoursOfDay=h.time.map((t,i)=>({
-    t,hour:parseInt(t.slice(11,13)),
-    temp:h.temperature_2m?.[i],
-    wind:h.windspeed_10m?.[i],
-    windDirH:h.winddirection_10m?.[i],
-    gusts:h.windgusts_10m?.[i],
-    rainProb:h.precipitation_probability?.[i],
-    pressure:h.surface_pressure?.[i]??pres,
-    wc:h.weathercode?.[i]
-  })).filter(x=>x.t.startsWith(dateStr));
+  if(!dayData||!dayData.time)return;
 
   const DOW7=['So','Mo','Di','Mi','Do','Fr','Sa'];
-  const dow=DOW7[new Date(dateStr+'T12:00:00').getDay()];
-  const[yr,mo,dy]=dateStr.split('-');
-  const MON_FULL=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
-  const isToday=dayIdx===0;
-  const dayLabel=isToday?'Heute':dow;
+  const MON_S=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 
-  const biteClass=bp.pct>=70?'bite-hi':bp.pct>=40?'bite-mid':'bite-lo';
-  const biteLabel=bp.pct>=70?'Sehr gut':bp.pct>=50?'Gut':bp.pct>=30?'Mäßig':'Schlecht';
-  const dots=Array.from({length:_fcDayCount},(_,i)=>`<div class="fc-day-dot${i===dayIdx?' on':''}"></div>`).join('');
+  // 14-Tage-Daten aufbereiten
+  const rows=dayData.time.map((dateStr,i)=>{
+    const d=new Date(dateStr+'T12:00:00');
+    const isToday=i===0;
+    const dow=isToday?'Heute':DOW7[d.getDay()];
+    const [,mo,dy]=dateStr.split('-');
+    const tmax=dayData.temperature_2m_max?.[i];
+    const tmin=dayData.temperature_2m_min?.[i];
+    const wind=dayData.windspeed_10m_max?.[i];
+    const gusts=dayData.windgusts_10m_max?.[i];
+    const windDir=dayData.winddirection_10m_dominant?.[i];
+    const precip=dayData.precipitation_sum?.[i];
+    const rainPct=dayData.precipitation_probability_max?.[i];
+    const pres=dayData.surface_pressure_mean?.[i];
+    const wc=dayData.weathercode?.[i];
+    const moon=getMoon(dateStr);
+    const bp=calcBiteProb({date:dateStr,wc,tmax,wind,windDir,pres});
+    return{dateStr,dow,dy:parseInt(dy),mo:MON_S[parseInt(mo)-1],isToday,
+      tmax,tmin,wind,gusts,windDir,precip,rainPct,pres,wc,moon,bp};
+  });
 
-  // ── Hero: neues Layout ──
+  // Hero-Header
   document.getElementById('fc-day-hero').innerHTML=`
     <div class="fc-detail-hdr">
       <button class="fc-detail-close" onclick="closeFs('fc-day')" aria-label="Schließen">✕</button>
-      <div class="fc-detail-hdr-row1">
-        <div class="fc-detail-date">${dayLabel}, ${parseInt(dy)}. ${MON_FULL[parseInt(mo)-1]}</div>
-        <div class="fc-detail-date-sub">${yr}</div>
-      </div>
-      <div class="fc-detail-wx-row">
-        <div class="fc-detail-wx-ico">${wxIco(wc)}</div>
-        <div class="fc-detail-wx-right">
-          <div class="fc-detail-wx-tmp">${tmax!=null?Math.round(tmax)+'°':'–'}</div>
-          <div class="fc-detail-wx-desc">${wxDesc(wc)}${tmin!=null?' · ↕ '+Math.round(tmin)+'–'+Math.round(tmax)+'°':''}</div>
-          <div class="fc-detail-wx-wind">💨 ${windMax!=null?Math.round(windMax):'–'} km/h ${windLabel(windDir)}</div>
-        </div>
+      <div class="fc-detail-hdr-row1" style="padding-right:40px;">
+        <div class="fc-detail-date">14-Tage Vorhersage</div>
       </div>
       <div class="fc-detail-band">
-        <span class="fc-detail-chip ${biteClass}">🎣 ${bp.pct}% · ${biteLabel}</span>
-        <span class="fc-detail-chip">💨 ${windMax!=null?Math.round(windMax):'–'} km/h</span>
-        <span class="fc-detail-chip">🌙 ${moon.icon} ${moon.illum}%</span>
+        <span class="fc-detail-chip">📍 ${_plzCoords?.city||'Standort'}</span>
+        <span class="fc-detail-chip">📅 ${rows.length} Tage</span>
       </div>
-      <div class="fc-day-dots" style="margin-top:8px;">${dots}</div>
     </div>`;
 
-  // ── Daten für Charts ──
-  const labels=hoursOfDay.map(x=>`${String(x.hour).padStart(2,'0')}`);
-  const temps=hoursOfDay.map(x=>x.temp!=null?parseFloat(x.temp.toFixed(1)):null);
-  const winds=hoursOfDay.map(x=>x.wind!=null?Math.round(x.wind):null);
-  const gusts=hoursOfDay.map(x=>x.gusts!=null?Math.round(x.gusts):null);
-  const windDirs=hoursOfDay.map(x=>x.windDirH!=null?windLabel(x.windDirH):'');
-  const rains=hoursOfDay.map(x=>x.rainProb!=null?x.rainProb:null);
-  const presses=hoursOfDay.map(x=>x.pressure!=null?Math.round(x.pressure):null);
-  const chartW=Math.max(labels.length*28,360);
-
-  const fishInsights=bp.fishInsights||[];
-  const insightsHtml=fishInsights.length?`
-    <div class="fc-sec">
-      <div class="fc-sec-title">🎣 Fisch-Wahrscheinlichkeiten</div>
-      ${fishInsights.map(fi=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-        <div style="font-size:13px;font-weight:600;color:var(--text-dark);min-width:72px;">${fi.fish}</div>
-        <div style="flex:1;background:var(--cream-dark);border-radius:4px;height:8px;overflow:hidden;">
-          <div style="height:100%;width:${fi.pct}%;background:${fi.pct>=70?'var(--green-mid)':fi.pct>=40?'var(--gold)':'var(--cream-dark)'};border-radius:4px;"></div>
-        </div>
-        <div style="font-size:12px;font-weight:700;color:${fi.pct>=70?'var(--green-deep)':fi.pct>=40?'var(--gold)':'var(--text-light)'};min-width:32px;text-align:right;">${fi.pct}%</div>
-      </div>`).join('')}
-    </div>`:'';
+  // Tabelle
+  const tableRows=rows.map((r,i)=>{
+    const bg=r.isToday?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
+    const biteCol=r.bp.pct>=70?'var(--green-mid)':r.bp.pct>=40?'var(--gold)':'var(--text-light)';
+    return`<div class="fc14-row" style="${bg}${r.isToday?'font-weight:600;':''}">
+      <div class="fc14-date">${r.dow}<br><span style="font-size:10px;opacity:.65;">${r.dy}. ${r.mo}</span></div>
+      <div class="fc14-wx">${wxIco(r.wc)}</div>
+      <div class="fc14-moon">${r.moon.icon}<br><span style="font-size:9px;">${r.moon.illum}%</span></div>
+      <div class="fc14-wind">${r.wind!=null?Math.round(r.wind):'–'}<br><span style="font-size:9px;">${windLabel(r.windDir)}</span></div>
+      <div class="fc14-rain">${r.rainPct!=null?r.rainPct+'%':r.precip!=null?Math.round(r.precip*10)/10+'mm':'–'}</div>
+      <div class="fc14-temp">${r.tmin!=null?Math.round(r.tmin):'–'}°<br><span style="font-weight:700;">${r.tmax!=null?Math.round(r.tmax):'–'}°</span></div>
+      <div class="fc14-pres">${r.pres!=null?Math.round(r.pres):'–'}</div>
+      <div class="fc14-bite" style="color:${biteCol};font-weight:700;">${r.bp.pct}%</div>
+    </div>`;
+  }).join('');
 
   document.getElementById('fc-day-body').innerHTML=`
-    <div class="fc-sec" style="margin-top:0;">
-      <div class="fc-sec-title">🌡 Temperatur</div>
-      <div id="hover-temp" class="fc-hover-info"></div>
-      <div class="fc-canvas-wrap"><canvas id="fc-temp-chart" style="width:${chartW}px;height:160px;"></canvas></div>
-    </div>
-    <div class="fc-sec">
-      <div class="fc-sec-title">🌧 Regenwahrscheinlichkeit</div>
-      <div id="hover-rain" class="fc-hover-info"></div>
-      <div class="fc-rain-wrap"><canvas id="fc-rain-chart" style="width:${chartW}px;height:100px;"></canvas></div>
-    </div>
-    <div class="fc-sec">
-      <div class="fc-sec-title">💨 Wind + Böen</div>
-      <div id="hover-wind" class="fc-hover-info"></div>
-      <div class="fc-canvas-wrap"><canvas id="fc-wind-chart" style="width:${chartW}px;height:160px;"></canvas></div>
-    </div>
-    <div class="fc-sec">
-      <div class="fc-sec-title">📊 Luftdruck</div>
-      <div id="hover-pres" class="fc-hover-info"></div>
-      <div class="fc-canvas-wrap"><canvas id="fc-pres-chart" style="width:${chartW}px;height:160px;"></canvas></div>
-    </div>
-    ${insightsHtml}`;
-
-  // Charts nach Overlay-Transition rendern (320ms transition delay)
-  setTimeout(()=>{
-    if(typeof Chart==='undefined')return;
-    const TICK='#6a7a6f',GRID='rgba(0,0,0,.07)';
-    const mkScales=(yOpts)=>({
-      x:{ticks:{color:TICK,font:{size:10},maxRotation:0,callback:(_,i)=>i%2===0?labels[i]:''},grid:{color:GRID}},
-      y:{ticks:{color:TICK,font:{size:10},...(yOpts.ticks||{})},grid:{color:GRID},...(yOpts.minMax||{})}
-    });
-    // hex→rgba Helper damit backgroundColor immer valid ist
-    function hex2rgba(hex,a){
-      const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-      return`rgba(${r},${g},${b},${a})`;
-    }
-    const mkLineDs=(data,color,label,fill=true)=>({
-      label,data,borderColor:color,
-      backgroundColor:fill?hex2rgba(color,.14):'rgba(0,0,0,0)',
-      fill,tension:.35,pointRadius:2,pointHoverRadius:5,pointBackgroundColor:color,borderWidth:2.5
-    });
-    const TT={mode:'index',intersect:false,backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'};
-    function hoverPlugin(divId,fmtFn){
-      return{id:'hP_'+divId,afterDatasetsDraw(chart){
-        const active=chart.tooltip?.dataPoints;
-        const el=document.getElementById(divId);if(!el)return;
-        if(active?.length){el.textContent=fmtFn(active[0].dataIndex,active[0].parsed.y,active);el.style.opacity='1';}
-        else el.style.opacity='0';
-      }};
-    }
-    const mkChart=(id,cfg,h=160)=>{
-      const el=document.getElementById(id);if(!el)return;
-      el.width=chartW;el.height=h;
-      el.style.width=chartW+'px';el.style.height=h+'px';
-      new Chart(el,{...cfg,options:{...cfg.options,responsive:false,maintainAspectRatio:false}});
-    };
-
-    if(temps.some(v=>v!=null)){
-      const tMin=Math.min(...temps.filter(v=>v!=null))-2,tMax=Math.max(...temps.filter(v=>v!=null))+2;
-      mkChart('fc-temp-chart',{type:'line',data:{labels,datasets:[mkLineDs(temps,'#e07030','Temp')]},
-        plugins:[hoverPlugin('hover-temp',(i,v)=>`${labels[i]}:00 · ${v}°C`)],
-        options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}°C`}}},
-          scales:mkScales({ticks:{callback:v=>v+'°'},minMax:{min:tMin,max:tMax}})}},160);
-    }
-    if(rains.some(v=>v!=null)){
-      mkChart('fc-rain-chart',{type:'bar',data:{labels,datasets:[{label:'%',data:rains,
-        backgroundColor:'rgba(74,144,220,.6)',borderColor:'rgba(74,144,220,.9)',borderWidth:1,borderRadius:3,borderSkipped:false}]},
-        plugins:[hoverPlugin('hover-rain',(i,v)=>`${labels[i]}:00 · ${v}% Regen`)],
-        options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y}%`}}},
-          scales:mkScales({ticks:{callback:v=>v+'%'},minMax:{min:0,max:100}})}},100);
-    }
-    if(winds.some(v=>v!=null)){
-      mkChart('fc-wind-chart',{type:'line',data:{labels,datasets:[mkLineDs(winds,'#4a90d9','Wind'),mkLineDs(gusts,'#a0c8f0','Böen',false)]},
-        plugins:[hoverPlugin('hover-wind',(i,v,all)=>{const g=all.find(p=>p.datasetIndex===1)?.parsed.y;return`${labels[i]}:00 · ${v}${g?' (Böen '+g+')':''} km/h ${windDirs[i]||''}`;})],
-        options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.datasetIndex===0?`Wind: ${c.parsed.y} km/h · ${windDirs[c.dataIndex]||''}`:`Böen: ${c.parsed.y} km/h`}}},
-          scales:mkScales({ticks:{callback:v=>v+' km/h'},minMax:{min:0}})}},160);
-    }
-    if(presses.some(v=>v!=null)){
-      const pMin=Math.min(...presses.filter(Boolean))-3,pMax=Math.max(...presses.filter(Boolean))+3;
-      mkChart('fc-pres-chart',{type:'line',data:{labels,datasets:[mkLineDs(presses,'#5a9e7a','hPa')]},
-        plugins:[hoverPlugin('hover-pres',(i,v)=>`${labels[i]}:00 · ${v} hPa`)],
-        options:{plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>`${c.parsed.y} hPa`}}},
-          scales:mkScales({ticks:{callback:v=>v+' hPa'},minMax:{min:pMin,max:pMax}})}},160);
-    }
-  }, 350);
+    <div class="fc-sec" style="margin-top:0;padding:0;overflow:hidden;">
+      <div class="fc14-hdr">
+        <div class="fc14-date">Tag</div>
+        <div class="fc14-wx"></div>
+        <div class="fc14-moon">🌙</div>
+        <div class="fc14-wind">💨</div>
+        <div class="fc14-rain">🌧</div>
+        <div class="fc14-temp">°C</div>
+        <div class="fc14-pres">hPa</div>
+        <div class="fc14-bite">🎣</div>
+      </div>
+      ${tableRows}
+    </div>`;
 }
 
 // Wetterbeschreibung aus WMO-Code
