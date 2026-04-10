@@ -1235,7 +1235,7 @@ input[type=file]{display:none;}
     <div class="burg-hdr">
       <div style="font-size:32px;margin-bottom:8px;">🎣</div>
       <div class="burg-n" id="burg-name">Fishing Buddy</div>
-      <div class="burg-s" id="burg-sub">v21 · Local-First PWA</div>
+      <div class="burg-s" id="burg-sub">v33 · Local-First PWA</div>
     </div>
     <div class="burg-body">
       <div class="burg-sec">
@@ -1262,7 +1262,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v21 · IndexedDB · PWA</div>
+    <div class="burg-ver">Fishing Buddy v33 · IndexedDB · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -1399,7 +1399,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">100% Offline · v21</div>
+      <div class="hlogo-s" id="hdr-sub">100% Offline · v33</div>
     </div>
     <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus">+</button>
   </div>
@@ -2270,7 +2270,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v21`;
+  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v33`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
