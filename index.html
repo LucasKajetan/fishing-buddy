@@ -358,6 +358,13 @@ position:relative;}
 }
 .fc-rain-wrap::-webkit-scrollbar{display:none;}
 .fc-rain-wrap canvas{display:block;}
+/* Wetter-Overlay Chart-Container – feste Höhe verhindert Resize-Bug */
+.fc-chart-wrap{
+  position:relative;display:block;
+  height:160px;max-height:160px;
+  overflow:hidden;
+}
+.fc-chart-wrap canvas{display:block;width:100%!important;height:100%!important;}
 
 /* Chart Hover-Info */
 .fc-hover-info{
@@ -397,8 +404,8 @@ position:relative;}
   align-items:center;gap:4px;padding:8px 10px;font-size:11px;
 }
 .fc14-hdr{
-  background:var(--green-deep);color:rgba(255,255,255,.8);
-  font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.4px;
+  background:var(--green-deep);color:#ffffff;
+  font-weight:bold;font-size:10px;text-transform:uppercase;letter-spacing:.4px;
   position:sticky;top:0;z-index:2;padding:10px 10px;
   border-radius:14px 14px 0 0;
 }
@@ -418,8 +425,8 @@ position:relative;}
   display:grid;align-items:center;gap:6px;padding:10px 14px;font-size:12px;
 }
 .wx14-hdr{
-  background:var(--green-deep);color:rgba(255,255,255,.8);
-  font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.4px;
+  background:var(--green-deep);color:#ffffff;
+  font-weight:bold;font-size:10px;text-transform:uppercase;letter-spacing:.4px;
   position:sticky;top:0;z-index:2;
   border-radius:14px 14px 0 0;
 }
@@ -427,12 +434,9 @@ position:relative;}
 .wx14-row:last-child{border-bottom:none;}
 .wx14-date{font-weight:600;color:var(--text-dark);}
 .wx14-val{text-align:center;color:var(--text-mid);}
-/* 3-Spalten (Regen, Temp) */
-.wx14-hdr:has(.wx14-val:nth-child(3):last-child),
-.wx14-row:has(.wx14-val:nth-child(3):last-child){grid-template-columns:1fr 1fr 1fr;}
-/* 4-Spalten (Wind) */
-.wx14-hdr:has(.wx14-val:nth-child(4):last-child),
-.wx14-row:has(.wx14-val:nth-child(4):last-child){grid-template-columns:1fr 1fr 1fr 1fr;}
+/* Spalten werden per data-cols gesteuert (Fallback für Browser ohne :has) */
+.wx14-hdr[data-cols="3"],.wx14-row[data-cols="3"]{grid-template-columns:1fr 1fr 1fr;}
+.wx14-hdr[data-cols="4"],.wx14-row[data-cols="4"]{grid-template-columns:1fr 1fr 1fr 1fr;}
 /* Fallback: gleiche Breite für alle Kinder */
 .wx14-hdr,.wx14-row{grid-template-columns:repeat(auto-fit,minmax(50px,1fr));}
 
@@ -538,13 +542,17 @@ position:relative;}
   0%,100%{box-shadow:0 0 0 0 rgba(212,166,64,.45);}
   50%{box-shadow:0 0 0 8px rgba(212,166,64,.0);}
 }
+.goal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
 .goal-card{
-  background:#fff;border-radius:var(--r);padding:14px 16px;
-  box-shadow:var(--sh-sm);margin-bottom:10px;
+  background:#fff;border-radius:var(--r);padding:12px 8px;
+  box-shadow:var(--sh-sm);
   border:1px solid rgba(200,221,208,.4);
   transition:transform .15s;
+  text-align:center;
+  aspect-ratio:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
 }
-.goal-card:active{transform:scale(.99);}
+.goal-card:active{transform:scale(.97);}
 .goal-card.achieved{
   background:linear-gradient(120deg,#f5e49e 0%,#e8c84a 30%,#f5e49e 60%,#faf0b0 80%,#e8c84a 100%);
   background-size:200% auto;
@@ -553,12 +561,10 @@ position:relative;}
 }
 .goal-card.achieved .goal-name{color:#7a5a00;}
 .goal-card.achieved .goal-progress{color:#7a5a00;font-weight:800;}
-.goal-name{font-size:14px;font-weight:700;color:var(--text-dark);margin-bottom:6px;}
-.goal-sub{font-size:11px;color:var(--text-light);margin-bottom:8px;}
-.goal-bar{background:var(--cream-dark);border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px;}
-.goal-bar-fill{height:100%;border-radius:6px;background:var(--green-mid);transition:width .6s ease;}
-.goal-card.achieved .goal-bar-fill{background:#d4a640;}
-.goal-progress{font-size:13px;font-weight:700;color:var(--green-deep);display:flex;justify-content:space-between;}
+.goal-ring{width:48px;height:48px;margin-bottom:6px;}
+.goal-name{font-size:11px;font-weight:700;color:var(--text-dark);margin-bottom:2px;line-height:1.2;
+  overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.goal-progress{font-size:10px;font-weight:600;color:var(--text-light);}
 /* Ziel-Typ-Selector (Stückzahl / Korridor / PB) */
 .goal-type-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px;}
 .goal-type-btn{
@@ -802,16 +808,12 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   letter-spacing:.5px;text-transform:uppercase;
   color:var(--text-light);padding:4px 0;
 }
-.fb-cal-grid{
-  display:grid;grid-template-columns:repeat(7,1fr);
-  gap:3px;
-}
-/* Kalender-Grid: nahtlose Wochen, kein vertikaler Freiraum */
+/* Kalender-Grid: kompakte Wochen */
 .fb-cal-grid{
   display:grid;
   grid-template-columns:repeat(7,1fr);
-  grid-auto-rows:1fr; /* alle Zeilen gleich hoch → keine Lücken */
-  gap:2px;            /* gleichmäßiger 2px-Abstand, kein asymmetrischer Margin */
+  grid-auto-rows:1fr;
+  gap:4px;
   align-items:stretch;
 }
 .fb-cal-day{
@@ -829,10 +831,6 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fb-cal-day.empty{cursor:default;color:transparent;pointer-events:none;background:transparent;}
 .fb-cal-day.empty:hover{background:transparent;}
 .fb-cal-day.today{font-weight:700;color:var(--green-deep);}
-.fb-cal-day.today::after{
-  content:'';position:absolute;bottom:3px;
-  width:4px;height:4px;border-radius:50%;background:var(--green-mid);
-}
 /* Hellgrün für Tage mit Fang */
 .fb-cal-day.has-catch{
   background:rgba(74,124,89,.18);color:var(--green-deep);font-weight:700;
@@ -843,15 +841,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   background:rgba(200,60,60,.13);color:#b04040;font-weight:600;
 }
 .fb-cal-day.skunked:hover{background:rgba(200,60,60,.22);}
-.fb-cal-day.has-catch .fb-cal-dot{background:var(--green-mid);}
-.fb-cal-day.skunked .fb-cal-dot{background:#d07070;}
-.fb-cal-dot{
-  position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
-  width:4px;height:4px;border-radius:50%;
-  display:none;
-}
-.fb-cal-day.has-catch .fb-cal-dot,
-.fb-cal-day.skunked .fb-cal-dot{display:block;}
+.fb-cal-dot{display:none!important;}
 .fb-cal-num{line-height:1;}
 .fb-cal-day.future{opacity:.35;}
 
@@ -907,11 +897,12 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 #fs-day-detail{z-index:115;}
 .dd-hero-v16{
   background:var(--green-deep);
-  padding:18px 0 16px; /* kein seitliches Padding → full-width */
+  padding:18px 0 16px;
+  margin:0 -20px; /* Edge-to-Edge: kompensiert Eltern-Padding */
   color:#fff;
-  position:relative; /* für X-Button */
+  position:relative;
 }
-.dd-hero-v16-inner{padding:0 20px;} /* inneres Padding für Text-Inhalt */
+.dd-hero-v16-inner{padding:0 20px;}
 
 .dd-hero-v16-date{font-family:var(--fa);font-size:12px;font-weight:600;opacity:.65;}
 /* X-Button: absolut oben rechts */
@@ -963,7 +954,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 /* Session-Trennlinie im Overlay */
 
 /* Catch-Zeile im Overlay */
-.dd-catch-row{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid rgba(200,221,208,.3);gap:10px;}
+.dd-catch-row{display:flex;align-items:center;padding:11px 12px;border-bottom:1px solid rgba(200,221,208,.3);gap:10px;}
 .dd-catch-row:last-child{border-bottom:none;}
 .dd-catch-photo{width:40px;height:40px;border-radius:9px;background:var(--green-mist);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;}
 .dd-catch-photo img{width:100%;height:100%;object-fit:cover;}
@@ -1081,6 +1072,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .obhdr{padding:40px 30px 20px;color:#fff;flex-shrink:0;}
 .obdots{display:flex;gap:6px;margin-bottom:24px;}
 .oddot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35);transition:all .3s;border:1.5px solid rgba(255,255,255,.25);}
+.oddot.done{background:var(--green-mid);border-color:var(--green-mid);}
 .oddot.on{background:var(--gold);width:28px;border-radius:5px;border-color:var(--gold);}
 
 /* Onboarding Abschluss-Overlay */
@@ -1280,7 +1272,7 @@ input[type=file]{display:none;}
     <div class="burg-hdr">
       <div style="font-size:32px;margin-bottom:8px;">🎣</div>
       <div class="burg-n" id="burg-name">Fishing Buddy</div>
-      <div class="burg-s" id="burg-sub">v34 · Local-First PWA</div>
+      <div class="burg-s" id="burg-sub">v35 · Local-First PWA</div>
     </div>
     <div class="burg-body">
       <div class="burg-sec">
@@ -1307,7 +1299,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v34 · IndexedDB · PWA</div>
+    <div class="burg-ver">Fishing Buddy v35 · IndexedDB · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -1444,7 +1436,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">100% Offline · v34</div>
+      <div class="hlogo-s" id="hdr-sub">100% Offline · v35</div>
     </div>
     <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus">+</button>
   </div>
@@ -2255,7 +2247,7 @@ function obNext(){
   document.getElementById('obs'+obStep).style.display='';
   document.getElementById('ob-title').textContent=OB_T[obStep];
   document.getElementById('ob-sub').textContent=OB_S[obStep];
-  document.querySelectorAll('.oddot').forEach((d,i)=>d.classList.toggle('on',i===obStep));
+  document.querySelectorAll('.oddot').forEach((d,i)=>{d.classList.toggle('on',i===obStep);d.classList.toggle('done',i<obStep);});
   if(obStep===3){
     document.getElementById('ob-btn').textContent='Fertig 🎣';
     document.getElementById('ob-btn').disabled=false;
@@ -2290,6 +2282,7 @@ function _finishOb(){
   clearTimeout(window._obFinishTimer);
   document.getElementById('onboarding').classList.add('hidden');
   applyProf();
+  window.scrollTo(0,0);
 }
 
 function _obConfetti(container){
@@ -2315,7 +2308,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v34`;
+  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v35`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -3916,28 +3909,24 @@ function rndrStats(){
       ${seasonToggle}
     </div>
 
-    <!-- 4 KPI-Kacheln – bereinigt -->
+    <!-- 4 KPI-Kacheln – clean, zentriert -->
     <div class="st-grid">
-      <div class="st-tile dark no-click" onclick="openFsCatches()">
-        <div class="st-tile-ico">🐟</div>
-        <div class="st-tile-val">${allC.length}</div>
+      <div class="st-tile" onclick="openFsCatches()" style="text-align:center;">
+        <div class="st-tile-val" style="color:var(--text-dark);">${allC.length}</div>
         <div class="st-tile-lbl">Fänge gesamt</div>
         <div class="st-tile-hint">→ Details</div>
       </div>
-      <div class="st-tile no-click">
-        <div class="st-tile-ico">🪣</div>
-        <div class="st-tile-val" style="color:var(--gold);">${tkN}</div>
+      <div class="st-tile" style="text-align:center;">
+        <div class="st-tile-val" style="color:var(--text-dark);">${tkN}</div>
         <div class="st-tile-lbl">Entnommene Fische</div>
       </div>
-      <div class="st-tile no-click" onclick="openFsHours()">
-        <div class="st-tile-ico">⏱️</div>
-        <div class="st-tile-val" style="font-size:${hrs>=100?'20px':'26px'}">${hrsLabel}</div>
+      <div class="st-tile" onclick="openFsHours()" style="text-align:center;">
+        <div class="st-tile-val" style="color:var(--text-dark);font-size:${hrs>=100?'20px':'26px'}">${hrsLabel}</div>
         <div class="st-tile-lbl">Angelstunden</div>
         <div class="st-tile-hint">→ Details</div>
       </div>
-      <div class="st-tile no-click" onclick="openFsSessions()">
-        <div class="st-tile-ico">📅</div>
-        <div class="st-tile-val">${total}</div>
+      <div class="st-tile" onclick="openFsSessions()" style="text-align:center;">
+        <div class="st-tile-val" style="color:var(--text-dark);">${total}</div>
         <div class="st-tile-lbl">Sessions</div>
         <div class="st-tile-hint">→ Alle ansehen</div>
       </div>
@@ -4002,23 +3991,20 @@ function _goalCardHtml(g, catches, isYear, yr){
   const qualifying = catches.filter(c => _catchQualifiesForGoal(c, g)).length;
   const pct = Math.min(100, Math.round(qualifying / target * 100));
   const achieved = qualifying >= target;
-  const gType = g.type || 'count';
-  let typeDesc = '';
-  if(gType === 'range') typeDesc = `${g.minLen}–${g.maxLen>0?g.maxLen:'∞'} cm · `;
-  else if(gType === 'pb') typeDesc = `über ${g.minLen} cm · `;
-  else if(g.minLen > 0) typeDesc = `ab ${g.minLen} cm · `;
-  const typeBadge = gType==='pb'?'🏆 PB':gType==='range'?'📏 Korridor':'🎣 Stückzahl';
+  const r=20,circ=2*Math.PI*r;
+  const dash=circ*pct/100;
+  const ringColor=achieved?'#d4a640':'var(--green-mid)';
   return `<div class="goal-card${achieved?' achieved':''}">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
-      <div class="goal-name" style="margin-bottom:0;">${achieved?'✅ ':''}${g.label}</div>
-      <span style="font-size:10px;color:var(--text-light);white-space:nowrap;margin-left:8px;margin-top:2px;">${typeBadge}</span>
-    </div>
-    <div class="goal-sub">${achieved?'Ziel erreicht! 🎉':typeDesc+'Saison '+yr}</div>
-    <div class="goal-bar"><div class="goal-bar-fill" style="width:${pct}%;"></div></div>
-    <div class="goal-progress">
-      <span>${qualifying} / ${target}${gType==='pb'?' cm':' Fänge'}</span>
-      <span>${pct}%</span>
-    </div>
+    <svg class="goal-ring" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="${r}" fill="none" stroke="rgba(200,221,208,.3)" stroke-width="4"/>
+      <circle cx="24" cy="24" r="${r}" fill="none" stroke="${ringColor}" stroke-width="4"
+        stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="${circ/4}"
+        stroke-linecap="round" style="transition:stroke-dasharray .6s ease;"/>
+      <text x="24" y="26" text-anchor="middle" font-size="11" font-weight="700"
+        fill="${achieved?'#7a5a00':'var(--text-dark)'}">${achieved?'✓':pct+'%'}</text>
+    </svg>
+    <div class="goal-name">${g.label}</div>
+    <div class="goal-progress">${qualifying}/${target}</div>
   </div>`;
 }
 
@@ -4048,20 +4034,19 @@ function _renderMoreStats(){
   if(goals.length){
     if(isYear){
       // Saison-Ansicht: nur Fänge des aktuellen Jahres gegen Ziele
-      goalsHtml = `<div class="slbl">🎯 Saisonziele ${curYear}</div>`;
+      goalsHtml = `<div class="slbl">🎯 Saisonziele ${curYear}</div><div class="goal-grid">`;
       goals.forEach(g => {
-        // Ziel-Jahres-Filter: Ziel-Jahr respektieren wenn vorhanden
         const targetYear = g.year || curYear;
         const gCatches = sessions
           .filter(s => s.date?.startsWith(String(targetYear)))
           .flatMap(s => s.catches);
         goalsHtml += _goalCardHtml(g, gCatches, isYear, targetYear);
       });
+      goalsHtml += `</div>`;
     } else {
       // Gesamt-Ansicht: Ziele nach ihrem eigenen Jahr gruppiert
       goalsHtml = `<div class="slbl">🎯 Historische Zielerfüllung</div>`;
 
-      // Alle Jahre aus Zielen UND Sessions ermitteln
       const goalYears = [...new Set(goals.map(g => g.year || curYear))];
       const sessionYears = [...new Set(sessions.map(s => s.date?.slice(0,4)).filter(Boolean))];
       const allYears = [...new Set([...goalYears.map(String), ...sessionYears])]
@@ -4071,17 +4056,16 @@ function _renderMoreStats(){
         goalsHtml += `<div class="card" style="text-align:center;padding:16px;color:var(--text-light);font-size:12px;">Noch keine Sessions vorhanden.</div>`;
       } else {
         allYears.forEach(yr => {
-          // Nur Ziele die zu diesem Jahr gehören
           const yrGoals = goals.filter(g => String(g.year || curYear) === String(yr));
-          if(!yrGoals.length) return; // kein Jahr-Block wenn keine Ziele
-          // Fänge exakt dieses Jahres
+          if(!yrGoals.length) return;
           const yrCatches = sessions.filter(s => s.date?.startsWith(String(yr))).flatMap(s => s.catches);
           goalsHtml += `<div style="margin-bottom:8px;">
-            <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--green-mid);padding:8px 0 6px;border-bottom:1px solid var(--green-pale);margin-bottom:8px;">${String(yr) === String(curYear)?'Saison '+yr+' (aktuell)':'Saison '+yr}</div>`;
+            <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--green-mid);padding:8px 0 6px;border-bottom:1px solid var(--green-pale);margin-bottom:8px;">${String(yr) === String(curYear)?'Saison '+yr+' (aktuell)':'Saison '+yr}</div>
+            <div class="goal-grid">`;
           yrGoals.forEach(g => {
             goalsHtml += _goalCardHtml(g, yrCatches, true, parseInt(yr));
           });
-          goalsHtml += `</div>`;
+          goalsHtml += `</div></div>`;
         });
         if(goalsHtml === `<div class="slbl">🎯 Historische Zielerfüllung</div>`){
           goalsHtml += `<div class="card" style="text-align:center;padding:16px;color:var(--text-light);font-size:12px;">Ziele ohne Jahres-Zuordnung. Lege neue Ziele an um sie hier zu sehen.</div>`;
@@ -4128,7 +4112,7 @@ function _renderMoreStats(){
     if(typeof Chart === 'undefined') return;
     const c = document.getElementById('chart-species-more');
     if(c && topF.length){
-      new Chart(c, {type:'doughnut',data:{labels:topF.map(e=>e[0]),datasets:[{data:topF.map(e=>e[1]),backgroundColor:['#2D4A35','#4A7C59','#7BAE8A','#C4963A','#B45A46','#C8DDD0'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,cutout:'62%',plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12,padding:8,color:'#4A5C4F'}}}}});
+      new Chart(c, {type:'doughnut',data:{labels:topF.map(e=>e[0]),datasets:[{data:topF.map(e=>e[1]),backgroundColor:['#E87040','#4A90D9','#4A7C59','#F5C842','#9B59B6','#1ABC9C'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,cutout:'62%',plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12,padding:8,color:'#4A5C4F'}}}}});
     }
   });
 }
@@ -4538,6 +4522,11 @@ function windLabel(deg){
   const d=['N','NO','O','SO','S','SW','W','NW'];
   return d[Math.round(deg/45)%8];
 }
+function windArrow(deg){
+  if(deg==null)return'';
+  const a=['↓','↙','←','↖','↑','↗','→','↘'];
+  return a[Math.round(deg/45)%8];
+}
 function wxIco(wc){if(wc==null)return'🌡️';if(wc<=1)return'☀️';if(wc<=3)return'⛅';if(wc<=49)return'🌫';if(wc<=67)return'🌧';if(wc<=77)return'🌨';if(wc<=82)return'🌧';if(wc<=86)return'🌨';return'⛈';}
 
 function rndrForecast(){
@@ -4740,11 +4729,11 @@ function openMoonCal(){
 }
 
 // ── Tidenkalender Overlay ───────────────────────────────────
-// BSH API (Bundesamt für Seeschifffahrt und Hydrographie)
-// Liefert echte Tidenvorhersagen für deutsche Küsten- und Tidenflüsse
-// Kostenlos, ohne API-Key, offizielle Bundesdaten
+// PEGELONLINE REST-API v2 (Wasserstraßen- und Schifffahrtsverwaltung)
+// Liefert Wasserstandsmessungen für deutsche Pegel
+// Kostenlos, ohne API-Key, keine CORS-Probleme
 let _tideRiver='weser';
-let _bshCache={}; // {river: {data, ts}}
+let _tideCache={}; // {river: {data, ts}}
 
 async function openTideCal(){
   openFs('tide-cal');
@@ -4755,19 +4744,20 @@ async function openTideCal(){
 async function _renderTideCal(river,startDate){
   _tideRiver=river;
 
-  // BSH Stationen (Nordsee-Tidenpegel)
+  // PEGELONLINE Stationen (verifizierte UUIDs)
   const STATIONS={
-    weser:{bsh:'DE__502P',label:'Weser',display:'Weser · Bremen Oslebshausen'},
-    elbe: {bsh:'DE__508P',label:'Elbe', display:'Elbe · Hamburg St. Pauli'},
-    ems:  {bsh:'DE__507P',label:'Ems',  display:'Ems · Emden'}
+    weser:{uuid:'c1f059dd-5063-468a-9dfa-0360fe0b030d',label:'Weser',display:'Weser · Oslebshausen'},
+    elbe: {uuid:'d488c5cc-4de9-4631-8ce1-0db0e700b546',label:'Elbe', display:'Elbe · Hamburg St. Pauli'},
+    ems:  {uuid:'edfdf747-be92-462f-87ed-53d228a33172',label:'Ems',  display:'Ems · Emden'}
   };
   const st=STATIONS[river]||STATIONS.weser;
 
-  // Tages-Navigation: Heute + 3 Tage (BSH-Vorhersage-Horizont ~4 Tage)
+  // Tages-Navigation: Gestern + Heute + Morgen (historische Messwerte)
   const today=new Date();today.setHours(0,0,0,0);
   const days=[];
-  for(let i=0;i<4;i++){const d=new Date(today);d.setDate(d.getDate()+i);days.push(d.toISOString().split('T')[0]);}
+  for(let i=-1;i<=1;i++){const d=new Date(today);d.setDate(d.getDate()+i);days.push(d.toISOString().split('T')[0]);}
   const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const todayStr=today.toISOString().split('T')[0];
 
   const navHtml=`
     <div class="fc-tide-day-nav">
@@ -4779,50 +4769,76 @@ async function _renderTideCal(river,startDate){
       ${days.map((ds,i)=>`
         <button class="fc-tide-day-btn${ds===startDate?' on':''}"
           onclick="_renderTideCal('${river}','${ds}')">
-          ${i===0?'Heute':DOW[new Date(ds+'T12:00:00').getDay()]+' '+ds.slice(8)}</button>`).join('')}
+          ${ds===todayStr?'Heute':DOW[new Date(ds+'T12:00:00').getDay()]+' '+ds.slice(8)}</button>`).join('')}
     </div>`;
 
   const bodyEl=document.getElementById('fs-tide-body');
   bodyEl.innerHTML=navHtml+`<div style="text-align:center;padding:24px;color:var(--text-light);">🔄 Lade Tidendaten…</div>`;
 
   try{
-    // BSH-Daten laden (30 Min Cache pro Fluss)
-    const cached=_bshCache[river];
-    if(!cached||Date.now()-cached.ts>30*60*1000){
-      const url='https://api.allorigins.win/raw?url='+encodeURIComponent(`https://wasserstand-nordsee.bsh.de/data/${st.bsh}.json`);
+    // PEGELONLINE-Daten laden (15 Min Cache pro Fluss)
+    const cached=_tideCache[river];
+    if(!cached||Date.now()-cached.ts>15*60*1000){
+      // P2D = letzte 2 Tage (relative Zeitangabe, von PEGELONLINE unterstützt)
+      const url=`https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/${st.uuid}/W/measurements.json?start=P2D`;
       const resp=await fetch(url);
-      if(!resp.ok)throw new Error(`BSH HTTP ${resp.status}`);
-      _bshCache[river]={data:await resp.json(),ts:Date.now()};
+      if(!resp.ok)throw new Error(`PEGELONLINE HTTP ${resp.status}`);
+      _tideCache[river]={data:await resp.json(),ts:Date.now()};
     }
-    const bsh=_bshCache[river].data;
+    const measurements=_tideCache[river].data;
 
-    // Kurvendaten für gewählten Tag filtern
-    const curve=bsh.curve_forecast||bsh.curveforecast||[];
-    const dayCurve=curve.filter(p=>(p.timestamp||'').slice(0,10)===startDate);
+    // Messdaten für gewählten Tag filtern (Timestamp: 2026-04-08T20:29:00+02:00)
+    const allDay=measurements.filter(p=>(p.timestamp||'').slice(0,10)===startDate);
 
-    if(!dayCurve.length)throw new Error('Keine Tidendaten für diesen Tag');
+    if(!allDay.length)throw new Error('Keine Messdaten für diesen Tag');
 
-    // Werte extrahieren: Vorhersage bevorzugt, Messung als Fallback
+    // Ausdünnen: jeden 15. Punkt (Minutentakt → 15-Min-Intervall)
+    const dayCurve=allDay.filter((_,i)=>i%15===0);
+
+    // Zeitstempel + Werte extrahieren
     const labels=dayCurve.map(p=>(p.timestamp||'').slice(11,16));
-    const values=dayCurve.map(p=>{
-      const v=p.curveforecast!=null?p.curveforecast:(p.measurement!=null?p.measurement:p.astro);
-      return v!=null?Math.round(v):null;
-    });
-    const measValues=dayCurve.map(p=>p.measurement!=null?Math.round(p.measurement):null);
-    const hasMeas=measValues.some(v=>v!=null);
+    const values=dayCurve.map(p=>p.value!=null?Math.round(p.value):null);
 
     const validVals=values.filter(v=>v!=null);
     if(!validVals.length)throw new Error('Alle Werte null');
     const vMin=Math.min(...validVals)-30;
     const vMax=Math.max(...validVals)+30;
 
-    // HW/NW-Zeiten aus BSH-Vorhersage für diesen Tag
-    const hwNw=(bsh.hwnw_forecast||bsh.hwnwforecast||[]).filter(e=>(e.timestamp||'').slice(0,10)===startDate);
+    // HW/NW automatisch berechnen aus Messdaten
+    const hwNw=[];
+    const smooth=values.map((v,i)=>{
+      if(v==null)return null;
+      let sum=0,cnt=0;
+      for(let j=Math.max(0,i-3);j<=Math.min(values.length-1,i+3);j++){
+        if(values[j]!=null){sum+=values[j];cnt++;}
+      }
+      return cnt?sum/cnt:v;
+    });
+    for(let i=2;i<smooth.length-2;i++){
+      if(smooth[i]==null)continue;
+      const prev=smooth[i-1],next=smooth[i+1];
+      if(prev==null||next==null)continue;
+      if(smooth[i]>prev&&smooth[i]>next&&smooth[i]-Math.min(prev,next)>15){
+        hwNw.push({event:'HW',timestamp:dayCurve[i].timestamp,value:values[i]});
+      } else if(smooth[i]<prev&&smooth[i]<next&&Math.max(prev,next)-smooth[i]>15){
+        hwNw.push({event:'NW',timestamp:dayCurve[i].timestamp,value:values[i]});
+      }
+    }
+    // Duplikate entfernen (nur größter/kleinster Wert in 2h-Fenster)
+    const filteredHwNw=[];
+    hwNw.forEach(e=>{
+      const eTime=new Date(e.timestamp).getTime();
+      const dupe=filteredHwNw.find(f=>f.event===e.event&&Math.abs(new Date(f.timestamp).getTime()-eTime)<7200000);
+      if(!dupe)filteredHwNw.push(e);
+      else if((e.event==='HW'&&e.value>dupe.value)||(e.event==='NW'&&e.value<dupe.value)){
+        filteredHwNw[filteredHwNw.indexOf(dupe)]=e;
+      }
+    });
 
-    // HW/NW-Info-Chips (für Angler besonders wichtig)
-    const hwNwHtml=hwNw.length?`
+    // HW/NW-Info-Chips
+    const hwNwHtml=filteredHwNw.length?`
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;margin-bottom:4px;">
-        ${hwNw.map(e=>{
+        ${filteredHwNw.map(e=>{
           const time=(e.timestamp||'').slice(11,16);
           const isHW=e.event==='HW';
           return`<div style="background:${isHW?'rgba(192,64,64,.1)':'rgba(42,122,176,.1)'};padding:6px 12px;border-radius:10px;font-size:12px;font-weight:500;">
@@ -4837,10 +4853,6 @@ async function _renderTideCal(river,startDate){
     const PX=Math.max(4,Math.round(960/dayCurve.length));
     const chartW=Math.max(dayCurve.length*PX,360);
 
-    // MHW/MNW Referenzlinien
-    const mhw=bsh.mhw!=null?bsh.mhw:null;
-    const mnw=bsh.mnw!=null?bsh.mnw:null;
-
     bodyEl.innerHTML=navHtml+`
       <div style="margin-top:12px;">
         <div class="fc-sec">
@@ -4851,7 +4863,7 @@ async function _renderTideCal(river,startDate){
             <canvas id="tide-main-chart" style="height:220px;display:block;"></canvas>
           </div>
           <div style="font-size:10px;color:var(--text-light);margin-top:8px;text-align:center;">
-            Wasserstand cm · BSH Tidenvorhersage · 10-Min-Intervall
+            Wasserstand cm · PEGELONLINE WSV · 15-Min-Intervall
           </div>
         </div>
       </div>`;
@@ -4865,7 +4877,7 @@ async function _renderTideCal(river,startDate){
       // HW/NW-Annotationen direkt im Chart
       const hwAnnotPlugin={id:'hwAnnot',afterDatasetsDraw(chart){
         const ctx=chart.ctx;
-        hwNw.forEach(e=>{
+        filteredHwNw.forEach(e=>{
           const time=(e.timestamp||'').slice(11,16);
           const idx=labels.findIndex(l=>l===time);
           if(idx<0||e.value==null)return;
@@ -4877,25 +4889,9 @@ async function _renderTideCal(river,startDate){
           ctx.font='bold 9px system-ui';
           ctx.textAlign='center';
           ctx.fillText(`${isHW?'HW':'NW'} ${e.value}cm`,x,isHW?y-10:y+18);
-          // Marker-Punkt
           ctx.beginPath();
           ctx.arc(x,y,4,0,Math.PI*2);
           ctx.fill();
-          ctx.restore();
-        });
-      }};
-
-      // MHW/MNW Referenzlinien
-      const refPlugin={id:'refLines',beforeDatasetsDraw(chart){
-        const ctx=chart.ctx;const area=chart.chartArea;if(!area)return;
-        [{val:mhw,label:'MHW',color:'rgba(192,64,64,.25)'},{val:mnw,label:'MNW',color:'rgba(42,122,176,.25)'}]
-          .filter(r=>r.val!=null&&r.val>=vMin&&r.val<=vMax).forEach(ref=>{
-          const y=chart.scales.y.getPixelForValue(ref.val);
-          ctx.save();
-          ctx.strokeStyle=ref.color;ctx.lineWidth=1;ctx.setLineDash([4,4]);
-          ctx.beginPath();ctx.moveTo(area.left,y);ctx.lineTo(area.right,y);ctx.stroke();
-          ctx.setLineDash([]);ctx.fillStyle=ref.color;ctx.font='8px system-ui';ctx.textAlign='left';
-          ctx.fillText(ref.label+' '+ref.val,area.left+2,y-3);
           ctx.restore();
         });
       }};
@@ -4910,32 +4906,23 @@ async function _renderTideCal(river,startDate){
         } else el.style.opacity='0';
       }};
 
-      // Datasets: Vorhersage + optional Messwerte
       const datasets=[{
-        label:'Vorhersage',data:values,
+        label:'Messung',data:values,
         borderColor:'#2a8cba',backgroundColor:'rgba(42,140,186,.18)',
         fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,
         pointBackgroundColor:'#2a8cba',borderWidth:2.5
       }];
-      if(hasMeas){
-        datasets.push({
-          label:'Messung',data:measValues,
-          borderColor:'#1a6a3a',backgroundColor:'rgba(0,0,0,0)',
-          fill:false,tension:.4,pointRadius:0,pointHoverRadius:3,
-          borderWidth:1.5,borderDash:[3,3]
-        });
-      }
 
       new Chart(c,{
         type:'line',
         data:{labels,datasets},
-        plugins:[hoverPlugin,hwAnnotPlugin,refPlugin],
+        plugins:[hoverPlugin,hwAnnotPlugin],
         options:{
           responsive:false,maintainAspectRatio:false,
           plugins:{
-            legend:{display:hasMeas,labels:{boxWidth:12,font:{size:10}}},
+            legend:{display:false},
             tooltip:{mode:'index',intersect:false,
-              callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y} cm`},
+              callbacks:{label:c2=>`${c2.parsed.y} cm`},
               backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'}
           },
           scales:{
@@ -4955,7 +4942,7 @@ async function _renderTideCal(river,startDate){
       <div class="fc-sec" style="margin-top:12px;text-align:center;color:var(--text-light);padding:24px;">
         <div style="font-size:28px;margin-bottom:8px;">🌊</div>
         <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Tidendaten nicht verfügbar</div>
-        <div style="font-size:11px;opacity:.7;">BSH · ${st.display}</div>
+        <div style="font-size:11px;opacity:.7;">PEGELONLINE · ${st.display}</div>
         <div style="font-size:10px;margin-top:8px;opacity:.5;">${e.message||'Verbindung prüfen'}</div>
       </div>`;
   }
@@ -4989,25 +4976,26 @@ async function openWxChart(type){
     const winds=d.windspeed_10m_max.map(v=>v!=null?Math.round(v):null);
     const gusts=(d.windgusts_10m_max||[]).map(v=>v!=null?Math.round(v):null);
     const dirs=(d.winddirection_10m_dominant||[]).map(v=>windLabel(v));
+    const arrows=(d.winddirection_10m_dominant||[]).map(v=>windArrow(v));
 
     // Tabelle
     const tblRows=d.time.map((t,i)=>{
       const bg=i===0?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
-      return`<div class="wx14-row" style="${bg}">
+      return`<div class="wx14-row" data-cols="4" style="${bg}">
         <div class="wx14-date">${labels[i]}</div>
         <div class="wx14-val">${winds[i]!=null?winds[i]:'–'}</div>
         <div class="wx14-val">${gusts[i]!=null?gusts[i]:'–'}</div>
-        <div class="wx14-val">${dirs[i]||'–'}</div>
+        <div class="wx14-val">${dirs[i]?dirs[i]+' '+arrows[i]:'–'}</div>
       </div>`;
     }).join('');
 
     bodyEl.innerHTML=`
       <div class="fc-sec" style="margin-top:0;">
         <div class="fc-sec-title">💨 Wind + Böen · 14 Tage</div>
-        <canvas id="wx-wind-chart" style="width:100%;height:200px;"></canvas>
+        <div class="fc-chart-wrap"><canvas id="wx-wind-chart"></canvas></div>
       </div>
       <div class="fc-sec" style="padding:0;overflow:hidden;">
-        <div class="wx14-hdr"><div class="wx14-date">Tag</div><div class="wx14-val">km/h</div><div class="wx14-val">Böen</div><div class="wx14-val">Richt.</div></div>
+        <div class="wx14-hdr" data-cols="4"><div class="wx14-date">Tag</div><div class="wx14-val">km/h</div><div class="wx14-val">Böen</div><div class="wx14-val">Richt.</div></div>
         ${tblRows}
       </div>`;
 
@@ -5026,7 +5014,7 @@ async function openWxChart(type){
 
     const tblRows=d.time.map((t,i)=>{
       const bg=i===0?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
-      return`<div class="wx14-row" style="${bg}">
+      return`<div class="wx14-row" data-cols="3" style="${bg}">
         <div class="wx14-date">${labels[i]}</div>
         <div class="wx14-val">${rainPct[i]!=null?rainPct[i]+'%':'–'}</div>
         <div class="wx14-val">${precip[i]!=null?precip[i]+' mm':'–'}</div>
@@ -5036,10 +5024,10 @@ async function openWxChart(type){
     bodyEl.innerHTML=`
       <div class="fc-sec" style="margin-top:0;">
         <div class="fc-sec-title">🌧 Niederschlag · 14 Tage</div>
-        <canvas id="wx-rain-chart" style="width:100%;height:180px;"></canvas>
+        <div class="fc-chart-wrap"><canvas id="wx-rain-chart"></canvas></div>
       </div>
       <div class="fc-sec" style="padding:0;overflow:hidden;">
-        <div class="wx14-hdr"><div class="wx14-date">Tag</div><div class="wx14-val">Wahrsch.</div><div class="wx14-val">Menge</div></div>
+        <div class="wx14-hdr" data-cols="3"><div class="wx14-date">Tag</div><div class="wx14-val">Wahrsch.</div><div class="wx14-val">Menge</div></div>
         ${tblRows}
       </div>`;
 
@@ -5056,11 +5044,13 @@ async function openWxChart(type){
     // Temperatur
     const tmax=d.temperature_2m_max.map(v=>v!=null?Math.round(v*10)/10:null);
     const tmin=d.temperature_2m_min.map(v=>v!=null?Math.round(v*10)/10:null);
+    const wCodes=d.weathercode||[];
 
     const tblRows=d.time.map((t,i)=>{
       const bg=i===0?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
-      return`<div class="wx14-row" style="${bg}">
+      return`<div class="wx14-row" data-cols="4" style="${bg}">
         <div class="wx14-date">${labels[i]}</div>
+        <div class="wx14-val" style="font-size:16px;">${wxIco(wCodes[i])}</div>
         <div class="wx14-val">${tmin[i]!=null?tmin[i]+'°':'–'}</div>
         <div class="wx14-val" style="font-weight:700;">${tmax[i]!=null?tmax[i]+'°':'–'}</div>
       </div>`;
@@ -5069,10 +5059,10 @@ async function openWxChart(type){
     bodyEl.innerHTML=`
       <div class="fc-sec" style="margin-top:0;">
         <div class="fc-sec-title">🌡 Temperatur · 14 Tage</div>
-        <canvas id="wx-temp-chart" style="width:100%;height:200px;"></canvas>
+        <div class="fc-chart-wrap"><canvas id="wx-temp-chart"></canvas></div>
       </div>
       <div class="fc-sec" style="padding:0;overflow:hidden;">
-        <div class="wx14-hdr"><div class="wx14-date">Tag</div><div class="wx14-val">Min</div><div class="wx14-val">Max</div></div>
+        <div class="wx14-hdr" data-cols="4"><div class="wx14-date">Tag</div><div class="wx14-val"></div><div class="wx14-val">Min</div><div class="wx14-val">Max</div></div>
         ${tblRows}
       </div>`;
 
