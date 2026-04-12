@@ -232,7 +232,7 @@ position:relative;}
 /* ── WETTER-DASHBOARD: Helles Theme (v17) ── */
 
 /* Dashboard-Kacheln auf page-forecast */
-.fc-dash{padding:16px 16px 24px;display:flex;flex-direction:column;gap:12px;}
+.fc-dash{padding:0 0 24px;display:flex;flex-direction:column;gap:12px;}
 .fc-kachel{
   background:#fff;border-radius:var(--r);border:1px solid rgba(200,221,208,.4);
   box-shadow:var(--sh-sm);cursor:pointer;overflow:hidden;
@@ -422,7 +422,7 @@ position:relative;}
 
 /* ── Wetter-Overlay 14-Tage Tabellen ── */
 .wx14-hdr,.wx14-row{
-  display:grid;align-items:center;gap:6px;padding:10px 14px;font-size:12px;
+  display:grid;align-items:center;gap:6px;padding:10px 14px;font-size:12px;min-height:48px;
 }
 .wx14-hdr{
   background:var(--green-deep);color:#ffffff;
@@ -542,7 +542,7 @@ position:relative;}
   0%,100%{box-shadow:0 0 0 0 rgba(212,166,64,.45);}
   50%{box-shadow:0 0 0 8px rgba(212,166,64,.0);}
 }
-.goal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.goal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;padding:0 16px;box-sizing:border-box;}
 .goal-card{
   background:#fff;border-radius:var(--r);padding:12px 8px;
   box-shadow:var(--sh-sm);
@@ -761,7 +761,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .phlbl{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
 
 /* BUTTONS */
-.addcatch{width:100%;padding:16px;background:transparent;border:1.5px dashed var(--green-light);border-radius:var(--r);color:var(--green-mid);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,border-color .15s;margin-bottom:12px;}
+.addcatch{width:100%;padding:16px;background:transparent;border:1.5px dashed var(--green-light);border-radius:var(--r);color:var(--green-mid);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,border-color .15s;margin-top:12px;margin-bottom:12px;}
 .addcatch:hover{background:var(--green-mist);border-color:var(--green-mid);}
 .aplus{width:24px;height:24px;background:var(--green-mid);border-radius:6px;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;font-weight:700;}
 .btn{width:100%;padding:18px;background:var(--green-deep);border:none;border-radius:var(--r);color:#fff;font-size:16px;font-weight:600;font-family:var(--fa);cursor:pointer;transition:background .2s,transform .1s;box-shadow:0 4px 16px rgba(45,74,53,.35);}
@@ -813,7 +813,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   display:grid;
   grid-template-columns:repeat(7,1fr);
   grid-auto-rows:1fr;
-  gap:4px;
+  gap:2px;
   align-items:stretch;
 }
 .fb-cal-day{
@@ -1272,7 +1272,7 @@ input[type=file]{display:none;}
     <div class="burg-hdr">
       <div style="font-size:32px;margin-bottom:8px;">🎣</div>
       <div class="burg-n" id="burg-name">Fishing Buddy</div>
-      <div class="burg-s" id="burg-sub">v35 · Local-First PWA</div>
+      <div class="burg-s" id="burg-sub">v36 · Local-First PWA</div>
     </div>
     <div class="burg-body">
       <div class="burg-sec">
@@ -1299,7 +1299,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v35 · IndexedDB · PWA</div>
+    <div class="burg-ver">Fishing Buddy v36 · IndexedDB · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -1354,6 +1354,11 @@ input[type=file]{display:none;}
 <div class="fsov" id="fs-hours" role="dialog">
   <div class="fshdr"><div><div class="fstitle">Angelstunden</div><div class="fsmeta" id="fs-hours-meta"></div></div><button class="xbtn" onclick="closeFs('hours')">✕</button></div>
   <div class="fsov-scroll"><div id="fs-hours-content"></div></div>
+</div>
+
+<div class="fsov" id="fs-taken" role="dialog">
+  <div class="fshdr"><div><div class="fstitle">Entnommene Fische</div><div class="fsmeta" id="fs-taken-meta"></div></div><button class="xbtn" onclick="closeFs('taken')">✕</button></div>
+  <div class="fsov-scroll"><div id="fs-taken-list"></div></div>
 </div>
 
 <div class="fsov" id="fs-fish" role="dialog">
@@ -1436,7 +1441,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">100% Offline · v35</div>
+      <div class="hlogo-s" id="hdr-sub">100% Offline · v36</div>
     </div>
     <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus">+</button>
   </div>
@@ -1632,6 +1637,12 @@ input[type=file]{display:none;}
     <button class="xbtn" onclick="closeFs('wx-temp')">✕</button>
   </div>
   <div class="fsov-scroll" id="fs-temp-body"></div>
+</div>
+
+<!-- Tages-Wetter Overlay -->
+<div class="fsov" id="fs-daily-weather" role="dialog" aria-modal="true" style="z-index:116;background:#f5f7f5;">
+  <div class="fshdr" id="fs-dw-hdr"></div>
+  <div class="fsov-scroll" id="fs-dw-body"></div>
 </div>
 
 <!-- PAGE: DETAIL -->
@@ -2235,6 +2246,8 @@ function obNext(){
     }
     profile={...obData,goals};
     saveProfile();
+    document.activeElement.blur();
+    setTimeout(()=>window.scrollTo(0,0),100);
     finOb();
     return;
   }
@@ -2282,7 +2295,8 @@ function _finishOb(){
   clearTimeout(window._obFinishTimer);
   document.getElementById('onboarding').classList.add('hidden');
   applyProf();
-  window.scrollTo(0,0);
+  document.activeElement.blur();
+  setTimeout(()=>window.scrollTo(0,0),100);
 }
 
 function _obConfetti(container){
@@ -2308,7 +2322,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v35`;
+  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v36`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -3531,9 +3545,7 @@ async function openDayDetail(dateKey){
 
   // Session-Kacheln mit Fängen
   let sessionsHtml='';
-  if(isSkunked){
-    sessionsHtml=`<div style="text-align:center;padding:28px;color:var(--text-light);">🪝 Schneider – kein Fang</div>`;
-  } else {
+  {
     daySess.forEach(s=>{
       const sCatches=allCatches.filter(c=>String(c._sessId)===String(s.id));
       const dur=calcDur(s.start,s.end);
@@ -3557,7 +3569,7 @@ async function openDayDetail(dateKey){
             <div class="dd-catch-right">
               <div class="dd-catch-len">${c.length}</div>
               <div class="dd-catch-unit">cm</div>
-              ${c.score?`<div style="font-size:10px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score}</div>`:''}
+              ${c.score&&(profile?.angeltyp||'Allround')==='Raubfisch'?`<div style="font-size:10px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score}</div>`:''}
             </div>
           </div>`;
         }).join('');
@@ -3578,6 +3590,10 @@ async function openDayDetail(dateKey){
         <div style="padding:0;">${catchRows}</div>
       </div>`;
     });
+  }
+
+  if(isSkunked&&!sessionsHtml.trim()){
+    sessionsHtml=`<div style="text-align:center;padding:28px;color:var(--text-light);">🪝 Schneider – kein Fang</div>`;
   }
 
   const body=document.getElementById('dd-body');
@@ -3761,7 +3777,7 @@ function showDetail(id){
         <span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>
         ${mm&&!mm.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ unter ${mm.mm}cm</span>`:''}
       </div>
-      <div class="frt"><div class="flv">${c.length}</div><div class="flu">cm</div><div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score}</div></div>
+      <div class="frt"><div class="flv">${c.length}</div><div class="flu">cm</div>${(profile?.angeltyp||'Allround')==='Raubfisch'?`<div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score}</div>`:''}</div>
     </div>`;}).join('')}
   </div>
   <div style="display:flex;gap:10px;margin-top:4px;">
@@ -3916,9 +3932,10 @@ function rndrStats(){
         <div class="st-tile-lbl">Fänge gesamt</div>
         <div class="st-tile-hint">→ Details</div>
       </div>
-      <div class="st-tile" style="text-align:center;">
+      <div class="st-tile" onclick="openFsTaken()" style="text-align:center;cursor:pointer;">
         <div class="st-tile-val" style="color:var(--text-dark);">${tkN}</div>
         <div class="st-tile-lbl">Entnommene Fische</div>
+        <div class="st-tile-hint">→ Details</div>
       </div>
       <div class="st-tile" onclick="openFsHours()" style="text-align:center;">
         <div class="st-tile-val" style="color:var(--text-dark);font-size:${hrs>=100?'20px':'26px'}">${hrsLabel}</div>
@@ -3942,8 +3959,8 @@ function rndrStats(){
       </div>
     </div>`:''}
 
-    <!-- Fair-Ranking -->
-    ${scored.length?`
+    <!-- Fair-Ranking (nur für Raubfisch-Angler) -->
+    ${scored.length&&(profile?.angeltyp||'Allround')==='Raubfisch'?`
     <div class="slbl">🏅 Fair-Ranking</div>
     <div class="mcard" style="margin-bottom:14px;">
       ${scored.map((c,i)=>{const sd=filtered.find(s=>s.catches.some(x=>x.type===c.type&&x.length===c.length&&x.time===c.time));return`<div class="mrow"><div class="mi">${medals[i]}</div><div class="minfo"><div class="mn">${c.type} · ${c.length}cm</div><div class="md">${sd?fmtDate(sd.date)+' · '+sd.water:''}</div></div><div class="msc"><div class="msv">${c.fS}</div><div class="msl">Punkte</div></div></div>`;}).join('')}
@@ -4336,6 +4353,15 @@ function rndrFsCatches(){
   if(allC.length>60)el.innerHTML+=`<div style="padding:10px 0;text-align:center;font-size:12px;color:var(--text-light);">+${allC.length-60} weitere</div>`;
 }
 
+function openFsTaken(){
+  openFs('taken');
+  const allC=sessions.flatMap(s=>s.catches.map(c=>({...c,date:s.date,water:s.water})));
+  const taken=allC.filter(c=>c.taken);
+  document.getElementById('fs-taken-meta').textContent=`${taken.length} entnommen`;
+  const el=document.getElementById('fs-taken-list');
+  if(!taken.length){el.innerHTML='<div style="padding:30px;text-align:center;color:var(--text-light);">Keine entnommenen Fische</div>';return;}
+  el.innerHTML=taken.map(c=>`<div class="fr"><div class="fa2">${fIco(c.type)}</div><div style="flex:1;min-width:0;"><div class="fn">${c.type}</div><div class="fme">${fmtDate(c.date)} · ${c.water}</div><span class="crp tak">Entnommen</span></div><div class="frt"><div class="flv">${c.length}</div><div class="flu">cm</div></div></div>`).join('');
+}
 function openFsSessions(){openFs('sessions');setFsSort('new');}
 function setFsSort(k){
   _fsSessSort=k;
@@ -4510,22 +4536,15 @@ function openFsBait(bait){
 let _fcData=null;
 let _fcHourlyData=null; // stündliche Daten für Detail-Overlay
 
-// Windrichtung → Pfeil (SVG-Rotation basiert auf meteorologischer Richtung)
+// Windrichtung → SVG-Pfeil mit CSS-Rotation + Himmelsrichtung
 function windArrow(deg){
   if(deg==null)return'';
-  // Meteorologisch: 0°=N (kommt aus N, weht nach S) → Pfeil zeigt Richtung wohin
-  const rot=deg; // Pfeil zeigt wohin der Wind weht
-  return`<span class="wind-arrow" style="transform:rotate(${rot}deg);display:inline-block;">↑</span>`;
+  return`<svg viewBox="0 0 24 24" width="18" height="18" style="transform:rotate(${deg}deg);display:inline-block;vertical-align:middle;"><path d="M12 2L8 14h8L12 2z" fill="var(--green-deep)" opacity=".85"/><path d="M12 22V14" stroke="var(--green-deep)" stroke-width="2" opacity=".5"/></svg>`;
 }
 function windLabel(deg){
   if(deg==null)return'';
   const d=['N','NO','O','SO','S','SW','W','NW'];
   return d[Math.round(deg/45)%8];
-}
-function windArrow(deg){
-  if(deg==null)return'';
-  const a=['↓','↙','←','↖','↑','↗','→','↘'];
-  return a[Math.round(deg/45)%8];
 }
 function wxIco(wc){if(wc==null)return'🌡️';if(wc<=1)return'☀️';if(wc<=3)return'⛅';if(wc<=49)return'🌫';if(wc<=67)return'🌧';if(wc<=77)return'🌨';if(wc<=82)return'🌧';if(wc<=86)return'🌨';return'⛈';}
 
@@ -4724,7 +4743,7 @@ function openMoonCal(){
   requestAnimationFrame(()=>{
     const target=document.getElementById(todayBlockId);
     const scroll=document.querySelector('#fs-moon-cal .fsov-scroll');
-    if(target&&scroll)scroll.scrollTop=target.offsetTop-16;
+    if(target&&scroll)scroll.scrollTop=target.offsetTop-80;
   });
 }
 
@@ -4927,7 +4946,7 @@ async function _renderTideCal(river,startDate){
           },
           scales:{
             x:{ticks:{color:'#6a7a6f',font:{size:9},maxRotation:0,
-              callback:(_,i)=>(i%6===0)?labels[i]:''},
+              maxTicksLimit:12,autoSkip:true},
               grid:{color:'rgba(0,0,0,.05)'}},
             y:{min:vMin,max:vMax,
               ticks:{color:'#6a7a6f',font:{size:10},callback:v=>v+' cm'},
@@ -4981,11 +5000,11 @@ async function openWxChart(type){
     // Tabelle
     const tblRows=d.time.map((t,i)=>{
       const bg=i===0?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
-      return`<div class="wx14-row" data-cols="4" style="${bg}">
+      return`<div class="wx14-row" data-cols="4" style="${bg}cursor:pointer;" onclick="openDailyWeather('${t}')">
         <div class="wx14-date">${labels[i]}</div>
         <div class="wx14-val">${winds[i]!=null?winds[i]:'–'}</div>
         <div class="wx14-val">${gusts[i]!=null?gusts[i]:'–'}</div>
-        <div class="wx14-val">${dirs[i]?dirs[i]+' '+arrows[i]:'–'}</div>
+        <div class="wx14-val">${dirs[i]?arrows[i]+'<br><span style="font-size:10px;font-weight:600;">'+dirs[i]+'</span>':'–'}</div>
       </div>`;
     }).join('');
 
@@ -5014,7 +5033,7 @@ async function openWxChart(type){
 
     const tblRows=d.time.map((t,i)=>{
       const bg=i===0?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
-      return`<div class="wx14-row" data-cols="3" style="${bg}">
+      return`<div class="wx14-row" data-cols="3" style="${bg}cursor:pointer;" onclick="openDailyWeather('${t}')">
         <div class="wx14-date">${labels[i]}</div>
         <div class="wx14-val">${rainPct[i]!=null?rainPct[i]+'%':'–'}</div>
         <div class="wx14-val">${precip[i]!=null?precip[i]+' mm':'–'}</div>
@@ -5048,7 +5067,7 @@ async function openWxChart(type){
 
     const tblRows=d.time.map((t,i)=>{
       const bg=i===0?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
-      return`<div class="wx14-row" data-cols="4" style="${bg}">
+      return`<div class="wx14-row" data-cols="4" style="${bg}cursor:pointer;" onclick="openDailyWeather('${t}')">
         <div class="wx14-date">${labels[i]}</div>
         <div class="wx14-val" style="font-size:16px;">${wxIco(wCodes[i])}</div>
         <div class="wx14-val">${tmin[i]!=null?tmin[i]+'°':'–'}</div>
@@ -5082,6 +5101,152 @@ async function openWxChart(type){
 
 // Alias (alter renderFcDays → wird nicht mehr direkt genutzt)
 function renderFcDays(data){_fcData=data;_renderFcDashboard();}
+
+// ── Tages-Wetter-Overlay (stündliche Graphen) ─────────────────
+let _dwCharts=[];
+function _dwDestroy(){_dwCharts.forEach(c=>{try{c.destroy();}catch(e){}});_dwCharts=[];}
+
+function openDailyWeather(dateStr){
+  if(!_fcData||!_fcHourlyData)return;
+  _dwDestroy();
+  openFs('daily-weather');
+
+  const dates=_fcData.daily.time||[];
+  const idx=dates.indexOf(dateStr);
+  if(idx<0)return;
+
+  const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const MON=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const dt=new Date(dateStr+'T12:00:00');
+  const isToday=idx===0;
+  const dateLabel=isToday?'Heute':DOW[dt.getDay()]+', '+dt.getDate()+'. '+MON[dt.getMonth()]+' '+dt.getFullYear();
+
+  // Daily KPIs
+  const dd=_fcData.daily;
+  const tmax=dd.temperature_2m_max?.[idx];
+  const tmin=dd.temperature_2m_min?.[idx];
+  const wind=dd.windspeed_10m_max?.[idx];
+  const windDir=dd.winddirection_10m_dominant?.[idx];
+  const rainPct=dd.precipitation_probability_max?.[idx];
+  const wc=dd.weathercode?.[idx];
+  const bp=calcBiteProb({date:dateStr,wc,tmax,wind,windDir,pres:dd.surface_pressure_mean?.[idx]});
+  const biteCol=bp.pct>=70?'var(--green-mid)':bp.pct>=40?'var(--gold)':'var(--text-light)';
+
+  const hasPrev=idx>0;
+  const hasNext=idx<dates.length-1;
+
+  // Header
+  document.getElementById('fs-dw-hdr').innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <button onclick="openDailyWeather('${hasPrev?dates[idx-1]:dateStr}')" style="width:36px;height:36px;border:none;border-radius:50%;background:${hasPrev?'rgba(74,124,89,.15)':'transparent'};font-size:18px;cursor:${hasPrev?'pointer':'default'};opacity:${hasPrev?'1':'.2'};font-family:var(--fa);" ${hasPrev?'':'disabled'}>‹</button>
+      <div style="flex:1;text-align:center;min-width:0;">
+        <div class="fstitle" style="font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${wxIco(wc)} ${dateLabel}</div>
+      </div>
+      <button onclick="openDailyWeather('${hasNext?dates[idx+1]:dateStr}')" style="width:36px;height:36px;border:none;border-radius:50%;background:${hasNext?'rgba(74,124,89,.15)':'transparent'};font-size:18px;cursor:${hasNext?'pointer':'default'};opacity:${hasNext?'1':'.2'};font-family:var(--fa);" ${hasNext?'':'disabled'}>›</button>
+    </div>
+    <button class="xbtn" onclick="_dwDestroy();closeFs('daily-weather')">✕</button>`;
+
+  // Hourly data for this day
+  const h=_fcHourlyData.hourly;
+  const hIdx=[];
+  h.time.forEach((t,i)=>{if(t.startsWith(dateStr))hIdx.push(i);});
+  const hLabels=hIdx.map(i=>(h.time[i]||'').slice(11,16));
+  const hTemp=hIdx.map(i=>h.temperature_2m?.[i]!=null?Math.round(h.temperature_2m[i]*10)/10:null);
+  const hWind=hIdx.map(i=>h.windspeed_10m?.[i]!=null?Math.round(h.windspeed_10m[i]):null);
+  const hGusts=hIdx.map(i=>h.windgusts_10m?.[i]!=null?Math.round(h.windgusts_10m[i]):null);
+  const hRain=hIdx.map(i=>h.precipitation_probability?.[i]!=null?h.precipitation_probability[i]:null);
+  const hWDir=hIdx.map(i=>h.winddirection_10m?.[i]);
+
+  // Body
+  document.getElementById('fs-dw-body').innerHTML=`
+    <!-- KPIs -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:12px 16px;">
+      <div style="text-align:center;background:#fff;border-radius:var(--rs);padding:10px 4px;box-shadow:var(--sh-sm);">
+        <div style="font-size:18px;font-weight:700;color:var(--text-dark);">${tmin!=null?Math.round(tmin):'–'}°/${tmax!=null?Math.round(tmax):'–'}°</div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">Temp</div>
+      </div>
+      <div style="text-align:center;background:#fff;border-radius:var(--rs);padding:10px 4px;box-shadow:var(--sh-sm);">
+        <div style="font-size:18px;font-weight:700;color:var(--text-dark);">${wind!=null?Math.round(wind):'-'}</div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">km/h ${windLabel(windDir)}</div>
+      </div>
+      <div style="text-align:center;background:#fff;border-radius:var(--rs);padding:10px 4px;box-shadow:var(--sh-sm);">
+        <div style="font-size:18px;font-weight:700;color:var(--blue-t);">${rainPct!=null?rainPct:'–'}%</div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">Regen</div>
+      </div>
+      <div style="text-align:center;background:#fff;border-radius:var(--rs);padding:10px 4px;box-shadow:var(--sh-sm);">
+        <div style="font-size:18px;font-weight:700;color:${biteCol};">${bp.pct}%</div>
+        <div style="font-size:10px;color:var(--text-light);margin-top:2px;">Beißindex</div>
+      </div>
+    </div>
+    <!-- Temperatur -->
+    <div class="fc-sec" style="margin:8px 16px;">
+      <div class="fc-sec-title">🌡 Temperatur · stündlich</div>
+      <div class="fc-chart-wrap"><canvas id="dw-temp-chart"></canvas></div>
+    </div>
+    <!-- Wind -->
+    <div class="fc-sec" style="margin:8px 16px;">
+      <div class="fc-sec-title">💨 Wind & Böen · stündlich</div>
+      <div class="fc-chart-wrap"><canvas id="dw-wind-chart"></canvas></div>
+    </div>
+    <!-- Niederschlag -->
+    <div class="fc-sec" style="margin:8px 16px 24px;">
+      <div class="fc-sec-title">🌧 Regenwahrscheinlichkeit · stündlich</div>
+      <div class="fc-chart-wrap"><canvas id="dw-rain-chart"></canvas></div>
+    </div>`;
+
+  // Swipe gesture
+  const scrollEl=document.getElementById('fs-dw-body');
+  let _swX=0;
+  scrollEl.ontouchstart=e=>{_swX=e.touches[0].clientX;};
+  scrollEl.ontouchend=e=>{
+    const dx=e.changedTouches[0].clientX-_swX;
+    if(Math.abs(dx)>60){
+      if(dx>0&&hasPrev)openDailyWeather(dates[idx-1]);
+      else if(dx<0&&hasNext)openDailyWeather(dates[idx+1]);
+    }
+  };
+
+  const TICK='#6a7a6f',GRID='rgba(0,0,0,.06)';
+  const TT={mode:'index',intersect:false,backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'};
+  const XOPT={ticks:{color:TICK,font:{size:9},maxTicksLimit:12,autoSkip:true,maxRotation:0},grid:{color:GRID}};
+
+  requestAnimationFrame(()=>{
+    if(typeof Chart==='undefined')return;
+
+    // Temp chart
+    const c1=document.getElementById('dw-temp-chart');
+    if(c1){
+      const vMin=Math.floor(Math.min(...hTemp.filter(v=>v!=null))-2);
+      const vMax=Math.ceil(Math.max(...hTemp.filter(v=>v!=null))+2);
+      _dwCharts.push(new Chart(c1,{type:'line',data:{labels:hLabels,datasets:[
+        {label:'Temperatur',data:hTemp,borderColor:'#e07030',backgroundColor:'rgba(224,112,48,.12)',fill:true,tension:.35,pointRadius:2,pointHoverRadius:5,borderWidth:2.5}
+      ]},options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c2=>`${c2.parsed.y}°C`}}},
+        scales:{x:XOPT,y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:10},stepSize:2,callback:v=>Math.round(v)+'°'},grid:{color:GRID}}}}}));
+    }
+
+    // Wind chart
+    const c2=document.getElementById('dw-wind-chart');
+    if(c2){
+      const ds=[{label:'Wind',data:hWind,borderColor:'#4a90d9',backgroundColor:'rgba(74,144,217,.12)',fill:true,tension:.35,pointRadius:2,pointHoverRadius:5,borderWidth:2.5}];
+      if(hGusts.some(v=>v!=null))ds.push({label:'Böen',data:hGusts,borderColor:'#a0c4f0',fill:false,tension:.35,pointRadius:1,borderWidth:1.5,borderDash:[4,4]});
+      _dwCharts.push(new Chart(c2,{type:'line',data:{labels:hLabels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:ds.length>1,labels:{boxWidth:10,font:{size:10}}},tooltip:{...TT,callbacks:{label:c3=>{
+          const i=c3.dataIndex;return`${c3.dataset.label}: ${c3.parsed.y} km/h${hWDir[i]!=null?' · '+windLabel(hWDir[i]):''}`;}}}},
+        scales:{x:XOPT,y:{min:0,ticks:{color:TICK,font:{size:10},callback:v=>v+' km/h'},grid:{color:GRID}}}}}));
+    }
+
+    // Rain chart
+    const c3=document.getElementById('dw-rain-chart');
+    if(c3){
+      _dwCharts.push(new Chart(c3,{type:'bar',data:{labels:hLabels,datasets:[
+        {label:'Regen %',data:hRain,backgroundColor:'rgba(74,144,220,.55)',borderColor:'rgba(74,144,220,.8)',borderWidth:0,borderRadius:3,borderSkipped:false}
+      ]},options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c4=>`${c4.parsed.y}%`}}},
+        scales:{x:XOPT,y:{min:0,max:100,ticks:{color:TICK,font:{size:10},stepSize:25,callback:v=>v+'%'},grid:{color:GRID}}}}}));
+    }
+  });
+}
 
 
 // ── 14-Tage Vorhersage-Übersicht (Tabelle) ──────────────────
@@ -5137,7 +5302,7 @@ function _renderFc14Table(){
   const tableRows=rows.map((r,i)=>{
     const bg=r.isToday?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
     const biteCol=r.bp.pct>=70?'var(--green-mid)':r.bp.pct>=40?'var(--gold)':'var(--text-light)';
-    return`<div class="fc14-row" style="${bg}${r.isToday?'font-weight:600;':''}">
+    return`<div class="fc14-row" style="${bg}${r.isToday?'font-weight:600;':''}cursor:pointer;" onclick="openDailyWeather('${r.dateStr}')">
       <div class="fc14-date">${r.dow}<br><span style="font-size:10px;opacity:.65;">${r.dy}. ${r.mo}</span></div>
       <div class="fc14-wx">${wxIco(r.wc)}</div>
       <div class="fc14-moon">${r.moon.icon}<br><span style="font-size:9px;">${r.moon.illum}%</span></div>
