@@ -1422,7 +1422,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v38 · Supabase · Leaflet · PWA</div>
+    <div class="burg-ver">Fishing Buddy v39 · Supabase · Leaflet · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -1564,7 +1564,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v38</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v39</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus" style="position:relative;">+<div class="live-dot" id="hdr-live-dot"></div></button>
@@ -1821,7 +1821,7 @@ input[type=file]{display:none;}
 </div><!-- /phone -->
 <script>
 // ═══════════════════════════════════════════════════════════
-// SUPABASE CLIENT (v38)
+// SUPABASE CLIENT (v39)
 // ═══════════════════════════════════════════════════════════
 const SB_URL='https://diiggjftcpoagsnxsaez.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpaWdnamZ0Y3BvYWdzbnhzYWV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNzE4NjQsImV4cCI6MjA5MTY0Nzg2NH0.XaBkQcjEl300NIZ3XIfcgEgWVwkfQTqInfECfvUGG6s';
@@ -1838,7 +1838,7 @@ function sbInit(){
         _sbUser=session.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v38`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v39`;
         // Nach Login: Cloud-Sync starten
         setTimeout(()=>syncToCloud(),1000);
       } else {
@@ -1904,7 +1904,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v38';
+  document.getElementById('hdr-sub').textContent='Offline · v39';
 }
 
 // Cloud-Sync: Sessions zu Supabase hochladen
@@ -1957,7 +1957,7 @@ async function sbLogout(){
   _sbUser=null;
   _authMode='offline';
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v38';
+  document.getElementById('hdr-sub').textContent='Offline · v39';
   showToast('👋','Abgemeldet');
 }
 
@@ -5957,7 +5957,7 @@ function calcHrs(s,e){
 function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').textContent=ico;document.getElementById('toast-msg').textContent=msg;const t=document.getElementById('toast');t.className='toast'+(isErr?' err':'');t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3200);}
 
 // ═══════════════════════════════════════════════════════════
-// LIVE SESSION (v38)
+// LIVE SESSION (v39)
 // ═══════════════════════════════════════════════════════════
 let _liveSession=null; // {startTime, catches:[], gpsTrack:[], watchId}
 let _liveTimer=null;
@@ -6115,9 +6115,11 @@ function _resumeLiveSession(){
 }
 
 // ═══════════════════════════════════════════════════════════
-// OPENAI WHISPER – Voice Input (v38)
+// VOICE INPUT via Supabase Edge Function (v39)
+// Kein API-Key im Frontend! Audio wird an die Edge Function
+// /functions/v1/whisper gesendet, die den OpenAI Key sicher
+// aus Deno.env.get('OPENAI_API_KEY') liest.
 // ═══════════════════════════════════════════════════════════
-const WHISPER_API_KEY='[YOUR_OPENAI_KEY]'; // Platzhalter – vom User einzusetzen
 let _voiceRecording=false;
 let _voiceMediaRec=null;
 
@@ -6125,15 +6127,9 @@ async function startVoiceInput(catchId){
   const btn=document.getElementById('voice-btn-'+catchId);
   if(!btn)return;
 
-  // Wenn bereits aufnehmend → stoppen
+  // Toggle: bereits aufnehmend → stoppen
   if(_voiceRecording&&_voiceMediaRec){
     _voiceMediaRec.stop();
-    return;
-  }
-
-  // Prüfe ob API Key gesetzt
-  if(WHISPER_API_KEY==='[YOUR_OPENAI_KEY]'){
-    showToast('🎤','OpenAI API Key in v38 einsetzen!',true);
     return;
   }
 
@@ -6145,6 +6141,7 @@ async function startVoiceInput(catchId){
     const chunks=[];
     _voiceMediaRec=new MediaRecorder(stream,{mimeType:'audio/webm'});
     _voiceMediaRec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+
     _voiceMediaRec.onstop=async()=>{
       _voiceRecording=false;
       btn.classList.remove('recording');
@@ -6152,28 +6149,30 @@ async function startVoiceInput(catchId){
 
       if(!chunks.length)return;
       const blob=new Blob(chunks,{type:'audio/webm'});
-      showToast('🎤','Transkribiere…');
+
+      // ── Loading-State: pulsierendes Icon + Toast ──
+      btn.classList.add('recording'); // Puls-Animation re-aktivieren als "Verarbeite…"
+      btn.disabled=true;
+      showToast('🎤','KI analysiert Sprachnotiz…');
 
       try{
-        const formData=new FormData();
-        formData.append('file',blob,'audio.webm');
-        formData.append('model','whisper-1');
-        formData.append('language','de');
+        const text=await _sendToWhisperEdge(blob);
 
-        const resp=await fetch('https://api.openai.com/v1/audio/transcriptions',{
-          method:'POST',
-          headers:{'Authorization':`Bearer ${WHISPER_API_KEY}`},
-          body:formData
-        });
-        if(!resp.ok)throw new Error('Whisper API Fehler');
-        const result=await resp.json();
-        const text=(result.text||'').trim();
-        if(!text){showToast('🎤','Keine Sprache erkannt',true);return;}
+        if(!text){
+          showToast('🎤','Keine Sprache erkannt',true);
+          return;
+        }
 
-        // Keyword-Parsing: Fischart, Länge, Köder automatisch füllen
+        // Keyword-Parsing: Felder automatisch füllen
         _parseVoiceInput(catchId,text);
-        showToast('🎤','Erkannt: "'+text.substring(0,40)+'…"');
-      }catch(e){showToast('❌','Whisper-Fehler: '+e.message,true);}
+        showToast('🎤',`Erkannt: "${text.length>45?text.substring(0,42)+'…':text}"`);
+
+      }catch(e){
+        showToast('❌',e.message||'Whisper-Fehler',true);
+      }finally{
+        btn.classList.remove('recording');
+        btn.disabled=false;
+      }
     };
 
     _voiceMediaRec.start();
@@ -6181,9 +6180,68 @@ async function startVoiceInput(catchId){
 
     // Auto-Stop nach 15 Sekunden
     setTimeout(()=>{if(_voiceRecording&&_voiceMediaRec)_voiceMediaRec.stop();},15000);
-  }catch(e){showToast('❌','Mikrofon-Zugriff verweigert',true);}
+  }catch(e){
+    showToast('❌','Mikrofon-Zugriff verweigert',true);
+  }
 }
 
+// ── Audio an Supabase Edge Function senden ────────────────────────────────
+async function _sendToWhisperEdge(audioBlob){
+  // Methode 1: Supabase Client (bevorzugt – Auth-Token wird automatisch mitgesendet)
+  if(_sb){
+    try{
+      const formData=new FormData();
+      formData.append('file',audioBlob,'audio.webm');
+      formData.append('language','de');
+
+      // supabase.functions.invoke sendet automatisch den Auth-Token
+      const{data,error}=await _sb.functions.invoke('whisper',{body:formData});
+
+      if(error)throw new Error(error.message||'Edge Function Fehler');
+      // data ist bereits geparst wenn JSON
+      const result=typeof data==='string'?JSON.parse(data):data;
+      if(result.error)throw new Error(result.error);
+      return(result.text||'').trim();
+    }catch(e){
+      // Fallback zu Methode 2 bei Netzwerkfehlern
+      console.warn('Supabase invoke fehlgeschlagen, versuche fetch:',e.message);
+    }
+  }
+
+  // Methode 2: Direkter fetch an die Edge Function URL
+  const edgeUrl=`${SB_URL}/functions/v1/whisper`;
+  const formData=new FormData();
+  formData.append('file',audioBlob,'audio.webm');
+  formData.append('language','de');
+
+  const headers={'apikey':SB_KEY};
+  // Auth-Token anhängen wenn verfügbar
+  if(_sb&&_sbUser){
+    const{data:sessData}=await _sb.auth.getSession();
+    if(sessData?.session?.access_token){
+      headers['Authorization']=`Bearer ${sessData.session.access_token}`;
+    }
+  }
+
+  const resp=await fetch(edgeUrl,{
+    method:'POST',
+    headers,
+    body:formData
+  });
+
+  if(!resp.ok){
+    const errBody=await resp.text();
+    let msg='Whisper-Fehler';
+    try{msg=JSON.parse(errBody).error||msg;}catch(_){}
+    throw new Error(msg);
+  }
+
+  const result=await resp.json();
+  if(result.error)throw new Error(result.error);
+  return(result.text||'').trim();
+}
+
+// ── Keyword-Parsing: Transkription → Formularfelder ──────────────────────
 function _parseVoiceInput(catchId,text){
   const lower=text.toLowerCase();
 
@@ -6217,7 +6275,7 @@ function _parseVoiceInput(catchId,text){
 }
 
 // ═══════════════════════════════════════════════════════════
-// LEAFLET MAP (v38)
+// LEAFLET MAP (v39)
 // ═══════════════════════════════════════════════════════════
 let _leafletMap=null;
 let _mapMarkers=[];
