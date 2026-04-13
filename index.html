@@ -1272,7 +1272,7 @@ input[type=file]{display:none;}
     <div class="burg-hdr">
       <div style="font-size:32px;margin-bottom:8px;">🎣</div>
       <div class="burg-n" id="burg-name">Fishing Buddy</div>
-      <div class="burg-s" id="burg-sub">v36 · Local-First PWA</div>
+      <div class="burg-s" id="burg-sub">v37 · Local-First PWA</div>
     </div>
     <div class="burg-body">
       <div class="burg-sec">
@@ -1299,7 +1299,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v36 · IndexedDB · PWA</div>
+    <div class="burg-ver">Fishing Buddy v37 · IndexedDB · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -1441,7 +1441,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">100% Offline · v36</div>
+      <div class="hlogo-s" id="hdr-sub">100% Offline · v37</div>
     </div>
     <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus">+</button>
   </div>
@@ -1455,11 +1455,12 @@ input[type=file]{display:none;}
     <div id="warn-wrap" aria-live="polite"></div>
     <!-- Seitentitel (dynamisch: "Fang melden" vs. "Session bearbeiten") -->
     <div id="new-page-title" style="font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:12px;font-family:var(--fs);">Fang melden</div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);">Eingabe-Modus</div>
-      <div style="display:flex;gap:0;background:var(--cream-dark);border-radius:20px;padding:2px;">
-        <button id="mode-full" onclick="setInputMode('full')" style="padding:5px 14px;border:none;border-radius:18px;font-size:11px;font-weight:600;font-family:var(--fa);cursor:pointer;background:var(--green-deep);color:#fff;transition:all .2s;">Vollständig</button>
-        <button id="mode-reduced" onclick="setInputMode('reduced')" style="padding:5px 14px;border:none;border-radius:18px;font-size:11px;font-weight:600;font-family:var(--fa);cursor:pointer;background:transparent;color:var(--text-mid);transition:all .2s;">Reduziert</button>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;">Eingabe-Modus</div>
+      <div id="seg-ctrl" style="display:flex;background:#e8ece9;border-radius:8px;padding:4px;">
+        <button id="mode-raub" onclick="setInputMode('raub')" class="seg-btn seg-on" style="flex:1;text-align:center;border-radius:6px;padding:6px 0;border:none;font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;transition:all .2s;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.1);color:var(--text-dark);">Raubfisch</button>
+        <button id="mode-fried" onclick="setInputMode('fried')" class="seg-btn" style="flex:1;text-align:center;border-radius:6px;padding:6px 0;border:none;font-size:12px;font-weight:500;font-family:var(--fa);cursor:pointer;transition:all .2s;background:transparent;color:var(--text-mid);">Friedfisch</button>
+        <button id="mode-reduced" onclick="setInputMode('reduced')" class="seg-btn" style="flex:1;text-align:center;border-radius:6px;padding:6px 0;border:none;font-size:12px;font-weight:500;font-family:var(--fa);cursor:pointer;transition:all .2s;background:transparent;color:var(--text-mid);">Reduziert</button>
       </div>
     </div>
     <div class="card">
@@ -1738,17 +1739,21 @@ async function getPhoto(k){if(!k)return null;const r=await idbG('photos',k);retu
 // ═══════════════════════════════════════════════════════════
 let sessions=[],profile=null,favs={waters:[],fish:[],bait:[],baitKeywords:{}};
 let catchCount=0,sucMode='catch',obStep=0,obData={name:'',angeltyp:'',plz:''};
-let _inputMode='full'; // 'full' | 'reduced'
+let _inputMode='raub'; // 'raub' | 'fried' | 'reduced'
 
 function setInputMode(mode){
   _inputMode=mode;
   const reduced=mode==='reduced';
+  const fried=mode==='fried';
 
-  // Toggle-Buttons updaten
-  const btnFull=document.getElementById('mode-full');
-  const btnRed=document.getElementById('mode-reduced');
-  if(btnFull){btnFull.style.background=!reduced?'var(--green-deep)':'transparent';btnFull.style.color=!reduced?'#fff':'var(--text-mid)';}
-  if(btnRed){btnRed.style.background=reduced?'var(--green-deep)':'transparent';btnRed.style.color=reduced?'#fff':'var(--text-mid)';}
+  // Segmented-Control updaten
+  document.querySelectorAll('#seg-ctrl .seg-btn').forEach(b=>{
+    const isOn=b.id==='mode-'+mode;
+    b.style.background=isOn?'#fff':'transparent';
+    b.style.boxShadow=isOn?'0 2px 4px rgba(0,0,0,.1)':'none';
+    b.style.fontWeight=isOn?'700':'500';
+    b.style.color=isOn?'var(--text-dark)':'var(--text-mid)';
+  });
 
   // Wetter-Karte + manuelle Felder ausblenden im reduzierten Modus
   const moonWxRow=document.getElementById('new-moon-wx-row');
@@ -1767,11 +1772,24 @@ function setInputMode(mode){
 
   // Alle Fang-Blöcke aktualisieren
   for(let i=1;i<=catchCount;i++){
+    // Raubfisch-spezifische Felder (Köder, Notizen, Foto)
     ['bait-row','note-row','photo-row'].forEach(key=>{
       const el=document.getElementById(`catch-${key}-${i}`);
-      if(el)el.style.display=reduced?'none':'';
+      if(el)el.style.display=(mode==='raub')?'':'none';
     });
+    // Friedfisch-spezifische Felder
+    const friedEl=document.getElementById(`catch-fried-${i}`);
+    if(friedEl)friedEl.style.display=fried?'':'none';
+    // Länge: immer sichtbar in raub+reduced, in fried optional
+    // C&R: immer sichtbar
   }
+}
+
+// Friedfisch: Spot vorbehandelt Toggle
+function setFfPre(id,val){
+  document.getElementById('ff-pre-'+id).value=val?'yes':'no';
+  document.getElementById('ff-pre-y-'+id).className='chip cf'+(val?' on':'');
+  document.getElementById('ff-pre-n-'+id).className='chip cf'+(!val?' on':'');
 }
 
 // Silent Weather: Hintergrund-Fetch ohne UI-Feedback außer dem Hint
@@ -2322,7 +2340,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v36`;
+  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v37`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -2805,8 +2823,8 @@ function addCatch(){
     <div class="mmw" id="mm-${id}" role="alert"></div>
     <div class="mmw" id="ct-warn-${id}" role="alert" style="color:var(--gold-d);"></div>
 
-    <!-- Köder – im reduzierten Modus ausgeblendet -->
-    <div id="catch-bait-row-${id}" style="display:${_inputMode==='reduced'?'none':''};">
+    <!-- Köder – nur im Raubfisch-Modus -->
+    <div id="catch-bait-row-${id}" style="display:${_inputMode==='raub'?'':'none'};">
       <div class="ig" style="margin-bottom:6px;margin-top:8px;">
         <label class="il" for="fb-${id}">Köder</label>
         <input type="text" class="if" id="fb-${id}" placeholder="z.B. Gummifisch"
@@ -2816,8 +2834,8 @@ function addCatch(){
       </div>
     </div>
 
-    <!-- Notizen – im reduzierten Modus ausgeblendet -->
-    <div id="catch-note-row-${id}" style="display:${_inputMode==='reduced'?'none':''};">
+    <!-- Notizen – nur im Raubfisch-Modus -->
+    <div id="catch-note-row-${id}" style="display:${_inputMode==='raub'?'':'none'};">
       <div class="ig" style="margin-bottom:10px;">
         <label class="il" for="fn-${id}">Notizen</label>
         <div class="fav-row" id="nc-${id}" style="margin-bottom:${noteChipsHtml?'6px':'0'};display:${noteChipsHtml?'flex':'none'};">${noteChipsHtml}</div>
@@ -2827,12 +2845,54 @@ function addCatch(){
       </div>
     </div>
 
-    <!-- Foto – im reduzierten Modus ausgeblendet -->
-    <div id="catch-photo-row-${id}" style="display:${_inputMode==='reduced'?'none':''};">
+    <!-- Foto – nur im Raubfisch-Modus -->
+    <div id="catch-photo-row-${id}" style="display:${_inputMode==='raub'?'':'none'};">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
         <div id="pa-${id}" class="phadd" onclick="trigPhoto(${id})" role="button" tabindex="0"><span>📷</span><span class="phlbl">Foto</span></div>
         <img id="pp-${id}" class="phpr" src="" alt="Fangfoto" style="display:none;" onclick="trigPhoto(${id})">
         <div style="flex:1;font-size:11px;color:var(--text-light);line-height:1.5;cursor:pointer;" onclick="trigPhoto(${id})">Foto hinzufügen</div>
+      </div>
+    </div>
+
+    <!-- Friedfisch-Felder – nur im Friedfisch-Modus -->
+    <div id="catch-fried-${id}" style="display:${_inputMode==='fried'?'':'none'};margin-top:8px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+        <div class="ig">
+          <label class="il" for="ff-cnt-${id}">Gesamtanzahl</label>
+          <input type="number" class="if" id="ff-cnt-${id}" placeholder="z.B. 12" min="0" inputmode="numeric">
+        </div>
+        <div class="ig">
+          <label class="il" for="ff-wt-${id}">Gewicht (kg)</label>
+          <input type="number" class="if" id="ff-wt-${id}" placeholder="z.B. 3.5" min="0" step="0.1" inputmode="decimal">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+        <div class="ig">
+          <label class="il" for="ff-rig-${id}">Montage</label>
+          <input type="text" class="if" id="ff-rig-${id}" placeholder="z.B. Laufblei" autocomplete="off">
+        </div>
+        <div class="ig">
+          <label class="il" for="ff-bait-${id}">Köder-Kombi</label>
+          <input type="text" class="if" id="ff-bait-${id}" placeholder="z.B. Made+Mais" autocomplete="off">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px;margin-bottom:6px;">
+        <div class="ig">
+          <label class="il" for="ff-feed-${id}">Futter</label>
+          <input type="text" class="if" id="ff-feed-${id}" placeholder="z.B. Paniermehl-Mix" autocomplete="off">
+        </div>
+        <div class="ig">
+          <label class="il" for="ff-famt-${id}">Menge (kg)</label>
+          <input type="number" class="if" id="ff-famt-${id}" placeholder="2" min="0" step="0.5" inputmode="decimal">
+        </div>
+      </div>
+      <div class="ig" style="margin-bottom:4px;">
+        <label class="il">Spot vorbehandelt?</label>
+        <div style="display:flex;gap:6px;margin-top:4px;">
+          <button type="button" class="chip cf" id="ff-pre-y-${id}" onclick="setFfPre(${id},true)" style="font-size:11px;padding:4px 12px;">Ja</button>
+          <button type="button" class="chip cf" id="ff-pre-n-${id}" onclick="setFfPre(${id},false)" style="font-size:11px;padding:4px 12px;">Nein</button>
+        </div>
+        <input type="hidden" id="ff-pre-${id}" value="">
       </div>
     </div>
 
@@ -3003,7 +3063,18 @@ async function saveSess(){
         if(type&&!isNaN(len)&&len>0){
           const bait=tb?.value.trim()||'',note=tn?.value.trim()||'';
           const pk=(window._pm||{})[i]||null;
-          catches.push({type,length:len,time:ti?.value||'',taken:tk?.checked||false,bait,baitNote:note,score:fScore(type,len),photoKey:pk});
+          const catchObj={type,length:len,time:ti?.value||'',taken:tk?.checked||false,bait,baitNote:note,score:fScore(type,len),photoKey:pk,inputMode:_inputMode};
+          // Friedfisch-Daten hinzufügen wenn im Friedfisch-Modus
+          if(_inputMode==='fried'){
+            catchObj.ffCount=parseInt(document.getElementById('ff-cnt-'+i)?.value)||0;
+            catchObj.ffWeight=parseFloat(document.getElementById('ff-wt-'+i)?.value)||0;
+            catchObj.ffRig=document.getElementById('ff-rig-'+i)?.value.trim()||'';
+            catchObj.ffBait=document.getElementById('ff-bait-'+i)?.value.trim()||'';
+            catchObj.ffFeed=document.getElementById('ff-feed-'+i)?.value.trim()||'';
+            catchObj.ffFeedAmt=parseFloat(document.getElementById('ff-famt-'+i)?.value)||0;
+            catchObj.ffPrebaited=document.getElementById('ff-pre-'+i)?.value||'';
+          }
+          catches.push(catchObj);
           addFav('fish',type);if(bait)addFav('bait',bait);if(bait&&note)addBaitKw(bait,note);
         } else if(type||lenVal){
           skippedCatches++;
@@ -3563,6 +3634,7 @@ async function openDayDetail(dateKey){
             <div class="dd-catch-info">
               <div class="dd-catch-name">${c.type||'–'}</div>
               <div class="dd-catch-meta">${c.time||'–'} Uhr${c.bait?' · '+c.bait:''}${c.baitNote?' · '+c.baitNote:''}</div>
+              ${c.inputMode==='fried'?`<div class="dd-catch-meta" style="color:var(--green-mid);">${c.ffCount?c.ffCount+'× ':''}${c.ffWeight?c.ffWeight+'kg ':''}${c.ffRig?'· '+c.ffRig+' ':''}${c.ffBait?'· '+c.ffBait:''}</div>${c.ffFeed?`<div class="dd-catch-meta" style="color:var(--text-light);">🪣 ${c.ffFeed}${c.ffFeedAmt?' · '+c.ffFeedAmt+'kg':''}${c.ffPrebaited==='yes'?' · vorbehandelt':''}</div>`:''}`:''}
               <span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>
               ${mm&&!mm.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ &lt;${mm.mm}cm</span>`:''}
             </div>
@@ -3774,6 +3846,7 @@ function showDetail(id){
         <div class="fn">${c.type}</div>
         <div class="fme">${c.time} Uhr${i===0?' · 🏆':''}</div>
         ${c.bait?`<div class="fme" style="color:var(--green-mid);">🪝 ${c.bait}${c.baitNote?' – '+c.baitNote:''}</div>`:''}
+        ${c.inputMode==='fried'?`<div class="fme" style="color:var(--green-mid);">${c.ffCount?c.ffCount+'× ':''}${c.ffWeight?c.ffWeight+'kg ':''}${c.ffRig?'· '+c.ffRig+' ':''}${c.ffBait?'· '+c.ffBait:''}</div>${c.ffFeed?`<div class="fme" style="color:var(--text-light);">🪣 ${c.ffFeed}${c.ffFeedAmt?' · '+c.ffFeedAmt+'kg':''}${c.ffPrebaited==='yes'?' · vorbehandelt':''}</div>`:''}`:''}
         <span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>
         ${mm&&!mm.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ unter ${mm.mm}cm</span>`:''}
       </div>
@@ -3844,6 +3917,13 @@ async function editSess(id){
   if(fv('catches-con'))fv('catches-con').innerHTML='';
   catchCount=0;
 
+  // Input-Modus aus erstem Catch wiederherstellen
+  if(!s.skunked&&s.catches?.length&&s.catches[0].inputMode){
+    setInputMode(s.catches[0].inputMode);
+  } else {
+    setInputMode('raub');
+  }
+
   if(!s.skunked&&s.catches?.length){
     for(const c of s.catches){
       addCatch();
@@ -3855,6 +3935,16 @@ async function editSess(id){
       if(g('ftak')){g('ftak').checked=!!c.taken;updCR(cid);}
       if(g('fb'))g('fb').value=c.bait||'';
       if(g('fn'))g('fn').value=c.baitNote||'';
+      // Friedfisch-Felder wiederherstellen
+      if(c.inputMode==='fried'){
+        if(g('ff-cnt'))g('ff-cnt').value=c.ffCount||'';
+        if(g('ff-wt'))g('ff-wt').value=c.ffWeight||'';
+        if(g('ff-rig'))g('ff-rig').value=c.ffRig||'';
+        if(g('ff-bait'))g('ff-bait').value=c.ffBait||'';
+        if(g('ff-feed'))g('ff-feed').value=c.ffFeed||'';
+        if(g('ff-famt'))g('ff-famt').value=c.ffFeedAmt||'';
+        if(c.ffPrebaited)setFfPre(cid,c.ffPrebaited==='yes');
+      }
       if(c.photoKey){
         const ph=await getPhoto(c.photoKey);
         if(ph){
