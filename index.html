@@ -156,17 +156,26 @@ body{
 .sc{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:16px 16px 110px;scrollbar-width:none;}
 .sc::-webkit-scrollbar{display:none;}
 
-/* FULLSCREEN OVERLAYS – visibility:hidden verhindert Click-Blocking */
+/* FULLSCREEN OVERLAYS – AP2: anti-wobble fix */
 .fsov{
   position:absolute;inset:0;z-index:105;
+  width:100%;height:100%;
   display:flex;flex-direction:column;
   background:var(--cream);
   transform:translateY(100%);
   transition:transform .32s cubic-bezier(.22,1,.36,1);
-  overflow:hidden;
+  overflow-x:hidden;overflow-y:hidden;
+  overscroll-behavior:contain;
+  touch-action:pan-y;
   visibility:hidden;pointer-events:none;
 }
 .fsov.on{transform:translateY(0);visibility:visible;pointer-events:auto;}
+
+/* AP2: Foto-Lightbox */
+.photo-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;animation:lbFadeIn .25s ease;}
+.photo-lightbox img{max-width:92vw;max-height:85vh;border-radius:12px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+.photo-lightbox-close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+@keyframes lbFadeIn{from{opacity:0}to{opacity:1}}
 
 /* Overlay-Header fix */
 .fshdr{
@@ -194,8 +203,8 @@ position:relative;}
 }
 .fsov > div:not(.fshdr):not(.fbar)::-webkit-scrollbar{display:none;}
 .fsov-scroll{
-  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  overscroll-behavior-y:contain;padding:16px 16px 110px;scrollbar-width:none;
+  flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;padding:16px 16px 110px;scrollbar-width:none;
 }
 .fsov-scroll::-webkit-scrollbar{display:none;}
 
@@ -804,7 +813,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 
 .fb-cal-dow{
   display:grid;grid-template-columns:repeat(7,1fr);
-  margin-bottom:4px;
+  gap:4px;margin-bottom:2px;
 }
 .fb-cal-dow-cell{
   text-align:center;font-size:10px;font-weight:700;
@@ -815,23 +824,21 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fb-cal-grid{
   display:grid;
   grid-template-columns:repeat(7,1fr);
-  grid-auto-rows:1fr;
-  gap:2px;
-  align-items:stretch;
+  grid-auto-rows:38px;
+  gap:4px;
 }
 .fb-cal-day{
-  aspect-ratio:1;
-  min-height:34px;max-height:44px;   /* feste Höhe – Inhalt darf NICHT wachsen */
+  height:38px;
   border-radius:6px;display:flex;
   flex-direction:column;align-items:center;justify-content:center;
   cursor:pointer;transition:background .15s,transform .1s;
   position:relative;font-size:13px;font-weight:500;
   color:var(--text-dark);
-  overflow:hidden;   /* Dot ist absolut innerhalb dieser Höhe */
+  overflow:hidden;
   box-sizing:border-box;
 }
 .fb-cal-day:hover{background:var(--green-mist);}
-.fb-cal-day.empty{cursor:default;color:transparent;pointer-events:none;background:transparent;}
+.fb-cal-day.empty{cursor:default;color:transparent;pointer-events:none;background:transparent;padding:0;}
 .fb-cal-day.empty:hover{background:transparent;}
 .fb-cal-day.today{font-weight:700;color:var(--green-deep);}
 /* Hellgrün für Tage mit Fang */
@@ -1229,6 +1236,8 @@ input[type=file]{display:none;}
 /* ═══ LIVE SESSION ═══ */
 .live-dot{width:8px;height:8px;border-radius:50%;background:#ff4444;display:none;position:absolute;top:8px;right:8px;animation:livePulse 1.4s infinite;}
 @keyframes livePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.3);}}
+.hlive-btn{font-size:11px!important;font-weight:700;padding:5px 12px!important;border-radius:14px;background:var(--green-deep);color:#fff;border:none;cursor:pointer;letter-spacing:.3px;font-family:var(--fa);transition:all .25s;}
+.hlive-btn.active{background:#cc0000;animation:livePulse 1.4s infinite;}
 .live-fab{position:absolute;bottom:calc(var(--footer-h) + max(32px, env(safe-area-inset-bottom, 32px)) + 8px);left:50%;transform:translateX(-50%);z-index:102;display:none;background:#cc0000;color:#fff;border:none;border-radius:24px;padding:8px 20px;font-size:13px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(204,0,0,.35);animation:liveFab 2s infinite;}
 @keyframes liveFab{0%,100%{box-shadow:0 4px 16px rgba(204,0,0,.35);}50%{box-shadow:0 4px 24px rgba(204,0,0,.55);}}
 
@@ -1309,12 +1318,12 @@ input[type=file]{display:none;}
     <div class="live-catches-list" id="live-catches-list">
       <div style="text-align:center;padding:24px;color:var(--text-light);font-size:12px;">Noch keine Fänge – nutze den Button unten</div>
     </div>
-    <button class="live-quick-btn" onclick="liveQuickCatch()">🐟 Fang hinzufügen</button>
+    <button class="live-quick-btn" onclick="openLiveCatchOv()">🐟 Fang melden</button>
   </div>
 </div>
 
 <!-- Live-Session FAB -->
-<button class="live-fab" id="live-fab" onclick="openLiveOv()">🔴 LIVE SESSION</button>
+<button class="live-fab" id="live-fab" onclick="openLiveCatchOv()">🔴 Fang melden (Live)</button>
 
 <!-- GOAL WALKOUT OVERLAY -->
 <div id="goal-walkout" onclick="dismissGoalWalkout()" role="dialog" aria-modal="true" aria-label="Ziel erreicht">
@@ -1385,9 +1394,25 @@ input[type=file]{display:none;}
     </div>
     <div class="burg-body">
       <div class="burg-sec">
-        <div class="burg-slbl">Profil</div>
+        <div class="burg-slbl">Profil &amp; Account</div>
         <button class="bitem" onclick="openProfileEdit();closeBurg()"><span class="bitem-ico">👤</span><div><div class="bitem-txt" id="burg-pname">–</div><div class="bitem-sub" id="burg-psub">Profil bearbeiten</div></div></button>
         <button class="bitem" onclick="openGoalEdit();closeBurg()"><span class="bitem-ico">🎯</span><div><div class="bitem-txt">Ziele bearbeiten</div><div class="bitem-sub">Saisonziele hinzufügen &amp; löschen</div></div></button>
+        <button class="bitem" id="burg-auth-btn" onclick="closeBurg();_sbUser?sbLogout():document.getElementById('login-ov').classList.remove('hidden')">
+          <span class="bitem-ico" id="burg-auth-ico">☁️</span>
+          <div><div class="bitem-txt" id="burg-auth-txt">Anmelden / Registrieren</div><div class="bitem-sub" id="burg-auth-sub">Cloud-Sync aktivieren</div></div>
+        </button>
+        <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
+      </div>
+      <div class="burg-sec">
+        <div class="burg-slbl">Spot-Karte</div>
+        <button class="bitem" onclick="showPage('map');closeBurg()"><span class="bitem-ico">🗺️</span><div><div class="bitem-txt">Spot-Karte öffnen</div><div class="bitem-sub">Alle Angelspots auf der Karte</div></div></button>
+      </div>
+      <div class="burg-sec">
+        <div class="burg-slbl">Live Session</div>
+        <button class="bitem" id="burg-live-btn" onclick="closeBurg();_liveSession?endLiveSession():startLiveSession()">
+          <span class="bitem-ico" id="burg-live-ico">🔴</span>
+          <div><div class="bitem-txt" id="burg-live-txt">Live Session starten</div><div class="bitem-sub">Echtzeit-Tracking mit GPS</div></div>
+        </button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Daten</div>
@@ -1403,26 +1428,8 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('legal');closeBurg()"><span class="bitem-ico">⚖️</span><div><div class="bitem-txt">Impressum &amp; Datenschutz</div><div class="bitem-sub">DSGVO-konform</div></div></button>
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
-      <div class="burg-sec">
-        <div class="burg-slbl">Live Session</div>
-        <button class="bitem" id="burg-live-btn" onclick="closeBurg();_liveSession?endLiveSession():startLiveSession()">
-          <span class="bitem-ico" id="burg-live-ico">🔴</span>
-          <div><div class="bitem-txt" id="burg-live-txt">Live Session starten</div><div class="bitem-sub">Echtzeit-Tracking mit GPS</div></div>
-        </button>
-      </div>
-      <div class="burg-sec" id="burg-cloud-sec">
-        <div class="burg-slbl">Cloud</div>
-        <button class="bitem" id="burg-auth-btn" onclick="closeBurg();_sbUser?sbLogout():document.getElementById('login-ov').classList.remove('hidden')">
-          <span class="bitem-ico" id="burg-auth-ico">☁️</span>
-          <div><div class="bitem-txt" id="burg-auth-txt">Anmelden / Registrieren</div><div class="bitem-sub" id="burg-auth-sub">Cloud-Sync aktivieren</div></div>
-        </button>
-      </div>
-      <div class="burg-sec">
-        <div class="burg-slbl">Gefährlich</div>
-        <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
-      </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v39 · Supabase · Leaflet · PWA</div>
+    <div class="burg-ver">Fishing Buddy v40 · Supabase · Leaflet · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -1564,9 +1571,10 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v39</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v40</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
+      <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()" style="display:none;">Live</button>
       <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus" style="position:relative;">+<div class="live-dot" id="hdr-live-dot"></div></button>
     </div>
   </div>
@@ -1771,6 +1779,24 @@ input[type=file]{display:none;}
   <div class="fsov-scroll" id="fs-dw-body"></div>
 </div>
 
+<!-- AP2: Wetter-Detail Overlay (Chart + Tabelle) -->
+<div class="fsov" id="fs-day-wx-detail" role="dialog" aria-modal="true" style="z-index:117;background:#f5f7f5;">
+  <div class="fshdr">
+    <div><div class="fstitle" id="fs-dwx-title">Wetter-Detail</div><div class="fsmeta" id="fs-dwx-meta"></div></div>
+    <button class="xbtn" onclick="closeFs('day-wx-detail')">✕</button>
+  </div>
+  <div class="fsov-scroll" id="fs-dwx-body" style="padding:16px;"></div>
+</div>
+
+<!-- AP2: Session Mini-Map Overlay -->
+<div class="fsov" id="fs-sess-map" role="dialog" aria-modal="true" style="z-index:117;">
+  <div class="fshdr">
+    <div><div class="fstitle">📍 Kartenansicht</div><div class="fsmeta" id="fs-smap-meta"></div></div>
+    <button class="xbtn" onclick="_closeSessMap()">✕</button>
+  </div>
+  <div style="flex:1;position:relative;"><div id="sess-map-container" style="position:absolute;inset:0;"></div></div>
+</div>
+
 <!-- PAGE: DETAIL -->
 <div class="page" id="page-detail">
   <div id="detail-hdr"></div>
@@ -1789,7 +1815,54 @@ input[type=file]{display:none;}
 
 <!-- PAGE: KARTE -->
 <div class="page" id="page-map">
-  <div class="sc" style="padding:0;position:relative;overflow:hidden;"><div id="map-container"></div></div>
+  <div class="sc" style="padding:0;position:relative;overflow:hidden;">
+    <div id="map-container"></div>
+    <button id="map-close-btn" onclick="showPage('fangbuch')" style="position:absolute;top:16px;right:16px;z-index:1000;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.1);box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);">✕</button>
+  </div>
+</div>
+
+<!-- ═══ LIVE CATCH OVERLAY (reduziert) ═══ -->
+<div class="fsov" id="fs-live-catch" style="z-index:121;">
+  <div class="fshdr" style="background:linear-gradient(135deg,#cc0000,#991111);">
+    <div><div class="fstitle" style="color:#fff;">🐟 Fang melden</div></div>
+    <button class="xbtn" onclick="closeLiveCatch()" style="color:#fff;">✕</button>
+  </div>
+  <div class="fsov-scroll" style="padding:16px;">
+    <div style="font-size:11px;color:var(--text-light);margin-bottom:12px;text-align:center;" id="lc-time-hint">⏱️ Uhrzeit wird automatisch erfasst</div>
+
+    <div class="ig" style="margin-bottom:10px;">
+      <label class="il" for="lc-fish">Fischart</label>
+      <input type="text" list="lc-fdl" class="if" id="lc-fish" placeholder="z.B. Zander" autocomplete="off"
+        onfocus="rndrLcFishChips(this.value)" oninput="rndrLcFishChips(this.value)" onblur="setTimeout(()=>dHide('lc-fc'),150)">
+      <datalist id="lc-fdl"></datalist>
+      <div class="crow" id="lc-fc" style="display:none;" role="listbox"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+      <div class="ig">
+        <label class="il" for="lc-len">Länge (cm)</label>
+        <input type="number" class="if" id="lc-len" placeholder="65" min="1" max="300" step="0.5" inputmode="decimal">
+      </div>
+      <div class="ig">
+        <label class="il" for="lc-wt">Gewicht (kg)</label>
+        <input type="number" class="if" id="lc-wt" placeholder="2.5" min="0" step="0.1" inputmode="decimal">
+      </div>
+    </div>
+
+    <div class="ig" style="margin-bottom:10px;">
+      <label class="il" for="lc-bait">Köder</label>
+      <input type="text" class="if" id="lc-bait" placeholder="z.B. Gummifisch" autocomplete="off">
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+      <div id="lc-pa" class="phadd" onclick="trigLivePhoto()" role="button" tabindex="0"><span>📷</span><span class="phlbl">Foto</span></div>
+      <img id="lc-pp" class="phpr" src="" alt="Fangfoto" style="display:none;" onclick="trigLivePhoto()">
+      <input type="file" id="lc-photo-input" accept="image/*" capture="environment" style="display:none;" onchange="_handleLivePhoto(this)">
+      <div style="flex:1;font-size:11px;color:var(--text-light);line-height:1.5;cursor:pointer;" onclick="trigLivePhoto()">Foto hinzufügen</div>
+    </div>
+
+    <button onclick="saveLiveCatch()" style="width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);">✅ Fang speichern</button>
+  </div>
 </div>
 
 </div><!-- /pages -->
@@ -1821,7 +1894,7 @@ input[type=file]{display:none;}
 </div><!-- /phone -->
 <script>
 // ═══════════════════════════════════════════════════════════
-// SUPABASE CLIENT (v39)
+// SUPABASE CLIENT (v40)
 // ═══════════════════════════════════════════════════════════
 const SB_URL='https://diiggjftcpoagsnxsaez.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpaWdnamZ0Y3BvYWdzbnhzYWV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNzE4NjQsImV4cCI6MjA5MTY0Nzg2NH0.XaBkQcjEl300NIZ3XIfcgEgWVwkfQTqInfECfvUGG6s';
@@ -1832,30 +1905,32 @@ let _authMode='offline'; // 'online' | 'offline'
 function sbInit(){
   if(typeof supabase!=='undefined'&&supabase.createClient){
     _sb=supabase.createClient(SB_URL,SB_KEY);
-    // Auth-State-Listener
+    // Auth-State-Listener — nur für Session-Updates (Login/Logout via handleAuth gesteuert)
     _sb.auth.onAuthStateChange((event,session)=>{
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v39`;
-        // Nach Login: Cloud-Sync starten
-        setTimeout(()=>syncToCloud(),1000);
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v40`;
       } else {
         _sbUser=null;
-        // Offline-Modus: Login-Overlay nur zeigen wenn kein lokales Profil
-        if(!profile&&!localStorage.getItem('fb_skip_auth')){
-          document.getElementById('login-ov')?.classList.remove('hidden');
-        }
-      }
-    });
-    // Initiale Session prüfen
-    _sb.auth.getSession().then(({data})=>{
-      if(!data?.session&&!profile&&!localStorage.getItem('fb_skip_auth')){
-        document.getElementById('login-ov')?.classList.remove('hidden');
       }
     });
   }
+}
+
+// AP1: Boot-Auth prüfen — gibt true zurück wenn bereits eingeloggt
+async function _checkAuthSession(){
+  if(!_sb)return false;
+  try{
+    const{data}=await _sb.auth.getSession();
+    if(data?.session?.user){
+      _sbUser=data.session.user;
+      _authMode='online';
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v40`;
+      return true;
+    }
+  }catch(e){console.warn('Auth-Check Fehler:',e);}
+  return false;
 }
 
 // Auth-Tab-Wechsel
@@ -1866,7 +1941,7 @@ function switchAuthTab(tab){
   document.getElementById('auth-err').textContent='';
 }
 
-// Auth-Handler
+// Auth-Handler (AP1: Login → Cloud-Daten + Fangbuch, Register → Onboarding)
 async function handleAuth(e){
   e.preventDefault();
   const email=document.getElementById('auth-email').value.trim();
@@ -1886,9 +1961,46 @@ async function handleAuth(e){
       result=await _sb.auth.signUp({email,password:pass});
     }
     if(result.error)throw result.error;
-    if(!isLogin&&!result.data?.user?.confirmed_at){
-      errEl.style.color='var(--green-mid)';
-      errEl.textContent='✓ Bestätigungsmail gesendet! Prüfe deinen Posteingang.';
+
+    if(isLogin){
+      // ── LOGIN: Cloud-Daten laden → direkt zum Fangbuch ──
+      _sbUser=result.data.user;
+      _authMode='online';
+      document.getElementById('login-ov')?.classList.add('hidden');
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v40`;
+      // Cloud-Sync: Sessions laden
+      await syncFromCloud();
+      // Profil aus Cloud-Daten ableiten (falls lokal keines vorhanden)
+      if(profile){
+        applyProf();
+        showPage('fangbuch');
+        rndrFangbuch();
+        setTimeout(()=>syncToCloud(),1000);
+      } else {
+        // Kein lokales Profil → Fangbuch trotzdem anzeigen
+        showPage('fangbuch');
+        rndrFangbuch();
+      }
+    }else{
+      // ── REGISTER: Bestätigungsmail oder direkt Onboarding ──
+      if(!result.data?.user?.confirmed_at&&result.data?.user?.identities?.length===0){
+        // E-Mail existiert schon (Supabase gibt leeren User zurück)
+        errEl.style.color='var(--red)';
+        errEl.textContent='Diese E-Mail ist bereits registriert. Versuche den Login.';
+      } else if(!result.data?.user?.confirmed_at){
+        errEl.style.color='var(--green-mid)';
+        errEl.textContent='✓ Bestätigungsmail gesendet! Prüfe deinen Posteingang.';
+      } else {
+        // Sofort bestätigt → Onboarding starten
+        _sbUser=result.data.user;
+        _authMode='online';
+        document.getElementById('login-ov')?.classList.add('hidden');
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v40`;
+        // Onboarding starten
+        document.getElementById('onboarding').classList.remove('hidden');
+        document.getElementById('ob-btn').disabled=true;
+        setTimeout(()=>document.getElementById('ob-name')?.focus(),400);
+      }
     }
   }catch(err){
     errEl.style.color='var(--red)';
@@ -1899,12 +2011,17 @@ async function handleAuth(e){
   }
 }
 
-// Ohne Account fortfahren
+// Ohne Account fortfahren (AP1: → Onboarding falls kein Profil)
 function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v39';
+  document.getElementById('hdr-sub').textContent='Offline · v40';
+  if(!profile){
+    document.getElementById('onboarding').classList.remove('hidden');
+    document.getElementById('ob-btn').disabled=true;
+    setTimeout(()=>document.getElementById('ob-name')?.focus(),400);
+  }
 }
 
 // Cloud-Sync: Sessions zu Supabase hochladen
@@ -1957,7 +2074,7 @@ async function sbLogout(){
   _sbUser=null;
   _authMode='offline';
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v39';
+  document.getElementById('hdr-sub').textContent='Offline · v40';
   showToast('👋','Abgemeldet');
 }
 
@@ -2068,8 +2185,8 @@ function setInputMode(mode){
 
   // Alle Fang-Blöcke aktualisieren
   for(let i=1;i<=catchCount;i++){
-    // Raubfisch-spezifische Felder (Köder, Notizen, Foto)
-    ['bait-row','note-row','photo-row'].forEach(key=>{
+    // Raubfisch-spezifische Felder (Köder, Notizen, Foto, Sichttiefe)
+    ['bait-row','note-row','photo-row','sicht-row'].forEach(key=>{
       const el=document.getElementById(`catch-${key}-${i}`);
       if(el)el.style.display=(mode==='raub')?'':'none';
     });
@@ -2086,6 +2203,8 @@ function setFfPre(id,val){
   document.getElementById('ff-pre-'+id).value=val?'yes':'no';
   document.getElementById('ff-pre-y-'+id).className='chip cf'+(val?' on':'');
   document.getElementById('ff-pre-n-'+id).className='chip cf'+(!val?' on':'');
+  const daysWrap=document.getElementById('ff-pre-days-wrap-'+id);
+  if(daysWrap)daysWrap.style.display=val?'':'none';
 }
 
 // Silent Weather: Hintergrund-Fetch ohne UI-Feedback außer dem Hint
@@ -2432,6 +2551,14 @@ function obChk(){
 
 // Goal-Zähler für Onboarding
 let _obGoalIdx=0;
+// AP1: Fisch-Listen nach Angeltyp filtern
+function _obFishList(){
+  const typ=obData.angeltyp||'Allround';
+  if(typ==='Raubfisch')return ['Hecht','Zander','Barsch','Wels','Aal','Forelle','Bachforelle','Regenbogenforelle','Flussbarsch','Döbel'];
+  if(typ==='Friedfisch')return ['Karpfen','Brachse','Schleie','Rotauge','Rotfeder','Brassen','Güster','Ukelei','Äsche','Döbel'];
+  return FISH; // Allround: alle Fische
+}
+
 function obAddGoal(){
   const idx=++_obGoalIdx;
   const el=document.getElementById('ob-goals-list');
@@ -2451,13 +2578,24 @@ function obAddGoal(){
     if(prevFish)presetFish=prevFish;
   }
 
+  // AP1: Fisch-Liste nach Angeltyp filtern
+  const fishList=_obFishList();
+  // Chip-Vorschläge: Top 5 der gefilterten Liste
+  const chipFish=fishList.slice(0,5);
+
   row.innerHTML=`
     <button onclick="document.getElementById('ob-goal-${idx}').remove()" style="position:absolute;top:8px;right:8px;background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-light);">✕</button>
 
-    <!-- Fischart -->
+    <!-- Fischart (AP1: Text-Input mit Datalist + Chips) -->
     <div class="ig" style="margin-bottom:10px;">
       <div class="il" style="margin-bottom:4px;">Fischart</div>
-      <select class="if" id="og-fish-${idx}">${FISH.map(f=>`<option${f===presetFish?' selected':''}>${f}</option>`).join('')}</select>
+      <input type="text" class="if" id="og-fish-${idx}" value="${presetFish}"
+        list="og-fishlist-${idx}" placeholder="Fischart eingeben…"
+        autocomplete="off" autocorrect="off" spellcheck="false">
+      <datalist id="og-fishlist-${idx}">${fishList.map(f=>`<option value="${f}">`).join('')}</datalist>
+      <div class="ob-fish-chips" id="og-chips-${idx}" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+        ${chipFish.map(f=>`<button type="button" class="ob-fish-chip${f===presetFish?' chip-sel':''}" onclick="obPickFish(${idx},'${f}')" style="padding:4px 10px;font-size:12px;font-weight:600;font-family:var(--fa);border-radius:16px;border:1.5px solid var(--green-pale);background:${f===presetFish?'var(--green-mid)':'var(--green-mist)'};color:${f===presetFish?'#fff':'var(--green-deep)'};cursor:pointer;transition:all .15s;">${fIco(f)} ${f}</button>`).join('')}
+      </div>
     </div>
 
     <!-- Zieltyp-Buttons -->
@@ -2510,8 +2648,28 @@ function obAddGoal(){
       </div>
     </div>`;
   el.appendChild(row);
-  // Auto-Scroll zum neuen Ziel-Block
-  setTimeout(()=>row.scrollIntoView({behavior:'smooth',block:'start'}),50);
+
+  // AP1: "Weiteres Ziel" Tastatur-Fix — Typ auf Stückzahl, Fokus auf Anzahl
+  obSelType(idx,'count');
+  setTimeout(()=>{
+    row.scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(()=>document.getElementById('og-cnt-'+idx)?.focus(),200);
+  },50);
+}
+
+// AP1: Fisch per Chip auswählen
+function obPickFish(idx, fish){
+  document.getElementById('og-fish-'+idx).value=fish;
+  // Chip-Styling aktualisieren
+  const chips=document.getElementById('og-chips-'+idx);
+  if(chips){
+    chips.querySelectorAll('.ob-fish-chip').forEach(c=>{
+      const isSel=c.textContent.trim().endsWith(fish);
+      c.classList.toggle('chip-sel',isSel);
+      c.style.background=isSel?'var(--green-mid)':'var(--green-mist)';
+      c.style.color=isSel?'#fff':'var(--green-deep)';
+    });
+  }
 }
 
 function obSelType(idx, type){
@@ -2607,10 +2765,24 @@ function finOb(){
 
 function _finishOb(){
   clearTimeout(window._obFinishTimer);
+  // AP1: Tastatur-Space-Fix — Body temporär einschränken
+  document.activeElement?.blur();
+  document.body.style.height='100vh';
+  document.body.style.overflow='hidden';
   document.getElementById('onboarding').classList.add('hidden');
   applyProf();
-  document.activeElement.blur();
-  setTimeout(()=>window.scrollTo(0,0),100);
+  showPage('fangbuch');
+  rndrFangbuch();
+  window.scrollTo(0,0);
+  // Cloud-Sync nach Onboarding (falls eingeloggt)
+  if(_sbUser&&_authMode==='online'){
+    setTimeout(()=>syncToCloud(),1000);
+  }
+  // Body-Fix nach kurzer Verzögerung aufheben
+  setTimeout(()=>{
+    document.body.style.height='';
+    document.body.style.overflow='';
+  },400);
 }
 
 function _obConfetti(container){
@@ -2636,7 +2808,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=`PLZ ${profile.plz||'–'} · v37`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v40`:`PLZ ${profile.plz||'–'} · v40`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -3155,6 +3327,14 @@ function addCatch(){
       </div>
     </div>
 
+    <!-- Sichttiefe – nur im Raubfisch-Modus -->
+    <div id="catch-sicht-row-${id}" style="display:${_inputMode==='raub'?'':'none'};">
+      <div class="ig" style="margin-bottom:6px;">
+        <label class="il" for="f-sicht-${id}">Sichttiefe (cm)</label>
+        <input type="number" class="if" id="f-sicht-${id}" placeholder="z.B. 80" min="0" inputmode="numeric" style="max-width:140px;">
+      </div>
+    </div>
+
     <!-- Friedfisch-Felder – nur im Friedfisch-Modus -->
     <div id="catch-fried-${id}" style="display:${_inputMode==='fried'?'':'none'};margin-top:8px;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
@@ -3194,6 +3374,16 @@ function addCatch(){
           <button type="button" class="chip cf" id="ff-pre-n-${id}" onclick="setFfPre(${id},false)" style="font-size:11px;padding:4px 12px;">Nein</button>
         </div>
         <input type="hidden" id="ff-pre-${id}" value="">
+        <div id="ff-pre-days-wrap-${id}" style="display:none;margin-top:6px;">
+          <label class="il" for="ff-pre-days-${id}">Wie viele Tage?</label>
+          <input type="number" class="if" id="ff-pre-days-${id}" placeholder="z.B. 3" min="1" inputmode="numeric" style="max-width:120px;">
+        </div>
+      </div>
+      <!-- Foto – im Friedfisch-Modus -->
+      <div style="display:flex;align-items:center;gap:12px;margin:8px 0 4px;">
+        <div id="ff-pa-${id}" class="phadd" onclick="trigPhoto(${id})" role="button" tabindex="0"><span>📷</span><span class="phlbl">Foto</span></div>
+        <img id="ff-pp-${id}" class="phpr" src="" alt="Fangfoto" style="display:none;" onclick="trigPhoto(${id})">
+        <div style="flex:1;font-size:11px;color:var(--text-light);line-height:1.5;cursor:pointer;" onclick="trigPhoto(${id})">Foto hinzufügen</div>
       </div>
     </div>
 
@@ -3374,6 +3564,10 @@ async function saveSess(){
             catchObj.ffFeed=document.getElementById('ff-feed-'+i)?.value.trim()||'';
             catchObj.ffFeedAmt=parseFloat(document.getElementById('ff-famt-'+i)?.value)||0;
             catchObj.ffPrebaited=document.getElementById('ff-pre-'+i)?.value||'';
+            catchObj.ffPreDays=parseInt(document.getElementById('ff-pre-days-'+i)?.value)||0;
+          }
+          if(_inputMode==='raub'){
+            catchObj.sichttiefe=parseInt(document.getElementById('f-sicht-'+i)?.value)||0;
           }
           catches.push(catchObj);
           addFav('fish',type);if(bait)addFav('bait',bait);if(bait&&note)addBaitKw(bait,note);
@@ -3935,12 +4129,12 @@ async function openDayDetail(dateKey){
   let wxHtml='';
   if(wxAvg){
     let tiles='';
-    if(wxAvg.temp!=null)tiles+=_wxTile('🌡️',wxAvg.temp+'°C','Temp. Ø','');
-    if(wxAvg.windSpeed!=null)tiles+=_wxTile('💨',wxAvg.windSpeed+' km/h','Wind '+_windDir(wxAvg.windDir),'');
-    if(wxAvg.pressure)tiles+=_wxTile('📊',wxAvg.pressure+' hPa','Luftdruck','');
-    if(wxAvg.humidity!=null)tiles+=_wxTile('💧',wxAvg.humidity+'%','Luftf.','');
-    if(wxAvg.clouds!=null)tiles+=_wxTile('☁️',wxAvg.clouds+'%','Bewölk.','');
-    if(tiles)wxHtml=`<div class="slbl" style="margin-top:0;">Bedingungen <small style="font-weight:400;opacity:.6;font-size:10px;">Ø über Angelzeit</small></div><div class="dd-wx-grid">${tiles}</div>`;
+    if(wxAvg.temp!=null)tiles+=_wxTile('🌡️',wxAvg.temp+'°C','Temp. Ø',`openDayWxDetail('${dateKey}','temp')`);
+    if(wxAvg.windSpeed!=null)tiles+=_wxTile('💨',wxAvg.windSpeed+' km/h','Wind '+_windDir(wxAvg.windDir),`openDayWxDetail('${dateKey}','wind')`);
+    if(wxAvg.pressure)tiles+=_wxTile('📊',wxAvg.pressure+' hPa','Luftdruck',`openDayWxDetail('${dateKey}','pressure')`);
+    if(wxAvg.humidity!=null)tiles+=_wxTile('💧',wxAvg.humidity+'%','Luftf.',`openDayWxDetail('${dateKey}','humidity')`);
+    if(wxAvg.clouds!=null)tiles+=_wxTile('☁️',wxAvg.clouds+'%','Bewölk.',`openDayWxDetail('${dateKey}','clouds')`);
+    if(tiles)wxHtml=`<div class="slbl" style="margin-top:0;">Bedingungen <small style="font-weight:400;opacity:.6;font-size:10px;">Ø über Angelzeit · Tippen für Details</small></div><div class="dd-wx-grid">${tiles}</div>`;
   } else if(profile?.plz){
     wxHtml=`<div style="padding:8px 0 14px;"><button onclick="reloadWeatherForDay('${dateKey}')" style="width:100%;padding:10px;background:var(--blue);color:var(--blue-t);border:1.5px solid rgba(12,68,124,.2);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;">🌡️ Wetter via PLZ ${profile.plz} nachladen</button></div>`;
   }
@@ -3955,13 +4149,13 @@ async function openDayDetail(dateKey){
 
       let catchRows='';
       if(s.skunked||!sCatches.length){
-        catchRows=`<div style="padding:8px 0;font-size:12px;color:var(--text-light);">Kein Fang</div>`;
+        catchRows=`<div style="padding:10px 14px;font-size:12px;color:var(--text-light);">Kein Fang</div>`;
       } else {
         catchRows=sCatches.map((c,i)=>{
           const mm=chkMM(c.type,c.length);
           const safeId=String(s.id).replace(/[^a-z0-9]/gi,'_');
           return`<div class="dd-catch-row">
-            <div class="dd-catch-photo dd-photo-${safeId}-${i}">${fIco(c.type)}</div>
+            <div class="dd-catch-photo dd-photo-${safeId}-${i}" ${c.photoKey?`onclick="_openPhotoLb(this)" style="cursor:pointer;"`:''} data-photokey="${c.photoKey||''}">${fIco(c.type)}</div>
             <div class="dd-catch-info">
               <div class="dd-catch-name">${c.type||'–'}</div>
               <div class="dd-catch-meta">${c.time||'–'} Uhr${c.bait?' · '+c.bait:''}${c.baitNote?' · '+c.baitNote:''}</div>
@@ -4024,6 +4218,7 @@ async function openDayDetail(dateKey){
     </div>
     <div class="dd-body-pad">
     ${wxHtml}
+    ${_ddMapTile(daySess,dateKey)}
     <div class="slbl" style="padding-left:16px;">Fänge</div>
     ${sessionsHtml}
     </div>`;
@@ -4059,6 +4254,199 @@ async function reloadWeatherForDay(dateKey){
 function closeDayDetail(){
   closeFs('day-detail');
   // Scroll-Position wird in rndrFangbuch() beim nächsten Render wiederhergestellt
+}
+
+// ═══════════════════════════════════════════════════════════
+// AP2: FOTO-LIGHTBOX
+// ═══════════════════════════════════════════════════════════
+async function _openPhotoLb(el){
+  const img=el.querySelector('img');
+  if(!img)return;
+  const src=img.src;
+  if(!src)return;
+  const lb=document.createElement('div');
+  lb.className='photo-lightbox';
+  lb.onclick=e=>{if(e.target===lb)lb.remove();};
+  lb.innerHTML=`<button class="photo-lightbox-close" onclick="this.parentElement.remove()">✕</button><img src="${src}" alt="Fangfoto">`;
+  document.body.appendChild(lb);
+}
+
+// ═══════════════════════════════════════════════════════════
+// AP2: WETTER-DETAIL OVERLAY (Chart + Intervall-Tabelle)
+// ═══════════════════════════════════════════════════════════
+let _dayWxChart=null;
+async function openDayWxDetail(dateKey, metric){
+  const LABELS={temp:'🌡 Temperatur',wind:'💨 Wind',pressure:'📊 Luftdruck',humidity:'💧 Luftfeuchtigkeit',clouds:'☁️ Bewölkung'};
+  const UNITS={temp:'°C',wind:'km/h',pressure:'hPa',humidity:'%',clouds:'%'};
+  const COLORS={temp:'#e67e22',wind:'#3498db',pressure:'#9b59b6',humidity:'#1abc9c',clouds:'#95a5a6'};
+
+  document.getElementById('fs-dwx-title').textContent=LABELS[metric]||'Wetter-Detail';
+  document.getElementById('fs-dwx-meta').textContent=dateKey;
+  openFs('day-wx-detail');
+
+  const body=document.getElementById('fs-dwx-body');
+  body.innerHTML='<div style="text-align:center;padding:32px;color:var(--text-light);font-size:13px;">⏳ Lade Stundenwerte…</div>';
+
+  // Wetterdaten für den Tag laden (Open-Meteo Historical)
+  try{
+    const daySess=sessions.filter(s=>String(s.date)===String(dateKey));
+    let lat=_plzCoords?.lat, lon=_plzCoords?.lon;
+    const geoSess=daySess.find(s=>s.lat&&s.lon);
+    if(geoSess){lat=parseFloat(geoSess.lat);lon=parseFloat(geoSess.lon);}
+    if(!lat||!lon){
+      if(profile?.plz)await resolvePlzCoords(profile.plz);
+      lat=_plzCoords?.lat;lon=_plzCoords?.lon;
+    }
+    if(!lat||!lon){body.innerHTML='<div style="text-align:center;padding:32px;color:var(--text-light);">Keine Koordinaten verfügbar</div>';return;}
+
+    const url=`https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${dateKey}&end_date=${dateKey}&hourly=temperature_2m,windspeed_10m,windgusts_10m,pressure_msl,relativehumidity_2m,cloudcover,precipitation&timezone=Europe%2FBerlin`;
+    const resp=await fetch(url);
+    const data=await resp.json();
+    if(!data?.hourly?.time?.length){body.innerHTML='<div style="text-align:center;padding:32px;color:var(--text-light);">Keine Stundendaten verfügbar</div>';return;}
+
+    const hours=data.hourly.time.map(t=>t.split('T')[1]?.substring(0,5)||t);
+    const MAP={temp:'temperature_2m',wind:'windspeed_10m',pressure:'pressure_msl',humidity:'relativehumidity_2m',clouds:'cloudcover'};
+    const vals=data.hourly[MAP[metric]]||[];
+    const gusts=metric==='wind'?(data.hourly.windgusts_10m||[]):[];
+
+    // Angelzeit markieren
+    const starts=daySess.map(s=>s.start).filter(Boolean).sort();
+    const ends=daySess.map(s=>s.end).filter(Boolean).sort((a,b)=>b.localeCompare(a));
+    const fishStart=starts[0]||'00:00';
+    const fishEnd=ends[0]||'23:59';
+
+    // Chart + Tabelle rendern
+    body.innerHTML=`
+      <div style="background:#fff;border-radius:var(--rs);padding:14px;margin-bottom:16px;box-shadow:var(--sh-sm);border:1px solid rgba(200,221,208,.3);">
+        <canvas id="dwx-chart" height="180"></canvas>
+      </div>
+      <div class="slbl">Stundenwerte</div>
+      <div style="background:#fff;border-radius:var(--rs);overflow:hidden;border:1px solid rgba(200,221,208,.3);box-shadow:var(--sh-sm);">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead><tr style="background:var(--green-mist);">
+            <th style="padding:8px 10px;text-align:left;font-weight:700;color:var(--green-deep);">Zeit</th>
+            <th style="padding:8px 10px;text-align:right;font-weight:700;color:var(--green-deep);">${LABELS[metric]?.replace(/^.\s/,'')}</th>
+            ${metric==='wind'?'<th style="padding:8px 10px;text-align:right;font-weight:700;color:var(--green-deep);">Böen</th>':''}
+          </tr></thead>
+          <tbody>${hours.map((h,i)=>{
+            const inFish=h>=fishStart&&h<=fishEnd;
+            return`<tr style="${inFish?'background:rgba(95,208,144,.08);font-weight:600;':''}border-bottom:1px solid rgba(200,221,208,.2);">
+              <td style="padding:6px 10px;">${h}${inFish?' 🎣':''}</td>
+              <td style="padding:6px 10px;text-align:right;">${vals[i]!=null?vals[i]+' '+UNITS[metric]:'–'}</td>
+              ${metric==='wind'?`<td style="padding:6px 10px;text-align:right;">${gusts[i]!=null?gusts[i]+' km/h':'–'}</td>`:''}
+            </tr>`;
+          }).join('')}</tbody>
+        </table>
+      </div>`;
+
+    // Chart.js rendern
+    if(_dayWxChart){_dayWxChart.destroy();_dayWxChart=null;}
+    const ctx=document.getElementById('dwx-chart')?.getContext('2d');
+    if(ctx&&typeof Chart!=='undefined'){
+      const datasets=[{
+        label:LABELS[metric]?.replace(/^.\s/,'')||metric,
+        data:vals,
+        borderColor:COLORS[metric],
+        backgroundColor:COLORS[metric]+'33',
+        borderWidth:2,tension:.3,fill:true,pointRadius:1
+      }];
+      if(metric==='wind'&&gusts.length){
+        datasets.push({label:'Böen',data:gusts,borderColor:'#e74c3c',borderWidth:1.5,borderDash:[4,3],tension:.3,fill:false,pointRadius:0});
+      }
+      _dayWxChart=new Chart(ctx,{type:'line',data:{labels:hours,datasets},options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:datasets.length>1,labels:{font:{size:11,family:'DM Sans'}}},tooltip:{mode:'index',intersect:false}},
+        scales:{x:{ticks:{font:{size:10},maxTicksLimit:8},grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,.06)'}}}
+      }});
+    }
+  }catch(e){
+    console.warn('Wx-Detail Fehler:',e);
+    body.innerHTML=`<div style="text-align:center;padding:32px;color:var(--text-light);">Fehler beim Laden: ${e.message}</div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// AP2: SESSION-MAP TILE (Mini-Karte im Day-Detail)
+// ═══════════════════════════════════════════════════════════
+function _ddMapTile(daySess, dateKey){
+  const geoSess=daySess.filter(s=>s.lat&&s.lon);
+  if(geoSess.length){
+    return`<div class="slbl" style="margin-top:4px;">Kartenansicht</div>
+    <div onclick="openSessMap('${dateKey}')" style="background:#fff;border-radius:var(--rs);padding:14px;margin-bottom:14px;border:1px solid rgba(200,221,208,.3);box-shadow:var(--sh-sm);cursor:pointer;display:flex;align-items:center;gap:12px;">
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--green-mist);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📍</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;font-weight:600;color:var(--text-dark);">Fangpunkte anzeigen</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:2px;">${geoSess.length} Session${geoSess.length>1?'s':''} mit GPS-Daten</div>
+      </div>
+      <div style="font-size:18px;color:var(--text-light);">›</div>
+    </div>`;
+  }
+  return`<div class="slbl" style="margin-top:4px;">Kartenansicht</div>
+  <div onclick="openSessMapManual('${dateKey}')" style="background:#fff;border-radius:var(--rs);padding:14px;margin-bottom:14px;border:1px solid rgba(200,221,208,.3);box-shadow:var(--sh-sm);cursor:pointer;display:flex;align-items:center;gap:12px;">
+    <div style="width:40px;height:40px;border-radius:10px;background:rgba(200,60,60,.08);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🗺️</div>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:14px;font-weight:600;color:var(--text-dark);">Position manuell markieren</div>
+      <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Keine GPS-Daten vorhanden</div>
+    </div>
+    <div style="font-size:18px;color:var(--text-light);">›</div>
+  </div>`;
+}
+
+let _sessMap=null;
+function openSessMap(dateKey){
+  const daySess=sessions.filter(s=>String(s.date)===String(dateKey)&&s.lat&&s.lon);
+  if(!daySess.length)return;
+  document.getElementById('fs-smap-meta').textContent=dateKey;
+  openFs('sess-map');
+  setTimeout(()=>{
+    const container=document.getElementById('sess-map-container');
+    if(!container||typeof L==='undefined')return;
+    if(_sessMap){_sessMap.remove();_sessMap=null;}
+    const lat=parseFloat(daySess[0].lat), lon=parseFloat(daySess[0].lon);
+    _sessMap=L.map(container).setView([lat,lon],14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OSM',maxZoom:18}).addTo(_sessMap);
+    const bounds=[];
+    daySess.forEach(s=>{
+      const la=parseFloat(s.lat),lo=parseFloat(s.lon);
+      bounds.push([la,lo]);
+      const cnt=s.catches?.length||0;
+      const popup=`<strong>${s.water||'–'}</strong><br>${s.start||''}–${s.end||''} Uhr<br>${cnt} Fang${cnt!==1?'e':''}`;
+      L.marker([la,lo]).addTo(_sessMap).bindPopup(popup);
+    });
+    if(bounds.length>1)_sessMap.fitBounds(bounds,{padding:[30,30]});
+  },200);
+}
+
+function openSessMapManual(dateKey){
+  const daySess=sessions.filter(s=>String(s.date)===String(dateKey));
+  if(!daySess.length)return;
+  document.getElementById('fs-smap-meta').textContent=dateKey+' · Tippe auf die Karte';
+  openFs('sess-map');
+  setTimeout(()=>{
+    const container=document.getElementById('sess-map-container');
+    if(!container||typeof L==='undefined')return;
+    if(_sessMap){_sessMap.remove();_sessMap=null;}
+    const lat=_plzCoords?.lat||52.5, lon=_plzCoords?.lon||10.0;
+    _sessMap=L.map(container).setView([lat,lon],_plzCoords?11:6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OSM',maxZoom:18}).addTo(_sessMap);
+    let marker=null;
+    _sessMap.on('click',async e=>{
+      if(marker)_sessMap.removeLayer(marker);
+      marker=L.marker(e.latlng).addTo(_sessMap);
+      // Koordinaten in alle Sessions des Tages schreiben
+      for(const s of daySess){
+        s.lat=String(e.latlng.lat.toFixed(6));
+        s.lon=String(e.latlng.lng.toFixed(6));
+        await saveOneSess(s);
+      }
+      showToast('📍',`Position gespeichert (${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)})`);
+    });
+  },200);
+}
+
+function _closeSessMap(){
+  closeFs('sess-map');
+  if(_sessMap){_sessMap.remove();_sessMap=null;}
 }
 
 // Löschen aus dem Day-Detail-Overlay heraus
@@ -5957,7 +6345,7 @@ function calcHrs(s,e){
 function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').textContent=ico;document.getElementById('toast-msg').textContent=msg;const t=document.getElementById('toast');t.className='toast'+(isErr?' err':'');t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3200);}
 
 // ═══════════════════════════════════════════════════════════
-// LIVE SESSION (v39)
+// LIVE SESSION (v40)
 // ═══════════════════════════════════════════════════════════
 let _liveSession=null; // {startTime, catches:[], gpsTrack:[], watchId}
 let _liveTimer=null;
@@ -5992,9 +6380,11 @@ function startLiveSession(){
   _updateLiveTimer();
   _liveTimer=setInterval(_updateLiveTimer,1000);
 
-  // UI: FAB + Dot anzeigen
+  // UI: FAB + Dot + Live-Button anzeigen
   document.getElementById('live-fab').style.display='block';
   document.getElementById('hdr-live-dot').style.display='block';
+  const liveBtn=document.getElementById('hdr-live-btn');
+  if(liveBtn){liveBtn.style.display='';liveBtn.classList.add('active');}
   openLiveOv();
   showToast('🔴','Live Session gestartet!');
 }
@@ -6090,6 +6480,8 @@ async function endLiveSession(){
   localStorage.removeItem('fb_live_session');
   document.getElementById('live-fab').style.display='none';
   document.getElementById('hdr-live-dot').style.display='none';
+  const liveBtnEnd=document.getElementById('hdr-live-btn');
+  if(liveBtnEnd){liveBtnEnd.style.display='none';liveBtnEnd.classList.remove('active');}
   closeLiveOv();
   showToast('✅','Live Session gespeichert!');
   showPage('fangbuch');
@@ -6102,6 +6494,8 @@ function _resumeLiveSession(){
     _liveSession=JSON.parse(saved);
     document.getElementById('live-fab').style.display='block';
     document.getElementById('hdr-live-dot').style.display='block';
+    const lbResume=document.getElementById('hdr-live-btn');
+    if(lbResume){lbResume.style.display='';lbResume.classList.add('active');}
     _liveTimer=setInterval(_updateLiveTimer,1000);
     // GPS Tracking wiederaufnehmen
     if(navigator.geolocation){
@@ -6114,8 +6508,92 @@ function _resumeLiveSession(){
   }catch(e){localStorage.removeItem('fb_live_session');}
 }
 
+// ── Live-Catch Overlay (reduziert) ──────────────────────────
+let _lcPhotoData=null; // Base64-Fotodaten für Live-Catch
+
+function openLiveCatchOv(){
+  if(!_liveSession){startLiveSession();return;}
+  // Datalist befüllen
+  const dl=document.getElementById('lc-fdl');
+  if(dl)dl.innerHTML=FISH.map(f=>`<option value="${f}">`).join('');
+  // Felder zurücksetzen
+  document.getElementById('lc-fish').value='';
+  document.getElementById('lc-len').value='';
+  document.getElementById('lc-wt').value='';
+  document.getElementById('lc-bait').value='';
+  document.getElementById('lc-pp').style.display='none';
+  document.getElementById('lc-pp').src='';
+  document.getElementById('lc-pa').style.display='';
+  _lcPhotoData=null;
+  // Uhrzeit-Hint aktualisieren
+  const now=new Date();
+  const hh=String(now.getHours()).padStart(2,'0');
+  const mm=String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('lc-time-hint').textContent=`⏱️ Uhrzeit: ${hh}:${mm} (automatisch)`;
+  // Overlay öffnen
+  document.getElementById('fs-live-catch')?.classList.add('on');
+}
+
+function closeLiveCatch(){
+  document.getElementById('fs-live-catch')?.classList.remove('on');
+}
+
+function rndrLcFishChips(val){
+  const con=document.getElementById('lc-fc');
+  if(!con)return;
+  const v=(val||'').toLowerCase();
+  const list=v?FISH.filter(f=>f.toLowerCase().includes(v)).slice(0,8):(favs.fish||[]).slice(0,8);
+  if(!list.length){con.style.display='none';return;}
+  con.style.display='flex';
+  con.innerHTML=list.map(f=>`<button class="fav-btn" onmousedown="document.getElementById('lc-fish').value='${f}';dHide('lc-fc')">${f}</button>`).join('');
+}
+
+function trigLivePhoto(){
+  document.getElementById('lc-photo-input')?.click();
+}
+
+function _handleLivePhoto(inp){
+  if(!inp.files||!inp.files[0])return;
+  const file=inp.files[0];
+  const reader=new FileReader();
+  reader.onload=function(e){
+    _lcPhotoData=e.target.result;
+    const prev=document.getElementById('lc-pp');
+    if(prev){prev.src=_lcPhotoData;prev.style.display='block';}
+    document.getElementById('lc-pa').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveLiveCatch(){
+  const fish=document.getElementById('lc-fish')?.value.trim();
+  if(!fish){showToast('⚠️','Bitte Fischart eingeben!',true);return;}
+  const len=parseFloat(document.getElementById('lc-len')?.value)||0;
+  const wt=parseFloat(document.getElementById('lc-wt')?.value)||0;
+  const bait=document.getElementById('lc-bait')?.value.trim()||'';
+  const now=new Date();
+  const time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+
+  // Foto speichern wenn vorhanden
+  let photoKey=null;
+  if(_lcPhotoData){
+    photoKey='live_'+Date.now();
+    try{localStorage.setItem('fb_photo_'+photoKey,_lcPhotoData);}catch(e){console.warn('Foto zu groß für localStorage');}
+  }
+
+  const c={type:fish,length:len,weight:wt,time,taken:false,bait,baitNote:'',score:fScore(fish,len),photoKey,inputMode:'raub'};
+  _liveSession.catches.push(c);
+  localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
+  _renderLiveCatches();
+
+  closeLiveCatch();
+  showToast('🐟',`${fish}${len?' · '+len+'cm':''}${wt?' · '+wt+'kg':''} hinzugefügt!`);
+  addFav('fish',fish);
+  if(bait)addFav('bait',bait);
+}
+
 // ═══════════════════════════════════════════════════════════
-// VOICE INPUT via Supabase Edge Function (v39)
+// VOICE INPUT via Supabase Edge Function (v40)
 // Kein API-Key im Frontend! Audio wird an die Edge Function
 // /functions/v1/whisper gesendet, die den OpenAI Key sicher
 // aus Deno.env.get('OPENAI_API_KEY') liest.
@@ -6275,7 +6753,7 @@ function _parseVoiceInput(catchId,text){
 }
 
 // ═══════════════════════════════════════════════════════════
-// LEAFLET MAP (v39)
+// LEAFLET MAP (v40)
 // ═══════════════════════════════════════════════════════════
 let _leafletMap=null;
 let _mapMarkers=[];
@@ -6475,20 +6953,45 @@ function _updateMapMarkers(){
   // Live-Session wiederherstellen (nach App-Neustart)
   _resumeLiveSession();
 
-  if(!profile){
-    document.getElementById('onboarding').classList.remove('hidden');
-    document.getElementById('ob-btn').disabled=true;
-    setTimeout(()=>document.getElementById('ob-name')?.focus(),400);
-  } else {
+  // ── AP1: Auth-Flow — Login VOR Onboarding ──────────────────────
+  const hasAuth=await _checkAuthSession();
+
+  if(hasAuth&&profile){
+    // Fall 1: Eingeloggt + lokales Profil → direkt Fangbuch
+    document.getElementById('onboarding').classList.add('hidden');
+    document.getElementById('login-ov')?.classList.add('hidden');
+    applyProf();
+    showPage('fangbuch');
+    setTimeout(reqNotif,3000);
+    setTimeout(()=>syncFromCloud(),2500);
+    setTimeout(()=>syncToCloud(),3500);
+  } else if(hasAuth&&!profile){
+    // Fall 2: Eingeloggt aber kein Profil → Cloud-Sync, dann Fangbuch
+    document.getElementById('login-ov')?.classList.add('hidden');
+    document.getElementById('onboarding').classList.add('hidden');
+    await syncFromCloud();
+    showPage('fangbuch');
+    rndrFangbuch();
+  } else if(!hasAuth&&profile){
+    // Fall 3: Offline + lokales Profil → Fangbuch, Login dezent anbieten
     document.getElementById('onboarding').classList.add('hidden');
     applyProf();
     showPage('fangbuch');
     setTimeout(reqNotif,3000);
+  } else {
+    // Fall 4: Weder Auth noch Profil → Login-Overlay zeigen
+    if(!localStorage.getItem('fb_skip_auth')){
+      document.getElementById('login-ov')?.classList.remove('hidden');
+    } else {
+      // User hat "Ohne Account" gewählt → Onboarding
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('ob-btn').disabled=true;
+      setTimeout(()=>document.getElementById('ob-name')?.focus(),400);
+    }
+  }
 
-    // Cloud-Sync: Sessions aus Supabase laden (nach Login)
-    setTimeout(()=>syncFromCloud(),2500);
-
-    // Auto-Weather-Sync: im Hintergrund, blockiert nicht
+  // Auto-Weather-Sync: im Hintergrund, blockiert nicht
+  if(profile){
     setTimeout(async()=>{
       const needsWx=sessions.filter(s=>!s.pressure&&!s.windSpeed&&s.date);
       if(!needsWx.length)return;
