@@ -12,6 +12,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>:root{
   --cream:#F8F5EF;--cream-dark:#EDE8DC;
   --green-deep:#2D4A35;--green-mid:#4A7C59;--green-light:#7BAE8A;
@@ -1202,10 +1205,116 @@ input[type=file]{display:none;}
 .empty{text-align:center;padding:50px 20px;}
 .empty-ico{font-size:52px;margin-bottom:14px;opacity:.45;}
 .empty-t{font-size:16px;font-weight:600;color:var(--text-mid);margin-bottom:6px;}
-.empty-s{font-size:13px;color:var(--text-light);line-height:1.6;}</style>
+.empty-s{font-size:13px;color:var(--text-light);line-height:1.6;}
+
+/* ═══ LOGIN OVERLAY ═══ */
+.login-ov{position:absolute;inset:0;z-index:200;background:var(--green-deep);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;transition:opacity .4s;}
+.login-ov.hidden{opacity:0;pointer-events:none;}
+.login-card{width:100%;max-width:340px;background:var(--cream);border-radius:20px;padding:32px 24px 28px;box-shadow:var(--sh-md);}
+.login-card h2{font-family:var(--fs);font-size:22px;font-weight:600;color:var(--text-dark);text-align:center;margin-bottom:4px;}
+.login-card .lsub{font-size:12px;color:var(--text-light);text-align:center;margin-bottom:20px;}
+.login-card .ig{margin-bottom:12px;}
+.login-card .il{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;display:block;}
+.login-card input.lf{width:100%;padding:10px 14px;border:1.5px solid var(--cream-dark);border-radius:var(--rs);font-size:14px;font-family:var(--fa);background:#fff;color:var(--text-dark);outline:none;transition:border .2s;}
+.login-card input.lf:focus{border-color:var(--green-mid);}
+.login-card .lbtn{width:100%;padding:12px;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;transition:all .2s;margin-top:6px;}
+.login-card .lbtn-p{background:var(--green-deep);color:#fff;}
+.login-card .lbtn-p:hover{background:var(--green-mid);}
+.login-card .lbtn-s{background:transparent;color:var(--green-mid);font-weight:600;margin-top:2px;}
+.login-card .lerr{font-size:11px;color:var(--red);text-align:center;margin-top:8px;min-height:16px;}
+.login-card .ltabs{display:flex;gap:0;margin-bottom:18px;background:var(--cream-dark);border-radius:8px;padding:3px;}
+.login-card .ltab{flex:1;text-align:center;padding:8px 0;border:none;border-radius:6px;font-size:12px;font-weight:600;font-family:var(--fa);cursor:pointer;transition:all .2s;background:transparent;color:var(--text-mid);}
+.login-card .ltab.on{background:#fff;color:var(--text-dark);box-shadow:0 1px 3px rgba(0,0,0,.1);}
+
+/* ═══ LIVE SESSION ═══ */
+.live-dot{width:8px;height:8px;border-radius:50%;background:#ff4444;display:none;position:absolute;top:8px;right:8px;animation:livePulse 1.4s infinite;}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.3);}}
+.live-fab{position:absolute;bottom:calc(var(--footer-h) + max(32px, env(safe-area-inset-bottom, 32px)) + 8px);left:50%;transform:translateX(-50%);z-index:102;display:none;background:#cc0000;color:#fff;border:none;border-radius:24px;padding:8px 20px;font-size:13px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(204,0,0,.35);animation:liveFab 2s infinite;}
+@keyframes liveFab{0%,100%{box-shadow:0 4px 16px rgba(204,0,0,.35);}50%{box-shadow:0 4px 24px rgba(204,0,0,.55);}}
+
+/* Live-Overlay */
+.live-ov{position:absolute;inset:0;z-index:120;background:var(--cream);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .32s cubic-bezier(.22,1,.36,1);visibility:hidden;pointer-events:none;}
+.live-ov.on{transform:translateY(0);visibility:visible;pointer-events:auto;}
+.live-hdr{background:linear-gradient(135deg,#cc0000,#991111);padding:20px;color:#fff;flex-shrink:0;}
+.live-timer{font-size:48px;font-weight:200;font-family:var(--fa);letter-spacing:-1px;text-align:center;margin:8px 0;}
+.live-coords{font-size:11px;opacity:.7;text-align:center;}
+.live-body{flex:1;overflow-y:auto;padding:16px 16px 110px;}
+.live-catches-list{display:flex;flex-direction:column;gap:8px;}
+.live-catch-card{background:#fff;border-radius:var(--rs);padding:12px 14px;box-shadow:var(--sh-sm);display:flex;align-items:center;gap:12px;}
+.live-catch-ico{font-size:28px;}
+.live-catch-info{flex:1;}
+.live-catch-name{font-weight:600;font-size:14px;color:var(--text-dark);}
+.live-catch-meta{font-size:11px;color:var(--text-light);}
+.live-quick-btn{position:sticky;bottom:16px;width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);}
+
+/* ═══ VOICE BUTTON ═══ */
+.voice-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--green-pale);background:var(--green-mist);color:var(--green-mid);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;}
+.voice-btn:hover{background:var(--green-pale);}
+.voice-btn.recording{background:#cc0000;border-color:#cc0000;color:#fff;animation:voicePulse 1s infinite;}
+@keyframes voicePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+
+/* ═══ LEAFLET MAP TAB ═══ */
+#page-map .sc{padding:0;overflow:hidden;}
+#map-container{width:100%;height:100%;position:absolute;inset:0;}
+#map-container .leaflet-control-zoom{border-radius:var(--rs)!important;overflow:hidden;box-shadow:var(--sh-sm)!important;}
+#map-container .leaflet-popup-content-wrapper{border-radius:var(--rs)!important;box-shadow:var(--sh-md)!important;font-family:var(--fa)!important;}
+#map-container .leaflet-popup-content{margin:12px 14px!important;font-size:13px!important;}
+
+/* ═══ USER AVATAR (Header) ═══ */
+.hdr-avatar{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;margin-left:6px;cursor:pointer;}</style>
 </head>
 <body>
 <div class="phone" id="frame">
+
+<!-- ═══ LOGIN / AUTH OVERLAY ═══ -->
+<div class="login-ov" id="login-ov">
+  <div style="text-align:center;margin-bottom:24px;">
+    <div style="font-size:48px;margin-bottom:8px;">🎣</div>
+    <div style="font-family:var(--fs);font-size:26px;font-weight:600;color:#fff;">Fishing Buddy</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;">Dein Cloud-Angelbuch</div>
+  </div>
+  <div class="login-card">
+    <div class="ltabs">
+      <button class="ltab on" id="ltab-login" onclick="switchAuthTab('login')">Login</button>
+      <button class="ltab" id="ltab-register" onclick="switchAuthTab('register')">Registrieren</button>
+    </div>
+    <form id="auth-form" onsubmit="handleAuth(event)">
+      <div class="ig">
+        <label class="il" for="auth-email">E-Mail</label>
+        <input type="email" class="lf" id="auth-email" placeholder="deine@email.de" required autocomplete="email">
+      </div>
+      <div class="ig">
+        <label class="il" for="auth-pass">Passwort</label>
+        <input type="password" class="lf" id="auth-pass" placeholder="••••••••" required minlength="6" autocomplete="current-password">
+      </div>
+      <button type="submit" class="lbtn lbtn-p" id="auth-submit">Einloggen</button>
+      <button type="button" class="lbtn lbtn-s" id="auth-skip" onclick="skipAuth()">Ohne Account fortfahren →</button>
+      <div class="lerr" id="auth-err"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ LIVE SESSION OVERLAY ═══ -->
+<div class="live-ov" id="live-ov">
+  <div class="live-hdr">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.8;">🔴 Live Session</div>
+      <button style="background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:15px;cursor:pointer;" onclick="closeLiveOv()">✕</button>
+    </div>
+    <div class="live-timer" id="live-timer">00:00:00</div>
+    <div class="live-coords" id="live-coords">GPS wird ermittelt…</div>
+  </div>
+  <div class="live-body">
+    <div style="font-size:13px;font-weight:700;color:var(--text-mid);margin-bottom:8px;">Schnell-Fänge</div>
+    <div class="live-catches-list" id="live-catches-list">
+      <div style="text-align:center;padding:24px;color:var(--text-light);font-size:12px;">Noch keine Fänge – nutze den Button unten</div>
+    </div>
+    <button class="live-quick-btn" onclick="liveQuickCatch()">🐟 Fang hinzufügen</button>
+  </div>
+</div>
+
+<!-- Live-Session FAB -->
+<button class="live-fab" id="live-fab" onclick="openLiveOv()">🔴 LIVE SESSION</button>
 
 <!-- GOAL WALKOUT OVERLAY -->
 <div id="goal-walkout" onclick="dismissGoalWalkout()" role="dialog" aria-modal="true" aria-label="Ziel erreicht">
@@ -1295,11 +1404,25 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
       <div class="burg-sec">
+        <div class="burg-slbl">Live Session</div>
+        <button class="bitem" id="burg-live-btn" onclick="closeBurg();_liveSession?endLiveSession():startLiveSession()">
+          <span class="bitem-ico" id="burg-live-ico">🔴</span>
+          <div><div class="bitem-txt" id="burg-live-txt">Live Session starten</div><div class="bitem-sub">Echtzeit-Tracking mit GPS</div></div>
+        </button>
+      </div>
+      <div class="burg-sec" id="burg-cloud-sec">
+        <div class="burg-slbl">Cloud</div>
+        <button class="bitem" id="burg-auth-btn" onclick="closeBurg();_sbUser?sbLogout():document.getElementById('login-ov').classList.remove('hidden')">
+          <span class="bitem-ico" id="burg-auth-ico">☁️</span>
+          <div><div class="bitem-txt" id="burg-auth-txt">Anmelden / Registrieren</div><div class="bitem-sub" id="burg-auth-sub">Cloud-Sync aktivieren</div></div>
+        </button>
+      </div>
+      <div class="burg-sec">
         <div class="burg-slbl">Gefährlich</div>
         <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v37 · IndexedDB · PWA</div>
+    <div class="burg-ver">Fishing Buddy v38 · Supabase · Leaflet · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -1441,9 +1564,11 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">100% Offline · v37</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v38</div>
     </div>
-    <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus">+</button>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus" style="position:relative;">+<div class="live-dot" id="hdr-live-dot"></div></button>
+    </div>
   </div>
 </div>
 
@@ -1662,6 +1787,11 @@ input[type=file]{display:none;}
   <div class="sc"><div id="fc-con"></div></div>
 </div>
 
+<!-- PAGE: KARTE -->
+<div class="page" id="page-map">
+  <div class="sc" style="padding:0;position:relative;overflow:hidden;"><div id="map-container"></div></div>
+</div>
+
 </div><!-- /pages -->
 
 <!-- BOTTOM TAB BAR -->
@@ -1673,6 +1803,10 @@ input[type=file]{display:none;}
   <button class="btab" id="btab-forecast" role="tab" aria-selected="false" onclick="showPage('forecast')">
     <svg class="btab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
     <span class="btab-lbl">Vorhersage</span>
+  </button>
+  <button class="btab" id="btab-map" role="tab" aria-selected="false" onclick="showPage('map')">
+    <svg class="btab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+    <span class="btab-lbl">Karte</span>
   </button>
   <button class="btab" id="btab-stats" role="tab" aria-selected="false" onclick="showPage('stats')">
     <svg class="btab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
@@ -1686,6 +1820,168 @@ input[type=file]{display:none;}
 </div>
 </div><!-- /phone -->
 <script>
+// ═══════════════════════════════════════════════════════════
+// SUPABASE CLIENT (v38)
+// ═══════════════════════════════════════════════════════════
+const SB_URL='https://diiggjftcpoagsnxsaez.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpaWdnamZ0Y3BvYWdzbnhzYWV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNzE4NjQsImV4cCI6MjA5MTY0Nzg2NH0.XaBkQcjEl300NIZ3XIfcgEgWVwkfQTqInfECfvUGG6s';
+let _sb=null;
+let _sbUser=null;
+let _authMode='offline'; // 'online' | 'offline'
+
+function sbInit(){
+  if(typeof supabase!=='undefined'&&supabase.createClient){
+    _sb=supabase.createClient(SB_URL,SB_KEY);
+    // Auth-State-Listener
+    _sb.auth.onAuthStateChange((event,session)=>{
+      if(session?.user){
+        _sbUser=session.user;
+        _authMode='online';
+        document.getElementById('login-ov')?.classList.add('hidden');
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v38`;
+        // Nach Login: Cloud-Sync starten
+        setTimeout(()=>syncToCloud(),1000);
+      } else {
+        _sbUser=null;
+        // Offline-Modus: Login-Overlay nur zeigen wenn kein lokales Profil
+        if(!profile&&!localStorage.getItem('fb_skip_auth')){
+          document.getElementById('login-ov')?.classList.remove('hidden');
+        }
+      }
+    });
+    // Initiale Session prüfen
+    _sb.auth.getSession().then(({data})=>{
+      if(!data?.session&&!profile&&!localStorage.getItem('fb_skip_auth')){
+        document.getElementById('login-ov')?.classList.remove('hidden');
+      }
+    });
+  }
+}
+
+// Auth-Tab-Wechsel
+function switchAuthTab(tab){
+  document.getElementById('ltab-login').className='ltab'+(tab==='login'?' on':'');
+  document.getElementById('ltab-register').className='ltab'+(tab==='register'?' on':'');
+  document.getElementById('auth-submit').textContent=tab==='login'?'Einloggen':'Registrieren';
+  document.getElementById('auth-err').textContent='';
+}
+
+// Auth-Handler
+async function handleAuth(e){
+  e.preventDefault();
+  const email=document.getElementById('auth-email').value.trim();
+  const pass=document.getElementById('auth-pass').value;
+  const errEl=document.getElementById('auth-err');
+  const btn=document.getElementById('auth-submit');
+  const isLogin=document.getElementById('ltab-login').classList.contains('on');
+  errEl.textContent='';
+  btn.disabled=true;btn.textContent='Bitte warten…';
+
+  try{
+    if(!_sb)throw new Error('Keine Verbindung zum Server');
+    let result;
+    if(isLogin){
+      result=await _sb.auth.signInWithPassword({email,password:pass});
+    }else{
+      result=await _sb.auth.signUp({email,password:pass});
+    }
+    if(result.error)throw result.error;
+    if(!isLogin&&!result.data?.user?.confirmed_at){
+      errEl.style.color='var(--green-mid)';
+      errEl.textContent='✓ Bestätigungsmail gesendet! Prüfe deinen Posteingang.';
+    }
+  }catch(err){
+    errEl.style.color='var(--red)';
+    errEl.textContent=err.message==='Invalid login credentials'?'Falsche Zugangsdaten':err.message||'Fehler bei der Authentifizierung';
+  }finally{
+    btn.disabled=false;
+    btn.textContent=isLogin?'Einloggen':'Registrieren';
+  }
+}
+
+// Ohne Account fortfahren
+function skipAuth(){
+  localStorage.setItem('fb_skip_auth','1');
+  _authMode='offline';
+  document.getElementById('login-ov')?.classList.add('hidden');
+  document.getElementById('hdr-sub').textContent='Offline · v38';
+}
+
+// Cloud-Sync: Sessions zu Supabase hochladen
+async function syncToCloud(){
+  if(!_sb||!_sbUser||_authMode!=='online')return;
+  try{
+    for(const s of sessions){
+      const row={
+        user_id:_sbUser.id,
+        session_id:String(s.id),
+        date:s.date||null,
+        water:s.water||null,
+        metadata:s
+      };
+      await _sb.from('sessions').upsert(row,{onConflict:'user_id,session_id'}).select();
+    }
+  }catch(e){console.warn('Cloud-Sync Fehler:',e);}
+}
+
+// Cloud-Sync: Sessions von Supabase laden
+async function syncFromCloud(){
+  if(!_sb||!_sbUser||_authMode!=='online')return;
+  try{
+    const{data,error}=await _sb.from('sessions').select('*').eq('user_id',_sbUser.id);
+    if(error)throw error;
+    if(!data?.length)return;
+    const localIds=new Set(sessions.map(s=>String(s.id)));
+    let newCount=0;
+    for(const row of data){
+      if(!localIds.has(String(row.session_id))&&row.metadata){
+        const sess=row.metadata;
+        sess.id=row.session_id;
+        sessions.push(sess);
+        await idbP('sessions',String(sess.id),sess);
+        newCount++;
+      }
+    }
+    if(newCount>0){
+      sessions.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+      showToast('☁️',`${newCount} Session${newCount>1?'s':''} aus der Cloud geladen`);
+      rndrHistory();
+    }
+  }catch(e){console.warn('Cloud-Load Fehler:',e);}
+}
+
+// Supabase Logout
+async function sbLogout(){
+  if(!_sb)return;
+  await _sb.auth.signOut();
+  _sbUser=null;
+  _authMode='offline';
+  localStorage.removeItem('fb_skip_auth');
+  document.getElementById('hdr-sub').textContent='Offline · v38';
+  showToast('👋','Abgemeldet');
+}
+
+// Burger-Live-Button aktualisieren
+function _updBurgLive(){
+  const ico=document.getElementById('burg-live-ico');
+  const txt=document.getElementById('burg-live-txt');
+  if(ico)ico.textContent=_liveSession?'⏹️':'🔴';
+  if(txt)txt.textContent=_liveSession?'Live Session beenden':'Live Session starten';
+  // Cloud-Button aktualisieren
+  const authTxt=document.getElementById('burg-auth-txt');
+  const authSub=document.getElementById('burg-auth-sub');
+  const authIco=document.getElementById('burg-auth-ico');
+  if(_sbUser){
+    if(authTxt)authTxt.textContent='Abmelden';
+    if(authSub)authSub.textContent=_sbUser.email||'Eingeloggt';
+    if(authIco)authIco.textContent='🔓';
+  }else{
+    if(authTxt)authTxt.textContent='Anmelden / Registrieren';
+    if(authSub)authSub.textContent='Cloud-Sync aktivieren';
+    if(authIco)authIco.textContent='☁️';
+  }
+}
+
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
@@ -2793,7 +3089,12 @@ function addCatch(){
   div.innerHTML=`
     <div class="ch">
       <span class="cn">🐟 Fang #${id}</span>
-      ${id>1?`<button class="rm" onclick="rmCatch(${id})" aria-label="Fang ${id} entfernen">×</button>`:'<div style="width:32px"></div>'}
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button type="button" class="voice-btn" id="voice-btn-${id}" onclick="startVoiceInput(${id})" aria-label="Spracheingabe" title="Spracheingabe">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </button>
+        ${id>1?`<button class="rm" onclick="rmCatch(${id})" aria-label="Fang ${id} entfernen">×</button>`:'<div style="width:32px"></div>'}
+      </div>
     </div>
 
     <!-- Fischart – Chips als Dropdown, keine doppelten Favoritenbuttons -->
@@ -3100,8 +3401,36 @@ async function saveSess(){
       clouds:_lastWx?.clouds||null,precip:_lastWx?.precip||null,
       catches,saved:new Date().toISOString()
     };
+    // Auto-Wetter: Wenn Wetterwerte null → historische Daten laden
+    if(!sess.pressure&&!sess.windSpeed&&sess.date){
+      try{
+        const coords=_plzCoords||gpsCoords;
+        if(!coords&&profile?.plz)await resolvePlzCoords(profile.plz);
+        const c2=_plzCoords||gpsCoords;
+        if(c2){
+          const url=_wxUrl(c2.lat,c2.lon,sess.date,'temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation');
+          const r=await fetch(url);if(r.ok){
+            const data=await r.json();const h=data.hourly;
+            if(h?.time?.length){
+              const avg=arr=>arr?.filter(v=>v!=null).reduce((a,b)=>a+b,0)/(arr?.filter(v=>v!=null).length||1);
+              sess.pressure=Math.round(avg(h.surface_pressure));
+              if(!sess.temp)sess.temp=Math.round(avg(h.temperature_2m));
+              sess.windSpeed=Math.round(avg(h.windspeed_10m));
+              sess.windDir=Math.round(avg(h.winddirection_10m));
+              sess.humidity=Math.round(avg(h.relativehumidity_2m));
+              sess.clouds=Math.round(avg(h.cloudcover));
+              sess.precip=parseFloat((h.precipitation?.reduce((a,b)=>a+(b||0),0)||0).toFixed(1));
+            }
+          }
+        }
+      }catch(e){/* Hintergrund-Fehler ignorieren */}
+    }
+
     sessions.unshift(sess);
     await saveOneSess(sess);
+
+    // Cloud-Sync (nicht-blockierend)
+    if(_authMode==='online')syncToCloud().catch(()=>{});
 
     // Edit-Safety: Original erst JETZT löschen
     const wasEditing=!!_editPendingId;
@@ -3292,7 +3621,7 @@ function stopK(){if(kAF)cancelAnimationFrame(kAF);document.getElementById('kcanv
 // PAGE NAV (v9: 3 Bottom-Tabs + Neu/Detail als interne Pages)
 // ═══════════════════════════════════════════════════════════
 // Tab-Mapping: welcher btab wird bei welcher page aktiv
-const TAB_PAGE_MAP={fangbuch:'fangbuch',history:'fangbuch',forecast:'forecast',stats:'stats'};
+const TAB_PAGE_MAP={fangbuch:'fangbuch',history:'fangbuch',forecast:'forecast',map:'map',stats:'stats'};
 function showPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
   const pageEl=document.getElementById('page-'+p);
@@ -3303,7 +3632,7 @@ function showPage(p){
     const isActive=b.id==='btab-'+activeTab;
     b.classList.toggle('on',isActive);
     b.setAttribute('aria-selected',String(isActive));
-   
+
     if(isActive){
       b.classList.remove('tap');
       void b.offsetWidth; // reflow
@@ -3315,12 +3644,13 @@ function showPage(p){
   if(p==='history'||p==='fangbuch'){rndrHistory();}
   if(p==='stats')rndrStats();
   if(p==='forecast')rndrForecast();
+  if(p==='map')initMap();
   if(p==='new'){
     const n=new Date();
     const dateEl=document.getElementById('s-date');
     if(dateEl&&!dateEl.value)dateEl.value=n.toISOString().split('T')[0];
     updMoon();
-   
+
     requestAnimationFrame(()=>{
       const sc=document.querySelector('#page-new .sc');
       if(sc)sc.scrollTop=0;
@@ -3333,6 +3663,7 @@ function openBurg(){
   document.getElementById('burg-ov').classList.remove('hidden');
   _chkBackupReminder();
   updBurgStor();
+  _updBurgLive();
 }
 function closeBurg(){document.getElementById('burg-ov').classList.add('hidden');}
 function showBurgSec(sec){
@@ -3865,7 +4196,7 @@ function showDetail(id){
     if(av)av.innerHTML=`<img src="${ph}" alt="Fangfoto" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">`;
   });
 }
-async function delSess(id){const ok=await showConf('🗑️','Session löschen','Wirklich löschen?\nKann nicht rückgängig gemacht werden.','Ja, löschen','danger');if(!ok)return;sessions=sessions.filter(s=>String(s.id)!==String(id));await idbD('sessions',String(id));showToast('🗑️','Session gelöscht');showPage('fangbuch');}
+async function delSess(id){const ok=await showConf('🗑️','Session löschen','Wirklich löschen?\nKann nicht rückgängig gemacht werden.','Ja, löschen','danger');if(!ok)return;sessions=sessions.filter(s=>String(s.id)!==String(id));await idbD('sessions',String(id));if(_sb&&_sbUser)_sb.from('sessions').delete().eq('user_id',_sbUser.id).eq('session_id',String(id)).then(()=>{}).catch(()=>{});showToast('🗑️','Session gelöscht');showPage('fangbuch');}
 // ── Edit-State: ID der Session die gerade bearbeitet wird (v13 Safety) ──
 let _editPendingId=null; // ID der Original-Session – erst beim Speichern löschen
 
@@ -4886,11 +5217,20 @@ async function _renderTideCal(river,startDate){
 
   try{
     // PEGELONLINE-Daten laden (15 Min Cache pro Fluss)
+    // CORS-Proxy (allorigins.win) für BSH-Daten – Weser, Elbe, Ems
     const cached=_tideCache[river];
     if(!cached||Date.now()-cached.ts>15*60*1000){
       // P2D = letzte 2 Tage (relative Zeitangabe, von PEGELONLINE unterstützt)
-      const url=`https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/${st.uuid}/W/measurements.json?start=P2D`;
-      const resp=await fetch(url);
+      const directUrl=`https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/${st.uuid}/W/measurements.json?start=P2D`;
+      let resp;
+      try{
+        // Erst direkt versuchen (funktioniert oft nativ)
+        resp=await fetch(directUrl);
+      }catch(e){
+        // Fallback: CORS-Proxy
+        const proxyUrl=`https://api.allorigins.win/raw?url=${encodeURIComponent(directUrl)}`;
+        resp=await fetch(proxyUrl);
+      }
       if(!resp.ok)throw new Error(`PEGELONLINE HTTP ${resp.status}`);
       _tideCache[river]={data:await resp.json(),ts:Date.now()};
     }
@@ -5617,6 +5957,354 @@ function calcHrs(s,e){
 function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').textContent=ico;document.getElementById('toast-msg').textContent=msg;const t=document.getElementById('toast');t.className='toast'+(isErr?' err':'');t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3200);}
 
 // ═══════════════════════════════════════════════════════════
+// LIVE SESSION (v38)
+// ═══════════════════════════════════════════════════════════
+let _liveSession=null; // {startTime, catches:[], gpsTrack:[], watchId}
+let _liveTimer=null;
+let _liveGpsWatch=null;
+
+function startLiveSession(){
+  _liveSession={
+    startTime:Date.now(),
+    catches:[],
+    gpsTrack:[],
+    water:''
+  };
+  // Persist live state
+  localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
+
+  // GPS tracking starten
+  if(navigator.geolocation){
+    _liveGpsWatch=navigator.geolocation.watchPosition(pos=>{
+      const coord={lat:pos.coords.latitude.toFixed(5),lon:pos.coords.longitude.toFixed(5),ts:Date.now()};
+      _liveSession.gpsTrack.push(coord);
+      gpsCoords={lat:coord.lat,lon:coord.lon};
+      const el=document.getElementById('live-coords');
+      if(el)el.textContent=`📍 ${coord.lat}, ${coord.lon}`;
+      localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
+    },()=>{
+      const el=document.getElementById('live-coords');
+      if(el)el.textContent='GPS nicht verfügbar';
+    },{enableHighAccuracy:true,maximumAge:30000,timeout:15000});
+  }
+
+  // Timer starten
+  _updateLiveTimer();
+  _liveTimer=setInterval(_updateLiveTimer,1000);
+
+  // UI: FAB + Dot anzeigen
+  document.getElementById('live-fab').style.display='block';
+  document.getElementById('hdr-live-dot').style.display='block';
+  openLiveOv();
+  showToast('🔴','Live Session gestartet!');
+}
+
+function _updateLiveTimer(){
+  if(!_liveSession)return;
+  const elapsed=Date.now()-_liveSession.startTime;
+  const h=Math.floor(elapsed/3600000);
+  const m=Math.floor((elapsed%3600000)/60000);
+  const s=Math.floor((elapsed%60000)/1000);
+  const timer=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const el=document.getElementById('live-timer');
+  if(el)el.textContent=timer;
+}
+
+function openLiveOv(){
+  if(!_liveSession){startLiveSession();return;}
+  document.getElementById('live-ov')?.classList.add('on');
+  _renderLiveCatches();
+}
+
+function closeLiveOv(){
+  document.getElementById('live-ov')?.classList.remove('on');
+}
+
+function liveQuickCatch(){
+  const fish=prompt('Fischart:');
+  if(!fish)return;
+  const len=parseFloat(prompt('Länge (cm):')||'0');
+  const t=new Date();
+  const time=t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0');
+  const c={type:fish.trim(),length:len||0,time,taken:false,bait:'',baitNote:'',score:fScore(fish.trim(),len||0),photoKey:null,inputMode:'raub'};
+  _liveSession.catches.push(c);
+  localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
+  _renderLiveCatches();
+  showToast('🐟',`${fish} ${len?len+'cm ':''} hinzugefügt!`);
+}
+
+function _renderLiveCatches(){
+  const el=document.getElementById('live-catches-list');
+  if(!el||!_liveSession)return;
+  if(!_liveSession.catches.length){
+    el.innerHTML='<div style="text-align:center;padding:24px;color:var(--text-light);font-size:12px;">Noch keine Fänge – nutze den Button unten</div>';
+    return;
+  }
+  el.innerHTML=_liveSession.catches.map((c,i)=>`
+    <div class="live-catch-card">
+      <div class="live-catch-ico">${fIco(c.type)}</div>
+      <div class="live-catch-info">
+        <div class="live-catch-name">${c.type}${c.length?' · '+c.length+'cm':''}</div>
+        <div class="live-catch-meta">${c.time}${c.bait?' · '+c.bait:''}</div>
+      </div>
+    </div>`).join('');
+}
+
+async function endLiveSession(){
+  if(!_liveSession)return;
+  const ok=await showConf('🔴','Live Session beenden','Session jetzt speichern?','Speichern & Beenden');
+  if(!ok)return;
+
+  // Timer + GPS stoppen
+  if(_liveTimer)clearInterval(_liveTimer);
+  if(_liveGpsWatch)navigator.geolocation.clearWatch(_liveGpsWatch);
+
+  // Session-Objekt bauen
+  const start=new Date(_liveSession.startTime);
+  const now=new Date();
+  const sess={
+    id:_newId(),
+    date:start.toISOString().split('T')[0],
+    start:start.getHours().toString().padStart(2,'0')+':'+start.getMinutes().toString().padStart(2,'0'),
+    end:now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0'),
+    water:_liveSession.water||document.getElementById('s-water')?.value||'Live-Session',
+    weather:'',temp:null,
+    lat:_liveSession.gpsTrack[0]?.lat||null,
+    lon:_liveSession.gpsTrack[0]?.lon||null,
+    ...getMoon(start.toISOString().split('T')[0]),
+    moonIllum:getMoon(start.toISOString().split('T')[0]).illum,
+    skunked:!_liveSession.catches.length,
+    autoSkunked:!_liveSession.catches.length,
+    catches:_liveSession.catches,
+    pressure:null,windSpeed:null,windDir:null,humidity:null,clouds:null,precip:null,
+    saved:new Date().toISOString(),
+    liveTrack:_liveSession.gpsTrack
+  };
+
+  sessions.unshift(sess);
+  await saveOneSess(sess);
+  if(_authMode==='online')syncToCloud().catch(()=>{});
+
+  // Cleanup
+  _liveSession=null;
+  localStorage.removeItem('fb_live_session');
+  document.getElementById('live-fab').style.display='none';
+  document.getElementById('hdr-live-dot').style.display='none';
+  closeLiveOv();
+  showToast('✅','Live Session gespeichert!');
+  showPage('fangbuch');
+}
+
+function _resumeLiveSession(){
+  const saved=localStorage.getItem('fb_live_session');
+  if(!saved)return;
+  try{
+    _liveSession=JSON.parse(saved);
+    document.getElementById('live-fab').style.display='block';
+    document.getElementById('hdr-live-dot').style.display='block';
+    _liveTimer=setInterval(_updateLiveTimer,1000);
+    // GPS Tracking wiederaufnehmen
+    if(navigator.geolocation){
+      _liveGpsWatch=navigator.geolocation.watchPosition(pos=>{
+        const coord={lat:pos.coords.latitude.toFixed(5),lon:pos.coords.longitude.toFixed(5),ts:Date.now()};
+        _liveSession.gpsTrack.push(coord);
+        gpsCoords={lat:coord.lat,lon:coord.lon};
+      },()=>{},{enableHighAccuracy:true,maximumAge:30000,timeout:15000});
+    }
+  }catch(e){localStorage.removeItem('fb_live_session');}
+}
+
+// ═══════════════════════════════════════════════════════════
+// OPENAI WHISPER – Voice Input (v38)
+// ═══════════════════════════════════════════════════════════
+const WHISPER_API_KEY='[YOUR_OPENAI_KEY]'; // Platzhalter – vom User einzusetzen
+let _voiceRecording=false;
+let _voiceMediaRec=null;
+
+async function startVoiceInput(catchId){
+  const btn=document.getElementById('voice-btn-'+catchId);
+  if(!btn)return;
+
+  // Wenn bereits aufnehmend → stoppen
+  if(_voiceRecording&&_voiceMediaRec){
+    _voiceMediaRec.stop();
+    return;
+  }
+
+  // Prüfe ob API Key gesetzt
+  if(WHISPER_API_KEY==='[YOUR_OPENAI_KEY]'){
+    showToast('🎤','OpenAI API Key in v38 einsetzen!',true);
+    return;
+  }
+
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    _voiceRecording=true;
+    btn.classList.add('recording');
+
+    const chunks=[];
+    _voiceMediaRec=new MediaRecorder(stream,{mimeType:'audio/webm'});
+    _voiceMediaRec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+    _voiceMediaRec.onstop=async()=>{
+      _voiceRecording=false;
+      btn.classList.remove('recording');
+      stream.getTracks().forEach(t=>t.stop());
+
+      if(!chunks.length)return;
+      const blob=new Blob(chunks,{type:'audio/webm'});
+      showToast('🎤','Transkribiere…');
+
+      try{
+        const formData=new FormData();
+        formData.append('file',blob,'audio.webm');
+        formData.append('model','whisper-1');
+        formData.append('language','de');
+
+        const resp=await fetch('https://api.openai.com/v1/audio/transcriptions',{
+          method:'POST',
+          headers:{'Authorization':`Bearer ${WHISPER_API_KEY}`},
+          body:formData
+        });
+        if(!resp.ok)throw new Error('Whisper API Fehler');
+        const result=await resp.json();
+        const text=(result.text||'').trim();
+        if(!text){showToast('🎤','Keine Sprache erkannt',true);return;}
+
+        // Keyword-Parsing: Fischart, Länge, Köder automatisch füllen
+        _parseVoiceInput(catchId,text);
+        showToast('🎤','Erkannt: "'+text.substring(0,40)+'…"');
+      }catch(e){showToast('❌','Whisper-Fehler: '+e.message,true);}
+    };
+
+    _voiceMediaRec.start();
+    showToast('🎤','Aufnahme läuft – nochmal tippen zum Stoppen');
+
+    // Auto-Stop nach 15 Sekunden
+    setTimeout(()=>{if(_voiceRecording&&_voiceMediaRec)_voiceMediaRec.stop();},15000);
+  }catch(e){showToast('❌','Mikrofon-Zugriff verweigert',true);}
+}
+
+function _parseVoiceInput(catchId,text){
+  const lower=text.toLowerCase();
+
+  // Fischart erkennen
+  const fishMatch=FISH.find(f=>lower.includes(f.toLowerCase()));
+  if(fishMatch){
+    const ftEl=document.getElementById('ft-'+catchId);
+    if(ftEl){ftEl.value=fishMatch;chkMMF(catchId);}
+  }
+
+  // Länge erkennen: "65 Zentimeter", "65cm", "65 cm"
+  const lenMatch=lower.match(/(\d+)\s*(?:zentimeter|cm|zenti)/);
+  if(lenMatch){
+    const flEl=document.getElementById('fl-'+catchId);
+    if(flEl)flEl.value=parseInt(lenMatch[1]);
+  }
+
+  // Köder erkennen
+  const baitKeywords=['gummifisch','wobbler','spinner','blinker','gummi','jerkbait','jig','drop shot','carolina','texas','boilies','mais','wurm','made','teig','pose','grund'];
+  const baitMatch=baitKeywords.find(b=>lower.includes(b));
+  if(baitMatch&&_inputMode==='raub'){
+    const fbEl=document.getElementById('fb-'+catchId);
+    if(fbEl)fbEl.value=baitMatch.charAt(0).toUpperCase()+baitMatch.slice(1);
+  }
+
+  // Falls nichts gematcht → Text in Notizen eintragen
+  if(!fishMatch&&!lenMatch&&!baitMatch){
+    const fnEl=document.getElementById('fn-'+catchId);
+    if(fnEl)fnEl.value=text;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// LEAFLET MAP (v38)
+// ═══════════════════════════════════════════════════════════
+let _leafletMap=null;
+let _mapMarkers=[];
+
+function initMap(){
+  const container=document.getElementById('map-container');
+  if(!container)return;
+
+  if(_leafletMap){
+    // Bestehende Karte nur refreshen
+    setTimeout(()=>_leafletMap.invalidateSize(),150);
+    _updateMapMarkers();
+    return;
+  }
+
+  // Default-Koordinaten: Deutschland-Mitte oder PLZ-Koordinaten
+  const defaultLat=_plzCoords?.lat||52.5;
+  const defaultLon=_plzCoords?.lon||10.0;
+  const defaultZoom=_plzCoords?10:6;
+
+  _leafletMap=L.map('map-container',{
+    zoomControl:true,
+    attributionControl:true
+  }).setView([defaultLat,defaultLon],defaultZoom);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+    maxZoom:18
+  }).addTo(_leafletMap);
+
+  // Resize-Handler
+  setTimeout(()=>_leafletMap.invalidateSize(),200);
+
+  _updateMapMarkers();
+}
+
+function _updateMapMarkers(){
+  if(!_leafletMap)return;
+
+  // Alte Marker entfernen
+  _mapMarkers.forEach(m=>_leafletMap.removeLayer(m));
+  _mapMarkers=[];
+
+  // Sessions mit GPS-Koordinaten auf Karte setzen
+  const withCoords=sessions.filter(s=>s.lat&&s.lon);
+  if(!withCoords.length)return;
+
+  // Custom-Icon
+  const fishIcon=L.divIcon({
+    html:'<div style="background:var(--green-deep);color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.3);border:2px solid #fff;">🐟</div>',
+    className:'',
+    iconSize:[32,32],
+    iconAnchor:[16,32],
+    popupAnchor:[0,-34]
+  });
+
+  const bounds=[];
+  withCoords.forEach(s=>{
+    const lat=parseFloat(s.lat),lon=parseFloat(s.lon);
+    if(isNaN(lat)||isNaN(lon))return;
+
+    const catchCount=s.catches?.length||0;
+    const catchList=s.catches?.map(c=>`${fIco(c.type)} ${c.type} ${c.length}cm`).join('<br>')||'Schneider';
+    const popupHtml=`
+      <div style="min-width:160px;">
+        <div style="font-family:var(--fs);font-weight:600;font-size:14px;margin-bottom:4px;">${s.water||'–'}</div>
+        <div style="font-size:11px;color:#666;margin-bottom:6px;">${fmtDate(s.date)} · ${s.start}–${s.end||'?'}</div>
+        <div style="font-size:12px;line-height:1.6;">${catchList}</div>
+        ${s.temp!=null?`<div style="font-size:11px;color:#888;margin-top:4px;">${s.weather||''} ${s.temp}°C</div>`:''}
+      </div>`;
+
+    const marker=L.marker([lat,lon],{icon:fishIcon})
+      .addTo(_leafletMap)
+      .bindPopup(popupHtml);
+    _mapMarkers.push(marker);
+    bounds.push([lat,lon]);
+  });
+
+  // Karte auf alle Marker zoomen
+  if(bounds.length>1){
+    _leafletMap.fitBounds(bounds,{padding:[30,30],maxZoom:13});
+  } else if(bounds.length===1){
+    _leafletMap.setView(bounds[0],12);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
 // BOOT
 // ═══════════════════════════════════════════════════════════
 // ── CLEAR-BUTTON: Event-Delegator für alle .if Felder ──────
@@ -5679,6 +6367,9 @@ function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').tex
 })();
 
 (async function boot(){
+  // Supabase initialisieren
+  sbInit();
+
   // Ladeindikator sofort zeigen (Fix 16)
   const fbList=document.getElementById('fangbuch-list');
   if(fbList)fbList.innerHTML='<div style="text-align:center;padding:48px 20px;color:var(--text-light);font-size:13px;">⏳ Lade Daten…</div>';
@@ -5716,13 +6407,15 @@ function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').tex
       if(age>6*60*60*1000){
         _fcData=null;_fcHourlyData=null;
       } else {
-       
         await loadFcCache();
       }
     }
   }catch(err){console.warn('IDB boot:',err);}
 
   addCatch();
+
+  // Live-Session wiederherstellen (nach App-Neustart)
+  _resumeLiveSession();
 
   if(!profile){
     document.getElementById('onboarding').classList.remove('hidden');
@@ -5734,8 +6427,10 @@ function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').tex
     showPage('fangbuch');
     setTimeout(reqNotif,3000);
 
+    // Cloud-Sync: Sessions aus Supabase laden (nach Login)
+    setTimeout(()=>syncFromCloud(),2500);
+
     // Auto-Weather-Sync: im Hintergrund, blockiert nicht
-    // Alle Sessions ohne Wetterdaten erhalten automatisch historische Wetterdaten
     setTimeout(async()=>{
       const needsWx=sessions.filter(s=>!s.pressure&&!s.windSpeed&&s.date);
       if(!needsWx.length)return;
@@ -5743,12 +6438,11 @@ function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').tex
         if(!_plzCoords&&profile?.plz)await resolvePlzCoords(profile.plz);
         if(!_plzCoords)return;
         await fetchMissingWeather(needsWx);
-        // Fangbuch neu rendern wenn Wetter nachgeladen
         if(_fbView==='list')rndrFangbuch();
       }catch(e){/* Hintergrund-Fehler ignorieren */}
-    }, 2000); // 2s Verzögerung → App erst initialisiert
+    }, 3000);
   }
- 
+
   // Demo-Daten sind nur via ?demo=1 URL-Parameter ladbar.
   if(!sessions.length&&new URLSearchParams(location.search).get('demo')==='1'){
     _loadDemoData();
