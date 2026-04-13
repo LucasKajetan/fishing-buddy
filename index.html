@@ -1401,7 +1401,6 @@ input[type=file]{display:none;}
           <span class="bitem-ico" id="burg-auth-ico">☁️</span>
           <div><div class="bitem-txt" id="burg-auth-txt">Anmelden / Registrieren</div><div class="bitem-sub" id="burg-auth-sub">Cloud-Sync aktivieren</div></div>
         </button>
-        <button class="bitem" onclick="delAllData();closeBurg()"><span class="bitem-ico">🗑️</span><div><div class="bitem-txt" style="color:var(--red);">Alle Daten löschen</div><div class="bitem-sub">Vorher Backup erstellen!</div></div></button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Spot-Karte</div>
@@ -1458,6 +1457,10 @@ input[type=file]{display:none;}
       <input type="text" class="if" id="pe-plz" placeholder="z.B. 49377" inputmode="numeric" maxlength="5">
     </div>
     <button class="btn" onclick="saveProfileEdit()">Änderungen speichern ✓</button>
+    <div style="margin-top:40px;padding-top:20px;border-top:1px solid var(--border);">
+      <button class="btn" style="background:var(--red);color:#fff;" onclick="delAllData()">🗑️ Alle Daten löschen</button>
+      <div style="text-align:center;font-size:12px;color:var(--muted);margin-top:6px;">Vorher Backup erstellen!</div>
+    </div>
   </div>
 </div>
 <div class="fsov" id="fs-catches" role="dialog">
@@ -1968,19 +1971,16 @@ async function handleAuth(e){
       _authMode='online';
       document.getElementById('login-ov')?.classList.add('hidden');
       document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v40`;
-      // Cloud-Sync: Sessions laden
+      // Cloud-Sync: Profil + Sessions laden
       await syncFromCloud();
-      // Profil aus Cloud-Daten ableiten (falls lokal keines vorhanden)
+      // Profil anwenden und Fangbuch rendern
       if(profile){
         applyProf();
-        showPage('fangbuch');
-        rndrFangbuch();
-        setTimeout(()=>syncToCloud(),1000);
-      } else {
-        // Kein lokales Profil → Fangbuch trotzdem anzeigen
-        showPage('fangbuch');
-        rndrFangbuch();
       }
+      showPage('fangbuch');
+      rndrFangbuch();
+      // Lokale Daten nach Cloud pushen
+      setTimeout(()=>{syncToCloud();syncProfileToCloud();},1000);
     }else{
       // ── REGISTER: Bestätigungsmail oder direkt Onboarding ──
       if(!result.data?.user?.confirmed_at&&result.data?.user?.identities?.length===0){
@@ -2045,6 +2045,9 @@ async function syncToCloud(){
 async function syncFromCloud(){
   if(!_sb||!_sbUser||_authMode!=='online')return;
   try{
+    // Profil aus Cloud laden
+    await syncProfileFromCloud();
+    // Sessions laden
     const{data,error}=await _sb.from('sessions').select('*').eq('user_id',_sbUser.id);
     if(error)throw error;
     if(!data?.length)return;
@@ -2062,9 +2065,32 @@ async function syncFromCloud(){
     if(newCount>0){
       sessions.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
       showToast('☁️',`${newCount} Session${newCount>1?'s':''} aus der Cloud geladen`);
-      rndrHistory();
     }
   }catch(e){console.warn('Cloud-Load Fehler:',e);}
+}
+
+// Cloud-Sync: Profil zu Supabase hochladen
+async function syncProfileToCloud(){
+  if(!_sb||!_sbUser||_authMode!=='online'||!profile)return;
+  try{
+    await _sb.from('profiles').upsert({user_id:_sbUser.id,data:profile},{onConflict:'user_id'}).select();
+  }catch(e){console.warn('Profil-Cloud-Sync Fehler:',e);}
+}
+
+// Cloud-Sync: Profil von Supabase laden
+async function syncProfileFromCloud(){
+  if(!_sb||!_sbUser||_authMode!=='online')return;
+  try{
+    const{data,error}=await _sb.from('profiles').select('*').eq('user_id',_sbUser.id).maybeSingle();
+    if(error)throw error;
+    if(data?.data){
+      // Cloud-Profil gefunden → lokal übernehmen falls kein lokales vorhanden
+      if(!profile){
+        profile=data.data;
+        await saveProfile();
+      }
+    }
+  }catch(e){console.warn('Profil-Cloud-Load Fehler:',e);}
 }
 
 // Supabase Logout
@@ -2827,10 +2853,9 @@ function applyProf(){
 // ── Profil-Edit (v11) ──────────────────────────────────────
 let _peTyp='';
 function openProfileEdit(){
-  if(!profile)return;
-  document.getElementById('pe-name').value=profile.name||'';
-  document.getElementById('pe-plz').value=profile.plz||'';
-  _peTyp=profile.angeltyp||'';
+  document.getElementById('pe-name').value=profile?.name||'';
+  document.getElementById('pe-plz').value=profile?.plz||'';
+  _peTyp=profile?.angeltyp||'';
   ['Friedfisch','Raubfisch','Allround'].forEach(t=>{
     document.getElementById('pe-'+t)?.classList.toggle('sel',t===_peTyp);
   });
@@ -2847,8 +2872,9 @@ async function saveProfileEdit(){
   const plz=document.getElementById('pe-plz').value.trim();
   if(!name){showToast('⚠️','Name darf nicht leer sein.');return;}
   const plzChanged=plz&&plz!==profile?.plz;
-  profile={...profile,name,angeltyp:_peTyp||profile.angeltyp,plz:plz||profile.plz};
+  profile={...(profile||{}),name,angeltyp:_peTyp||profile?.angeltyp||'Allround',plz:plz||profile?.plz||''};
   await saveProfile();
+  syncProfileToCloud();
   if(plzChanged){_plzCoords=null;_lastWx=null;_fcData=null;_fcHourlyData=null;} // Caches leeren
   applyProf();
   closeFs('profile-edit');
