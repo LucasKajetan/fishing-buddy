@@ -700,12 +700,31 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .mmw{font-size:11px;color:var(--red);font-weight:600;margin-top:4px;display:none;}
 .mmw.on{display:block;}
 
-/* CHIPS */
-.crow{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;}
+/* CHIPS – AP1: flex-row + wrap enforced */
+.crow{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;margin-top:7px;}
 .chip{background:var(--green-pale);color:var(--green-deep);font-size:12px;font-weight:600;padding:5px 11px;border-radius:20px;border:none;cursor:pointer;font-family:var(--fa);transition:background .15s,transform .1s;white-space:nowrap;}
 .chip:hover{background:var(--green-light);color:#fff;transform:scale(1.03);}
 .chip:active{transform:scale(.97);}
 #trueb-chips{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
+
+/* AP3: Floating Edit-Save Button */
+.edit-save-fab{
+  position:absolute;bottom:calc(var(--footer-h) + 14px);left:16px;right:16px;z-index:105;
+  padding:16px;background:var(--green-mid);color:#fff;border:none;border-radius:var(--r);
+  font-size:16px;font-weight:700;font-family:var(--fa);cursor:pointer;
+  box-shadow:0 6px 24px rgba(74,124,89,.45);
+  display:none;transition:all .2s;
+}
+.edit-save-fab.on{display:block;}
+.edit-save-fab:active{transform:scale(.97);}
+
+/* AP2: Trübung-Container fix – fixed height */
+#new-sicht-row .ig{min-height:0;}
+#new-sicht-row .crow{display:flex;flex-direction:row;flex-wrap:wrap;justify-content:flex-start;}
+
+/* AP3: Map maximize space */
+#map-container{position:absolute;inset:0;z-index:1;}
+.map-hdr-bar{position:absolute;top:8px;left:8px;right:8px;z-index:400;}
 .chip.cw{background:var(--blue);color:var(--blue-t);}
 .chip.cw:hover{background:#b5d4f4;}
 .chip.cc{background:var(--purple);color:var(--purple-t);}
@@ -1320,7 +1339,124 @@ input[type=file]{display:none;}
 .ls-end-btn.ghost{background:transparent;color:var(--text-mid);border:1.5px solid var(--border);}
 
 /* ═══ USER AVATAR (Header) ═══ */
-.hdr-avatar{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;margin-left:6px;cursor:pointer;}</style>
+.hdr-avatar{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;margin-left:6px;cursor:pointer;}
+
+/* ═══════════════════════════════════════════════════════
+   SOCIAL & GROUP ENGINE (v44)
+═══════════════════════════════════════════════════════ */
+
+/* ── Group Hub Tabs ── */
+.grp-tabs{display:flex;gap:0;background:var(--cream-dark);border-radius:10px;margin:0 16px 14px;padding:3px;}
+.grp-tab{flex:1;text-align:center;padding:9px 4px;border:none;border-radius:8px;font-size:12px;font-weight:600;font-family:var(--fa);cursor:pointer;transition:all .2s;background:transparent;color:var(--text-mid);}
+.grp-tab.on{background:#fff;color:var(--green-deep);box-shadow:0 2px 6px rgba(0,0,0,.1);}
+
+/* ── Group List ── */
+.grp-list{padding:0 16px;display:flex;flex-direction:column;gap:8px;}
+.grp-item{display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border-radius:var(--rs);box-shadow:var(--sh-sm);cursor:pointer;transition:transform .1s;}
+.grp-item:active{transform:scale(.98);}
+.grp-item-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.grp-item-info{flex:1;min-width:0;}
+.grp-item-name{font-weight:700;font-size:14px;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.grp-item-sub{font-size:11px;color:var(--text-light);margin-top:2px;}
+.grp-item-badge{min-width:20px;height:20px;border-radius:10px;background:var(--red);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;}
+.grp-create-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:var(--green-mist);border:2px dashed var(--green-pale);border-radius:var(--rs);color:var(--green-mid);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;transition:all .15s;}
+.grp-create-btn:hover{background:var(--green-pale);}
+
+/* ── Feed / Activity Stream ── */
+.feed-stream{display:flex;flex-direction:column;gap:12px;padding:0 16px 80px;}
+.feed-date-sep{text-align:center;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);padding:8px 0;position:relative;}
+.feed-date-sep::before,.feed-date-sep::after{content:'';position:absolute;top:50%;width:28%;height:1px;background:var(--cream-dark);}
+.feed-date-sep::before{left:0;}.feed-date-sep::after{right:0;}
+
+/* ── Catch Card (Social) ── */
+.catch-card{border-radius:var(--r);overflow:hidden;background:#fff;box-shadow:var(--sh-md);position:relative;}
+.catch-card-hero{height:180px;background-size:cover;background-position:center;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;}
+.catch-card-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,0) 50%);}
+.catch-card-hero-no{height:0;padding:0;}
+.catch-card-hero *{position:relative;z-index:2;}
+.catch-card-hero-fish{font-size:22px;font-weight:700;color:#fff;font-family:var(--fs);}
+.catch-card-hero-specs{font-size:12px;color:rgba(255,255,255,.85);margin-top:2px;}
+.catch-card-body{padding:14px;}
+.catch-card-user{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.catch-card-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700;flex-shrink:0;}
+.catch-card-uname{font-size:12px;font-weight:600;color:var(--text-dark);}
+.catch-card-utime{font-size:10px;color:var(--text-light);}
+.catch-card-bait{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
+.catch-card-chip{padding:4px 10px;background:var(--green-mist);border-radius:20px;font-size:11px;color:var(--green-deep);font-weight:600;}
+.catch-card-actions{display:flex;align-items:center;gap:0;border-top:1px solid var(--cream-dark);margin-top:10px;padding-top:10px;}
+.catch-card-act{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:6px;border:none;background:none;font-size:12px;font-weight:600;color:var(--text-mid);cursor:pointer;font-family:var(--fa);border-radius:8px;transition:background .15s;}
+.catch-card-act:hover{background:var(--cream-dark);}
+.catch-card-act .cc-ico{font-size:16px;}
+.catch-card-act.liked .cc-ico{color:#e74c3c;}
+
+/* ── Live Alert Banner ── */
+.feed-live-alert{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,#1a3522,#2D4A35);border-radius:var(--rs);color:#fff;}
+.feed-live-pulse{width:10px;height:10px;border-radius:50%;background:#cc0000;animation:livePulse 1.5s ease infinite;flex-shrink:0;}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(204,0,0,.6);}50%{box-shadow:0 0 0 8px rgba(204,0,0,0);}}
+.feed-live-info{flex:1;font-size:12px;line-height:1.4;}
+.feed-live-info strong{font-size:13px;}
+
+/* ── Chat Messages ── */
+.feed-msg{display:flex;gap:8px;align-items:flex-start;}
+.feed-msg-bubble{max-width:78%;padding:10px 14px;border-radius:16px 16px 16px 4px;background:#fff;box-shadow:var(--sh-sm);font-size:13px;color:var(--text-dark);line-height:1.5;}
+.feed-msg-name{font-size:10px;font-weight:700;color:var(--green-mid);margin-bottom:2px;}
+.feed-msg-time{font-size:9px;color:var(--text-light);margin-top:4px;text-align:right;}
+.feed-input-bar{position:absolute;bottom:0;left:0;right:0;display:flex;gap:8px;padding:10px 14px;background:var(--cream);border-top:1px solid var(--cream-dark);z-index:10;}
+.feed-input{flex:1;padding:10px 14px;border:1.5px solid var(--green-pale);border-radius:24px;font-size:13px;font-family:var(--fa);outline:none;background:#fff;}
+.feed-input:focus{border-color:var(--green-mid);}
+.feed-send{width:38px;height:38px;border-radius:50%;border:none;background:var(--green-deep);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* ── Share Modal ── */
+.share-modal{position:absolute;inset:0;z-index:140;background:rgba(0,0,0,.55);display:none;align-items:flex-end;}
+.share-modal.on{display:flex;}
+.share-modal-card{width:100%;max-height:60%;background:var(--cream);border-radius:20px 20px 0 0;padding:20px;overflow-y:auto;}
+.share-modal-title{font-family:var(--fs);font-size:16px;font-weight:600;margin-bottom:14px;}
+.share-grp-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--cream-dark);cursor:pointer;}
+.share-grp-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.share-grp-name{flex:1;font-size:13px;font-weight:600;}
+.share-gps-toggle{display:flex;align-items:center;gap:8px;padding:10px 14px;margin:10px 0;background:var(--yellow);border:1px solid var(--yellow-b);border-radius:var(--rs);font-size:12px;color:var(--yellow-t);}
+
+/* ── Group Dashboard / Insights ── */
+.dash-section{margin:0 16px 16px;background:#fff;border-radius:var(--rs);padding:14px;box-shadow:var(--sh-sm);}
+.dash-section-title{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:10px;}
+.dash-trend-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.dash-trend-chip{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;}
+.dash-trend-chip.hot{background:#fde8e8;color:#c0392b;}
+.dash-trend-chip.warm{background:var(--gold-l);color:var(--gold-d);}
+.dash-trend-chip.cool{background:var(--blue);color:var(--blue-t);}
+.dash-trend-chip.nature{background:var(--teal);color:var(--teal-t);}
+.dash-leaderboard{display:flex;flex-direction:column;gap:6px;}
+.dash-lb-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;transition:background .15s;}
+.dash-lb-row:nth-child(-n+3){background:var(--green-mist);}
+.dash-lb-rank{width:24px;font-size:14px;font-weight:800;color:var(--green-mid);text-align:center;}
+.dash-lb-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;}
+.dash-lb-name{flex:1;font-size:13px;font-weight:600;color:var(--text-dark);}
+.dash-lb-val{font-size:13px;font-weight:700;color:var(--green-deep);}
+
+/* ── Map Layer Toggle ── */
+.map-layer-toggle{position:absolute;bottom:70px;right:12px;z-index:400;display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.95);border-radius:10px;padding:4px;box-shadow:var(--sh-md);backdrop-filter:blur(8px);}
+.map-layer-btn{padding:8px 12px;border:none;border-radius:8px;font-size:11px;font-weight:700;font-family:var(--fa);cursor:pointer;transition:all .15s;background:transparent;color:var(--text-mid);}
+.map-layer-btn.on{background:var(--green-deep);color:#fff;}
+
+/* ── Phänologie Card ── */
+.phaeno-card{margin:0 16px 16px;background:linear-gradient(135deg,#e8f5e9,#fff8e1);border-radius:var(--rs);padding:14px;box-shadow:var(--sh-sm);border:1px solid #c8e6c9;}
+.phaeno-title{font-size:13px;font-weight:700;color:#2e7d32;margin-bottom:4px;}
+.phaeno-phase{font-size:18px;font-weight:700;font-family:var(--fs);color:#1b5e20;margin-bottom:6px;}
+.phaeno-desc{font-size:11px;color:#4a6b4f;line-height:1.5;}
+
+/* ── Schonzeit Warning ── */
+.schon-warn{position:absolute;inset:0;z-index:145;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;}
+.schon-warn.on{display:flex;}
+.schon-warn-card{width:88%;background:var(--cream);border-radius:var(--r);padding:20px;box-shadow:var(--sh-md);text-align:center;}
+.schon-warn-ico{font-size:48px;margin-bottom:8px;}
+.schon-warn-title{font-family:var(--fs);font-size:16px;font-weight:700;color:var(--red);margin-bottom:8px;}
+.schon-warn-text{font-size:12px;color:var(--text-mid);line-height:1.6;margin-bottom:16px;}
+.schon-warn-btns{display:flex;flex-direction:column;gap:8px;}
+.schon-warn-btn{padding:12px;border:none;border-radius:var(--rs);font-size:13px;font-weight:700;font-family:var(--fa);cursor:pointer;}
+.schon-warn-btn.yes{background:var(--gold-l);color:var(--gold-d);}
+.schon-warn-btn.no{background:var(--green-mist);color:var(--green-mid);}
+.schon-warn-btn.cancel{background:transparent;color:var(--text-light);border:1px solid var(--cream-dark);}
+</style>
 </head>
 <body>
 <div class="phone" id="frame">
@@ -1334,8 +1470,8 @@ input[type=file]{display:none;}
   </div>
   <div class="login-card">
     <div class="ltabs">
-      <button class="ltab on" id="ltab-login" onclick="switchAuthTab('login')">Login</button>
-      <button class="ltab" id="ltab-register" onclick="switchAuthTab('register')">Registrieren</button>
+      <button class="ltab" id="ltab-login" onclick="switchAuthTab('login')">Login</button>
+      <button class="ltab on" id="ltab-register" onclick="switchAuthTab('register')">Registrieren</button>
     </div>
     <form id="auth-form" onsubmit="handleAuth(event)">
       <div class="ig">
@@ -1346,7 +1482,7 @@ input[type=file]{display:none;}
         <label class="il" for="auth-pass">Passwort</label>
         <input type="password" class="lf" id="auth-pass" placeholder="••••••••" required minlength="6" autocomplete="current-password">
       </div>
-      <button type="submit" class="lbtn lbtn-p" id="auth-submit">Einloggen</button>
+      <button type="submit" class="lbtn lbtn-p" id="auth-submit">Registrieren</button>
       <button type="button" class="lbtn lbtn-s" id="auth-skip" onclick="skipAuth()">Ohne Account fortfahren →</button>
       <div class="lerr" id="auth-err"></div>
     </form>
@@ -1505,6 +1641,11 @@ input[type=file]{display:none;}
         </button>
       </div>
       <div class="burg-sec">
+        <div class="burg-slbl">Gruppen &amp; Social</div>
+        <button class="bitem" onclick="_openGroupHub();closeBurg()"><span class="bitem-ico">👥</span><div><div class="bitem-txt">Meine Gruppen</div><div class="bitem-sub" id="burg-grp-sub">Crews, Feed &amp; Insights</div></div></button>
+        <button class="bitem" onclick="openFs('group-join');closeBurg()"><span class="bitem-ico">🔗</span><div><div class="bitem-txt">Gruppe beitreten</div><div class="bitem-sub">Per Einladungscode</div></div></button>
+      </div>
+      <div class="burg-sec">
         <div class="burg-slbl">Spot-Karte</div>
         <button class="bitem" onclick="showPage('map');closeBurg()"><span class="bitem-ico">🗺️</span><div><div class="bitem-txt">Spot-Karte öffnen</div><div class="bitem-sub">Alle Angelspots auf der Karte</div></div></button>
         <button class="bitem" onclick="openSpotGpsLink();closeBurg()"><span class="bitem-ico">📌</span><div><div class="bitem-txt">Karte</div><div class="bitem-sub">Spot-Text mit GPS verknüpfen</div></div></button>
@@ -1531,7 +1672,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v40 · Supabase · Leaflet · PWA</div>
+    <div class="burg-ver">Fishing Buddy v44 · Supabase · Leaflet · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -1543,9 +1684,23 @@ input[type=file]{display:none;}
     <button class="xbtn" onclick="closeFs('profile-edit')">✕</button>
   </div>
   <div class="fsov-scroll" style="padding:20px 18px 24px;">
+    <div class="g2" style="margin-bottom:14px;">
+      <div class="ig">
+        <label class="il" for="pe-vorname">Vorname</label>
+        <input type="text" class="if" id="pe-vorname" placeholder="z.B. Klaus" autocomplete="given-name">
+      </div>
+      <div class="ig">
+        <label class="il" for="pe-nachname">Nachname</label>
+        <input type="text" class="if" id="pe-nachname" placeholder="z.B. Fischer" autocomplete="family-name">
+      </div>
+    </div>
     <div class="ig" style="margin-bottom:14px;">
-      <label class="il" for="pe-name">Name</label>
-      <input type="text" class="if" id="pe-name" placeholder="Dein Name" autocomplete="given-name">
+      <label class="il" for="pe-name">Anzeigename</label>
+      <input type="text" class="if" id="pe-name" placeholder="Dein Name" autocomplete="name">
+    </div>
+    <div class="ig" style="margin-bottom:14px;">
+      <label class="il" for="pe-mitglied">Mitgliedsnummer</label>
+      <input type="text" class="if" id="pe-mitglied" placeholder="z.B. FV-2024-0815" autocomplete="off">
     </div>
     <div style="margin-bottom:14px;">
       <div class="il" style="margin-bottom:10px;">Angelstil</div>
@@ -1559,10 +1714,16 @@ input[type=file]{display:none;}
       <label class="il" for="pe-plz">PLZ (für Wetter)</label>
       <input type="text" class="if" id="pe-plz" placeholder="z.B. 49377" inputmode="numeric" maxlength="5">
     </div>
+    <!-- AP1: Dokumente -->
+    <div style="margin-bottom:20px;padding:14px 16px;background:var(--cream-dark);border-radius:var(--r);">
+      <div class="il" style="margin-bottom:10px;">Dokumente</div>
+      <button type="button" onclick="_uploadDoc('fischereischein')" style="width:100%;padding:12px;background:#fff;border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);margin-bottom:8px;display:flex;align-items:center;gap:8px;justify-content:center;">📄 Fischereischein hochladen</button>
+      <button type="button" onclick="_uploadDoc('angelkarte')" style="width:100%;padding:12px;background:#fff;border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);display:flex;align-items:center;gap:8px;justify-content:center;">🎫 Angelkarte hochladen</button>
+    </div>
     <button class="btn" onclick="saveProfileEdit()">Änderungen speichern ✓</button>
-    <div style="margin-top:40px;padding-top:20px;border-top:1px solid var(--border);">
+    <div style="margin-top:40px;padding-top:20px;border-top:1px solid var(--cream-dark);">
       <button class="btn" style="background:var(--red);color:#fff;" onclick="delAllData()">🗑️ Alle Daten löschen</button>
-      <div style="text-align:center;font-size:12px;color:var(--muted);margin-top:6px;">Vorher Backup erstellen!</div>
+      <div style="text-align:center;font-size:12px;color:var(--text-light);margin-top:6px;">Vorher Backup erstellen!</div>
     </div>
   </div>
 </div>
@@ -1629,6 +1790,7 @@ input[type=file]{display:none;}
     <div class="suclist" id="suc-list"></div>
     <button class="sucdis" onclick="disSuc()">Weiter →</button>
     <button class="bshare" id="share-btn" onclick="doShare()" style="display:none;">📤 Erfolg teilen</button>
+    <button class="bshare" id="grp-share-btn" onclick="_openShareModal(_lastSavedId)" style="display:none;background:var(--green-mist);color:var(--green-deep);border:1.5px solid var(--green-pale);margin-top:6px;">👥 In Gruppe teilen</button>
   </div>
 </div>
 
@@ -1677,7 +1839,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v40</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v44</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
@@ -1685,6 +1847,8 @@ input[type=file]{display:none;}
     </div>
   </div>
 </div>
+<!-- AP3: Floating Edit-Save Button -->
+<button class="edit-save-fab" id="edit-save-fab" onclick="saveSess()">✅ Änderungen speichern</button>
 
 <div class="pages">
 
@@ -1917,18 +2081,24 @@ input[type=file]{display:none;}
   <div class="fsov-scroll" id="fs-dwx-body" style="padding:16px;"></div>
 </div>
 
-<!-- AP4: Spot-GPS-Verknüpfung Overlay -->
-<div class="fsov" id="fs-spot-gps" role="dialog" aria-modal="true" style="z-index:118;">
-  <div class="fshdr">
-    <div><div class="fstitle">📌 Karte</div><div class="fsmeta">Spot-Text mit GPS verknüpfen</div></div>
+<!-- AP3: Spot-GPS-Verknüpfung Overlay – Karte nimmt max. Platz -->
+<div class="fsov" id="fs-spot-gps" role="dialog" aria-modal="true" style="z-index:118;display:flex;flex-direction:column;">
+  <div class="fshdr" style="flex-shrink:0;">
+    <div><div class="fstitle">📌 Spot markieren</div><div class="fsmeta">Gewässer wählen, dann auf Karte tippen</div></div>
     <button class="xbtn" onclick="_closeSpotGps()">✕</button>
   </div>
-  <div style="padding:10px 16px 6px;">
-    <select class="if" id="spot-gps-sel" style="width:100%;font-size:15px;" onchange="_onSpotSel()">
-      <option value="">Gewässer wählen…</option>
-    </select>
+  <!-- AP3: Floating Dropdown über der Karte -->
+  <div style="position:relative;flex:1;overflow:hidden;">
+    <div style="position:absolute;top:10px;left:10px;right:10px;z-index:500;display:flex;gap:8px;">
+      <select class="if" id="spot-gps-sel" style="flex:1;font-size:14px;padding:10px 12px;box-shadow:0 4px 16px rgba(0,0,0,.25);border-radius:var(--rs);" onchange="_onSpotSel()">
+        <option value="">Gewässer wählen…</option>
+      </select>
+      <select class="if" id="spot-gps-spot-sel" style="flex:1;font-size:14px;padding:10px 12px;box-shadow:0 4px 16px rgba(0,0,0,.25);border-radius:var(--rs);">
+        <option value="">Spot wählen…</option>
+      </select>
+    </div>
+    <div id="spot-gps-map" style="position:absolute;inset:0;"></div>
   </div>
-  <div style="flex:1;position:relative;"><div id="spot-gps-map" style="position:absolute;inset:0;"></div></div>
 </div>
 
 <!-- AP2: Session Mini-Map Overlay -->
@@ -1974,7 +2144,7 @@ input[type=file]{display:none;}
   <div class="sc"><div id="fc-con"></div></div>
 </div>
 
-<!-- PAGE: KARTE -->
+<!-- PAGE: KARTE – AP3: Maximaler Platz für Karte -->
 <div class="page" id="page-map">
   <div class="sc" style="padding:0;position:relative;overflow:hidden;">
     <div id="map-container"></div>
@@ -1985,6 +2155,13 @@ input[type=file]{display:none;}
       </div>
       <button class="map-hdr-btn" onclick="showPage('fangbuch')" style="width:36px;padding:0;justify-content:center;font-size:16px;">✕</button>
     </div>
+    <!-- v44: Map Layer Toggle -->
+    <div class="map-layer-toggle" id="map-layer-toggle">
+      <button class="map-layer-btn on" id="ml-private" onclick="_setMapLayer('private')">🔒 Meine</button>
+      <button class="map-layer-btn" id="ml-group" onclick="_setMapLayer('group')">👥 Gruppe</button>
+    </div>
+    <!-- AP3: Floating Spot markieren Button -->
+    <button onclick="_floatingSpotMark()" style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:400;padding:12px 24px;background:var(--green-deep);color:#fff;border:none;border-radius:24px;font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(45,74,53,.4);display:flex;align-items:center;gap:8px;">📌 Spot markieren</button>
   </div>
 </div>
 
@@ -2051,6 +2228,135 @@ input[type=file]{display:none;}
   </div>
 </div>
 
+<!-- ═══ GROUP HUB OVERLAY ═══ -->
+<div class="fsov" id="fs-group-hub" style="z-index:115;">
+  <div class="fshdr" style="background:var(--green-deep);">
+    <div><div class="fstitle" style="color:#fff;">👥 Gruppen</div><div class="fsmeta" style="color:rgba(255,255,255,.6);" id="grp-hub-meta">Deine Angel-Crews</div></div>
+    <button class="xbtn" onclick="closeFs('group-hub')" style="color:#fff;">✕</button>
+  </div>
+  <div class="fsov-scroll" style="padding-top:12px;">
+    <div class="grp-tabs" id="grp-hub-tabs">
+      <button class="grp-tab on" onclick="_grpHubTab('list')">Gruppen</button>
+      <button class="grp-tab" onclick="_grpHubTab('discover')">Entdecken</button>
+    </div>
+    <div id="grp-hub-content"></div>
+  </div>
+</div>
+
+<!-- ═══ GROUP DETAIL / FEED OVERLAY ═══ -->
+<div class="fsov" id="fs-group-detail" style="z-index:116;">
+  <div class="fshdr" id="grp-detail-hdr" style="background:var(--green-deep);">
+    <div>
+      <div class="fstitle" style="color:#fff;" id="grp-detail-title">Gruppe</div>
+      <div class="fsmeta" style="color:rgba(255,255,255,.6);" id="grp-detail-meta">0 Mitglieder</div>
+    </div>
+    <button class="xbtn" onclick="closeFs('group-detail')" style="color:#fff;">✕</button>
+  </div>
+  <div class="grp-tabs" id="grp-detail-tabs" style="margin-top:12px;">
+    <button class="grp-tab on" onclick="_grpDetailTab('feed')">Feed</button>
+    <button class="grp-tab" onclick="_grpDetailTab('insights')">Insights</button>
+    <button class="grp-tab" onclick="_grpDetailTab('map')">Karte</button>
+    <button class="grp-tab" onclick="_grpDetailTab('members')">Mitglieder</button>
+  </div>
+  <div class="fsov-scroll" id="grp-detail-scroll" style="position:relative;">
+    <div id="grp-detail-content" style="padding-bottom:70px;"></div>
+    <div class="feed-input-bar" id="grp-chat-bar" style="display:none;">
+      <input class="feed-input" id="grp-chat-input" placeholder="Nachricht schreiben…" autocomplete="off">
+      <button class="feed-send" onclick="_grpSendMsg()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GROUP CREATE OVERLAY ═══ -->
+<div class="fsov" id="fs-group-create" style="z-index:117;">
+  <div class="fshdr" style="background:var(--green-deep);">
+    <div><div class="fstitle" style="color:#fff;">➕ Gruppe erstellen</div></div>
+    <button class="xbtn" onclick="closeFs('group-create')" style="color:#fff;">✕</button>
+  </div>
+  <div class="fsov-scroll" style="padding:16px;">
+    <div class="ig" style="margin-bottom:14px;">
+      <label class="il" for="gc-name">Gruppenname</label>
+      <input type="text" class="if" id="gc-name" placeholder="z.B. Hechtjäger Norddeutschland" autocomplete="off" maxlength="40">
+    </div>
+    <div class="ig" style="margin-bottom:14px;">
+      <label class="il">Gruppentyp</label>
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button class="seg-btn" id="gc-type-private" onclick="_gcSetType('private')" style="flex:1;padding:10px;border:2px solid var(--green-mid);border-radius:var(--rs);background:var(--green-mist);color:var(--green-deep);font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;">🔒 Privat</button>
+        <button class="seg-btn" id="gc-type-public" onclick="_gcSetType('public')" style="flex:1;padding:10px;border:2px solid var(--cream-dark);border-radius:var(--rs);background:#fff;color:var(--text-mid);font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;">🌍 Öffentlich</button>
+        <button class="seg-btn" id="gc-type-elite" onclick="_gcSetType('elite')" style="flex:1;padding:10px;border:2px solid var(--cream-dark);border-radius:var(--rs);background:#fff;color:var(--text-mid);font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;">⭐ Elite</button>
+      </div>
+    </div>
+    <div class="ig" style="margin-bottom:14px;">
+      <label class="il" for="gc-desc">Beschreibung (optional)</label>
+      <input type="text" class="if" id="gc-desc" placeholder="Worum geht es in deiner Gruppe?" autocomplete="off">
+    </div>
+    <div class="ig" style="margin-bottom:14px;">
+      <label class="il" for="gc-region">Region (optional)</label>
+      <input type="text" class="if" id="gc-region" placeholder="z.B. Weser-Ems, Schleswig-Holstein" autocomplete="off">
+    </div>
+    <div class="ig" style="margin-bottom:14px;">
+      <label class="il">Icon</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;" id="gc-icons">
+        <button onclick="_gcIcon('🎣')" class="gc-ico-btn on" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--green-mid);background:var(--green-mist);font-size:20px;cursor:pointer;">🎣</button>
+        <button onclick="_gcIcon('🐟')" class="gc-ico-btn" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--cream-dark);background:#fff;font-size:20px;cursor:pointer;">🐟</button>
+        <button onclick="_gcIcon('🐋')" class="gc-ico-btn" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--cream-dark);background:#fff;font-size:20px;cursor:pointer;">🐋</button>
+        <button onclick="_gcIcon('🦈')" class="gc-ico-btn" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--cream-dark);background:#fff;font-size:20px;cursor:pointer;">🦈</button>
+        <button onclick="_gcIcon('🏆')" class="gc-ico-btn" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--cream-dark);background:#fff;font-size:20px;cursor:pointer;">🏆</button>
+        <button onclick="_gcIcon('⚡')" class="gc-ico-btn" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--cream-dark);background:#fff;font-size:20px;cursor:pointer;">⚡</button>
+      </div>
+    </div>
+    <button onclick="_grpCreate()" style="width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);margin-top:10px;">Gruppe erstellen</button>
+  </div>
+</div>
+
+<!-- ═══ GROUP JOIN OVERLAY ═══ -->
+<div class="fsov" id="fs-group-join" style="z-index:117;">
+  <div class="fshdr" style="background:var(--green-deep);">
+    <div><div class="fstitle" style="color:#fff;">🔗 Gruppe beitreten</div></div>
+    <button class="xbtn" onclick="closeFs('group-join')" style="color:#fff;">✕</button>
+  </div>
+  <div class="fsov-scroll" style="padding:16px;">
+    <div class="ig" style="margin-bottom:14px;">
+      <label class="il" for="gj-code">Einladungscode</label>
+      <input type="text" class="if" id="gj-code" placeholder="z.B. HECHT-2024-XY" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;font-weight:700;text-align:center;">
+    </div>
+    <button onclick="_grpJoinByCode()" style="width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);">Beitreten</button>
+    <div style="text-align:center;margin-top:20px;font-size:11px;color:var(--text-light);">Oder lass dir einen Link von einem Gruppenmitglied schicken.</div>
+  </div>
+</div>
+
+<!-- ═══ SHARE TO GROUP MODAL ═══ -->
+<div class="share-modal" id="share-modal">
+  <div style="flex:1;" onclick="_closeShareModal()"></div>
+  <div class="share-modal-card">
+    <div class="share-modal-title">📤 In Gruppe teilen</div>
+    <div class="share-gps-toggle" id="share-gps-row">
+      <span>📍</span>
+      <span style="flex:1;">GPS-Koordinaten teilen</span>
+      <button class="ls-toggle" id="share-gps-toggle" onclick="this.classList.toggle('on')"></button>
+    </div>
+    <div id="share-grp-list" style="margin-bottom:14px;"></div>
+    <button onclick="_closeShareModal()" style="width:100%;padding:12px;background:transparent;border:1.5px solid var(--cream-dark);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--text-mid);">Abbrechen</button>
+  </div>
+</div>
+
+<!-- ═══ SCHONZEIT WARNING MODAL ═══ -->
+<div class="schon-warn" id="schon-warn">
+  <div class="schon-warn-card">
+    <div class="schon-warn-ico">⚠️</div>
+    <div class="schon-warn-title" id="schon-warn-title">Schonzeit-Hinweis</div>
+    <div class="schon-warn-text" id="schon-warn-text">Dieser Fisch befindet sich möglicherweise in der Nähe der Schonzeit.</div>
+    <div class="ig" style="margin-bottom:14px;">
+      <label class="il">Wies der Fisch Laichmerkmale auf?</label>
+    </div>
+    <div class="schon-warn-btns">
+      <button class="schon-warn-btn yes" onclick="_schonAnswer('laich')">🥚 Ja – Laichkleid/Laichverhärtung erkennbar</button>
+      <button class="schon-warn-btn no" onclick="_schonAnswer('ok')">✅ Nein – Fisch war unauffällig</button>
+      <button class="schon-warn-btn cancel" onclick="_schonAnswer('skip')">Überspringen</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /pages -->
 
 <!-- BOTTOM TAB BAR -->
@@ -2096,7 +2402,7 @@ function sbInit(){
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v40`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v44`;
       } else {
         _sbUser=null;
       }
@@ -2112,7 +2418,7 @@ async function _checkAuthSession(){
     if(data?.session?.user){
       _sbUser=data.session.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v40`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v44`;
       return true;
     }
   }catch(e){console.warn('Auth-Check Fehler:',e);}
@@ -2153,7 +2459,7 @@ async function handleAuth(e){
       _sbUser=result.data.user;
       _authMode='online';
       document.getElementById('login-ov')?.classList.add('hidden');
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v40`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v44`;
       // Cloud-Sync: Profil + Sessions laden
       await syncFromCloud();
       // Profil anwenden und Fangbuch rendern
@@ -2178,7 +2484,7 @@ async function handleAuth(e){
         _sbUser=result.data.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v40`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v44`;
         // Onboarding starten
         document.getElementById('onboarding').classList.remove('hidden');
         document.getElementById('ob-btn').disabled=true;
@@ -2199,7 +2505,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v40';
+  document.getElementById('hdr-sub').textContent='Offline · v44';
   if(!profile){
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('ob-btn').disabled=true;
@@ -2293,7 +2599,7 @@ async function sbLogout(){
   _sbUser=null;
   _authMode='offline';
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v40';
+  document.getElementById('hdr-sub').textContent='Offline · v44';
   showToast('👋','Abgemeldet');
 }
 
@@ -3035,7 +3341,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v40`:`PLZ ${profile.plz||'–'} · v40`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v44`:`PLZ ${profile.plz||'–'} · v44`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -3053,8 +3359,12 @@ function applyProf(){
 
 // ── Profil-Edit (v11) ──────────────────────────────────────
 let _peTyp='';
+// AP1: Profil-Edit mit Vorname, Nachname, Mitgliedsnummer
 function openProfileEdit(){
   document.getElementById('pe-name').value=profile?.name||'';
+  document.getElementById('pe-vorname').value=profile?.vorname||'';
+  document.getElementById('pe-nachname').value=profile?.nachname||'';
+  document.getElementById('pe-mitglied').value=profile?.mitgliedsnummer||'';
   document.getElementById('pe-plz').value=profile?.plz||'';
   _peTyp=profile?.angeltyp||'';
   ['Friedfisch','Raubfisch','Allround'].forEach(t=>{
@@ -3070,16 +3380,29 @@ function peSel(t){
 }
 async function saveProfileEdit(){
   const name=document.getElementById('pe-name').value.trim();
+  const vorname=document.getElementById('pe-vorname').value.trim();
+  const nachname=document.getElementById('pe-nachname').value.trim();
+  const mitglied=document.getElementById('pe-mitglied').value.trim();
   const plz=document.getElementById('pe-plz').value.trim();
-  if(!name){showToast('⚠️','Name darf nicht leer sein.');return;}
+  if(!name&&!vorname){showToast('⚠️','Name darf nicht leer sein.');return;}
   const plzChanged=plz&&plz!==profile?.plz;
-  profile={...(profile||{}),name,angeltyp:_peTyp||profile?.angeltyp||'Allround',plz:plz||profile?.plz||''};
+  profile={...(profile||{}),
+    name:name||(vorname+' '+nachname).trim(),
+    vorname,nachname,mitgliedsnummer:mitglied,
+    angeltyp:_peTyp||profile?.angeltyp||'Allround',
+    plz:plz||profile?.plz||''};
   await saveProfile();
   syncProfileToCloud();
-  if(plzChanged){_plzCoords=null;_lastWx=null;_fcData=null;_fcHourlyData=null;} // Caches leeren
+  if(plzChanged){_plzCoords=null;_lastWx=null;_fcData=null;_fcHourlyData=null;}
   applyProf();
   closeFs('profile-edit');
   showToast('✅','Profil gespeichert!');
+}
+// AP1: Dokument-Upload Dummy
+function _uploadDoc(type){
+  const labels={fischereischein:'Fischereischein',angelkarte:'Angelkarte'};
+  showToast('📄',`${labels[type]||'Dokument'} wird hochgeladen…`);
+  setTimeout(()=>showToast('⏳','Upload-Funktion kommt in einem Update!'),1500);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -3574,25 +3897,25 @@ function addCatch(){
     <div class="mmw" id="mm-${id}" role="alert"></div>
     <div class="mmw" id="ct-warn-${id}" role="alert" style="color:var(--gold-d);"></div>
 
-    <!-- Köder + Farbe + Größe – nur im Raubfisch-Modus -->
+    <!-- AP2: Köder (volle Breite) + Größe + Farbe – nur im Raubfisch-Modus -->
     <div id="catch-bait-row-${id}" style="display:${_inputMode==='raub'?'':'none'};margin-top:8px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px;">
+      <div class="ig" style="margin-bottom:6px;">
+        <label class="il" for="fb-${id}">Köder</label>
+        <input type="text" class="if" id="fb-${id}" placeholder="z.B. Gummifisch"
+          value="${presetBait}" style="width:100%;"
+          onfocus="_gatedBChips(${id})" oninput="rndrBChips(${id},this.value);updNoteChips(${id})" onblur="dHide('bc-${id}')" autocomplete="off">
+        <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;">
         <div class="ig">
-          <label class="il" for="fb-${id}">Köder</label>
-          <input type="text" class="if" id="fb-${id}" placeholder="z.B. Gummifisch"
-            value="${presetBait}"
-            onfocus="_gatedBChips(${id})" oninput="rndrBChips(${id},this.value);updNoteChips(${id})" onblur="dHide('bc-${id}')" autocomplete="off">
+          <label class="il" for="fbsz-${id}">Größe</label>
+          <input type="text" class="if" id="fbsz-${id}" placeholder='12cm' autocomplete="off">
         </div>
         <div class="ig">
           <label class="il" for="fbcol-${id}">Farbe</label>
           <input type="text" class="if" id="fbcol-${id}" placeholder="Motoroil" autocomplete="off">
         </div>
-        <div class="ig">
-          <label class="il" for="fbsz-${id}">Größe</label>
-          <input type="text" class="if" id="fbsz-${id}" placeholder='12cm' autocomplete="off">
-        </div>
       </div>
-      <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
     </div>
 
     <!-- Notizen – nur im Raubfisch-Modus -->
@@ -3627,7 +3950,7 @@ function addCatch(){
           <input type="number" class="if" id="ff-wt-${id}" placeholder="z.B. 3.5" min="0" step="0.1" inputmode="decimal">
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
         <div class="ig">
           <label class="il" for="ff-rig-${id}">Montage</label>
           <input type="text" class="if" id="ff-rig-${id}" placeholder="z.B. Laufblei" autocomplete="off">
@@ -3635,6 +3958,10 @@ function addCatch(){
         <div class="ig">
           <label class="il" for="ff-bait-${id}">Köder-Kombi</label>
           <input type="text" class="if" id="ff-bait-${id}" placeholder="z.B. Made+Mais" autocomplete="off">
+        </div>
+        <div class="ig">
+          <label class="il" for="ff-dist-${id}">Entfernung (m)</label>
+          <input type="number" class="if" id="ff-dist-${id}" placeholder="z.B. 40" min="0" inputmode="numeric">
         </div>
       </div>
       <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px;margin-bottom:6px;">
@@ -3699,16 +4026,13 @@ function addCatch(){
 // inputmode="decimal" im HTML-Input ist Voraussetzung für iOS-Tastatur
 // ── AUTO-TAB WORKFLOW ────────────────────────────────────────
 // Gewässer → Start-Zeit (keine Tastatur öffnen, da time-picker)
+// AP2: Nach Gewässer-Auswahl KEINE Tastatur für Startzeit öffnen (blur statt focus)
 function _autoTabWater(){
   const waterVal=document.getElementById('s-water').value.trim();
-  if(!waterVal)return; // leer → kein auto-tab
-  // Chips vorhanden? → kein direkter Fokus (Nutzer wählt noch)
-  const chips=document.getElementById('w-chips');
-  if(chips&&chips.style.display!=='none'&&chips.children.length)return;
-  setTimeout(()=>{
-    const startEl=document.getElementById('s-start');
-    if(startEl)startEl.focus(); // time-picker öffnet sich
-  },200);
+  if(!waterVal)return;
+  // Aktives Input-Feld blur'en damit Tastatur schließt
+  const active=document.activeElement;
+  if(active&&active.id==='s-water')active.blur();
 }
 
 // Länge → Uhrzeit-Feld (nach Eingabe + Tab/Enter)
@@ -3844,6 +4168,7 @@ async function saveSess(){
             catchObj.ffWeight=parseFloat(document.getElementById('ff-wt-'+i)?.value)||0;
             catchObj.ffRig=document.getElementById('ff-rig-'+i)?.value.trim()||'';
             catchObj.ffBait=document.getElementById('ff-bait-'+i)?.value.trim()||'';
+            catchObj.ffDist=parseInt(document.getElementById('ff-dist-'+i)?.value)||0;
             catchObj.ffFeed=document.getElementById('ff-feed-'+i)?.value.trim()||'';
             catchObj.ffFeedAmt=parseFloat(document.getElementById('ff-famt-'+i)?.value)||0;
             catchObj.ffPrebaited=document.getElementById('ff-pre-'+i)?.value||'';
@@ -3903,6 +4228,18 @@ async function saveSess(){
       }catch(e){/* Hintergrund-Fehler ignorieren */}
     }
 
+    // v44: Schonzeit-Wächter
+    for(const c of catches){
+      if(c.type){
+        const szCheck=_checkSchonzeit(c.type,date);
+        if(szCheck&&(szCheck.inSchonzeit||szCheck.nearSchonzeit)){
+          c._schonzeitWarning=szCheck.inSchonzeit?'in_schonzeit':'near_schonzeit';
+          c._schonzeitNote=szCheck.note||'';
+        }
+      }
+    }
+
+    _lastSavedId=sess.id;
     sessions.unshift(sess);
     await saveOneSess(sess);
 
@@ -3947,6 +4284,9 @@ async function saveSess(){
 function resetForm(){
   _editPendingId=null;
   _restoreHdrPlus();
+  // AP3: Edit-Save-FAB ausblenden
+  const fab=document.getElementById('edit-save-fab');
+  if(fab)fab.classList.remove('on');
   // Seitentitel zurücksetzen
   const titleEl=document.getElementById('new-page-title');
   if(titleEl)titleEl.textContent='Fang melden';
@@ -3962,6 +4302,9 @@ function resetForm(){
   const gs=document.getElementById('gps-strip');gs.style.display='none';gs.classList.remove('ok');
   document.getElementById('wx-ico').textContent='🌡️';document.getElementById('wx-val').textContent='Tippen zum Laden';
   catchCount=0;sucMode='catch';setSuc('catch');window._pm={};
+  // AP2: Sichttiefe + Trübung zurücksetzen
+  const sichtEl=document.getElementById('s-sicht');if(sichtEl)sichtEl.value='';
+  const truebEl=document.getElementById('s-trueb');if(truebEl)truebEl.value='';
   // Notiz-Chip-Used-Set zurücksetzen
   Object.keys(_usedNoteChips).forEach(k=>delete _usedNoteChips[k]);
   const n=new Date();
@@ -3969,7 +4312,6 @@ function resetForm(){
   document.getElementById('s-start').value=n.getHours().toString().padStart(2,'0')+':00';
   document.getElementById('s-end').value=Math.min(n.getHours()+3,23).toString().padStart(2,'0')+':00';
   updMoon();addCatch();
- 
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -3988,6 +4330,7 @@ function showSuc(catches,water){
   document.getElementById('cnt-num').textContent=prev;
   document.getElementById('suc-list').innerHTML=Object.entries(freq).map(([f,c])=>`<span class="succhip">${fIco(f)} ${f} ×${c}</span>`).join('');
   document.getElementById('share-btn').style.display=navigator.share?'flex':'none';
+  document.getElementById('grp-share-btn').style.display=_groups.length?'flex':'none';
   document.getElementById('sucov').classList.add('on');launchK();
   setTimeout(()=>animCnt(prev,fin),600);
 }
@@ -4102,11 +4445,17 @@ function stopK(){if(kAF)cancelAnimationFrame(kAF);document.getElementById('kcanv
 // Tab-Mapping: welcher btab wird bei welcher page aktiv
 const TAB_PAGE_MAP={fangbuch:'fangbuch',history:'fangbuch',forecast:'forecast',map:'map',stats:'stats'};
 
-// AP1: Header +/X Button Logik
+// AP1+AP2: Header +/X Button Logik – X bricht ab und kehrt zum vorherigen View zurück
 function _hdrPlusClick(){
   const btn=document.getElementById('hdr-plus');
+  const isOnNew=document.getElementById('page-new')?.classList.contains('on');
   if(_editPendingId){
     // Edit-Modus abbrechen
+    resetForm();
+    _restoreHdrPlus();
+    showPage('fangbuch');
+  } else if(isOnNew){
+    // AP2: Fang melden offen → X schließt und kehrt zum Fangbuch zurück
     resetForm();
     _restoreHdrPlus();
     showPage('fangbuch');
@@ -4116,9 +4465,15 @@ function _hdrPlusClick(){
     setTimeout(()=>btn.classList.remove('hplus-tap'),300);
   }
 }
+// AP2: Red X replaces gold +, hides Live button during edit
 function _setHdrEditX(){
   const btn=document.getElementById('hdr-plus');
   if(btn){btn.textContent='✕';btn.style.background='var(--red,#c04040)';btn.style.color='#fff';}
+  const liveBtn=document.getElementById('hdr-live-btn');
+  if(liveBtn)liveBtn.style.display='none';
+  // AP3: Show floating save button
+  const fab=document.getElementById('edit-save-fab');
+  if(fab)fab.classList.add('on');
 }
 function _restoreHdrPlus(){
   const btn=document.getElementById('hdr-plus');
@@ -4126,6 +4481,11 @@ function _restoreHdrPlus(){
     btn.innerHTML='+<div class="live-dot" id="hdr-live-dot"></div>';
     btn.style.background='';btn.style.color='';
   }
+  const liveBtn=document.getElementById('hdr-live-btn');
+  if(liveBtn)liveBtn.style.display='';
+  // AP3: Hide floating save button
+  const fab=document.getElementById('edit-save-fab');
+  if(fab)fab.classList.remove('on');
 }
 
 function showPage(p){
@@ -4165,11 +4525,25 @@ function showPage(p){
     const dateEl=document.getElementById('s-date');
     if(dateEl&&!dateEl.value)dateEl.value=n.toISOString().split('T')[0];
     updMoon();
-
+    // AP2: Live-Button und Edit-X in Abhängigkeit vom Edit-State
+    if(_editPendingId){
+      _setHdrEditX();
+    } else {
+      // Neue Fangmeldung: Live-Button ausblenden, rotes X setzen
+      const liveBtn=document.getElementById('hdr-live-btn');
+      if(liveBtn)liveBtn.style.display='none';
+      const btn=document.getElementById('hdr-plus');
+      if(btn){btn.textContent='✕';btn.style.background='var(--red,#c04040)';btn.style.color='#fff';}
+    }
     requestAnimationFrame(()=>{
       const sc=document.querySelector('#page-new .sc');
       if(sc)sc.scrollTop=0;
     });
+  } else {
+    // Andere Seiten: Live-Button wiederherstellen, Edit-FAB ausblenden
+    const liveBtn=document.getElementById('hdr-live-btn');
+    if(liveBtn)liveBtn.style.display='';
+    _restoreHdrPlus();
   }
 }
 
@@ -4793,15 +5167,23 @@ function _closeSessMap(){
   document.getElementById('catch-pos-confirm')?.remove();
 }
 
-// AP4: Spot-GPS-Verknüpfung
+// AP3: Spot-GPS-Verknüpfung – Karte nimmt max. Platz
 let _spotGpsMap=null;
+
+// AP3: Floating "Spot markieren" Button auf der Karte
+function _floatingSpotMark(){
+  openSpotGpsLink();
+}
+
 function openSpotGpsLink(){
   const sel=document.getElementById('spot-gps-sel');
+  const spotSel=document.getElementById('spot-gps-spot-sel');
   const waters=[...new Set(sessions.map(s=>s.water).filter(Boolean))].sort();
   sel.innerHTML='<option value="">Gewässer wählen…</option>'+waters.map(w=>{
     const hasGps=sessions.some(s=>s.water===w&&s.lat&&s.lon);
     return`<option value="${w}">${w}${hasGps?' 📍':''}</option>`;
   }).join('');
+  if(spotSel)spotSel.innerHTML='<option value="">Spot wählen…</option>';
   openFs('spot-gps');
   setTimeout(()=>{
     const container=document.getElementById('spot-gps-map');
@@ -4822,9 +5204,17 @@ function openSpotGpsLink(){
 
 function _onSpotSel(){
   const sel=document.getElementById('spot-gps-sel');
+  const spotSel=document.getElementById('spot-gps-spot-sel');
   const water=sel.value;
   if(!water||!_spotGpsMap)return;
-  // Zu vorhandener GPS-Position springen falls vorhanden
+
+  // AP3: Spot-Dropdown befüllen
+  if(spotSel){
+    const spots=[...new Set(sessions.filter(s=>s.water===water&&s.spot).map(s=>s.spot))].sort();
+    spotSel.innerHTML='<option value="">Spot wählen…</option>'+spots.map(sp=>`<option value="${sp}">${sp}</option>`).join('');
+  }
+
+  // Zu vorhandener GPS-Position springen
   const existing=sessions.find(s=>s.water===water&&s.lat&&s.lon);
   if(existing){
     _spotGpsMap.setView([parseFloat(existing.lat),parseFloat(existing.lon)],15);
@@ -4837,12 +5227,17 @@ function _onSpotSel(){
     if(marker)_spotGpsMap.removeLayer(marker);
     marker=L.marker(e.latlng).addTo(_spotGpsMap);
     const lat=String(e.latlng.lat.toFixed(6)),lon=String(e.latlng.lng.toFixed(6));
+    const selectedSpot=spotSel?.value||'';
     let count=0;
     for(const s of sessions){
-      if(s.water===water){s.lat=lat;s.lon=lon;await saveOneSess(s);count++;}
+      if(s.water===water){
+        if(!selectedSpot||s.spot===selectedSpot){
+          s.lat=lat;s.lon=lon;await saveOneSess(s);count++;
+        }
+      }
     }
-    showToast('📌',`GPS für "${water}" gespeichert (${count} Session${count>1?'s':''})`);
-    // Update Dropdown-Anzeige
+    const label=selectedSpot?`${water} · ${selectedSpot}`:water;
+    showToast('📌',`GPS für "${label}" gespeichert (${count} Session${count>1?'s':''})`);
     const opt=sel.querySelector(`option[value="${water}"]`);
     if(opt&&!opt.textContent.includes('📍'))opt.textContent=water+' 📍';
   });
@@ -5134,7 +5529,8 @@ function showDetail(id){
   <div style="display:flex;gap:10px;margin-top:4px;">
     <button class="btn" onclick="editSess('${s.id}')" style="flex:1;">✏️ Bearbeiten</button>
     <button class="btn danger" onclick="delSess('${s.id}')" style="flex:1;">Löschen</button>
-  </div>`;
+  </div>
+  ${_groups.length&&s.catches?.length?`<button class="btn" onclick="_openShareModal('${s.id}')" style="margin-top:6px;background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);">👥 In Gruppe teilen</button>`:''}`;
   // Load photos async AFTER DOM rendered
   sorted.forEach(async(c,i)=>{
     if(!c.photoKey)return;
@@ -5167,6 +5563,9 @@ async function editSess(id){
   if(fv('s-end'))fv('s-end').value=s.end||'';
   if(fv('s-water'))fv('s-water').value=s.water||'';
   if(fv('s-spot'))fv('s-spot').value=s.spot||'';
+  // AP2: Sichttiefe/Trübung wiederherstellen
+  if(fv('s-sicht'))fv('s-sicht').value=s.sichttiefe||'';
+  if(fv('s-trueb'))fv('s-trueb').value=s.truebung||'';
   if(fv('s-temp'))fv('s-temp').value=s.temp!=null?s.temp:'';
   if(fv('s-wx')&&s.weather){
     const opt=[...fv('s-wx').options].find(o=>o.value===s.weather||o.text===s.weather);
@@ -5222,6 +5621,7 @@ async function editSess(id){
         if(g('ff-wt'))g('ff-wt').value=c.ffWeight||'';
         if(g('ff-rig'))g('ff-rig').value=c.ffRig||'';
         if(g('ff-bait'))g('ff-bait').value=c.ffBait||'';
+        if(g('ff-dist'))g('ff-dist').value=c.ffDist||'';
         if(g('ff-feed'))g('ff-feed').value=c.ffFeed||'';
         if(g('ff-famt'))g('ff-famt').value=c.ffFeedAmt||'';
         if(c.ffPrebaited)setFfPre(cid,c.ffPrebaited==='yes');
@@ -6082,7 +6482,8 @@ function _renderFcDashboard(){
       </div>
       <div class="fc-kachel-val">${Math.round(today.tmax??0)}°</div>
     </div>
-  </div>`;
+  </div>
+  ${_rndrPhaenoCard()}`;
 }
 
 // ── Mondkalender Overlay ────────────────────────────────────
@@ -6632,6 +7033,28 @@ const _dwCrosshairPlugin={
   }
 };
 
+// AP4: Magic Header – Update Info-Leiste bei Hover
+const _dwInfoPlugin={
+  id:'dwInfo',
+  afterEvent(chart,args){
+    if(args.replay||!chart._infoId)return;
+    const evt=args.event;
+    const el=document.getElementById(chart._infoId);
+    if(!el)return;
+    if((evt.type==='mousemove'||evt.type==='click')&&args.inChartArea){
+      const els=chart.getElementsAtEventForMode(evt,'index',{intersect:false},true);
+      if(els.length){
+        const idx=els[0].index;
+        const label=chart.data.labels?.[idx]||'';
+        const vals=chart.data.datasets.map(ds=>`${ds.label}: ${ds.data[idx]!=null?ds.data[idx]:'–'}${chart._infoUnit||''}`).join(' | ');
+        el.textContent=`${label} Uhr · ${vals}`;
+      }
+    } else if(evt.type==='mouseout'||!args.inChartArea){
+      el.textContent='';
+    }
+  }
+};
+
 // Jetzt-Indikator für stündliche Charts (nur am heutigen Tag)
 const _dwNowPlugin={
   id:'dwNow',
@@ -6724,19 +7147,33 @@ function openDailyWeather(dateStr){
         <div style="font-size:10px;color:var(--text-light);margin-top:2px;">Beißindex</div>
       </div>
     </div>
-    <!-- Temperatur -->
+    <!-- AP4: Temperatur mit Magic Header -->
     <div class="fc-sec" style="margin:0 0 8px;">
       <div class="fc-sec-title">🌡 Temperatur · stündlich</div>
+      <div id="dw-temp-info" style="font-size:11px;font-weight:600;color:var(--text-mid);padding:2px 10px 4px;display:flex;gap:12px;">
+        <span>Min: ${Math.min(...hTemp.filter(v=>v!=null))}°</span>
+        <span>Max: ${Math.max(...hTemp.filter(v=>v!=null))}°</span>
+        <span id="dw-temp-hover" style="color:var(--green-mid);"></span>
+      </div>
       <div class="fc-chart-wrap cw-lg"><canvas id="dw-temp-chart"></canvas></div>
     </div>
-    <!-- Wind -->
+    <!-- AP4: Wind mit Magic Header -->
     <div class="fc-sec" style="margin:0 0 8px;">
       <div class="fc-sec-title">💨 Wind & Böen · stündlich</div>
+      <div id="dw-wind-info" style="font-size:11px;font-weight:600;color:var(--text-mid);padding:2px 10px 4px;display:flex;gap:12px;">
+        <span>Min: ${Math.min(...hWind.filter(v=>v!=null))} km/h</span>
+        <span>Max: ${Math.max(...hWind.filter(v=>v!=null))} km/h</span>
+        <span id="dw-wind-hover" style="color:var(--green-mid);"></span>
+      </div>
       <div class="fc-chart-wrap cw-lg"><canvas id="dw-wind-chart"></canvas></div>
     </div>
-    <!-- Niederschlag -->
+    <!-- AP4: Niederschlag mit Magic Header -->
     <div class="fc-sec" style="margin:0 0 24px;">
       <div class="fc-sec-title">🌧 Regenwahrscheinlichkeit · stündlich</div>
+      <div id="dw-rain-info" style="font-size:11px;font-weight:600;color:var(--text-mid);padding:2px 10px 4px;display:flex;gap:12px;">
+        <span>Max: ${Math.max(...hRain.filter(v=>v!=null))}%</span>
+        <span id="dw-rain-hover" style="color:var(--green-mid);"></span>
+      </div>
       <div class="fc-chart-wrap cw-lg"><canvas id="dw-rain-chart"></canvas></div>
     </div>`;
 
@@ -6759,7 +7196,7 @@ function openDailyWeather(dateStr){
   requestAnimationFrame(()=>{
     if(typeof Chart==='undefined')return;
 
-    const DW_PLUGINS=[_dwCrosshairPlugin,_dwNowPlugin];
+    const DW_PLUGINS=[_dwCrosshairPlugin,_dwNowPlugin,_dwInfoPlugin];
 
     // Temp chart
     const c1=document.getElementById('dw-temp-chart');
@@ -6772,6 +7209,7 @@ function openDailyWeather(dateStr){
         plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c2=>`${c2.parsed.y}°C`}}},
         scales:{x:XOPT,y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:9},stepSize:2,callback:v=>Math.round(v)+'°'},grid:{color:GRID}}}}});
       ch1._isToday=isToday;
+      ch1._infoId='dw-temp-hover';ch1._infoUnit='°C';
       _dwCharts.push(ch1);
     }
 
@@ -6785,6 +7223,7 @@ function openDailyWeather(dateStr){
           const i=c3.dataIndex;return`${c3.dataset.label}: ${c3.parsed.y} km/h${hWDir[i]!=null?' · '+windLabel(hWDir[i]):''}`;}}}},
         scales:{x:XOPT,y:{min:0,title:{display:true,text:'in km/h',font:{size:9},color:TICK},ticks:{color:TICK,font:{size:8}},grid:{color:GRID}}}}});
       ch2._isToday=isToday;
+      ch2._infoId='dw-wind-hover';ch2._infoUnit=' km/h';
       _dwCharts.push(ch2);
     }
 
@@ -6797,6 +7236,7 @@ function openDailyWeather(dateStr){
         plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c4=>`${c4.parsed.y}%`}}},
         scales:{x:XOPT,y:{min:0,max:100,ticks:{color:TICK,font:{size:9},stepSize:25,callback:v=>v+'%'},grid:{color:GRID}}}}});
       ch3._isToday=isToday;
+      ch3._infoId='dw-rain-hover';ch3._infoUnit='%';
       _dwCharts.push(ch3);
     }
   });
@@ -7364,6 +7804,31 @@ async function _finalizeLive(isSkunked){
     sess.precip=_lastWx.precip;
   }
 
+  // AP2: Auto-Wetter via GPS wenn kein _lastWx verfügbar
+  if(!sess.pressure&&!sess.windSpeed&&(sess.lat||_plzCoords)){
+    try{
+      const wxLat=parseFloat(sess.lat)||_plzCoords?.lat;
+      const wxLon=parseFloat(sess.lon)||_plzCoords?.lon;
+      if(wxLat&&wxLon){
+        const url=_wxUrl(wxLat,wxLon,sess.date,'temperature_2m,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation');
+        const r=await fetch(url);
+        if(r.ok){
+          const data=await r.json();const h=data.hourly;
+          if(h?.time?.length){
+            const avg=arr=>arr?.filter(v=>v!=null).reduce((a,b)=>a+b,0)/(arr?.filter(v=>v!=null).length||1);
+            sess.pressure=Math.round(avg(h.surface_pressure));
+            if(!sess.temp)sess.temp=Math.round(avg(h.temperature_2m));
+            sess.windSpeed=Math.round(avg(h.windspeed_10m));
+            sess.windDir=Math.round(avg(h.winddirection_10m));
+            sess.humidity=Math.round(avg(h.relativehumidity_2m));
+            sess.clouds=Math.round(avg(h.cloudcover));
+            sess.precip=parseFloat((h.precipitation?.reduce((a,b)=>a+(b||0),0)||0).toFixed(1));
+          }
+        }
+      }
+    }catch(e){/* GPS-Wetter-Fehler ignorieren */}
+  }
+
   sessions.unshift(sess);
   await saveOneSess(sess);
   if(_authMode==='online')syncToCloud().catch(()=>{});
@@ -7448,11 +7913,17 @@ function _whisperPlaceholder(){
   showToast('🎙️','Whisper-Spracherkennung wird in einem zukünftigen Update verfügbar sein.');
 }
 
+// AP2: Live Session – deduplizierte Fisch-Chips (Set verhindert Wiederholung)
 function rndrLcFishChips(val){
   const con=document.getElementById('lc-fc');
   if(!con)return;
   const v=(val||'').toLowerCase();
-  const list=v?FISH.filter(f=>f.toLowerCase().includes(v)).slice(0,8):(favs.fish||[]).slice(0,8);
+  let list;
+  if(v){
+    list=FISH.filter(f=>f.toLowerCase().includes(v)).slice(0,8);
+  } else {
+    list=[...new Set((favs.fish||[]))].slice(0,8);
+  }
   if(!list.length){con.style.display='none';return;}
   con.style.display='flex';
   con.innerHTML=list.map(f=>`<button class="fav-btn" onmousedown="document.getElementById('lc-fish').value='${f}';dHide('lc-fc')">${f}</button>`).join('');
@@ -7790,7 +8261,18 @@ function _updateMapMarkers(){
   if(_mapCluster){_leafletMap.removeLayer(_mapCluster);_mapCluster=null;}
 
   let withCoords=sessions.filter(s=>s.lat&&s.lon);
-  if(!withCoords.length)return;
+
+  // v44: Group layer – add group shared catches with GPS
+  let groupCatches=[];
+  if(_mapLayer==='group'){
+    _groups.forEach(g=>{
+      (g.sharedCatches||[]).forEach(c=>{
+        if(c.shareGps&&c.lat&&c.lon)groupCatches.push({...c,_groupName:g.name,_color:_userColor(c.userId)});
+      });
+    });
+  }
+
+  if(!withCoords.length&&!groupCatches.length)return;
 
   // ── Filter anwenden ──
   const f=_mapFilter;
@@ -7824,9 +8306,9 @@ function _updateMapMarkers(){
     const lat=parseFloat(s.lat),lon=parseFloat(s.lon);
     if(isNaN(lat)||isNaN(lon))return;
 
-    const catchCount=s.catches?.length||0;
-    const isSkunked=s.skunked||catchCount===0;
-    const color=isSkunked?'#cc0000':catchCount>=3?'#7BAE8A':'#2D4A35';
+    const catchCnt=s.catches?.length||0;
+    const isSkunked=s.skunked||catchCnt===0;
+    const color=isSkunked?'#cc0000':catchCnt>=3?'#7BAE8A':'#2D4A35';
 
     const catchList=s.catches?.map(c=>`${fIco(c.type)} ${c.type}${c.length?' '+c.length+'cm':''}`).join('<br>')||'Schneider 🎣';
     const popupHtml=`
@@ -7841,6 +8323,42 @@ function _updateMapMarkers(){
     _mapCluster.addLayer(marker);
     _mapMarkers.push(_mapCluster);
     bounds.push([lat,lon]);
+
+    // AP3: Per-Catch GPS – Jeder Fang mit eigenen Koordinaten bekommt einen eigenen Marker
+    (s.catches||[]).forEach(c=>{
+      if(!c.lat||!c.lon)return;
+      const cLat=parseFloat(c.lat),cLon=parseFloat(c.lon);
+      if(isNaN(cLat)||isNaN(cLon))return;
+      if(cLat===lat&&cLon===lon)return; // Skip wenn identisch mit Session-Position
+      const catchIcon=L.divIcon({
+        html:`<div style="background:var(--green-mid);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.3);border:2px solid #fff;">${fIco(c.type)}</div>`,
+        className:'',iconSize:[26,26],iconAnchor:[13,26],popupAnchor:[0,-28]
+      });
+      const cPopup=`<strong>${c.type}</strong>${c.length?' · '+c.length+'cm':''}${c.bait?'<br>Köder: '+c.bait:''}${c.time?'<br>'+c.time:''}`;
+      const cm=L.marker([cLat,cLon],{icon:catchIcon}).bindPopup(cPopup);
+      _mapCluster.addLayer(cm);
+      bounds.push([cLat,cLon]);
+    });
+  });
+
+  // v44: Add group shared catches to map
+  groupCatches.forEach(c=>{
+    const cLat=parseFloat(c.lat),cLon=parseFloat(c.lon);
+    if(isNaN(cLat)||isNaN(cLon))return;
+    const icon=L.divIcon({
+      html:`<div style="background:${c._color};color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.3);border:2px solid #fff;">${fIco(c.type)}</div>`,
+      className:'',iconSize:[28,28],iconAnchor:[14,28],popupAnchor:[0,-30]
+    });
+    const popup=`<div style="min-width:140px;">
+      <div style="font-weight:700;font-size:13px;color:${c._color};">${_esc(c.userName||'?')}</div>
+      <div style="font-size:10px;color:#888;margin-bottom:4px;">${_esc(c._groupName)}</div>
+      <div style="font-size:12px;">${fIco(c.type)} ${c.type} · ${c.length}cm</div>
+      ${c.bait?`<div style="font-size:11px;color:#666;">🎣 ${_esc(c.bait)}</div>`:''}
+      <div style="font-size:10px;color:#999;">${c.date||''}</div>
+    </div>`;
+    const m=L.marker([cLat,cLon],{icon}).bindPopup(popup);
+    _mapCluster.addLayer(m);
+    bounds.push([cLat,cLon]);
   });
 
   _leafletMap.addLayer(_mapCluster);
@@ -7914,6 +8432,812 @@ function _updateMapMarkers(){
   obs.observe(document.body||document.documentElement,{childList:true,subtree:true});
 })();
 
+// ═══════════════════════════════════════════════════════════
+// SOCIAL & GROUP ENGINE (v44)
+// ═══════════════════════════════════════════════════════════
+
+// ── State ──
+let _groups=[]; // local group store
+let _activeGroupId=null;
+let _gcType='private';
+let _gcIcon_='🎣';
+let _mapLayer='private'; // 'private' | 'group'
+let _lastSavedId=null;
+let _schonCallback=null;
+
+// ── User colors for group map ──
+const _userColors=['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#34495e','#e84393','#00cec9','#6c5ce7','#fd79a8'];
+function _userColor(uid){
+  if(!uid)return _userColors[0];
+  let h=0;for(let i=0;i<uid.length;i++)h=((h<<5)-h)+uid.charCodeAt(i);
+  return _userColors[Math.abs(h)%_userColors.length];
+}
+
+// ── IDB for Groups ──
+async function _saveGroups(){await idbP('profile','_groups',{value:JSON.stringify(_groups)});}
+async function _loadGroups(){
+  try{
+    const r=await idbG('profile','_groups');
+    if(r?.value)_groups=JSON.parse(r.value);
+  }catch(e){}
+}
+
+// ── Invite Code Generator ──
+function _genInviteCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code='';for(let i=0;i<8;i++)code+=chars[Math.floor(Math.random()*chars.length)];
+  return code.substring(0,4)+'-'+code.substring(4);
+}
+
+// ── Group CRUD ──
+function _openGroupHub(){
+  openFs('group-hub');
+  _rndrGroupList();
+}
+
+function _grpHubTab(tab){
+  document.querySelectorAll('#grp-hub-tabs .grp-tab').forEach((b,i)=>{
+    b.classList.toggle('on',(tab==='list'&&i===0)||(tab==='discover'&&i===1));
+  });
+  if(tab==='list')_rndrGroupList();
+  else _rndrGroupDiscover();
+}
+
+function _rndrGroupList(){
+  const el=document.getElementById('grp-hub-content');
+  document.getElementById('grp-hub-meta').textContent=_groups.length?`${_groups.length} Gruppe${_groups.length>1?'n':''}`:'Deine Angel-Crews';
+
+  if(!_groups.length){
+    el.innerHTML=`<div style="text-align:center;padding:40px 24px;">
+      <div style="font-size:48px;margin-bottom:16px;">👥</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:8px;">Noch keine Gruppen</div>
+      <p style="font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:20px;">Erstelle deine eigene Angel-Crew oder tritt einer bestehenden bei.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px;">
+        <button onclick="openFs('group-create')" style="padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;">➕ Gruppe erstellen</button>
+        <button onclick="openFs('group-join')" style="padding:14px;background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;">🔗 Per Code beitreten</button>
+      </div>
+    </div>`;
+    return;
+  }
+
+  let html='<div class="grp-list">';
+  _groups.forEach(g=>{
+    const memberCount=g.members?.length||1;
+    const lastActivity=g.feed?.length?_relTime(g.feed[g.feed.length-1].ts):'Keine Aktivität';
+    const unread=g._unread||0;
+    html+=`<div class="grp-item" onclick="_openGroupDetail('${g.id}')">
+      <div class="grp-item-ico" style="background:${g.type==='elite'?'linear-gradient(135deg,#f6d365,#fda085)':g.type==='public'?'var(--blue)':'var(--green-mist)'};">${g.icon||'🎣'}</div>
+      <div class="grp-item-info">
+        <div class="grp-item-name">${_esc(g.name)}</div>
+        <div class="grp-item-sub">${memberCount} Mitglieder · ${lastActivity}</div>
+      </div>
+      ${unread?`<div class="grp-item-badge">${unread}</div>`:''}
+    </div>`;
+  });
+  html+=`<div class="grp-create-btn" onclick="openFs('group-create')">➕ Neue Gruppe erstellen</div>`;
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function _rndrGroupDiscover(){
+  const el=document.getElementById('grp-hub-content');
+  const publicGroups=_groups.filter(g=>g.type==='public');
+  el.innerHTML=`<div style="padding:16px;">
+    <div class="ig" style="margin-bottom:14px;">
+      <input type="text" class="if" id="grp-search" placeholder="🔍 Gruppen suchen…" oninput="_filterDiscoverGroups(this.value)" autocomplete="off">
+    </div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:10px;">Öffentliche Gruppen in deiner Region</div>
+    <div id="discover-list" style="display:flex;flex-direction:column;gap:8px;">
+      ${_getDemoPublicGroups()}
+    </div>
+  </div>`;
+}
+
+function _getDemoPublicGroups(){
+  const demos=[
+    {name:'Hechtjäger Norddeutschland',icon:'🐟',members:24,region:'Niedersachsen',type:'public'},
+    {name:'Karpfen-Crew NRW',icon:'🎣',members:18,region:'NRW',type:'public'},
+    {name:'Zanderfreunde Elbe',icon:'🐋',members:31,region:'Hamburg/Elbe',type:'public'},
+    {name:'Ostsee Meerforellen',icon:'🦈',members:12,region:'Schleswig-Holstein',type:'public'}
+  ];
+  return demos.map(d=>`<div class="grp-item" onclick="_quickJoinPublic('${_esc(d.name)}','${d.icon}')">
+    <div class="grp-item-ico" style="background:var(--blue);">${d.icon}</div>
+    <div class="grp-item-info">
+      <div class="grp-item-name">${d.name}</div>
+      <div class="grp-item-sub">${d.members} Mitglieder · ${d.region}</div>
+    </div>
+    <div style="font-size:11px;color:var(--green-mid);font-weight:700;">Beitreten</div>
+  </div>`).join('');
+}
+
+function _filterDiscoverGroups(q){}
+
+function _gcSetType(type){
+  _gcType=type;
+  ['private','public','elite'].forEach(t=>{
+    const btn=document.getElementById('gc-type-'+t);
+    if(btn){
+      btn.style.borderColor=t===type?'var(--green-mid)':'var(--cream-dark)';
+      btn.style.background=t===type?'var(--green-mist)':'#fff';
+      btn.style.color=t===type?'var(--green-deep)':'var(--text-mid)';
+    }
+  });
+}
+
+function _gcIcon(ico){
+  _gcIcon_=ico;
+  document.querySelectorAll('#gc-icons .gc-ico-btn').forEach(b=>{
+    const isOn=b.textContent.trim()===ico;
+    b.style.borderColor=isOn?'var(--green-mid)':'var(--cream-dark)';
+    b.style.background=isOn?'var(--green-mist)':'#fff';
+    b.classList.toggle('on',isOn);
+  });
+}
+
+async function _grpCreate(){
+  const name=document.getElementById('gc-name').value.trim();
+  if(!name){showToast('⚠️','Gruppenname fehlt');return;}
+  const desc=document.getElementById('gc-desc').value.trim();
+  const region=document.getElementById('gc-region').value.trim();
+  const myName=profile?.name||profile?.vorname||'Angler';
+  const myId=_sbUser?.id||_newId();
+
+  const group={
+    id:_newId(),
+    name,desc,region,
+    type:_gcType,
+    icon:_gcIcon_,
+    inviteCode:_genInviteCode(),
+    createdAt:new Date().toISOString(),
+    createdBy:myId,
+    members:[{id:myId,name:myName,role:'admin',joinedAt:new Date().toISOString(),isBeta:false}],
+    feed:[{type:'system',text:`${myName} hat die Gruppe "${name}" erstellt.`,ts:Date.now(),userId:myId}],
+    sharedCatches:[],
+    _unread:0
+  };
+  _groups.push(group);
+  await _saveGroups();
+
+  closeFs('group-create');
+  showToast('✅',`Gruppe "${name}" erstellt!`);
+
+  // Show invite code
+  setTimeout(()=>{
+    showToast('🔗',`Einladungscode: ${group.inviteCode}`);
+  },1500);
+
+  document.getElementById('gc-name').value='';
+  document.getElementById('gc-desc').value='';
+  document.getElementById('gc-region').value='';
+  _rndrGroupList();
+}
+
+async function _grpJoinByCode(){
+  const code=document.getElementById('gj-code').value.trim().toUpperCase();
+  if(!code||code.length<4){showToast('⚠️','Bitte Code eingeben');return;}
+  const found=_groups.find(g=>g.inviteCode===code);
+  if(found){
+    showToast('ℹ️','Du bist bereits Mitglied dieser Gruppe');
+    closeFs('group-join');
+    _openGroupDetail(found.id);
+    return;
+  }
+  // Simulate joining - in production this would be a Supabase lookup
+  const myName=profile?.name||profile?.vorname||'Angler';
+  const myId=_sbUser?.id||_newId();
+  const group={
+    id:_newId(),
+    name:'Gruppe '+code,desc:'Per Einladungscode beigetreten',region:'',
+    type:'private',icon:'🎣',inviteCode:code,
+    createdAt:new Date(Date.now()-86400000).toISOString(),createdBy:'external',
+    members:[
+      {id:'demo-admin',name:'Gruppen-Admin',role:'admin',joinedAt:new Date(Date.now()-86400000).toISOString()},
+      {id:myId,name:myName,role:'member',joinedAt:new Date().toISOString()}
+    ],
+    feed:[
+      {type:'system',text:`${myName} ist der Gruppe beigetreten!`,ts:Date.now(),userId:myId}
+    ],
+    sharedCatches:[],_unread:0
+  };
+  _groups.push(group);
+  await _saveGroups();
+  closeFs('group-join');
+  showToast('✅','Gruppe beigetreten!');
+  document.getElementById('gj-code').value='';
+  _openGroupDetail(group.id);
+}
+
+async function _quickJoinPublic(name,icon){
+  const myName=profile?.name||profile?.vorname||'Angler';
+  const myId=_sbUser?.id||_newId();
+  const existing=_groups.find(g=>g.name===name);
+  if(existing){showToast('ℹ️','Bereits Mitglied');_openGroupDetail(existing.id);return;}
+
+  const demoMembers=[
+    {id:'u1',name:'Max F.',role:'admin',joinedAt:new Date(Date.now()-30*86400000).toISOString()},
+    {id:'u2',name:'Lisa K.',role:'member',joinedAt:new Date(Date.now()-20*86400000).toISOString()},
+    {id:'u3',name:'Tom H.',role:'member',joinedAt:new Date(Date.now()-10*86400000).toISOString()},
+    {id:myId,name:myName,role:'member',joinedAt:new Date().toISOString()}
+  ];
+  const demoFeed=_genDemoFeed(demoMembers);
+  const demoCatches=_genDemoSharedCatches(demoMembers);
+
+  const group={
+    id:_newId(),name,desc:'Öffentliche Angelgruppe',region:'',type:'public',icon,
+    inviteCode:_genInviteCode(),
+    createdAt:new Date(Date.now()-30*86400000).toISOString(),createdBy:'u1',
+    members:demoMembers,feed:demoFeed,sharedCatches:demoCatches,_unread:3
+  };
+  _groups.push(group);
+  await _saveGroups();
+  showToast('✅',`"${name}" beigetreten!`);
+  _openGroupDetail(group.id);
+}
+
+function _genDemoFeed(members){
+  const now=Date.now();
+  return [
+    {type:'system',text:`Gruppe erstellt`,ts:now-25*86400000,userId:'u1'},
+    {type:'catch',text:'Hat einen 72cm Hecht geteilt!',ts:now-3*86400000,userId:'u1',catchData:{type:'Hecht',length:72,bait:'Gummifisch',baitNote:'18cm Kopyto weiß',weight:3.2,water:'Dümmer See'}},
+    {type:'msg',text:'Mega Fisch! Welche Farbe war der Kopyto?',ts:now-3*86400000+3600000,userId:'u2'},
+    {type:'msg',text:'Weiß/Silber – die laufen gerade super bei dem trüben Wasser!',ts:now-3*86400000+7200000,userId:'u1'},
+    {type:'catch',text:'Hat einen 45cm Zander geteilt!',ts:now-2*86400000,userId:'u3',catchData:{type:'Zander',length:45,bait:'Gummifisch',baitNote:'12cm Nays Motoroil',water:'Elbe'}},
+    {type:'live',text:'Ist jetzt am Wasser!',ts:now-86400000,userId:'u2',water:'Steinhuder Meer'},
+    {type:'catch',text:'Hat einen 88cm Hecht geteilt!',ts:now-43200000,userId:'u2',catchData:{type:'Hecht',length:88,bait:'Wobbler',baitNote:'Jackall Squad Minnow',weight:5.1,water:'Steinhuder Meer'}},
+    {type:'msg',text:'Monster! PB?! 🏆',ts:now-40000000,userId:'u1'},
+    {type:'msg',text:'Ja, neuer PB! 💪 Der kam auf der Kante in 3m Tiefe.',ts:now-38000000,userId:'u2'}
+  ];
+}
+
+function _genDemoSharedCatches(members){
+  return [
+    {id:_newId(),userId:'u1',userName:'Max F.',type:'Hecht',length:72,bait:'Gummifisch',baitNote:'18cm Kopyto weiß',weight:3.2,water:'Dümmer See',date:'2026-04-11',time:'07:30',shareGps:false,likes:['u2','u3'],comments:[{userId:'u2',text:'Mega!',ts:Date.now()-3*86400000}]},
+    {id:_newId(),userId:'u3',userName:'Tom H.',type:'Zander',length:45,bait:'Gummifisch',baitNote:'12cm Nays Motoroil',water:'Elbe',date:'2026-04-12',time:'19:15',shareGps:false,likes:['u1'],comments:[]},
+    {id:_newId(),userId:'u2',userName:'Lisa K.',type:'Hecht',length:88,bait:'Wobbler',baitNote:'Jackall Squad Minnow',weight:5.1,water:'Steinhuder Meer',date:'2026-04-13',time:'09:45',shareGps:true,lat:'52.4684',lon:'9.3290',likes:['u1','u3'],comments:[{userId:'u1',text:'Monster! PB?! 🏆',ts:Date.now()-40000000}]}
+  ];
+}
+
+// ── Group Detail / Feed ──
+function _openGroupDetail(gId){
+  _activeGroupId=gId;
+  const g=_groups.find(x=>x.id===gId);
+  if(!g)return;
+  g._unread=0;
+  _saveGroups();
+  openFs('group-detail');
+  document.getElementById('grp-detail-title').textContent=`${g.icon} ${g.name}`;
+  document.getElementById('grp-detail-meta').textContent=`${g.members?.length||0} Mitglieder · ${g.type==='private'?'🔒 Privat':g.type==='elite'?'⭐ Elite':'🌍 Öffentlich'}`;
+  _grpDetailTab('feed');
+}
+
+function _grpDetailTab(tab){
+  document.querySelectorAll('#grp-detail-tabs .grp-tab').forEach((b,i)=>{
+    b.classList.toggle('on',['feed','insights','map','members'][i]===tab);
+  });
+  const chatBar=document.getElementById('grp-chat-bar');
+  chatBar.style.display=(tab==='feed')?'flex':'none';
+
+  if(tab==='feed')_rndrGroupFeed();
+  else if(tab==='insights')_rndrGroupInsights();
+  else if(tab==='map')_rndrGroupMap();
+  else if(tab==='members')_rndrGroupMembers();
+}
+
+function _rndrGroupFeed(){
+  const g=_groups.find(x=>x.id===_activeGroupId);
+  if(!g)return;
+  const el=document.getElementById('grp-detail-content');
+  const myId=_sbUser?.id||g.members?.find(m=>m.role==='admin'&&m.name===(profile?.name||''))?.id||'me';
+
+  let html='<div class="feed-stream">';
+  let lastDate='';
+
+  g.feed.forEach((item,idx)=>{
+    const d=new Date(item.ts);
+    const dateStr=d.toLocaleDateString('de-DE',{day:'numeric',month:'short'});
+    if(dateStr!==lastDate){
+      html+=`<div class="feed-date-sep">${dateStr}</div>`;
+      lastDate=dateStr;
+    }
+
+    const member=g.members.find(m=>m.id===item.userId)||{name:'Unbekannt'};
+    const color=_userColor(item.userId);
+    const timeStr=d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+
+    if(item.type==='system'){
+      html+=`<div style="text-align:center;font-size:11px;color:var(--text-light);padding:4px;font-style:italic;">ℹ️ ${_esc(item.text)}</div>`;
+    }
+    else if(item.type==='live'){
+      html+=`<div class="feed-live-alert">
+        <div class="feed-live-pulse"></div>
+        <div class="feed-live-info"><strong>${_esc(member.name)}</strong> ist jetzt am Wasser!${item.water?' · '+_esc(item.water):''}</div>
+        <div style="font-size:10px;opacity:.6;">${timeStr}</div>
+      </div>`;
+    }
+    else if(item.type==='catch'&&item.catchData){
+      const c=item.catchData;
+      const sc=g.sharedCatches?.find(sc=>sc.type===c.type&&sc.length===c.length&&sc.userId===item.userId);
+      const liked=sc?.likes?.includes(myId);
+      const likeCount=sc?.likes?.length||0;
+      const commentCount=sc?.comments?.length||0;
+
+      html+=`<div class="catch-card">
+        <div class="catch-card-body">
+          <div class="catch-card-user">
+            <div class="catch-card-avatar" style="background:${color};">${member.name.charAt(0)}</div>
+            <div>
+              <div class="catch-card-uname">${_esc(member.name)}</div>
+              <div class="catch-card-utime">${timeStr} · ${c.water||''}</div>
+            </div>
+          </div>
+          <div style="font-family:var(--fs);font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:4px;">${fIco(c.type)} ${_esc(c.type)} · ${c.length}cm${c.weight?' · '+c.weight+'kg':''}</div>
+          <div class="catch-card-bait">
+            <div class="catch-card-chip">🎣 ${_esc(c.bait||'–')}</div>
+            ${c.baitNote?`<div class="catch-card-chip">${_esc(c.baitNote)}</div>`:''}
+          </div>
+          <div class="catch-card-actions">
+            <button class="catch-card-act${liked?' liked':''}" onclick="_grpLike('${g.id}','${sc?.id||''}')"><span class="cc-ico">${liked?'❤️':'🤍'}</span> ${likeCount||''}</button>
+            <button class="catch-card-act" onclick="_grpComment('${g.id}','${sc?.id||''}')"><span class="cc-ico">💬</span> ${commentCount||''}</button>
+            <button class="catch-card-act" onclick="_grpCopySetup('${_esc(c.bait||'')}','${_esc(c.baitNote||'')}')"><span class="cc-ico">📋</span> Kopieren</button>
+          </div>
+        </div>
+      </div>`;
+    }
+    else if(item.type==='msg'){
+      html+=`<div class="feed-msg">
+        <div class="catch-card-avatar" style="background:${color};width:24px;height:24px;font-size:11px;margin-top:2px;flex-shrink:0;">${member.name.charAt(0)}</div>
+        <div class="feed-msg-bubble">
+          <div class="feed-msg-name" style="color:${color};">${_esc(member.name)}</div>
+          ${_esc(item.text)}
+          <div class="feed-msg-time">${timeStr}</div>
+        </div>
+      </div>`;
+    }
+  });
+
+  html+='</div>';
+  el.innerHTML=html;
+
+  // Scroll to bottom
+  const scroll=document.getElementById('grp-detail-scroll');
+  if(scroll)requestAnimationFrame(()=>scroll.scrollTop=scroll.scrollHeight);
+}
+
+async function _grpSendMsg(){
+  const input=document.getElementById('grp-chat-input');
+  const text=input.value.trim();
+  if(!text)return;
+  const g=_groups.find(x=>x.id===_activeGroupId);
+  if(!g)return;
+  const myId=_sbUser?.id||g.members?.find(m=>m.name===(profile?.name||''))?.id||'me';
+  g.feed.push({type:'msg',text,ts:Date.now(),userId:myId});
+  input.value='';
+  await _saveGroups();
+  _rndrGroupFeed();
+}
+
+async function _grpLike(gId,catchId){
+  const g=_groups.find(x=>x.id===gId);
+  if(!g)return;
+  const myId=_sbUser?.id||'me';
+  const sc=g.sharedCatches?.find(c=>c.id===catchId);
+  if(!sc)return;
+  if(!sc.likes)sc.likes=[];
+  const idx=sc.likes.indexOf(myId);
+  if(idx>=0)sc.likes.splice(idx,1);
+  else sc.likes.push(myId);
+  await _saveGroups();
+  _rndrGroupFeed();
+}
+
+function _grpComment(gId,catchId){
+  const text=prompt('Kommentar:');
+  if(!text?.trim())return;
+  const g=_groups.find(x=>x.id===gId);
+  if(!g)return;
+  const myId=_sbUser?.id||'me';
+  const sc=g.sharedCatches?.find(c=>c.id===catchId);
+  if(sc){
+    if(!sc.comments)sc.comments=[];
+    sc.comments.push({userId:myId,text:text.trim(),ts:Date.now()});
+    g.feed.push({type:'msg',text:text.trim(),ts:Date.now(),userId:myId});
+    _saveGroups();
+    _rndrGroupFeed();
+  }
+}
+
+function _grpCopySetup(bait,note){
+  showToast('📋',`Köder-Setup kopiert: ${bait}${note?' – '+note:''}`);
+  // Pre-fill for next session
+  if(typeof favs!=='undefined'){
+    if(!favs.bait)favs.bait=[];
+    if(!favs.bait.includes(bait))favs.bait.push(bait);
+    saveFavs();
+  }
+}
+
+// ── Group Insights / Dashboard ──
+function _rndrGroupInsights(){
+  const g=_groups.find(x=>x.id===_activeGroupId);
+  if(!g)return;
+  const el=document.getElementById('grp-detail-content');
+  const catches=g.sharedCatches||[];
+  const now=Date.now();
+  const week=catches.filter(c=>c.date&&(now-new Date(c.date).getTime())<7*86400000);
+
+  // Trend analysis
+  const baitMap={},colorMap={},fishMap={},weatherMap={};
+  catches.forEach(c=>{
+    if(c.bait){baitMap[c.bait]=(baitMap[c.bait]||0)+1;}
+    if(c.baitNote){
+      const parts=c.baitNote.split(/[\s,]+/);
+      parts.forEach(p=>{if(p.length>2)colorMap[p]=(colorMap[p]||0)+1;});
+    }
+    if(c.type)fishMap[c.type]=(fishMap[c.type]||0)+1;
+  });
+
+  const topBaits=Object.entries(baitMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topColors=Object.entries(colorMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topFish=Object.entries(fishMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  // Leaderboard
+  const userStats={};
+  catches.forEach(c=>{
+    if(!userStats[c.userId])userStats[c.userId]={name:c.userName||'?',count:0,totalLen:0,maxLen:0};
+    userStats[c.userId].count++;
+    userStats[c.userId].totalLen+=(c.length||0);
+    if((c.length||0)>userStats[c.userId].maxLen)userStats[c.userId].maxLen=c.length;
+  });
+  const leaderboard=Object.entries(userStats).sort((a,b)=>b[1].count-a[1].count);
+
+  let html=`
+    <div class="dash-section">
+      <div class="dash-section-title">📊 Trends der letzten 7 Tage</div>
+      <div class="dash-trend-chips">
+        ${topBaits.map(([b,c])=>`<div class="dash-trend-chip hot">🎣 ${_esc(b)} (${c}x)</div>`).join('')}
+        ${topColors.map(([c,n])=>`<div class="dash-trend-chip warm">🎨 ${_esc(c)} (${n}x)</div>`).join('')}
+        ${week.length?`<div class="dash-trend-chip cool">📈 ${week.length} Fänge diese Woche</div>`:''}
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-section-title">🏆 Leaderboard – Aktivste Angler</div>
+      <div class="dash-leaderboard">
+        ${leaderboard.map(([uid,s],i)=>`<div class="dash-lb-row">
+          <div class="dash-lb-rank">${i<3?['🥇','🥈','🥉'][i]:(i+1)}</div>
+          <div class="dash-lb-avatar" style="background:${_userColor(uid)};">${s.name.charAt(0)}</div>
+          <div class="dash-lb-name">${_esc(s.name)}</div>
+          <div class="dash-lb-val">${s.count} Fänge · ⌀${s.count?Math.round(s.totalLen/s.count):0}cm</div>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-section-title">🐟 Top-Zielfische der Gruppe</div>
+      <div class="dash-trend-chips">
+        ${topFish.map(([f,c])=>`<div class="dash-trend-chip nature">${fIco(f)} ${_esc(f)} (${c}x)</div>`).join('')}
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-section-title">🔬 Wissenschaftlicher Ansatz</div>
+      <div style="font-size:12px;color:var(--text-mid);line-height:1.7;">
+        ${_genScientificInsights(catches)}
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-section-title">📤 Datenexport</div>
+      <button onclick="_exportGroupData('${g.id}')" style="width:100%;padding:12px;background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;">🔬 Anonymisierten Datensatz exportieren (CSV)</button>
+      <div style="font-size:10px;color:var(--text-light);margin-top:6px;text-align:center;">Ohne GPS · Nur aggregierte Köder-/Wetterdaten</div>
+    </div>
+  `;
+  el.innerHTML=html;
+}
+
+function _genScientificInsights(catches){
+  if(!catches.length)return'Noch nicht genug Daten für Analysen. Teilt mehr Fänge!';
+  const lines=[];
+  const baits={};catches.forEach(c=>{if(c.baitNote){
+    const size=c.baitNote.match(/(\d+)\s*cm/i);
+    if(size)baits[size[1]]=(baits[size[1]]||0)+1;
+  }});
+  const topSize=Object.entries(baits).sort((a,b)=>b[1]-a[1])[0];
+  if(topSize)lines.push(`💡 <strong>Ködergröße ${topSize[0]}cm</strong> dominiert (${Math.round(topSize[1]/catches.length*100)}% der Fänge).`);
+
+  const uvMentions=catches.filter(c=>(c.baitNote||'').toLowerCase().includes('uv')).length;
+  if(uvMentions)lines.push(`🟣 <strong>UV-aktive Köder</strong> in ${Math.round(uvMentions/catches.length*100)}% der Fänge verwendet.`);
+
+  const avgLen=catches.reduce((a,c)=>a+(c.length||0),0)/catches.length;
+  lines.push(`📏 <strong>Durchschnittslänge:</strong> ${Math.round(avgLen)}cm über alle Zielfische.`);
+
+  if(!lines.length)lines.push('Teilt mehr Fänge für tiefere Analysen!');
+  return lines.join('<br>');
+}
+
+function _exportGroupData(gId){
+  const g=_groups.find(x=>x.id===gId);
+  if(!g)return;
+  const catches=g.sharedCatches||[];
+  let csv='Datum;Fischart;Laenge_cm;Koeder;Koeder_Detail;Gewaesser\n';
+  catches.forEach(c=>{
+    csv+=`${c.date||''};${c.type||''};${c.length||''};${c.bait||''};${c.baitNote||''};${c.water||''}\n`;
+  });
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`gruppe_${g.name.replace(/\s+/g,'_')}_export.csv`;
+  a.click();URL.revokeObjectURL(url);
+  showToast('📤','CSV exportiert (ohne GPS)');
+}
+
+// ── Group Map ──
+function _rndrGroupMap(){
+  const g=_groups.find(x=>x.id===_activeGroupId);
+  if(!g)return;
+  const el=document.getElementById('grp-detail-content');
+  const catches=g.sharedCatches?.filter(c=>c.shareGps&&c.lat&&c.lon)||[];
+
+  el.innerHTML=`<div style="padding:16px;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:10px;">Geteilte Spots (${catches.length})</div>
+    ${catches.length?`<div id="grp-map-container" style="width:100%;height:300px;border-radius:var(--rs);overflow:hidden;margin-bottom:14px;"></div>`:'<div style="text-align:center;padding:30px;color:var(--text-light);font-size:13px;">📍 Noch keine GPS-Freigaben.<br>Mitglieder können beim Teilen GPS aktivieren.</div>'}
+    <div style="font-size:11px;color:var(--text-light);margin-bottom:10px;background:var(--yellow);border:1px solid var(--yellow-b);border-radius:var(--rs);padding:10px;color:var(--yellow-t);">🛡️ <strong>Spot-Schutz:</strong> GPS wird nur bei expliziter Freigabe geteilt. Nutze Gebiets-Sharing statt exakter Punkte.</div>
+    ${catches.map(c=>`<div class="grp-item" style="margin-bottom:6px;">
+      <div class="catch-card-avatar" style="background:${_userColor(c.userId)};width:28px;height:28px;font-size:12px;">${(c.userName||'?').charAt(0)}</div>
+      <div class="grp-item-info">
+        <div class="grp-item-name">${fIco(c.type)} ${_esc(c.type)} · ${c.length}cm</div>
+        <div class="grp-item-sub">${_esc(c.userName||'?')} · ${c.water||''} · ${c.date||''}</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+
+  if(catches.length){
+    requestAnimationFrame(()=>{
+      const mapEl=document.getElementById('grp-map-container');
+      if(!mapEl||typeof L==='undefined')return;
+      const gMap=L.map(mapEl).setView([parseFloat(catches[0].lat),parseFloat(catches[0].lon)],10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(gMap);
+      catches.forEach(c=>{
+        const icon=L.divIcon({html:`<div style="width:24px;height:24px;border-radius:50%;background:${_userColor(c.userId)};display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);">${fIco(c.type)}</div>`,className:'',iconSize:[24,24],iconAnchor:[12,12]});
+        L.marker([parseFloat(c.lat),parseFloat(c.lon)],{icon}).addTo(gMap)
+          .bindPopup(`<strong>${_esc(c.userName)}</strong><br>${fIco(c.type)} ${c.type} · ${c.length}cm<br>🎣 ${_esc(c.bait||'')}`);
+      });
+      setTimeout(()=>gMap.invalidateSize(),200);
+    });
+  }
+}
+
+// ── Group Members ──
+function _rndrGroupMembers(){
+  const g=_groups.find(x=>x.id===_activeGroupId);
+  if(!g)return;
+  const el=document.getElementById('grp-detail-content');
+  const myId=_sbUser?.id||'me';
+  const isAdmin=g.members?.find(m=>m.id===myId)?.role==='admin'||g.createdBy===myId;
+
+  let html=`<div style="padding:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);">${g.members?.length||0} Mitglieder</div>
+      ${isAdmin?`<button onclick="_copyInvite('${g.inviteCode}')" style="padding:6px 12px;background:var(--green-mist);border:1px solid var(--green-pale);border-radius:20px;font-size:11px;font-weight:600;color:var(--green-mid);font-family:var(--fa);cursor:pointer;">🔗 Einladen: ${g.inviteCode}</button>`:''}
+    </div>
+    ${(g.members||[]).map(m=>`<div class="grp-item" style="margin-bottom:6px;">
+      <div class="catch-card-avatar" style="background:${_userColor(m.id)};">${m.name.charAt(0)}</div>
+      <div class="grp-item-info">
+        <div class="grp-item-name">${_esc(m.name)}</div>
+        <div class="grp-item-sub">${m.role==='admin'?'👑 Admin':'Mitglied'} · seit ${new Date(m.joinedAt).toLocaleDateString('de-DE')}</div>
+      </div>
+      ${m.isBeta?'<div style="font-size:10px;background:var(--purple);color:var(--purple-t);padding:2px 8px;border-radius:10px;">Beta</div>':''}
+    </div>`).join('')}
+  </div>`;
+  el.innerHTML=html;
+}
+
+function _copyInvite(code){
+  navigator.clipboard?.writeText(code).then(()=>showToast('📋',`Code ${code} kopiert!`));
+}
+
+// ── Share to Group ──
+function _openShareModal(sessId){
+  if(!sessId&&!_lastSavedId)return;
+  const id=sessId||_lastSavedId;
+  const modal=document.getElementById('share-modal');
+  const list=document.getElementById('share-grp-list');
+
+  if(!_groups.length){
+    showToast('ℹ️','Erstelle oder tritt einer Gruppe bei, um Fänge zu teilen.');
+    return;
+  }
+
+  list.innerHTML=_groups.map(g=>`<div class="share-grp-row" onclick="_shareToGroup('${g.id}','${id}')">
+    <div class="share-grp-ico" style="background:var(--green-mist);">${g.icon||'🎣'}</div>
+    <div class="share-grp-name">${_esc(g.name)}</div>
+    <div style="font-size:18px;">›</div>
+  </div>`).join('');
+
+  modal.classList.add('on');
+}
+
+function _closeShareModal(){document.getElementById('share-modal').classList.remove('on');}
+
+async function _shareToGroup(gId,sessId){
+  const g=_groups.find(x=>x.id===gId);
+  const sess=sessions.find(s=>String(s.id)===String(sessId));
+  if(!g||!sess)return;
+  const shareGps=document.getElementById('share-gps-toggle')?.classList.contains('on');
+  const myName=profile?.name||profile?.vorname||'Angler';
+  const myId=_sbUser?.id||'me';
+
+  (sess.catches||[]).forEach(c=>{
+    const shared={
+      id:_newId(),userId:myId,userName:myName,
+      type:c.type,length:c.length,weight:c.weight,
+      bait:c.bait,baitNote:c.baitNote,
+      water:sess.water,spot:sess.spot,
+      date:sess.date,time:c.time||sess.start,
+      shareGps,
+      lat:shareGps?sess.lat:null,lon:shareGps?sess.lon:null,
+      likes:[],comments:[]
+    };
+    if(!g.sharedCatches)g.sharedCatches=[];
+    g.sharedCatches.push(shared);
+    g.feed.push({type:'catch',text:`Hat einen ${c.length||'?'}cm ${c.type||'Fisch'} geteilt!`,ts:Date.now(),userId:myId,catchData:shared});
+  });
+
+  await _saveGroups();
+  _closeShareModal();
+  showToast('✅',`${sess.catches?.length||0} Fang/Fänge in "${g.name}" geteilt!`);
+}
+
+// ── Map Layer Toggle ──
+function _setMapLayer(layer){
+  _mapLayer=layer;
+  document.getElementById('ml-private').classList.toggle('on',layer==='private');
+  document.getElementById('ml-group').classList.toggle('on',layer==='group');
+  _updateMapMarkers();
+}
+
+// ── Phänologie (Phenological Calendar) ──
+const PHAENO_PHASES=[
+  {name:'Vorfrühling',indicator:'Schneeglöckchen, Haselnuss',months:[2,3],fishTip:'Erste Aktivität bei Friedfischen. Hecht-Laichzeit beginnt.',icon:'🌱'},
+  {name:'Erstfrühling',indicator:'Forsythie, Kirschblüte',months:[3,4],fishTip:'Barsche werden aktiv. Zanderangeln an Steinpackungen.',icon:'🌸'},
+  {name:'Vollfrühling',indicator:'Apfelblüte, Flieder',months:[4,5],fishTip:'Hecht-Nachlaichphase – aggressive Bisse! Karpfen ziehen ins Flachwasser.',icon:'🌺'},
+  {name:'Frühsommer',indicator:'Holunder, Roggen',months:[5,6],fishTip:'Topwater-Saison beginnt. Weißfisch-Schwärme aktiv.',icon:'☀️'},
+  {name:'Hochsommer',indicator:'Linde, Weizen',months:[6,7],fishTip:'Nachtangeln auf Waller. Friedfische in der Tiefe. Frühmorgens/Spätabends fischen.',icon:'🌻'},
+  {name:'Spätsommer',indicator:'Fruchtreife Äpfel',months:[7,8],fishTip:'Barsche jagen Brutfische. Gute Spinnfisch-Zeit.',icon:'🍎'},
+  {name:'Frühherbst',indicator:'Holunder schwarz, Hasel',months:[8,9],fishTip:'Raubfisch-Hochsaison beginnt! Hechte im Freiwasser.',icon:'🍂'},
+  {name:'Vollherbst',indicator:'Eicheln, Kastanien',months:[9,10],fishTip:'Beste Zanderzeit! Große Hechte an Kanten und Abbrüchen.',icon:'🍁'},
+  {name:'Spätherbst',indicator:'Laubfall, Eiche',months:[10,11],fishTip:'Letzte Topfänge vor dem Winter. Tiefes, langsames Angeln.',icon:'🍂'},
+  {name:'Winter',indicator:'Vegetationsruhe',months:[11,12,1,2],fishTip:'Vertikalangeln auf Zander. Quappen-Saison. Geringe Aktivität.',icon:'❄️'}
+];
+
+function _getCurrentPhaeno(){
+  const month=new Date().getMonth()+1;
+  return PHAENO_PHASES.find(p=>p.months.includes(month))||PHAENO_PHASES[0];
+}
+
+function _rndrPhaenoCard(){
+  const p=_getCurrentPhaeno();
+  return `<div class="phaeno-card" onclick="_openPhaenoDetail()">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+      <span style="font-size:24px;">${p.icon}</span>
+      <div>
+        <div class="phaeno-title">Phänologischer Kalender</div>
+        <div class="phaeno-phase">${p.name}</div>
+      </div>
+      <div style="margin-left:auto;font-size:13px;color:var(--text-light);">›</div>
+    </div>
+    <div class="phaeno-desc">
+      <strong>Zeiger:</strong> ${p.indicator}<br>
+      <strong>Angel-Tipp:</strong> ${p.fishTip}
+    </div>
+  </div>`;
+}
+
+function _openPhaenoDetail(){
+  const el=document.getElementById('fs-info-body');
+  const month=new Date().getMonth()+1;
+  let html='<div style="padding:0 4px;">';
+  html+='<div style="font-size:13px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;">Der phänologische Kalender basiert auf natürlichen Entwicklungsstadien statt fester Daten. Die aktuelle Phase hilft, Fischverhalten vorherzusagen.</div>';
+  PHAENO_PHASES.forEach(p=>{
+    const isCurrent=p.months.includes(month);
+    html+=`<div class="card" style="margin-bottom:8px;${isCurrent?'border:2px solid var(--green-mid);background:var(--green-mist);':''}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:22px;">${p.icon}</span>
+        <div style="font-size:15px;font-weight:700;font-family:var(--fs);color:${isCurrent?'var(--green-deep)':'var(--text-dark)'};">${p.name}${isCurrent?' ← aktuell':''}</div>
+      </div>
+      <div style="font-size:11px;color:var(--text-mid);line-height:1.6;">
+        <strong>Zeiger:</strong> ${p.indicator}<br>
+        <strong>🎣 Tipp:</strong> ${p.fishTip}
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+  document.getElementById('fs-info-title').textContent='🌿 Phänologischer Kalender';
+  el.innerHTML=html;
+  openFs('info');
+}
+
+// ── Schonzeit-Wächter ──
+const SCHONZEITEN={
+  'Hecht':{start:2,end:4,note:'Feb–Apr (landesabhängig)'},
+  'Zander':{start:3,end:5,note:'Mär–Mai (landesabhängig)'},
+  'Barsch':{start:0,end:0,note:'Meist keine Schonzeit'},
+  'Karpfen':{start:0,end:0,note:'Meist keine Schonzeit'},
+  'Forelle':{start:10,end:2,note:'Okt–Feb (Bachforelle)'},
+  'Wels':{start:5,end:6,note:'Mai–Jun (landesabhängig)'},
+  'Aal':{start:0,end:0,note:'Fangverbot prüfen!'},
+  'Schleie':{start:5,end:6,note:'Mai–Jun'}
+};
+
+function _checkSchonzeit(fishType,dateStr){
+  if(!fishType)return null;
+  const sz=SCHONZEITEN[fishType];
+  if(!sz||(!sz.start&&!sz.end))return null;
+
+  const month=dateStr?new Date(dateStr+'T12:00:00').getMonth()+1:new Date().getMonth()+1;
+  const windowWeeks=4;
+  const beforeStart=sz.start>0?(((sz.start-1)*30.5)-(windowWeeks*7))/30.5:0;
+  const afterEnd=sz.end>0?(((sz.end)*30.5)+(windowWeeks*7))/30.5:0;
+
+  // Check if within 4 weeks before start or 4 weeks after end
+  const beforeMonth=Math.max(1,Math.ceil(beforeStart));
+  const afterMonth=Math.min(12,Math.ceil(afterEnd));
+
+  if(sz.start>0&&sz.end>0){
+    // Near schonzeit?
+    if(sz.start<=sz.end){
+      if(month>=sz.start&&month<=sz.end)return {inSchonzeit:true,note:sz.note};
+      if(month>=Math.max(1,sz.start-1)&&month<=Math.min(12,sz.end+1))return {nearSchonzeit:true,note:sz.note};
+    } else {
+      // Wraps year (e.g. Oct-Feb for Forelle)
+      if(month>=sz.start||month<=sz.end)return {inSchonzeit:true,note:sz.note};
+      if(month>=sz.start-1||month<=sz.end+1)return {nearSchonzeit:true,note:sz.note};
+    }
+  }
+  return null;
+}
+
+function _triggerSchonzeitCheck(fishType,dateStr,callback){
+  const result=_checkSchonzeit(fishType,dateStr);
+  if(!result)return false;
+
+  if(result.inSchonzeit||result.nearSchonzeit){
+    _schonCallback=callback;
+    const warn=document.getElementById('schon-warn');
+    document.getElementById('schon-warn-title').textContent=result.inSchonzeit?
+      `⛔ ${fishType} – Schonzeit!`:`⚠️ ${fishType} – Nähe der Schonzeit`;
+    document.getElementById('schon-warn-text').innerHTML=`
+      <strong>${fishType}</strong> hat Schonzeit: <strong>${result.note}</strong><br><br>
+      ${result.inSchonzeit?'Dieser Fisch befindet sich <strong>aktuell in der Schonzeit</strong>.':'Dieser Fisch befindet sich <strong>innerhalb von 4 Wochen</strong> vor/nach der Schonzeit.'}<br><br>
+      Pflichtfrage gemäß Fischerei-Verordnung:`;
+    warn.classList.add('on');
+    return true;
+  }
+  return false;
+}
+
+function _schonAnswer(answer){
+  document.getElementById('schon-warn').classList.remove('on');
+  if(_schonCallback){
+    _schonCallback(answer);
+    _schonCallback=null;
+  }
+}
+
+// ── Helper: HTML escape ──
+function _esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── Helper: Relative time ──
+function _relTime(ts){
+  if(!ts)return'';
+  const diff=Date.now()-ts;
+  if(diff<60000)return'Gerade eben';
+  if(diff<3600000)return Math.floor(diff/60000)+'m';
+  if(diff<86400000)return Math.floor(diff/3600000)+'h';
+  if(diff<604800000)return Math.floor(diff/86400000)+'d';
+  return new Date(ts).toLocaleDateString('de-DE',{day:'numeric',month:'short'});
+}
+
 (async function boot(){
   // Supabase initialisieren
   sbInit();
@@ -7961,6 +9285,9 @@ function _updateMapMarkers(){
   }catch(err){console.warn('IDB boot:',err);}
 
   addCatch();
+
+  // v44: Gruppen laden
+  await _loadGroups();
 
   // Live-Session wiederherstellen (nach App-Neustart)
   _resumeLiveSession();
