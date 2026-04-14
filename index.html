@@ -379,6 +379,8 @@ position:relative;}
   height:160px;max-height:160px;
   overflow:hidden;
 }
+.fc-chart-wrap.cw-lg{height:200px;max-height:200px;}
+.fc-chart-wrap.cw-xl{height:240px;max-height:240px;}
 .fc-chart-wrap canvas{display:block;width:100%!important;height:100%!important;}
 
 /* Chart Hover-Info */
@@ -412,6 +414,11 @@ position:relative;}
   background:#fff;color:var(--text-mid);white-space:nowrap;transition:all .15s;
 }
 .fc-tide-day-btn.on{background:var(--green-deep);color:#fff;border-color:var(--green-deep);}
+.fc-tide-date-pick{
+  padding:6px 10px;border:1.5px solid var(--green-pale);border-radius:10px;
+  font-size:12px;font-weight:600;font-family:var(--fa);cursor:pointer;
+  background:#fff;color:var(--text-mid);min-width:130px;
+}
 
 /* ── 14-Tage Vorhersage-Tabelle ── */
 .fc14-hdr,.fc14-row{
@@ -557,15 +564,15 @@ position:relative;}
   0%,100%{box-shadow:0 0 0 0 rgba(212,166,64,.45);}
   50%{box-shadow:0 0 0 8px rgba(212,166,64,.0);}
 }
-.goal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px;padding:0 16px;box-sizing:border-box;width:100%;}
+.goal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px;padding:0 16px;box-sizing:border-box;width:100%;align-items:stretch;}
 .goal-card{
   background:#fff;border-radius:var(--r);padding:12px 8px;
   box-shadow:var(--sh-sm);
   border:1px solid rgba(200,221,208,.4);
   transition:transform .15s;
   text-align:center;
-  aspect-ratio:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;box-sizing:border-box;
 }
 .goal-card:active{transform:scale(.97);}
 .goal-card.achieved{
@@ -698,6 +705,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .chip{background:var(--green-pale);color:var(--green-deep);font-size:12px;font-weight:600;padding:5px 11px;border-radius:20px;border:none;cursor:pointer;font-family:var(--fa);transition:background .15s,transform .1s;white-space:nowrap;}
 .chip:hover{background:var(--green-light);color:#fff;transform:scale(1.03);}
 .chip:active{transform:scale(.97);}
+#trueb-chips{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
 .chip.cw{background:var(--blue);color:var(--blue-t);}
 .chip.cw:hover{background:#b5d4f4;}
 .chip.cc{background:var(--purple);color:var(--purple-t);}
@@ -1268,6 +1276,15 @@ input[type=file]{display:none;}
 /* ═══ LEAFLET MAP TAB ═══ */
 #page-map .sc{padding:0;overflow:hidden;}
 #map-container{width:100%;height:100%;position:absolute;inset:0;z-index:1;}
+.map-hdr-bar{position:absolute;top:0;left:0;right:0;z-index:10;padding:14px 16px 18px;
+  background:linear-gradient(180deg,rgba(45,74,53,.88) 0%,rgba(45,74,53,.55) 60%,rgba(45,74,53,0) 100%);
+  display:flex;align-items:center;justify-content:space-between;pointer-events:none;}
+.map-hdr-bar>*{pointer-events:auto;}
+.map-hdr-btn{height:36px;padding:0 14px;border-radius:10px;border:none;font-size:12px;font-weight:600;
+  font-family:var(--fa);cursor:pointer;display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.92);color:var(--green-deep);box-shadow:0 2px 8px rgba(0,0,0,.15);backdrop-filter:blur(6px);}
+.map-hdr-btn:active{transform:scale(.95);}
+.map-filter-badge{display:none;width:8px;height:8px;border-radius:50%;background:#cc0000;flex-shrink:0;}
 #map-container .leaflet-control-zoom{border-radius:var(--rs)!important;overflow:hidden;box-shadow:var(--sh-sm)!important;}
 #map-container .leaflet-popup-content-wrapper{border-radius:var(--rs)!important;box-shadow:var(--sh-md)!important;font-family:var(--fa)!important;}
 #map-container .leaflet-popup-content{margin:12px 14px!important;font-size:13px!important;}
@@ -1360,19 +1377,43 @@ input[type=file]{display:none;}
 </div>
 
 <!-- ═══ LIVE SESSION START OVERLAY ═══ -->
-<div class="ls-start-ov" id="ls-start-ov">
-  <div class="ls-start-card">
-    <h3>🎣 Live Session starten</h3>
-    <div style="font-size:13px;color:var(--text-light);margin-bottom:6px;">Echtzeit-Tracking mit automatischer GPS-Aufzeichnung</div>
+<div class="fsov" id="fs-live-start" role="dialog" aria-modal="true" style="z-index:130;background:#f5f7f5;">
+  <div class="fshdr" style="background:linear-gradient(135deg,var(--green-deep),#3a6b4a);">
+    <div><div class="fstitle" style="color:#fff;">🎣 Live Session starten</div><div class="fsmeta" style="color:rgba(255,255,255,.7);">Echtzeit-Tracking mit GPS</div></div>
+    <button class="xbtn" onclick="closeLiveStartOv()" style="color:#fff;">✕</button>
+  </div>
+  <div class="fsov-scroll" style="padding:16px;">
     <div class="ls-start-wx" id="ls-start-wx">
       <div id="ls-wx-content">🌤️ Wetter wird geladen…</div>
     </div>
-    <div class="ls-track-row">
+
+    <div class="slbl" style="margin-top:14px;margin-bottom:6px;">Gewässer & Spot</div>
+    <div class="g2" style="margin-bottom:14px;">
+      <div class="ig">
+        <label class="il" for="ls-water">Gewässer</label>
+        <input type="text" class="if" id="ls-water" placeholder="z.B. Dümmer See"
+          onfocus="rndrLsWChips('')" oninput="rndrLsWChips(this.value)" onblur="dHide('ls-w-chips')" autocomplete="off">
+        <div class="crow" id="ls-w-chips" style="display:none;" role="listbox"></div>
+      </div>
+      <div class="ig">
+        <label class="il" for="ls-spot">Spot</label>
+        <input type="text" class="if" id="ls-spot" placeholder="z.B. Steg Nord"
+          onfocus="rndrLsSpotChips('')" oninput="rndrLsSpotChips(this.value)" onblur="dHide('ls-spot-chips')" autocomplete="off">
+        <div class="crow" id="ls-spot-chips" style="display:none;" role="listbox"></div>
+      </div>
+    </div>
+
+    <div class="ls-track-row" style="margin-bottom:16px;">
       <span>📍 Strecke tracken?</span>
       <button class="ls-toggle on" id="ls-track-toggle" onclick="this.classList.toggle('on')"></button>
     </div>
-    <button class="ls-end-btn primary" style="margin-top:16px;" onclick="_doStartLive()">🔴 Live Session starten</button>
-    <button class="ls-end-btn ghost" onclick="closeLiveStartOv()">Abbrechen</button>
+
+    <button onclick="_doStartLive()" style="width:100%;padding:16px;background:#cc0000;color:#fff;border:none;border-radius:var(--rs);font-size:16px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(204,0,0,.3);display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span style="width:12px;height:12px;border-radius:50%;background:#fff;display:inline-block;animation:livePulse 1.4s infinite;"></span> Live Session starten
+    </button>
+    <div style="text-align:center;margin-top:12px;">
+      <button onclick="closeLiveStartOv()" style="background:none;border:none;color:var(--text-light);font-size:13px;font-family:var(--fa);cursor:pointer;">Abbrechen</button>
+    </div>
   </div>
 </div>
 
@@ -1639,8 +1680,8 @@ input[type=file]{display:none;}
       <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v40</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
-      <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()" style="display:none;">Live</button>
-      <button class="hbtn hplus" onclick="showPage('new');this.classList.add('hplus-tap');setTimeout(()=>this.classList.remove('hplus-tap'),300);" aria-label="Neue Session erfassen" id="hdr-plus" style="position:relative;">+<div class="live-dot" id="hdr-live-dot"></div></button>
+      <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
+      <button class="hbtn hplus" onclick="_hdrPlusClick()" aria-label="Neue Session erfassen" id="hdr-plus" style="position:relative;">+<div class="live-dot" id="hdr-live-dot"></div></button>
     </div>
   </div>
 </div>
@@ -1682,7 +1723,33 @@ input[type=file]{display:none;}
           <span>✓</span><span id="silent-wx-txt">Wetterdaten automatisch im Hintergrund erfasst</span>
         </div>
       </div>
-      <!-- Sichttiefe + Trübung – Session-Level, nur Raubfisch -->
+      <!-- GPS: hidden after load -->
+      <div id="gps-strip" class="gps-strip" style="display:none;">
+        <span id="gps-ico">📍</span><span id="gps-txt">GPS wird ermittelt…</span>
+      </div>
+      <!-- Schonzeit static banner (closeable, persistent) -->
+      <div id="sz-hint" style="display:none;" class="sz-banner">
+        <div style="font-size:18px;flex-shrink:0;">📋</div>
+        <div class="sz-text" id="sz-text"></div>
+        <button class="sz-close" onclick="disSzHint()" aria-label="Schließen">✕</button>
+      </div>
+
+      <!-- Session-Details (zusammengeführt) -->
+      <div class="g2" style="margin-bottom:10px;">
+        <div class="ig">
+          <label class="il" for="s-water">Gewässer</label>
+          <input type="text" class="if" id="s-water" placeholder="z.B. Dümmer See"
+            onfocus="rndrWChips('')" oninput="rndrWChips(this.value)" onblur="dHide('w-chips');_autoTabWater()" autocomplete="off">
+          <div class="crow" id="w-chips" style="display:none;" role="listbox"></div>
+        </div>
+        <div class="ig">
+          <label class="il" for="s-spot">Spot</label>
+          <input type="text" class="if" id="s-spot" placeholder="z.B. Steg Nord"
+            onfocus="rndrSpotChips('')" oninput="rndrSpotChips(this.value)" onblur="dHide('spot-chips')" autocomplete="off">
+          <div class="crow" id="spot-chips" style="display:none;" role="listbox"></div>
+        </div>
+      </div>
+      <!-- Sichttiefe + Trübung – Session-Level, unter Gewässer/Spot -->
       <div id="new-sicht-row" style="display:none;margin-bottom:10px;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
           <div class="ig">
@@ -1696,24 +1763,6 @@ input[type=file]{display:none;}
             <div class="crow" id="trueb-chips" style="display:none;" role="listbox"></div>
           </div>
         </div>
-      </div>
-      <!-- GPS: hidden after load -->
-      <div id="gps-strip" class="gps-strip" style="display:none;">
-        <span id="gps-ico">📍</span><span id="gps-txt">GPS wird ermittelt…</span>
-      </div>
-      <!-- Schonzeit static banner (closeable, persistent) -->
-      <div id="sz-hint" style="display:none;" class="sz-banner">
-        <div style="font-size:18px;flex-shrink:0;">📋</div>
-        <div class="sz-text" id="sz-text"></div>
-        <button class="sz-close" onclick="disSzHint()" aria-label="Schließen">✕</button>
-      </div>
-
-      <!-- Session-Details (zusammengeführt) -->
-      <div class="ig" style="margin-bottom:10px;">
-        <label class="il" for="s-water">Gewässer</label>
-        <input type="text" class="if" id="s-water" placeholder="z.B. Dümmer See"
-          onfocus="rndrWChips('')" oninput="rndrWChips(this.value)" onblur="dHide('w-chips');_autoTabWater()" autocomplete="off">
-        <div class="crow" id="w-chips" style="display:none;" role="listbox"></div>
       </div>
       <div class="g2" style="margin-bottom:10px;">
         <div class="ig">
@@ -1891,6 +1940,24 @@ input[type=file]{display:none;}
   <div style="flex:1;position:relative;"><div id="sess-map-container" style="position:absolute;inset:0;"></div></div>
 </div>
 
+<!-- AP3: Karten-Filter Overlay -->
+<div class="fsov" id="fs-map-filter" role="dialog" aria-modal="true" style="z-index:120;background:#f5f7f5;">
+  <div class="fshdr">
+    <div><div class="fstitle">🔍 Karten-Filter</div><div class="fsmeta">Angezeigte Marker filtern</div></div>
+    <button class="xbtn" onclick="closeFs('map-filter')">✕</button>
+  </div>
+  <div class="fsov-scroll" id="map-filter-body" style="padding:16px;"></div>
+</div>
+
+<!-- AP2: Session splitten Overlay -->
+<div class="fsov" id="fs-split-sess" role="dialog" aria-modal="true" style="z-index:119;background:#f5f7f5;">
+  <div class="fshdr">
+    <div><div class="fstitle">✂️ Session splitten</div><div class="fsmeta" id="fs-split-meta">Fänge auf verschiedene Sessions aufteilen</div></div>
+    <button class="xbtn" onclick="closeFs('split-sess')">✕</button>
+  </div>
+  <div class="fsov-scroll" id="split-sess-body" style="padding:16px;"></div>
+</div>
+
 <!-- PAGE: DETAIL -->
 <div class="page" id="page-detail">
   <div id="detail-hdr"></div>
@@ -1911,7 +1978,13 @@ input[type=file]{display:none;}
 <div class="page" id="page-map">
   <div class="sc" style="padding:0;position:relative;overflow:hidden;">
     <div id="map-container"></div>
-    <button id="map-close-btn" onclick="showPage('fangbuch')" style="position:absolute;top:16px;right:16px;z-index:10;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.1);box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);">✕</button>
+    <div class="map-hdr-bar">
+      <div style="display:flex;gap:8px;">
+        <button class="map-hdr-btn" onclick="_openMapFilter()">🔍 Filter <span class="map-filter-badge" id="map-filter-badge"></span></button>
+        <button class="map-hdr-btn" onclick="openSpotGpsLink()">📌 Spot verknüpfen</button>
+      </div>
+      <button class="map-hdr-btn" onclick="showPage('fangbuch')" style="width:36px;padding:0;justify-content:center;font-size:16px;">✕</button>
+    </div>
   </div>
 </div>
 
@@ -1941,35 +2014,40 @@ input[type=file]{display:none;}
         <label class="il" for="lc-wt">Gewicht (kg)</label>
         <input type="number" class="if" id="lc-wt" placeholder="2.5" min="0" step="0.1" inputmode="decimal">
       </div>
-      <div class="ig" id="lc-note-wrap" style="display:none;grid-column:2;">
-        <label class="il" for="lc-note">Notiz</label>
-        <input type="text" class="if" id="lc-note" placeholder="z.B. Released" autocomplete="off">
-      </div>
     </div>
 
-    <div class="ig" style="margin-bottom:10px;">
-      <label class="il" for="lc-bait">Köder</label>
-      <input type="text" class="if" id="lc-bait" placeholder="z.B. Gummifisch" autocomplete="off">
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
       <div class="ig">
-        <label class="il" for="lc-bait-len">Köder-Länge (cm)</label>
-        <input type="number" class="if" id="lc-bait-len" placeholder="12" min="1" max="100" inputmode="numeric">
+        <label class="il" for="lc-bait">Köder</label>
+        <input type="text" class="if" id="lc-bait" placeholder="Gummifisch" autocomplete="off">
       </div>
       <div class="ig">
-        <label class="il" for="lc-bait-col">Köder-Farbe</label>
+        <label class="il" for="lc-bait-col">Farbe</label>
         <input type="text" class="if" id="lc-bait-col" placeholder="Motoroil" autocomplete="off">
       </div>
+      <div class="ig">
+        <label class="il" for="lc-bait-len">Größe</label>
+        <input type="text" class="if" id="lc-bait-len" placeholder="12cm" autocomplete="off">
+      </div>
     </div>
 
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+    <div class="ig" style="margin-bottom:10px;" id="lc-note-wrap2">
+      <label class="il" for="lc-note">Notizen</label>
+      <input type="text" class="if" id="lc-note" placeholder="z.B. Released, am Grund" autocomplete="off">
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
       <div id="lc-pa" class="phadd" onclick="trigLivePhoto()" role="button" tabindex="0"><span>📷</span><span class="phlbl">Foto</span></div>
       <img id="lc-pp" class="phpr" src="" alt="Fangfoto" style="display:none;" onclick="trigLivePhoto()">
       <input type="file" id="lc-photo-input" accept="image/*" capture="environment" style="display:none;" onchange="_handleLivePhoto(this)">
       <div style="flex:1;font-size:11px;color:var(--text-light);line-height:1.5;cursor:pointer;" onclick="trigLivePhoto()">Foto hinzufügen</div>
     </div>
 
-    <button onclick="saveLiveCatch()" style="width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);">✅ Fang speichern</button>
+    <button onclick="saveLiveCatch()" style="width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);margin-bottom:10px;">✅ Fang speichern</button>
+
+    <button onclick="_whisperPlaceholder()" style="width:100%;padding:14px;background:rgba(74,124,89,.08);color:var(--green-deep);border:1.5px solid rgba(74,124,89,.2);border-radius:var(--rs);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span style="font-size:18px;">🎙️</span> Fang per Sprache eintragen <span style="font-size:10px;opacity:.5;font-weight:400;">(OpenAI Whisper)</span>
+    </button>
   </div>
 </div>
 
@@ -2139,6 +2217,7 @@ async function syncToCloud(){
         session_id:String(s.id),
         date:s.date||null,
         water:s.water||null,
+        spot:s.spot||null,
         metadata:s
       };
       await _sb.from('sessions').upsert(row,{onConflict:'user_id,session_id'}).select();
@@ -2197,6 +2276,8 @@ async function syncProfileFromCloud(){
         const cp=data.data;
         for(const k of Object.keys(cp)){
           if(!profile[k]&&cp[k]) profile[k]=cp[k];
+          // Arrays (z.B. goals): Cloud gewinnt wenn lokal leer
+          if(Array.isArray(cp[k])&&cp[k].length&&(!profile[k]||!profile[k].length)) profile[k]=cp[k];
         }
       }
       await saveProfile();
@@ -2288,7 +2369,7 @@ async function getPhoto(k){if(!k)return null;const r=await idbG('photos',k);retu
 // ═══════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════
-let sessions=[],profile=null,favs={waters:[],fish:[],bait:[],baitKeywords:{}};
+let sessions=[],profile=null,favs={waters:[],fish:[],bait:[],spots:[],baitKeywords:{}};
 let catchCount=0,sucMode='catch',obStep=0,obData={name:'',angeltyp:'',plz:''};
 let _inputMode='raub'; // 'raub' | 'fried' | 'reduced'
 
@@ -3159,7 +3240,7 @@ function dHide(id){
 // ── GEWÄSSER-CHIPS ──────────────────────────────────────────
 function rndrWChips(fv){
   const el=document.getElementById('w-chips');if(!el)return;
-  let chips=topFavs('waters',5);
+  let chips=[...new Set(topFavs('waters',5))];
   if(fv)chips=chips.filter(w=>w.toLowerCase().includes(fv.toLowerCase()));
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
@@ -3173,6 +3254,33 @@ function wSel(v){
   document.getElementById('w-chips').style.display='none';
   // Fisch-Chips für alle bestehenden Fang-Blöcke aktualisieren
   for(let i=1;i<=catchCount;i++)rndrFChips(i,'');
+  // Spot-Chips aktualisieren (Gewässer-Kontext)
+  rndrSpotChips('');
+}
+
+// ── SPOT-CHIPS ─────────────────────────────────────────────
+function rndrSpotChips(fv){
+  const el=document.getElementById('spot-chips');if(!el)return;
+  const water=document.getElementById('s-water')?.value?.trim()||'';
+  // Spots aus Sessions für dieses Gewässer + globale Favs, dedupliziert
+  let chips=[];
+  if(water){
+    const wSpots=[...new Set(sessions.filter(s=>s.water===water&&s.spot).map(s=>s.spot))];
+    chips=wSpots.slice(0,5);
+  }
+  if(!chips.length) chips=topFavs('spots',5);
+  if(fv)chips=chips.filter(w=>w.toLowerCase().includes(fv.toLowerCase()));
+  chips=[...new Set(chips)]; // Deduplizierung
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(w=>{
+    const s=w.replace(/'/g,"\\'");
+    return`<button class="chip cw" onmousedown="spotSel('${s}')">${w}</button>`;
+  }).join('');
+}
+function spotSel(v){
+  document.getElementById('s-spot').value=v;
+  document.getElementById('spot-chips').style.display='none';
 }
 
 // ── STARTZEIT-CHIPS (Uhrzeit-Vorschläge) ───────────────────
@@ -3200,6 +3308,7 @@ function rndrFChips(id,fv){
   if(!chips.length){
     chips=topFavs('fish',5);
   }
+  chips=[...new Set(chips)]; // Deduplizierung
   if(!chips.length){el.style.display='none';return;}
   if(fv)chips=chips.filter(f=>f.toLowerCase().includes(fv.toLowerCase()));
   if(!chips.length){el.style.display='none';return;}
@@ -3211,6 +3320,17 @@ function rndrFChips(id,fv){
 }
 
 // ── KÖDER-CHIPS (Top 5, Fischart-Kontext > globale Favs) ───
+// AP2: Köder-Chips erst nach Länge-Eingabe anzeigen
+function _gatedBChips(id){
+  const lenEl=document.getElementById('fl-'+id);
+  const len=parseFloat(lenEl?.value);
+  if(!len||isNaN(len)||len<=0){
+    const bc=document.getElementById('bc-'+id);
+    if(bc)bc.style.display='none';
+    return;
+  }
+  rndrBChips(id,document.getElementById('fb-'+id)?.value||'');
+}
 function rndrBChips(id,fv){
   const el=document.getElementById('bc-'+id);if(!el)return;
   const ctx=ctxIdx();
@@ -3224,6 +3344,7 @@ function rndrBChips(id,fv){
   if(!chips.length){
     chips=topFavs('bait',5);
   }
+  chips=[...new Set(chips)]; // Deduplizierung
   if(!chips.length){el.style.display='none';return;}
   if(fv)chips=chips.filter(b=>b.toLowerCase().includes(fv.toLowerCase()));
   if(!chips.length){el.style.display='none';return;}
@@ -3453,15 +3574,25 @@ function addCatch(){
     <div class="mmw" id="mm-${id}" role="alert"></div>
     <div class="mmw" id="ct-warn-${id}" role="alert" style="color:var(--gold-d);"></div>
 
-    <!-- Köder – nur im Raubfisch-Modus -->
-    <div id="catch-bait-row-${id}" style="display:${_inputMode==='raub'?'':'none'};">
-      <div class="ig" style="margin-bottom:6px;margin-top:8px;">
-        <label class="il" for="fb-${id}">Köder</label>
-        <input type="text" class="if" id="fb-${id}" placeholder="z.B. Gummifisch"
-          value="${presetBait}"
-          onfocus="rndrBChips(${id},this.value)" oninput="rndrBChips(${id},this.value);updNoteChips(${id})" onblur="dHide('bc-${id}')" autocomplete="off">
-        <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
+    <!-- Köder + Farbe + Größe – nur im Raubfisch-Modus -->
+    <div id="catch-bait-row-${id}" style="display:${_inputMode==='raub'?'':'none'};margin-top:8px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px;">
+        <div class="ig">
+          <label class="il" for="fb-${id}">Köder</label>
+          <input type="text" class="if" id="fb-${id}" placeholder="z.B. Gummifisch"
+            value="${presetBait}"
+            onfocus="_gatedBChips(${id})" oninput="rndrBChips(${id},this.value);updNoteChips(${id})" onblur="dHide('bc-${id}')" autocomplete="off">
+        </div>
+        <div class="ig">
+          <label class="il" for="fbcol-${id}">Farbe</label>
+          <input type="text" class="if" id="fbcol-${id}" placeholder="Motoroil" autocomplete="off">
+        </div>
+        <div class="ig">
+          <label class="il" for="fbsz-${id}">Größe</label>
+          <input type="text" class="if" id="fbsz-${id}" placeholder='12cm' autocomplete="off">
+        </div>
       </div>
+      <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
     </div>
 
     <!-- Notizen – nur im Raubfisch-Modus -->
@@ -3691,7 +3822,8 @@ async function saveSess(){
       for(let i=1;i<=catchCount;i++){
         const te=document.getElementById('ft-'+i),le=document.getElementById('fl-'+i),
               ti=document.getElementById('ftime-'+i),tk=document.getElementById('ftak-'+i),
-              tb=document.getElementById('fb-'+i),tn=document.getElementById('fn-'+i);
+              tb=document.getElementById('fb-'+i),tn=document.getElementById('fn-'+i),
+              tcol=document.getElementById('fbcol-'+i),tsz=document.getElementById('fbsz-'+i);
         if(!te)continue;
         const type=te.value.trim(),lenVal=le?.value?.trim(),len=parseFloat(lenVal);
         // Wenn Fischart vorhanden aber Länge fehlt → Abbruch mit Fokus
@@ -3703,7 +3835,9 @@ async function saveSess(){
         if(type&&!isNaN(len)&&len>0){
           const bait=tb?.value.trim()||'',note=tn?.value.trim()||'';
           const pk=(window._pm||{})[i]||null;
-          const catchObj={type,length:len,time:ti?.value||'',taken:tk?.checked||false,bait,baitNote:note,score:fScore(type,len),photoKey:pk,inputMode:_inputMode};
+          const baitColor=tcol?.value?.trim()||'';
+          const baitSize=tsz?.value?.trim()||'';
+          const catchObj={type,length:len,time:ti?.value||'',taken:tk?.checked||false,bait,baitColor,baitSize,baitNote:note,score:fScore(type,len),photoKey:pk,inputMode:_inputMode};
           // Friedfisch-Daten hinzufügen wenn im Friedfisch-Modus
           if(_inputMode==='fried'){
             catchObj.ffCount=parseInt(document.getElementById('ff-cnt-'+i)?.value)||0;
@@ -3727,11 +3861,12 @@ async function saveSess(){
       showToast('⚠️',`${skippedCatches} unvollständiger Fang${skippedCatches>1?'e':''} nicht gespeichert`);
     }
 
-    addFav('waters',waterVal);window._pm={};
+    const spotVal=document.getElementById('s-spot').value.trim();
+    addFav('waters',waterVal);if(spotVal)addFav('spots',spotVal);window._pm={};
     const effSk=sk||(catches.length===0&&sucMode==='catch');
     const sess={
       id:_newId(),
-      date,start,end,water:waterVal,weather:wx,
+      date,start,end,water:waterVal,spot:spotVal||'',weather:wx,
       temp:temp?parseFloat(temp):(_lastWx?.temp||null),
       lat:gpsCoords?.lat||null,lon:gpsCoords?.lon||null,
       moonIcon:moon.icon,moonName:moon.name,moonIllum:moon.illum,
@@ -3811,6 +3946,7 @@ async function saveSess(){
 }
 function resetForm(){
   _editPendingId=null;
+  _restoreHdrPlus();
   // Seitentitel zurücksetzen
   const titleEl=document.getElementById('new-page-title');
   if(titleEl)titleEl.textContent='Fang melden';
@@ -3818,6 +3954,7 @@ function resetForm(){
   if(saveBtn)saveBtn.textContent='Session speichern ✓';
   document.getElementById('catches-con').innerHTML='';
   document.getElementById('s-water').value='';document.getElementById('w-chips').style.display='none';
+  document.getElementById('s-spot').value='';document.getElementById('spot-chips').style.display='none';
   document.getElementById('s-temp').value='';
   document.getElementById('start-chips').style.display='none';
   document.getElementById('manual-wx').style.display='';
@@ -3964,9 +4101,41 @@ function stopK(){if(kAF)cancelAnimationFrame(kAF);document.getElementById('kcanv
 // ═══════════════════════════════════════════════════════════
 // Tab-Mapping: welcher btab wird bei welcher page aktiv
 const TAB_PAGE_MAP={fangbuch:'fangbuch',history:'fangbuch',forecast:'forecast',map:'map',stats:'stats'};
+
+// AP1: Header +/X Button Logik
+function _hdrPlusClick(){
+  const btn=document.getElementById('hdr-plus');
+  if(_editPendingId){
+    // Edit-Modus abbrechen
+    resetForm();
+    _restoreHdrPlus();
+    showPage('fangbuch');
+  } else {
+    showPage('new');
+    btn.classList.add('hplus-tap');
+    setTimeout(()=>btn.classList.remove('hplus-tap'),300);
+  }
+}
+function _setHdrEditX(){
+  const btn=document.getElementById('hdr-plus');
+  if(btn){btn.textContent='✕';btn.style.background='var(--red,#c04040)';btn.style.color='#fff';}
+}
+function _restoreHdrPlus(){
+  const btn=document.getElementById('hdr-plus');
+  if(btn){
+    btn.innerHTML='+<div class="live-dot" id="hdr-live-dot"></div>';
+    btn.style.background='';btn.style.color='';
+  }
+}
+
 function showPage(p){
   // AP3: Alle offenen Overlays schließen und Edit-State resetten
   document.querySelectorAll('.fsov.on').forEach(ov=>ov.classList.remove('on'));
+  // AP1: Edit-Modus abbrechen wenn aktiv
+  if(_editPendingId&&p!=='new'){
+    resetForm();
+    _restoreHdrPlus();
+  }
   _editPendingId=null;
 
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
@@ -4083,13 +4252,15 @@ function rndrFangbuch(){
       const totalCnt=allCatches.length;
       const isSkunked=totalCnt===0&&daySess.every(s=>s.skunked||!s.catches.length);
       const waters=[...new Set(daySess.map(s=>s.water).filter(Boolean))];
-      const waterLabel=waters.length===1?waters[0]:waters.length>1?waters[0]+' +'+(waters.length-1):'–';
+      const spots=[...new Set(daySess.map(s=>s.spot).filter(Boolean))];
+      const waterLabel=waters.length===1?waters[0]+(spots.length===1?' · '+spots[0]:''):waters.length>1?waters[0]+' +'+(waters.length-1):'–';
       const starts=daySess.map(s=>s.start).filter(Boolean).sort();
       const ends=daySess.map(s=>s.end).filter(Boolean).sort();
       const timeSpan=starts.length&&ends.length?starts[0]+'–'+ends[ends.length-1]:'–';
 
       // Zweite Zeile: Uhrzeit + Fischarten als Text (kein Chip-Design)
-      let timeLabel=isSkunked?'Schneider':timeSpan;
+      // AP2: Bei Schneider trotzdem Uhrzeit anzeigen wenn manuell gesetzt
+      let timeLabel=isSkunked?(timeSpan!=='–'?timeSpan+' · Schneider':'Schneider'):timeSpan;
       let fishLabel='';
       if(!isSkunked){
         const freq={};allCatches.forEach(c=>{if(c.type)freq[c.type]=(freq[c.type]||0)+1;});
@@ -4240,12 +4411,13 @@ async function openDayDetail(dateKey){
   openFs('day-detail');
 
   // Alle Fänge chronologisch nach Uhrzeit sortiert
-  const allCatches=daySess.flatMap(s=>s.catches.map(c=>({...c,_sessId:s.id,_sessWater:s.water}))).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const allCatches=daySess.flatMap(s=>s.catches.map(c=>({...c,_sessId:s.id,_sessWater:s.water,_sessSpot:s.spot}))).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
 
   const totalCnt=allCatches.length;
   const isSkunked=totalCnt===0&&daySess.every(s=>s.skunked||!s.catches.length);
   const waters=[...new Set(daySess.map(s=>s.water).filter(Boolean))];
-  const waterLabel=waters.length===1?waters[0]:waters.length>1?`${waters[0]} +${waters.length-1}`:'–';
+  const spots=[...new Set(daySess.map(s=>s.spot).filter(Boolean))];
+  const waterLabel=waters.length===1?waters[0]+(spots.length===1?' · '+spots[0]:''):waters.length>1?`${waters[0]} +${waters.length-1}`:'–';
   const starts=daySess.map(s=>s.start).filter(Boolean).sort();
   const ends=daySess.map(s=>s.end).filter(Boolean).sort((a,b)=>b.localeCompare(a));
   const timeSpan=starts.length&&ends.length?starts[0]+'–'+ends[0]+' Uhr':'–';
@@ -4314,6 +4486,8 @@ async function openDayDetail(dateKey){
               ${c.inputMode==='fried'?`<div class="dd-catch-meta" style="color:var(--green-mid);">${c.ffCount?c.ffCount+'× ':''}${c.ffWeight?c.ffWeight+'kg ':''}${c.ffRig?'· '+c.ffRig+' ':''}${c.ffBait?'· '+c.ffBait:''}</div>${c.ffFeed?`<div class="dd-catch-meta" style="color:var(--text-light);">🪣 ${c.ffFeed}${c.ffFeedAmt?' · '+c.ffFeedAmt+'kg':''}${c.ffPrebaited==='yes'?' · vorbehandelt':''}</div>`:''}`:''}
               <span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>
               ${mm&&!mm.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ &lt;${mm.mm}cm</span>`:''}
+              ${c.lat&&c.lon?`<span class="crp" style="background:rgba(12,68,124,.1);color:var(--blue-t);margin-left:4px;cursor:pointer;" onclick="_viewCatchGps('${s.id}',${i})" title="GPS-Position">📍</span>`:''}
+              <span class="crp" style="background:rgba(74,124,89,.1);color:var(--green-deep);margin-left:4px;cursor:pointer;" onclick="openCatchPosMap('${s.id}',${i})" title="Spot markieren">📌</span>
             </div>
             <div class="dd-catch-right">
               <div class="dd-catch-len">${c.length}</div>
@@ -4328,10 +4502,11 @@ async function openDayDetail(dateKey){
       sessionsHtml+=`<div style="background:#fff;border-radius:var(--rs);margin-bottom:10px;overflow:hidden;border:1px solid rgba(200,221,208,.3);box-shadow:var(--sh-sm);">
         <div style="background:var(--green-mist);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
           <div>
-            <div style="font-size:12px;font-weight:700;color:var(--green-deep);">${s.water||'–'}</div>
+            <div style="font-size:12px;font-weight:700;color:var(--green-deep);">${s.water||'–'}${s.spot?' · '+s.spot:''}</div>
             <div style="font-size:11px;color:var(--text-mid);margin-top:1px;">${sessTimeLabel}</div>
           </div>
           <div style="display:flex;gap:6px;">
+            ${s.catches&&s.catches.length>1?`<button onclick="splitSession('${s.id}','${dateKey}')" style="padding:6px 10px;background:rgba(74,124,89,.10);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:var(--green-mid);" title="Session splitten">✂️</button>`:''}
             <button onclick="editSess('${s.id}')" style="padding:6px 10px;background:rgba(74,124,89,.15);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:var(--green-deep);">✏️</button>
             <button onclick="delSessFromDetail('${s.id}','${dateKey}')" style="padding:6px 10px;background:rgba(200,60,60,.12);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:#c04040;">🗑️</button>
           </div>
@@ -4370,7 +4545,6 @@ async function openDayDetail(dateKey){
     </div>
     <div class="dd-body-pad">
     ${wxHtml}
-    ${_ddMapTile(daySess,dateKey)}
     <div class="slbl" style="padding-left:16px;">Fänge</div>
     ${sessionsHtml}
     </div>`;
@@ -4563,7 +4737,7 @@ function openSessMap(dateKey){
       const la=parseFloat(s.lat),lo=parseFloat(s.lon);
       bounds.push([la,lo]);
       const cnt=s.catches?.length||0;
-      const popup=`<strong>${s.water||'–'}</strong><br>${s.start||''}–${s.end||''} Uhr<br>${cnt} Fang${cnt!==1?'e':''}`;
+      const popup=`<strong>${s.water||'–'}${s.spot?' · '+s.spot:''}</strong><br>${s.start||''}–${s.end||''} Uhr<br>${cnt} Fang${cnt!==1?'e':''}`;
       L.marker([la,lo]).addTo(_sessMap).bindPopup(popup);
       // Einzelne Fang-Marker (klein, farbig)
       if(s.catches){
@@ -4640,7 +4814,7 @@ function openSpotGpsLink(){
     sessions.forEach(s=>{
       if(s.water&&s.lat&&s.lon){
         L.marker([parseFloat(s.lat),parseFloat(s.lon)]).addTo(_spotGpsMap)
-          .bindPopup(`<strong>${s.water}</strong>`);
+          .bindPopup(`<strong>${s.water}${s.spot?' · '+s.spot:''}</strong>`);
       }
     });
   },200);
@@ -4702,7 +4876,7 @@ function openCatchPosMap(sessId,catchIdx){
     const btn=document.createElement('button');
     btn.id='catch-pos-confirm';
     btn.textContent='✅ Position bestätigen';
-    btn.style.cssText='position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:1000;padding:14px 28px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-lg);display:none;';
+    btn.style.cssText='position:absolute;bottom:80px;left:50%;transform:translateX(-50%);z-index:1000;padding:16px 32px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:16px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.35);display:none;';
     container.parentElement.appendChild(btn);
 
     _sessMap.on('click',e=>{
@@ -4723,6 +4897,32 @@ function openCatchPosMap(sessId,catchIdx){
   },200);
 }
 
+// GPS-Position eines Fangs anzeigen (View-Only Mini-Map)
+function _viewCatchGps(sessId,catchIdx){
+  const s=sessions.find(x=>String(x.id)===String(sessId));
+  if(!s||!s.catches||!s.catches[catchIdx])return;
+  const c=s.catches[catchIdx];
+  if(!c.lat||!c.lon)return;
+  const la=parseFloat(c.lat),lo=parseFloat(c.lon);
+  if(isNaN(la)||isNaN(lo))return;
+
+  document.getElementById('fs-smap-meta').textContent=`📍 ${c.type||'Fang'}${c.length?' · '+c.length+'cm':''} · ${c.time||''} Uhr`;
+  openFs('sess-map');
+  setTimeout(()=>{
+    const container=document.getElementById('sess-map-container');
+    if(!container||typeof L==='undefined')return;
+    if(_sessMap){_sessMap.remove();_sessMap=null;}
+    _sessMap=L.map(container).setView([la,lo],16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OSM',maxZoom:18}).addTo(_sessMap);
+    const catchIcon=L.divIcon({
+      html:`<div style="background:var(--green-mid);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.3);border:2px solid #fff;">${fIco(c.type)}</div>`,
+      className:'',iconSize:[28,28],iconAnchor:[14,28],popupAnchor:[0,-30]
+    });
+    const popup=`<strong>${c.type||'–'}</strong>${c.length?' · '+c.length+'cm':''}${c.bait?'<br>Köder: '+c.bait:''}`;
+    L.marker([la,lo],{icon:catchIcon}).addTo(_sessMap).bindPopup(popup).openPopup();
+  },200);
+}
+
 // Löschen aus dem Day-Detail-Overlay heraus
 async function delSessFromDetail(id,dateKey){
   const ok=await showConf('🗑️','Session löschen','Wirklich löschen?\nKann nicht rückgängig gemacht werden.','Ja, löschen','danger');
@@ -4733,6 +4933,91 @@ async function delSessFromDetail(id,dateKey){
   const remaining=sessions.filter(s=>String(s.date)===String(dateKey));
   if(remaining.length){openDayDetail(dateKey);}
   else{closeDayDetail();rndrFangbuch();}
+}
+
+// ═══════════════════════════════════════════════════════════
+// SESSION SPLITTEN – Fänge auf verschiedene Sessions aufteilen
+// ═══════════════════════════════════════════════════════════
+let _splitSessId=null,_splitDateKey=null;
+function splitSession(sessId,dateKey){
+  const s=sessions.find(x=>String(x.id)===String(sessId));
+  if(!s||!s.catches||s.catches.length<2)return;
+  _splitSessId=sessId;_splitDateKey=dateKey;
+  document.getElementById('fs-split-meta').textContent=`${s.water||'–'}${s.spot?' · '+s.spot:''} · ${s.catches.length} Fänge`;
+
+  const body=document.getElementById('split-sess-body');
+  let html=`<div style="margin-bottom:14px;font-size:13px;color:var(--text-mid);">Wähle die Fänge aus, die in eine <strong>neue Session</strong> verschoben werden sollen:</div>`;
+  html+=`<div style="margin-bottom:14px;">`;
+  s.catches.forEach((c,i)=>{
+    html+=`<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border-radius:var(--rs);margin-bottom:6px;border:1px solid rgba(200,221,208,.3);cursor:pointer;">
+      <input type="checkbox" class="split-cb" value="${i}" style="width:18px;height:18px;accent-color:var(--green-deep);">
+      <span style="font-size:20px;">${fIco(c.type)}</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:600;color:var(--text-dark);">${c.type||'–'} ${c.length?'· '+c.length+'cm':''}</div>
+        <div style="font-size:11px;color:var(--text-light);">${c.time||'–'} Uhr${c.bait?' · '+c.bait:''}</div>
+      </div>
+    </label>`;
+  });
+  html+=`</div>`;
+
+  html+=`<div class="slbl" style="margin-bottom:6px;">Neue Session: Gewässer & Spot</div>`;
+  html+=`<div class="g2" style="margin-bottom:16px;">
+    <div class="ig"><label class="il">Gewässer</label><input type="text" class="if" id="split-water" value="${s.water||''}" placeholder="Gewässer"></div>
+    <div class="ig"><label class="il">Spot</label><input type="text" class="if" id="split-spot" value="${s.spot||''}" placeholder="Spot"></div>
+  </div>`;
+
+  html+=`<button onclick="_doSplitSession()" style="width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;">✂️ Ausgewählte Fänge abtrennen</button>`;
+  html+=`<div style="text-align:center;margin-top:10px;"><button onclick="closeFs('split-sess')" style="background:none;border:none;color:var(--text-light);font-size:13px;font-family:var(--fa);cursor:pointer;">Abbrechen</button></div>`;
+
+  body.innerHTML=html;
+  openFs('split-sess');
+}
+
+async function _doSplitSession(){
+  const s=sessions.find(x=>String(x.id)===String(_splitSessId));
+  if(!s)return;
+
+  const checked=[...document.querySelectorAll('.split-cb:checked')].map(cb=>parseInt(cb.value));
+  if(!checked.length){showToast('⚠️','Bitte mindestens einen Fang auswählen');return;}
+  if(checked.length===s.catches.length){showToast('⚠️','Nicht alle Fänge auswählen – mindestens einer muss bleiben');return;}
+
+  const newWater=document.getElementById('split-water')?.value?.trim()||s.water||'';
+  const newSpot=document.getElementById('split-spot')?.value?.trim()||'';
+
+  // Fänge aufteilen
+  const moveCatches=checked.map(i=>s.catches[i]);
+  const keepCatches=s.catches.filter((_,i)=>!checked.includes(i));
+
+  // Neue Session erstellen (Kopie der Original-Session mit neuen Fängen)
+  const newSess={
+    id:'s'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
+    date:s.date, start:s.start, end:s.end,
+    water:newWater, spot:newSpot,
+    catches:moveCatches, skunked:false, autoSkunked:false,
+    lat:s.lat, lon:s.lon,
+    temp:s.temp, weatherCode:s.weatherCode, windSpeed:s.windSpeed, windDir:s.windDir,
+    pressure:s.pressure, humidity:s.humidity, clouds:s.clouds, precipitation:s.precipitation,
+    sichttiefe:s.sichttiefe, truebung:s.truebung,
+    inputMode:s.inputMode
+  };
+
+  // Original-Session aktualisieren
+  s.catches=keepCatches;
+  if(!keepCatches.length)s.skunked=true;
+
+  // Speichern
+  sessions.push(newSess);
+  await saveOneSess(s);
+  await saveOneSess(newSess);
+
+  // Favs aktualisieren
+  if(newWater)addFav('waters',newWater);
+  if(newSpot)addFav('spots',newSpot);
+
+  closeFs('split-sess');
+  showToast('✂️',`${moveCatches.length} Fang${moveCatches.length>1?'e':''} in neue Session verschoben`);
+  openDayDetail(_splitDateKey);
+  rndrFangbuch();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -4823,7 +5108,7 @@ function showDetail(id){
         <span style="font-size:28px;">${s.moonIcon||'🌕'}</span>
         <div><div class="dtitle">${fmtDate(s.date)}</div><div class="dmeta">${s.moonName||''} · ${s.moonIllum!==undefined?s.moonIllum+'% bel.':''}</div></div>
       </div>
-      <div class="dmeta">${s.water} · ${s.weather}${s.temp!=null?' · '+s.temp+'°C':''}${s.pressure?` · ${Math.round(s.pressure)}hPa`:''}${s.lat?' · 📍':''}</div>
+      <div class="dmeta">${s.water}${s.spot?' · '+s.spot:''} · ${s.weather}${s.temp!=null?' · '+s.temp+'°C':''}${s.pressure?` · ${Math.round(s.pressure)}hPa`:''}${s.lat?' · 📍':''}</div>
       <div class="dmeta">${s.start}–${s.end||'?'} Uhr · ${dur}${s.clarity?` · ${s.clarity}`:''}</div>
       ${s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:12px;font-weight:600;">💡 Automatisch als Schneider erkannt</div>`:''}
       ${s.skunked&&!s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:14px;font-weight:600;">🪝 Schneider</div>`:!s.skunked?`<div class="sg3"><div class="sm"><div class="sv">${s.catches.length}</div><div class="sl">Fänge</div></div><div class="sm"><div class="sv">${avgL}cm</div><div class="sl">Ø Länge</div></div><div class="sm"><div class="sv">${maxL}cm</div><div class="sl">Rekord</div></div></div>`:''}
@@ -4881,6 +5166,7 @@ async function editSess(id){
   if(fv('s-start'))fv('s-start').value=s.start||'';
   if(fv('s-end'))fv('s-end').value=s.end||'';
   if(fv('s-water'))fv('s-water').value=s.water||'';
+  if(fv('s-spot'))fv('s-spot').value=s.spot||'';
   if(fv('s-temp'))fv('s-temp').value=s.temp!=null?s.temp:'';
   if(fv('s-wx')&&s.weather){
     const opt=[...fv('s-wx').options].find(o=>o.value===s.weather||o.text===s.weather);
@@ -4927,6 +5213,8 @@ async function editSess(id){
       if(g('ftime'))g('ftime').value=c.time||'';
       if(g('ftak')){g('ftak').checked=!!c.taken;updCR(cid);}
       if(g('fb'))g('fb').value=c.bait||'';
+      if(g('fbcol'))g('fbcol').value=c.baitColor||'';
+      if(g('fbsz'))g('fbsz').value=c.baitSize||'';
       if(g('fn'))g('fn').value=c.baitNote||'';
       // Friedfisch-Felder wiederherstellen
       if(c.inputMode==='fried'){
@@ -4959,6 +5247,13 @@ async function editSess(id){
   // Save-Button Text anpassen
   const saveBtn=document.querySelector('#page-new .btn[onclick="saveSess()"]');
   if(saveBtn)saveBtn.textContent='Änderungen speichern ✓';
+  // AP1: Rotes X-Icon im Header
+  _setHdrEditX();
+  // AP1: Overlay Scroll-Position ganz oben
+  requestAnimationFrame(()=>{
+    const sc=document.querySelector('#page-new .sc');
+    if(sc)sc.scrollTop=0;
+  });
   showToast('✏️','Session geladen – Änderungen speichern');
 }
 
@@ -5046,7 +5341,7 @@ function rndrStats(){
     ${scored.length&&(profile?.angeltyp||'Allround')==='Raubfisch'?`
     <div class="slbl">🏅 Fair-Ranking</div>
     <div class="mcard" style="margin-bottom:14px;">
-      ${scored.map((c,i)=>{const sd=filtered.find(s=>s.catches.some(x=>x.type===c.type&&x.length===c.length&&x.time===c.time));return`<div class="mrow"><div class="mi">${medals[i]}</div><div class="minfo"><div class="mn">${c.type} · ${c.length}cm</div><div class="md">${sd?fmtDate(sd.date)+' · '+sd.water:''}</div></div><div class="msc"><div class="msv">${c.fS}</div><div class="msl">Punkte</div></div></div>`;}).join('')}
+      ${scored.map((c,i)=>{const sd=filtered.find(s=>s.catches.some(x=>x.type===c.type&&x.length===c.length&&x.time===c.time));return`<div class="mrow"><div class="mi">${medals[i]}</div><div class="minfo"><div class="mn">${c.type} · ${c.length}cm</div><div class="md">${sd?fmtDate(sd.date)+' · '+sd.water+(sd.spot?' · '+sd.spot:''):''}</div></div><div class="msc"><div class="msv">${c.fS}</div><div class="msl">Punkte</div></div></div>`;}).join('')}
     </div>`:''}
 
     <!-- Fischarten-Liste -->
@@ -5246,7 +5541,7 @@ function _renderGoalEdit(){
     <div style="padding:16px 16px 0;">
       ${goals.map(g => {
         const gType = g.type || 'count';
-        const typeBadge = gType==='pb'?'🏆 PB':gType==='range'?'📏 Korridor':'🎣 Stückzahl';
+        const typeBadge = gType==='pb'?'🏆 PB':gType==='range'?'📏 Range':'🎣 Stückzahl';
         const yrBadge = g.year ? `<span style="font-size:10px;color:var(--text-light);margin-left:6px;">${g.year}</span>` : '';
         return `<div style="background:#fff;border-radius:var(--r);padding:14px 16px;margin-bottom:10px;border:1px solid rgba(200,221,208,.4);box-shadow:var(--sh-sm);display:flex;align-items:center;gap:14px;">
           <div style="flex:1;min-width:0;">
@@ -5257,15 +5552,28 @@ function _renderGoalEdit(){
         </div>`;
       }).join('')}
     </div>
-    <div style="padding:4px 16px 24px;">
+    <div style="padding:4px 16px 12px;">
       <button onclick="openAddGoal()" style="width:100%;padding:14px;background:var(--green-mist);border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);">+ Weiteres Ziel hinzufügen</button>
+    </div>
+    <div style="padding:0 16px 24px;">
+      <button onclick="_saveGoalsAndClose()" style="width:100%;padding:15px;background:var(--green-deep);border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;color:#fff;box-shadow:0 4px 14px rgba(45,74,53,.3);">Ziele speichern</button>
     </div>`;
+}
+
+async function _saveGoalsAndClose(){
+  await saveProfile();
+  syncProfileToCloud();
+  closeFs('goals');
+  showToast('🎯','Ziele gespeichert! Viel Erfolg!');
+  // Stats aktualisieren falls sichtbar
+  if(document.getElementById('page-stats')?.classList.contains('on'))rndrStats();
 }
 
 async function delGoal(gid){
   if(!profile?.goals) return;
   profile.goals = profile.goals.filter(g => g.id !== gid);
   await saveProfile();
+  syncProfileToCloud();
   showToast('🗑️','Ziel gelöscht');
   _renderGoalEdit(); // Overlay sofort aktualisieren
 }
@@ -5286,7 +5594,7 @@ function openAddGoal(){
         <span class="gt-ico">🎣</span>Stückzahl
       </button>
       <button class="goal-type-btn" id="gt-range" onclick="selGoalType('range')">
-        <span class="gt-ico">📏</span>Größen-Korridor
+        <span class="gt-ico">📏</span>Range
       </button>
       <button class="goal-type-btn" id="gt-pb" onclick="selGoalType('pb')">
         <span class="gt-ico">🏆</span>Personal Best
@@ -5400,6 +5708,7 @@ async function saveNewGoal(){
 
   profile.goals.push(goal);
   await saveProfile();
+  syncProfileToCloud();
   document.getElementById('goal-add-modal')?.remove();
   showToast('🎯','Ziel gespeichert!');
   _renderGoalEdit(); // Overlay aktualisieren falls offen
@@ -5461,7 +5770,7 @@ function rndrFsSessions(){
     <div class="scard" style="margin-bottom:8px;cursor:pointer;" onclick="closeFs('sessions');openDayDetail('${x.date}')" role="button" tabindex="0">
       <div class="sinfo">
         <div class="sdate" style="font-family:var(--fa);font-size:14px;font-weight:700;">${fmtDate(x.date)}</div>
-        <div class="swat">${x.water} · ${calcDur(x.start,x.end)}</div>
+        <div class="swat">${x.water}${x.spot?' · '+x.spot:''} · ${calcDur(x.start,x.end)}</div>
         <div class="sbadge">${x.skunked?`<span class="badge bgr">🪝 Schneider</span>`:`<span class="badge bg">🐟</span>`}</div>
       </div>
       <div style="font-size:24px;font-weight:700;color:${x.skunked?'#d06060':'var(--green-deep)'};min-width:32px;text-align:right;">
@@ -5837,10 +6146,53 @@ function openMoonCal(){
 let _tideRiver='weser';
 let _tideCache={}; // {river: {data, ts}}
 
+// Astronomische Harmonische Konstanten für Deutsche Nordsee-Pegel
+// M2/S2/N2/K1/O1 – liefert plausible HW/NW-Vorhersagen für Tage außerhalb BSH-Bereich
+const _TIDE_HARMONICS={
+  weser:{z0:500,constituents:[
+    {name:'M2',amp:145,phase:330,speed:28.984104},
+    {name:'S2',amp:42,phase:20,speed:30.000000},
+    {name:'N2',amp:28,phase:310,speed:28.439730},
+    {name:'K1',amp:8,phase:140,speed:15.041069},
+    {name:'O1',amp:7,phase:110,speed:13.943036}
+  ]},
+  elbe:{z0:530,constituents:[
+    {name:'M2',amp:135,phase:310,speed:28.984104},
+    {name:'S2',amp:38,phase:358,speed:30.000000},
+    {name:'N2',amp:26,phase:290,speed:28.439730},
+    {name:'K1',amp:7,phase:125,speed:15.041069},
+    {name:'O1',amp:6,phase:95,speed:13.943036}
+  ]},
+  ems:{z0:480,constituents:[
+    {name:'M2',amp:120,phase:295,speed:28.984104},
+    {name:'S2',amp:35,phase:342,speed:30.000000},
+    {name:'N2',amp:24,phase:275,speed:28.439730},
+    {name:'K1',amp:7,phase:115,speed:15.041069},
+    {name:'O1',amp:6,phase:85,speed:13.943036}
+  ]}
+};
+
+function _predictTideHarmonic(river,dateStr,minuteOfDay){
+  const h=_TIDE_HARMONICS[river]||_TIDE_HARMONICS.weser;
+  // Stunden seit J2000.0-Epoche (2000-01-01 12:00 UTC)
+  const d=new Date(dateStr+'T00:00:00Z');
+  const j2000=new Date('2000-01-01T12:00:00Z');
+  const hoursFromEpoch=(d.getTime()-j2000.getTime())/3600000+minuteOfDay/60;
+  let val=h.z0;
+  for(const c of h.constituents){
+    val+=c.amp*Math.cos((c.speed*hoursFromEpoch-c.phase)*Math.PI/180);
+  }
+  return Math.round(val);
+}
+
+function _localDateStr(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
 async function openTideCal(){
   openFs('tide-cal');
   document.getElementById('fs-tide-body').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">🔄 Lade Tidendaten…</div>';
-  await _renderTideCal(_tideRiver,new Date().toISOString().split('T')[0]);
+  await _renderTideCal(_tideRiver,_localDateStr(new Date()));
 }
 
 async function _renderTideCal(river,startDate){
@@ -5854,12 +6206,12 @@ async function _renderTideCal(river,startDate){
   };
   const st=STATIONS[river]||STATIONS.weser;
 
-  // Tages-Navigation: Gestern + Heute + Morgen (historische Messwerte)
   const today=new Date();today.setHours(0,0,0,0);
-  const days=[];
-  for(let i=-1;i<=1;i++){const d=new Date(today);d.setDate(d.getDate()+i);days.push(d.toISOString().split('T')[0]);}
-  const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
-  const todayStr=today.toISOString().split('T')[0];
+  const todayStr=_localDateStr(today);
+  const selDate=new Date(startDate+'T12:00:00');selDate.setHours(0,0,0,0);
+  const dayDiff=Math.round((selDate.getTime()-today.getTime())/86400000);
+  const isBshRange=dayDiff>=-1&&dayDiff<=1;
+  const isToday=startDate===todayStr;
 
   const navHtml=`
     <div class="fc-tide-day-nav">
@@ -5867,79 +6219,84 @@ async function _renderTideCal(river,startDate){
         <button class="fc-tide-day-btn${rv===river?' on':''}"
           onclick="_renderTideCal('${rv}','${startDate}')">${s.label}</button>`).join('')}
     </div>
-    <div class="fc-tide-day-nav" style="margin-top:6px;">
-      ${days.map((ds,i)=>`
-        <button class="fc-tide-day-btn${ds===startDate?' on':''}"
-          onclick="_renderTideCal('${river}','${ds}')">
-          ${ds===todayStr?'Heute':DOW[new Date(ds+'T12:00:00').getDay()]+' '+ds.slice(8)}</button>`).join('')}
+    <div class="fc-tide-day-nav" style="margin-top:6px;align-items:center;">
+      <input type="date" id="tide-date-pick" value="${startDate}"
+        onchange="_renderTideCal('${river}',this.value)"
+        class="fc-tide-date-pick">
+      <button class="fc-tide-day-btn${isToday?' on':''}"
+        onclick="_renderTideCal('${river}','${todayStr}')">Heute</button>
     </div>`;
 
   const bodyEl=document.getElementById('fs-tide-body');
   bodyEl.innerHTML=navHtml+`<div style="text-align:center;padding:24px;color:var(--text-light);">🔄 Lade Tidendaten…</div>`;
 
+  // Festes 15-Min-Raster: 00:00 – 24:00 (97 Datenpunkte)
+  const GRID_LABELS=[];
+  for(let m=0;m<=24*60;m+=15){
+    GRID_LABELS.push(String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'));
+  }
+
+  let dataSource='PEGELONLINE WSV';
   try{
-    // PEGELONLINE-Daten laden (15 Min Cache pro Fluss)
-    // CORS-Proxy (allorigins.win) für BSH-Daten – Weser, Elbe, Ems
-    const cached=_tideCache[river];
-    if(!cached||Date.now()-cached.ts>15*60*1000){
-      // P2D = letzte 2 Tage (relative Zeitangabe, von PEGELONLINE unterstützt)
-      const directUrl=`https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/${st.uuid}/W/measurements.json?start=P2D`;
-      let resp;
-      try{
-        // Erst direkt versuchen (funktioniert oft nativ)
-        resp=await fetch(directUrl);
-      }catch(e){
-        // Fallback: CORS-Proxy
-        const proxyUrl=`https://api.allorigins.win/raw?url=${encodeURIComponent(directUrl)}`;
-        resp=await fetch(proxyUrl);
+    let values;
+
+    if(isBshRange){
+      // BSH PEGELONLINE-Daten (gestern/heute/morgen)
+      dataSource='PEGELONLINE WSV · Messwerte';
+      const cached=_tideCache[river];
+      if(!cached||Date.now()-cached.ts>15*60*1000){
+        const directUrl=`https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/${st.uuid}/W/measurements.json?start=P2D`;
+        let resp;
+        try{resp=await fetch(directUrl);}catch(e){
+          resp=await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(directUrl)}`);
+        }
+        if(!resp.ok)throw new Error(`PEGELONLINE HTTP ${resp.status}`);
+        _tideCache[river]={data:await resp.json(),ts:Date.now()};
       }
-      if(!resp.ok)throw new Error(`PEGELONLINE HTTP ${resp.status}`);
-      _tideCache[river]={data:await resp.json(),ts:Date.now()};
+      // Messwerte auf 15-Min-Raster mappen
+      values=new Array(97).fill(null);
+      _tideCache[river].data.forEach(p=>{
+        if((p.timestamp||'').slice(0,10)!==startDate)return;
+        const hhmm=(p.timestamp||'').slice(11,16);
+        const[hh,mm]=hhmm.split(':').map(Number);
+        const slot=Math.round((hh*60+mm)/15);
+        if(slot>=0&&slot<97&&p.value!=null)values[slot]=Math.round(p.value);
+      });
+      if(values.filter(v=>v!=null).length<5)throw new Error('Keine Messdaten für diesen Tag');
+    }else{
+      // Astronomische Vorhersage (harmonisches Modell)
+      dataSource='Astronomische Vorhersage (harmonisch)';
+      values=GRID_LABELS.map((_,i)=>_predictTideHarmonic(river,startDate,i*15));
     }
-    const measurements=_tideCache[river].data;
-
-    // Messdaten für gewählten Tag filtern (Timestamp: 2026-04-08T20:29:00+02:00)
-    const allDay=measurements.filter(p=>(p.timestamp||'').slice(0,10)===startDate);
-
-    if(!allDay.length)throw new Error('Keine Messdaten für diesen Tag');
-
-    // Ausdünnen: jeden 15. Punkt (Minutentakt → 15-Min-Intervall)
-    const dayCurve=allDay.filter((_,i)=>i%15===0);
-
-    // Zeitstempel + Werte extrahieren
-    const labels=dayCurve.map(p=>(p.timestamp||'').slice(11,16));
-    const values=dayCurve.map(p=>p.value!=null?Math.round(p.value):null);
 
     const validVals=values.filter(v=>v!=null);
-    if(!validVals.length)throw new Error('Alle Werte null');
     const vMin=Math.min(...validVals)-30;
     const vMax=Math.max(...validVals)+30;
 
-    // HW/NW automatisch berechnen aus Messdaten
+    // HW/NW berechnen: Rolling-Window Peak-Erkennung (±1.5h Fenster)
     const hwNw=[];
-    const smooth=values.map((v,i)=>{
-      if(v==null)return null;
-      let sum=0,cnt=0;
-      for(let j=Math.max(0,i-3);j<=Math.min(values.length-1,i+3);j++){
-        if(values[j]!=null){sum+=values[j];cnt++;}
+    const HW_W=6; // ±6 Punkte = ±1.5 Stunden
+    for(let i=0;i<values.length;i++){
+      if(values[i]==null)continue;
+      let isMax=true,isMin=true,cntBefore=0,cntAfter=0;
+      for(let j=Math.max(0,i-HW_W);j<=Math.min(values.length-1,i+HW_W);j++){
+        if(j===i||values[j]==null)continue;
+        if(j<i)cntBefore++;else cntAfter++;
+        if(values[j]>values[i])isMax=false;
+        if(values[j]<values[i])isMin=false;
       }
-      return cnt?sum/cnt:v;
-    });
-    for(let i=2;i<smooth.length-2;i++){
-      if(smooth[i]==null)continue;
-      const prev=smooth[i-1],next=smooth[i+1];
-      if(prev==null||next==null)continue;
-      if(smooth[i]>prev&&smooth[i]>next&&smooth[i]-Math.min(prev,next)>15){
-        hwNw.push({event:'HW',timestamp:dayCurve[i].timestamp,value:values[i]});
-      } else if(smooth[i]<prev&&smooth[i]<next&&Math.max(prev,next)-smooth[i]>15){
-        hwNw.push({event:'NW',timestamp:dayCurve[i].timestamp,value:values[i]});
-      }
+      if(cntBefore<2||cntAfter<2)continue;
+      if(isMax)hwNw.push({event:'HW',label:GRID_LABELS[i],value:values[i]});
+      if(isMin)hwNw.push({event:'NW',label:GRID_LABELS[i],value:values[i]});
     }
-    // Duplikate entfernen (nur größter/kleinster Wert in 2h-Fenster)
+    // Duplikate entfernen (bester Wert pro 2h-Fenster)
     const filteredHwNw=[];
     hwNw.forEach(e=>{
-      const eTime=new Date(e.timestamp).getTime();
-      const dupe=filteredHwNw.find(f=>f.event===e.event&&Math.abs(new Date(f.timestamp).getTime()-eTime)<7200000);
+      const eMin=parseInt(e.label.slice(0,2))*60+parseInt(e.label.slice(3,5));
+      const dupe=filteredHwNw.find(f=>{
+        const fMin=parseInt(f.label.slice(0,2))*60+parseInt(f.label.slice(3,5));
+        return f.event===e.event&&Math.abs(eMin-fMin)<120;
+      });
       if(!dupe)filteredHwNw.push(e);
       else if((e.event==='HW'&&e.value>dupe.value)||(e.event==='NW'&&e.value<dupe.value)){
         filteredHwNw[filteredHwNw.indexOf(dupe)]=e;
@@ -5950,31 +6307,31 @@ async function _renderTideCal(river,startDate){
     const hwNwHtml=filteredHwNw.length?`
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;margin-bottom:4px;">
         ${filteredHwNw.map(e=>{
-          const time=(e.timestamp||'').slice(11,16);
           const isHW=e.event==='HW';
           return`<div style="background:${isHW?'rgba(192,64,64,.1)':'rgba(42,122,176,.1)'};padding:6px 12px;border-radius:10px;font-size:12px;font-weight:500;">
             <span style="font-weight:700;color:${isHW?'#c04040':'#2a7ab0'};">${isHW?'▲ HW':'▼ NW'}</span>
-            <span style="margin-left:4px;">${time} Uhr</span>
+            <span style="margin-left:4px;">${e.label} Uhr</span>
             <span style="margin-left:4px;opacity:.7;">${e.value!=null?e.value+' cm':''}</span>
           </div>`;
         }).join('')}
       </div>`:'';
 
-    // Chart-Breite adaptiv
-    const PX=Math.max(4,Math.round(960/dayCurve.length));
-    const chartW=Math.max(dayCurve.length*PX,360);
+    // Datenquellen-Badge
+    const srcBadge=isBshRange
+      ?'<span style="display:inline-block;background:rgba(42,140,186,.12);color:#2a7ab0;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-left:6px;">BSH Live</span>'
+      :'<span style="display:inline-block;background:rgba(180,140,60,.12);color:#a08030;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-left:6px;">Astronomisch</span>';
 
     bodyEl.innerHTML=navHtml+`
       <div style="margin-top:12px;">
         <div class="fc-sec">
-          <div class="fc-sec-title">🌊 ${st.display} · ${startDate}</div>
+          <div class="fc-sec-title">🌊 ${st.display} · ${startDate} ${srcBadge}</div>
           ${hwNwHtml}
           <div id="hover-tide" class="fc-hover-info"></div>
-          <div id="scroll-tide" style="overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;margin-top:8px;">
-            <canvas id="tide-main-chart" style="height:220px;display:block;"></canvas>
+          <div style="margin-top:8px;">
+            <canvas id="tide-main-chart" style="width:100%;height:320px;display:block;"></canvas>
           </div>
           <div style="font-size:10px;color:var(--text-light);margin-top:8px;text-align:center;">
-            Wasserstand cm · PEGELONLINE WSV · 15-Min-Intervall
+            Wasserstand cm · ${dataSource} · 15-Min-Intervall
           </div>
         </div>
       </div>`;
@@ -5982,17 +6339,17 @@ async function _renderTideCal(river,startDate){
     requestAnimationFrame(()=>{
       const c=document.getElementById('tide-main-chart');
       if(!c||typeof Chart==='undefined')return;
-      c.width=chartW;c.height=220;
-      c.style.width=chartW+'px';c.style.height='220px';
+      const cW=c.parentElement.getBoundingClientRect().width||360;
+      c.width=cW;c.height=320;
+      c.style.width=cW+'px';c.style.height='320px';
 
       // HW/NW-Annotationen direkt im Chart
       const hwAnnotPlugin={id:'hwAnnot',afterDatasetsDraw(chart){
         const ctx=chart.ctx;
         filteredHwNw.forEach(e=>{
-          const time=(e.timestamp||'').slice(11,16);
-          const idx=labels.findIndex(l=>l===time);
+          const idx=GRID_LABELS.indexOf(e.label);
           if(idx<0||e.value==null)return;
-          const x=chart.scales.x.getPixelForIndex(idx);
+          const x=chart.scales.x.getPixelForValue(idx);
           const y=chart.scales.y.getPixelForValue(e.value);
           const isHW=e.event==='HW';
           ctx.save();
@@ -6017,17 +6374,46 @@ async function _renderTideCal(river,startDate){
         } else el.style.opacity='0';
       }};
 
+      // Jetzt-Indikator: vertikale rote Linie (nur heute)
+      const nowLinePlugin={id:'nowLine',afterDraw(chart){
+        if(!isToday)return;
+        const now=new Date();
+        const nowMin=now.getHours()*60+now.getMinutes();
+        const nowIdx=nowMin/15;
+        const scale=chart.scales.x;
+        const x=scale.getPixelForValue(nowIdx);
+        if(x<scale.left||x>scale.right)return;
+        const ctx=chart.ctx;
+        ctx.save();
+        ctx.strokeStyle='#cc0000';
+        ctx.lineWidth=2;
+        ctx.setLineDash([6,3]);
+        ctx.beginPath();
+        ctx.moveTo(x,chart.scales.y.top);
+        ctx.lineTo(x,chart.scales.y.bottom);
+        ctx.stroke();
+        ctx.fillStyle='#cc0000';
+        ctx.font='bold 10px system-ui';
+        ctx.textAlign='center';
+        ctx.fillText('Jetzt',x,chart.scales.y.top-4);
+        ctx.restore();
+      }};
+
+      const lineColor=isBshRange?'#2a8cba':'#b08c3c';
       const datasets=[{
-        label:'Messung',data:values,
-        borderColor:'#2a8cba',backgroundColor:'rgba(42,140,186,.18)',
+        label:isBshRange?'Messung':'Vorhersage',data:values,
+        borderColor:lineColor,
+        backgroundColor:isBshRange?'rgba(42,140,186,.18)':'rgba(176,140,60,.12)',
         fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,
-        pointBackgroundColor:'#2a8cba',borderWidth:2.5
+        pointBackgroundColor:lineColor,borderWidth:2.5,
+        borderDash:isBshRange?[]:[6,3],
+        spanGaps:true
       }];
 
       new Chart(c,{
         type:'line',
-        data:{labels,datasets},
-        plugins:[hoverPlugin,hwAnnotPlugin],
+        data:{labels:GRID_LABELS,datasets},
+        plugins:[hoverPlugin,hwAnnotPlugin,nowLinePlugin],
         options:{
           responsive:false,maintainAspectRatio:false,
           plugins:{
@@ -6038,7 +6424,7 @@ async function _renderTideCal(river,startDate){
           },
           scales:{
             x:{ticks:{color:'#6a7a6f',font:{size:9},maxRotation:0,
-              maxTicksLimit:12,autoSkip:true},
+              autoSkip:true,maxTicksLimit:13},
               grid:{color:'rgba(0,0,0,.05)'}},
             y:{min:vMin,max:vMax,
               ticks:{color:'#6a7a6f',font:{size:10},callback:v=>v+' cm'},
@@ -6053,7 +6439,7 @@ async function _renderTideCal(river,startDate){
       <div class="fc-sec" style="margin-top:12px;text-align:center;color:var(--text-light);padding:24px;">
         <div style="font-size:28px;margin-bottom:8px;">🌊</div>
         <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Tidendaten nicht verfügbar</div>
-        <div style="font-size:11px;opacity:.7;">PEGELONLINE · ${st.display}</div>
+        <div style="font-size:11px;opacity:.7;">${dataSource} · ${st.display}</div>
         <div style="font-size:10px;margin-top:8px;opacity:.5;">${e.message||'Verbindung prüfen'}</div>
       </div>`;
   }
@@ -6101,11 +6487,11 @@ async function openWxChart(type){
     }).join('');
 
     bodyEl.innerHTML=`
-      <div class="fc-sec" style="margin-top:0;">
-        <div class="fc-sec-title">💨 Wind + Böen · 14 Tage</div>
-        <div class="fc-chart-wrap"><canvas id="wx-wind-chart"></canvas></div>
+      <div class="fc-sec" style="margin:0 0 12px;padding:4px 8px 8px;">
+        <div class="fc-sec-title" style="margin:6px 0 4px;">💨 Wind + Böen · 14 Tage</div>
+        <div class="fc-chart-wrap cw-xl"><canvas id="wx-wind-chart"></canvas></div>
       </div>
-      <div class="fc-sec" style="padding:0;overflow:hidden;">
+      <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
         <div class="wx14-hdr" data-cols="4"><div class="wx14-date">Tag</div><div class="wx14-val">km/h</div><div class="wx14-val">Böen</div><div class="wx14-val">Richt.</div></div>
         ${tblRows}
       </div>`;
@@ -6116,7 +6502,7 @@ async function openWxChart(type){
       if(gusts.some(v=>v!=null))datasets.push({label:'Böen',data:gusts,borderColor:'#a0c4f0',backgroundColor:'rgba(0,0,0,0)',fill:false,tension:.35,pointRadius:2,borderWidth:1.5,borderDash:[4,4]});
       new Chart(c,{type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:gusts.some(v=>v!=null),labels:{boxWidth:12,font:{size:10}}},tooltip:{...TT,callbacks:{label:c2=>`${c2.dataset.label}: ${c2.parsed.y} km/h${dirs[c2.dataIndex]?' · '+dirs[c2.dataIndex]:''}`}}},
-        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:0,ticks:{color:TICK,font:{size:10},callback:v=>v+' km/h'},grid:{color:GRID}}}}});
+        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:0,title:{display:true,text:'in km/h',font:{size:9},color:TICK},ticks:{color:TICK,font:{size:8}},grid:{color:GRID}}}}});
     });
 
   } else if(type==='rain'){
@@ -6133,11 +6519,11 @@ async function openWxChart(type){
     }).join('');
 
     bodyEl.innerHTML=`
-      <div class="fc-sec" style="margin-top:0;">
+      <div class="fc-sec" style="margin:0 0 12px;">
         <div class="fc-sec-title">🌧 Niederschlag · 14 Tage</div>
         <div class="fc-chart-wrap"><canvas id="wx-rain-chart"></canvas></div>
       </div>
-      <div class="fc-sec" style="padding:0;overflow:hidden;">
+      <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
         <div class="wx14-hdr" data-cols="3"><div class="wx14-date">Tag</div><div class="wx14-val">Wahrsch.</div><div class="wx14-val">Menge</div></div>
         ${tblRows}
       </div>`;
@@ -6168,11 +6554,11 @@ async function openWxChart(type){
     }).join('');
 
     bodyEl.innerHTML=`
-      <div class="fc-sec" style="margin-top:0;">
+      <div class="fc-sec" style="margin:0 0 12px;">
         <div class="fc-sec-title">🌡 Temperatur · 14 Tage</div>
         <div class="fc-chart-wrap"><canvas id="wx-temp-chart"></canvas></div>
       </div>
-      <div class="fc-sec" style="padding:0;overflow:hidden;">
+      <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
         <div class="wx14-hdr" data-cols="4"><div class="wx14-date">Tag</div><div class="wx14-val"></div><div class="wx14-val">Min</div><div class="wx14-val">Max</div></div>
         ${tblRows}
       </div>`;
@@ -6196,7 +6582,75 @@ function renderFcDays(data){_fcData=data;_renderFcDashboard();}
 
 // ── Tages-Wetter-Overlay (stündliche Graphen) ─────────────────
 let _dwCharts=[];
-function _dwDestroy(){_dwCharts.forEach(c=>{try{c.destroy();}catch(e){}});_dwCharts=[];}
+let _dwSyncActive=-1;
+function _dwDestroy(){_dwCharts.forEach(c=>{try{c.destroy();}catch(e){}});_dwCharts=[];_dwSyncActive=-1;}
+
+// Crosshair-Linie + synchrone Hover-Events über alle Tages-Charts
+const _dwCrosshairPlugin={
+  id:'dwCrosshair',
+  afterDatasetsDraw(chart){
+    const active=chart.getActiveElements();
+    if(!active||!active.length)return;
+    const x=active[0].element.x;
+    const ctx=chart.ctx;
+    const top=chart.scales.y.top,bot=chart.scales.y.bottom;
+    ctx.save();
+    ctx.strokeStyle='rgba(45,74,53,.35)';
+    ctx.lineWidth=1;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bot);ctx.stroke();
+    ctx.restore();
+  },
+  afterEvent(chart,args){
+    if(args.replay)return;
+    const evt=args.event;
+    if((evt.type==='mousemove'||evt.type==='click')&&args.inChartArea){
+      const els=chart.getElementsAtEventForMode(evt,'index',{intersect:false},true);
+      if(els.length){
+        const idx=els[0].index;
+        if(_dwSyncActive===idx)return;
+        _dwSyncActive=idx;
+        _dwCharts.forEach(other=>{
+          if(other===chart)return;
+          const ae=[];
+          for(let d=0;d<other.data.datasets.length;d++)ae.push({datasetIndex:d,index:idx});
+          other.setActiveElements(ae);
+          other.tooltip.setActiveElements(ae,{x:other.scales.x.getPixelForValue(idx),y:10});
+          other.draw();
+        });
+      }
+    }else if(evt.type==='mouseout'||!args.inChartArea){
+      if(_dwSyncActive<0)return;
+      _dwSyncActive=-1;
+      _dwCharts.forEach(other=>{
+        if(other===chart)return;
+        other.setActiveElements([]);
+        other.tooltip.setActiveElements([]);
+        other.draw();
+      });
+    }
+  }
+};
+
+// Jetzt-Indikator für stündliche Charts (nur am heutigen Tag)
+const _dwNowPlugin={
+  id:'dwNow',
+  afterDraw(chart){
+    if(!chart._isToday)return;
+    const now=new Date();
+    const nowPos=now.getHours()+now.getMinutes()/60;
+    const scale=chart.scales.x;
+    const x=scale.getPixelForValue(nowPos);
+    if(x<scale.left||x>scale.right)return;
+    const ctx=chart.ctx;
+    ctx.save();
+    ctx.strokeStyle='#cc0000';ctx.lineWidth=2;ctx.setLineDash([6,3]);
+    ctx.beginPath();ctx.moveTo(x,chart.scales.y.top);ctx.lineTo(x,chart.scales.y.bottom);ctx.stroke();
+    ctx.fillStyle='#cc0000';ctx.font='bold 9px system-ui';ctx.textAlign='center';
+    ctx.fillText('Jetzt',x,chart.scales.y.top-3);
+    ctx.restore();
+  }
+};
 
 function openDailyWeather(dateStr){
   if(!_fcData||!_fcHourlyData)return;
@@ -6232,7 +6686,7 @@ function openDailyWeather(dateStr){
     <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
       <button onclick="openDailyWeather('${hasPrev?dates[idx-1]:dateStr}')" style="width:36px;height:36px;border:none;border-radius:50%;background:${hasPrev?'rgba(74,124,89,.15)':'transparent'};font-size:18px;cursor:${hasPrev?'pointer':'default'};opacity:${hasPrev?'1':'.2'};font-family:var(--fa);" ${hasPrev?'':'disabled'}>‹</button>
       <div style="flex:1;text-align:center;min-width:0;">
-        <div class="fstitle" style="font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${wxIco(wc)} ${dateLabel}</div>
+        <div class="fstitle" style="font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${wxIco(wc)} ${dateLabel}</div>
       </div>
       <button onclick="openDailyWeather('${hasNext?dates[idx+1]:dateStr}')" style="width:36px;height:36px;border:none;border-radius:50%;background:${hasNext?'rgba(74,124,89,.15)':'transparent'};font-size:18px;cursor:${hasNext?'pointer':'default'};opacity:${hasNext?'1':'.2'};font-family:var(--fa);" ${hasNext?'':'disabled'}>›</button>
     </div>
@@ -6271,19 +6725,19 @@ function openDailyWeather(dateStr){
       </div>
     </div>
     <!-- Temperatur -->
-    <div class="fc-sec" style="margin:8px 16px;">
+    <div class="fc-sec" style="margin:0 0 8px;">
       <div class="fc-sec-title">🌡 Temperatur · stündlich</div>
-      <div class="fc-chart-wrap"><canvas id="dw-temp-chart"></canvas></div>
+      <div class="fc-chart-wrap cw-lg"><canvas id="dw-temp-chart"></canvas></div>
     </div>
     <!-- Wind -->
-    <div class="fc-sec" style="margin:8px 16px;">
+    <div class="fc-sec" style="margin:0 0 8px;">
       <div class="fc-sec-title">💨 Wind & Böen · stündlich</div>
-      <div class="fc-chart-wrap"><canvas id="dw-wind-chart"></canvas></div>
+      <div class="fc-chart-wrap cw-lg"><canvas id="dw-wind-chart"></canvas></div>
     </div>
     <!-- Niederschlag -->
-    <div class="fc-sec" style="margin:8px 16px 24px;">
+    <div class="fc-sec" style="margin:0 0 24px;">
       <div class="fc-sec-title">🌧 Regenwahrscheinlichkeit · stündlich</div>
-      <div class="fc-chart-wrap"><canvas id="dw-rain-chart"></canvas></div>
+      <div class="fc-chart-wrap cw-lg"><canvas id="dw-rain-chart"></canvas></div>
     </div>`;
 
   // Swipe gesture
@@ -6305,16 +6759,20 @@ function openDailyWeather(dateStr){
   requestAnimationFrame(()=>{
     if(typeof Chart==='undefined')return;
 
+    const DW_PLUGINS=[_dwCrosshairPlugin,_dwNowPlugin];
+
     // Temp chart
     const c1=document.getElementById('dw-temp-chart');
     if(c1){
       const vMin=Math.floor(Math.min(...hTemp.filter(v=>v!=null))-2);
       const vMax=Math.ceil(Math.max(...hTemp.filter(v=>v!=null))+2);
-      _dwCharts.push(new Chart(c1,{type:'line',data:{labels:hLabels,datasets:[
+      const ch1=new Chart(c1,{type:'line',data:{labels:hLabels,datasets:[
         {label:'Temperatur',data:hTemp,borderColor:'#e07030',backgroundColor:'rgba(224,112,48,.12)',fill:true,tension:.35,pointRadius:2,pointHoverRadius:5,borderWidth:2.5}
-      ]},options:{responsive:true,maintainAspectRatio:false,
+      ]},plugins:DW_PLUGINS,options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c2=>`${c2.parsed.y}°C`}}},
-        scales:{x:XOPT,y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:10},stepSize:2,callback:v=>Math.round(v)+'°'},grid:{color:GRID}}}}}));
+        scales:{x:XOPT,y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:9},stepSize:2,callback:v=>Math.round(v)+'°'},grid:{color:GRID}}}}});
+      ch1._isToday=isToday;
+      _dwCharts.push(ch1);
     }
 
     // Wind chart
@@ -6322,20 +6780,24 @@ function openDailyWeather(dateStr){
     if(c2){
       const ds=[{label:'Wind',data:hWind,borderColor:'#4a90d9',backgroundColor:'rgba(74,144,217,.12)',fill:true,tension:.35,pointRadius:2,pointHoverRadius:5,borderWidth:2.5}];
       if(hGusts.some(v=>v!=null))ds.push({label:'Böen',data:hGusts,borderColor:'#a0c4f0',fill:false,tension:.35,pointRadius:1,borderWidth:1.5,borderDash:[4,4]});
-      _dwCharts.push(new Chart(c2,{type:'line',data:{labels:hLabels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,
+      const ch2=new Chart(c2,{type:'line',data:{labels:hLabels,datasets:ds},plugins:DW_PLUGINS,options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:ds.length>1,labels:{boxWidth:10,font:{size:10}}},tooltip:{...TT,callbacks:{label:c3=>{
           const i=c3.dataIndex;return`${c3.dataset.label}: ${c3.parsed.y} km/h${hWDir[i]!=null?' · '+windLabel(hWDir[i]):''}`;}}}},
-        scales:{x:XOPT,y:{min:0,ticks:{color:TICK,font:{size:10},callback:v=>v+' km/h'},grid:{color:GRID}}}}}));
+        scales:{x:XOPT,y:{min:0,title:{display:true,text:'in km/h',font:{size:9},color:TICK},ticks:{color:TICK,font:{size:8}},grid:{color:GRID}}}}});
+      ch2._isToday=isToday;
+      _dwCharts.push(ch2);
     }
 
     // Rain chart
     const c3=document.getElementById('dw-rain-chart');
     if(c3){
-      _dwCharts.push(new Chart(c3,{type:'bar',data:{labels:hLabels,datasets:[
+      const ch3=new Chart(c3,{type:'bar',data:{labels:hLabels,datasets:[
         {label:'Regen %',data:hRain,backgroundColor:'rgba(74,144,220,.55)',borderColor:'rgba(74,144,220,.8)',borderWidth:0,borderRadius:3,borderSkipped:false}
-      ]},options:{responsive:true,maintainAspectRatio:false,
+      ]},plugins:DW_PLUGINS,options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c4=>`${c4.parsed.y}%`}}},
-        scales:{x:XOPT,y:{min:0,max:100,ticks:{color:TICK,font:{size:10},stepSize:25,callback:v=>v+'%'},grid:{color:GRID}}}}}));
+        scales:{x:XOPT,y:{min:0,max:100,ticks:{color:TICK,font:{size:9},stepSize:25,callback:v=>v+'%'},grid:{color:GRID}}}}});
+      ch3._isToday=isToday;
+      _dwCharts.push(ch3);
     }
   });
 }
@@ -6560,6 +7022,7 @@ async function handleImp(e){const file=e.target.files[0];if(!file)return;const r
     if(data.favs.waters)favs.waters=[...new Set([...(favs.waters||[]),...(data.favs.waters||[])])];
     if(data.favs.fish)favs.fish=[...new Set([...(favs.fish||[]),...(data.favs.fish||[])])];
     if(data.favs.bait)favs.bait=[...new Set([...(favs.bait||[]),...(data.favs.bait||[])])];
+    if(data.favs.spots)favs.spots=[...new Set([...(favs.spots||[]),...(data.favs.spots||[])])];
     await saveFavs();
   }
   await saveSessions();applyProf();rndrFangbuch();
@@ -6625,35 +7088,66 @@ let _liveSession=null; // {startTime, catches:[], gpsTrack:[], watchId}
 let _liveTimer=null;
 let _liveGpsWatch=null;
 
-// ── Live Session Start: Overlay öffnen ──
+// ── Live Session Start: Full Overlay öffnen ──
 function startLiveSession(){
-  // Wetter in Start-Overlay laden
   const wxEl=document.getElementById('ls-wx-content');
   if(_lastWx){
     wxEl.innerHTML=`${_lastWx.weather||'🌤️'} ${_lastWx.temp!=null?_lastWx.temp+'°C':'–'} · Wind ${_lastWx.windSpeed||'–'} km/h · ${_lastWx.humidity||'–'}% Feuchte`;
   } else {
     wxEl.textContent='🌤️ Wetter nicht verfügbar (offline)';
   }
-  document.getElementById('ls-track-toggle').classList.add('on'); // Default: Tracking an
-  document.getElementById('ls-start-ov').classList.add('on');
+  document.getElementById('ls-track-toggle').classList.add('on');
+  // Gewässer/Spot leeren
+  const lsW=document.getElementById('ls-water');if(lsW)lsW.value='';
+  const lsS=document.getElementById('ls-spot');if(lsS)lsS.value='';
+  openFs('live-start');
 }
 
-function closeLiveStartOv(){
-  document.getElementById('ls-start-ov').classList.remove('on');
+function closeLiveStartOv(){closeFs('live-start');}
+
+// Chips für Live-Start Gewässer/Spot
+function rndrLsWChips(fv){
+  const el=document.getElementById('ls-w-chips');if(!el)return;
+  let chips=topFavs('waters',6);
+  if(fv)chips=chips.filter(w=>w.toLowerCase().includes(fv.toLowerCase()));
+  chips=[...new Set(chips)];
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(w=>`<button class="chip cw" onmousedown="document.getElementById('ls-water').value='${w.replace(/'/g,"\\'")}';dHide('ls-w-chips')">${w}</button>`).join('');
+}
+function rndrLsSpotChips(fv){
+  const el=document.getElementById('ls-spot-chips');if(!el)return;
+  const water=document.getElementById('ls-water')?.value?.trim()||'';
+  let chips=[];
+  if(water){
+    chips=[...new Set(sessions.filter(s=>s.water===water&&s.spot).map(s=>s.spot))].slice(0,5);
+  }
+  if(!chips.length)chips=topFavs('spots',5);
+  if(fv)chips=chips.filter(w=>w.toLowerCase().includes(fv.toLowerCase()));
+  chips=[...new Set(chips)];
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(w=>`<button class="chip cw" onmousedown="document.getElementById('ls-spot').value='${w.replace(/'/g,"\\'")}';dHide('ls-spot-chips')">${w}</button>`).join('');
 }
 
 function _doStartLive(){
   closeLiveStartOv();
   const trackOn=document.getElementById('ls-track-toggle').classList.contains('on');
+  const lsWater=document.getElementById('ls-water')?.value?.trim()||'';
+  const lsSpot=document.getElementById('ls-spot')?.value?.trim()||'';
 
   _liveSession={
     startTime:Date.now(),
     catches:[],
     gpsTrack:[],
-    water:'',
+    water:lsWater,
+    spot:lsSpot,
     paused:false,
     trackGps:trackOn
   };
+  // Favs aktualisieren
+  if(lsWater)addFav('waters',lsWater);
+  if(lsSpot)addFav('spots',lsSpot);
   localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
 
   // GPS tracking starten (wenn gewünscht)
@@ -6679,7 +7173,7 @@ function _doStartLive(){
   document.getElementById('live-fab').style.display='block';
   document.getElementById('hdr-live-dot').style.display='block';
   const liveBtn=document.getElementById('hdr-live-btn');
-  if(liveBtn){liveBtn.style.display='';liveBtn.classList.add('active');}
+  if(liveBtn){liveBtn.classList.add('active');liveBtn.textContent='⏹ Live';}
 
   // Petri Heil! Animation
   const ph=document.createElement('div');
@@ -6834,6 +7328,7 @@ async function _finalizeLive(isSkunked){
 
   // Gewässername aus Live-Session oder Fallback
   const waterName=_liveSession.water||'Live-Session';
+  const spotName=_liveSession.spot||'';
 
   // Session-Objekt bauen
   const start=new Date(_liveSession.startTime);
@@ -6843,7 +7338,7 @@ async function _finalizeLive(isSkunked){
     date:start.toISOString().split('T')[0],
     start:start.getHours().toString().padStart(2,'0')+':'+start.getMinutes().toString().padStart(2,'0'),
     end:now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0'),
-    water:waterName,
+    water:waterName,spot:spotName,
     weather:'',temp:null,
     lat:_liveSession.gpsTrack[0]?.lat||null,
     lon:_liveSession.gpsTrack[0]?.lon||null,
@@ -6879,7 +7374,7 @@ async function _finalizeLive(isSkunked){
   document.getElementById('live-fab').style.display='none';
   document.getElementById('hdr-live-dot').style.display='none';
   const liveBtnEnd=document.getElementById('hdr-live-btn');
-  if(liveBtnEnd){liveBtnEnd.style.display='none';liveBtnEnd.classList.remove('active');}
+  if(liveBtnEnd){liveBtnEnd.classList.remove('active');liveBtnEnd.textContent='🔴 Live';}
   closeLiveOv();
   rndrFangbuch();
   showToast('✅','Live Session gespeichert!');
@@ -6894,7 +7389,7 @@ function _resumeLiveSession(){
     document.getElementById('live-fab').style.display='block';
     document.getElementById('hdr-live-dot').style.display='block';
     const lbResume=document.getElementById('hdr-live-btn');
-    if(lbResume){lbResume.style.display='';lbResume.classList.add('active');}
+    if(lbResume){lbResume.classList.add('active');lbResume.textContent='⏹ Live';}
     _liveTimer=setInterval(_updateLiveTimer,1000);
     // GPS Tracking wiederaufnehmen
     if(navigator.geolocation){
@@ -6924,9 +7419,8 @@ function openLiveCatchOv(){
   if(noteEl)noteEl.value='';
   document.getElementById('lc-bait-len').value='';
   document.getElementById('lc-bait-col').value='';
-  // Raubfisch: Notiz statt Gewicht
+  // Raubfisch: Gewicht ausblenden
   document.getElementById('lc-wt-wrap').style.display=isRaub?'none':'';
-  document.getElementById('lc-note-wrap').style.display=isRaub?'':'none';
   // Köder aus vorherigem Fang vorausfüllen
   const prevCatch=_liveSession.catches[_liveSession.catches.length-1];
   document.getElementById('lc-bait').value=prevCatch?.bait||'';
@@ -6948,6 +7442,10 @@ function openLiveCatchOv(){
 
 function closeLiveCatch(){
   document.getElementById('fs-live-catch')?.classList.remove('on');
+}
+
+function _whisperPlaceholder(){
+  showToast('🎙️','Whisper-Spracherkennung wird in einem zukünftigen Update verfügbar sein.');
 }
 
 function rndrLcFishChips(val){
@@ -7178,18 +7676,19 @@ let _leafletMap=null;
 let _mapMarkers=[];
 let _mapCluster=null;
 
+// ── Master-Filter State ──
+let _mapFilter={dateFrom:'',dateTo:'',skunked:'all',fish:'',hourFrom:'',hourTo:''};
+
 function initMap(){
   const container=document.getElementById('map-container');
   if(!container)return;
 
   if(_leafletMap){
-    // Bestehende Karte nur refreshen
     setTimeout(()=>_leafletMap.invalidateSize(),150);
     _updateMapMarkers();
     return;
   }
 
-  // Default-Koordinaten: Deutschland-Mitte oder PLZ-Koordinaten
   const defaultLat=_plzCoords?.lat||52.5;
   const defaultLon=_plzCoords?.lon||10.0;
   const defaultZoom=_plzCoords?10:6;
@@ -7204,28 +7703,115 @@ function initMap(){
     maxZoom:18
   }).addTo(_leafletMap);
 
-  // Resize-Handler
   setTimeout(()=>_leafletMap.invalidateSize(),200);
-
   _updateMapMarkers();
 }
 
+// ── Filter-Overlay öffnen ──
+function _openMapFilter(){
+  const allFish=[...new Set(sessions.flatMap(s=>(s.catches||[]).map(c=>c.type)).filter(Boolean))].sort();
+  const body=document.getElementById('map-filter-body');
+
+  body.innerHTML=`
+    <div class="slbl" style="margin-bottom:6px;">Datum</div>
+    <div class="g2" style="margin-bottom:14px;">
+      <div class="ig"><label class="il">Von</label><input type="date" class="if" id="mf-date-from" value="${_mapFilter.dateFrom}"></div>
+      <div class="ig"><label class="il">Bis</label><input type="date" class="if" id="mf-date-to" value="${_mapFilter.dateTo}"></div>
+    </div>
+
+    <div class="slbl" style="margin-bottom:6px;">Schneider</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button class="chip cw${_mapFilter.skunked==='all'?' on':''}" onclick="_mfSkunked('all')">Alle</button>
+      <button class="chip cw${_mapFilter.skunked==='no'?' on':''}" onclick="_mfSkunked('no')">Nur Fänge</button>
+      <button class="chip cw${_mapFilter.skunked==='yes'?' on':''}" onclick="_mfSkunked('yes')">Nur Schneider</button>
+    </div>
+
+    <div class="slbl" style="margin-bottom:6px;">Zielfisch</div>
+    <div class="ig" style="margin-bottom:14px;">
+      <select class="if" id="mf-fish" style="width:100%;">
+        <option value="">Alle Fischarten</option>
+        ${allFish.map(f=>`<option value="${f}"${_mapFilter.fish===f?' selected':''}>${f}</option>`).join('')}
+      </select>
+    </div>
+
+    <div class="slbl" style="margin-bottom:6px;">Uhrzeit-Range</div>
+    <div class="g2" style="margin-bottom:20px;">
+      <div class="ig"><label class="il">Von (Uhr)</label><input type="number" class="if" id="mf-hour-from" min="0" max="23" placeholder="z.B. 17" value="${_mapFilter.hourFrom}" inputmode="numeric"></div>
+      <div class="ig"><label class="il">Bis (Uhr)</label><input type="number" class="if" id="mf-hour-to" min="0" max="23" placeholder="z.B. 20" value="${_mapFilter.hourTo}" inputmode="numeric"></div>
+    </div>
+
+    <button onclick="_applyMapFilter()" style="width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;">✅ Filter anwenden</button>
+    <div style="text-align:center;margin-top:10px;">
+      <button onclick="_resetMapFilter()" style="background:none;border:none;color:var(--text-light);font-size:13px;font-family:var(--fa);cursor:pointer;text-decoration:underline;">Filter zurücksetzen</button>
+    </div>`;
+
+  openFs('map-filter');
+}
+
+function _mfSkunked(val){
+  _mapFilter.skunked=val;
+  document.querySelectorAll('#map-filter-body .chip.cw').forEach(b=>b.classList.remove('on'));
+  event.target.classList.add('on');
+}
+
+function _applyMapFilter(){
+  _mapFilter.dateFrom=document.getElementById('mf-date-from')?.value||'';
+  _mapFilter.dateTo=document.getElementById('mf-date-to')?.value||'';
+  _mapFilter.fish=document.getElementById('mf-fish')?.value||'';
+  _mapFilter.hourFrom=document.getElementById('mf-hour-from')?.value||'';
+  _mapFilter.hourTo=document.getElementById('mf-hour-to')?.value||'';
+
+  closeFs('map-filter');
+  _updateMapMarkers();
+
+  // Badge anzeigen wenn Filter aktiv
+  const active=_mapFilter.dateFrom||_mapFilter.dateTo||_mapFilter.skunked!=='all'||_mapFilter.fish||_mapFilter.hourFrom||_mapFilter.hourTo;
+  const badge=document.getElementById('map-filter-badge');
+  if(badge)badge.style.display=active?'block':'none';
+
+  if(active)showToast('🔍','Filter angewendet');
+}
+
+function _resetMapFilter(){
+  _mapFilter={dateFrom:'',dateTo:'',skunked:'all',fish:'',hourFrom:'',hourTo:''};
+  closeFs('map-filter');
+  _updateMapMarkers();
+  const badge=document.getElementById('map-filter-badge');
+  if(badge)badge.style.display='none';
+  showToast('🔍','Filter zurückgesetzt');
+}
+
+// ── Marker-Rendering mit Filter ──
 function _updateMapMarkers(){
   if(!_leafletMap)return;
 
-  // Alte Marker/Cluster entfernen
   _mapMarkers.forEach(m=>_leafletMap.removeLayer(m));
   _mapMarkers=[];
   if(_mapCluster){_leafletMap.removeLayer(_mapCluster);_mapCluster=null;}
 
-  // Sessions mit GPS-Koordinaten auf Karte setzen
-  const withCoords=sessions.filter(s=>s.lat&&s.lon);
+  let withCoords=sessions.filter(s=>s.lat&&s.lon);
   if(!withCoords.length)return;
 
-  // MarkerCluster Gruppe
+  // ── Filter anwenden ──
+  const f=_mapFilter;
+  if(f.dateFrom) withCoords=withCoords.filter(s=>s.date>=f.dateFrom);
+  if(f.dateTo) withCoords=withCoords.filter(s=>s.date<=f.dateTo);
+  if(f.skunked==='yes') withCoords=withCoords.filter(s=>s.skunked||!s.catches?.length);
+  if(f.skunked==='no') withCoords=withCoords.filter(s=>!s.skunked&&s.catches?.length>0);
+  if(f.fish) withCoords=withCoords.filter(s=>s.catches?.some(c=>c.type===f.fish));
+  if(f.hourFrom){
+    const hf=parseInt(f.hourFrom);
+    withCoords=withCoords.filter(s=>{const h=parseInt(s.start);return !isNaN(h)&&h>=hf;});
+  }
+  if(f.hourTo){
+    const ht=parseInt(f.hourTo);
+    withCoords=withCoords.filter(s=>{const h=parseInt(s.start);return !isNaN(h)&&h<=ht;});
+  }
+
+  if(!withCoords.length)return;
+
   _mapCluster=L.markerClusterGroup({maxClusterRadius:40,spiderfyOnMaxZoom:true,showCoverageOnHover:false});
 
-  // Farbige Icons je nach Fangzahl
   function _mkIcon(color){
     return L.divIcon({
       html:`<div style="background:${color};color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.3);border:2px solid #fff;">🐟</div>`,
@@ -7240,13 +7826,12 @@ function _updateMapMarkers(){
 
     const catchCount=s.catches?.length||0;
     const isSkunked=s.skunked||catchCount===0;
-    // Farb-Logik: Schneider=rot, wenig Fänge=grün, viele(≥3)=hellgrün
     const color=isSkunked?'#cc0000':catchCount>=3?'#7BAE8A':'#2D4A35';
 
     const catchList=s.catches?.map(c=>`${fIco(c.type)} ${c.type}${c.length?' '+c.length+'cm':''}`).join('<br>')||'Schneider 🎣';
     const popupHtml=`
       <div style="min-width:160px;">
-        <div style="font-family:var(--fs);font-weight:600;font-size:14px;margin-bottom:4px;">${s.water||'–'}</div>
+        <div style="font-family:var(--fs);font-weight:600;font-size:14px;margin-bottom:4px;">${s.water||'–'}${s.spot?' · '+s.spot:''}</div>
         <div style="font-size:11px;color:#666;margin-bottom:6px;">${fmtDate(s.date)} · ${s.start}–${s.end||'?'}</div>
         <div style="font-size:12px;line-height:1.6;">${catchList}</div>
         ${s.temp!=null?`<div style="font-size:11px;color:#888;margin-top:4px;">${s.weather||''} ${s.temp}°C</div>`:''}
@@ -7260,7 +7845,6 @@ function _updateMapMarkers(){
 
   _leafletMap.addLayer(_mapCluster);
 
-  // Karte auf alle Marker zoomen
   if(bounds.length>1){
     _leafletMap.fitBounds(bounds,{padding:[30,30],maxZoom:13});
   } else if(bounds.length===1){
