@@ -15,6 +15,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <style>:root{
   --cream:#F8F5EF;--cream-dark:#EDE8DC;
   --green-deep:#2D4A35;--green-mid:#4A7C59;--green-light:#7BAE8A;
@@ -554,7 +557,7 @@ position:relative;}
   0%,100%{box-shadow:0 0 0 0 rgba(212,166,64,.45);}
   50%{box-shadow:0 0 0 8px rgba(212,166,64,.0);}
 }
-.goal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;padding:0 16px;box-sizing:border-box;}
+.goal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px;padding:0 16px;box-sizing:border-box;width:100%;}
 .goal-card{
   background:#fff;border-radius:var(--r);padding:12px 8px;
   box-shadow:var(--sh-sm);
@@ -1264,10 +1267,40 @@ input[type=file]{display:none;}
 
 /* ═══ LEAFLET MAP TAB ═══ */
 #page-map .sc{padding:0;overflow:hidden;}
-#map-container{width:100%;height:100%;position:absolute;inset:0;}
+#map-container{width:100%;height:100%;position:absolute;inset:0;z-index:1;}
 #map-container .leaflet-control-zoom{border-radius:var(--rs)!important;overflow:hidden;box-shadow:var(--sh-sm)!important;}
 #map-container .leaflet-popup-content-wrapper{border-radius:var(--rs)!important;box-shadow:var(--sh-md)!important;font-family:var(--fa)!important;}
 #map-container .leaflet-popup-content{margin:12px 14px!important;font-size:13px!important;}
+.marker-cluster{background:rgba(45,74,53,.25)!important;border-radius:50%!important;}
+.marker-cluster div{background:var(--green-deep)!important;color:#fff!important;border-radius:50%!important;font-family:var(--fa)!important;font-weight:700!important;font-size:13px!important;}
+/* Live Start Overlay */
+.ls-start-ov{position:absolute;inset:0;z-index:130;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;font-family:var(--fa);}
+.ls-start-ov.on{display:flex;}
+.ls-start-card{background:var(--cream);width:100%;max-height:80%;border-radius:20px 20px 0 0;padding:24px 20px 30px;overflow-y:auto;box-shadow:0 -4px 20px rgba(0,0,0,.15);}
+.ls-start-card h3{font-family:var(--fs);font-size:18px;color:var(--green-deep);margin:0 0 4px;}
+.ls-start-wx{background:var(--green-mist);border-radius:var(--rs);padding:14px;margin:14px 0;font-size:13px;color:var(--text-mid);line-height:1.6;}
+.ls-track-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--border);font-size:14px;font-weight:600;color:var(--text-mid);}
+.ls-toggle{width:48px;height:26px;border-radius:13px;background:var(--cream-dark);border:none;cursor:pointer;position:relative;transition:background .2s;}
+.ls-toggle.on{background:var(--green-mid);}
+.ls-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s;}
+.ls-toggle.on::after{transform:translateX(22px);}
+/* Petri Heil animation */
+.petri-heil{position:fixed;inset:0;z-index:200;background:var(--green-deep);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;animation:petriFade 2s ease forwards;}
+.petri-heil .ph-ico{font-size:64px;animation:petriBounce .6s ease;}
+.petri-heil .ph-txt{font-family:var(--fs);font-size:28px;margin-top:12px;opacity:0;animation:petriTxtIn .5s ease .3s forwards;}
+@keyframes petriFade{0%{opacity:1}70%{opacity:1}100%{opacity:0;pointer-events:none}}
+@keyframes petriBounce{0%{transform:scale(0) rotate(-20deg)}60%{transform:scale(1.2) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes petriTxtIn{to{opacity:1}}
+/* Live End Overlay */
+.ls-end-ov{position:absolute;inset:0;z-index:131;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;font-family:var(--fa);}
+.ls-end-ov.on{display:flex;}
+.ls-end-card{background:var(--cream);width:88%;border-radius:var(--rl);padding:24px 20px;box-shadow:var(--sh-lg);text-align:center;}
+.ls-end-card h3{font-family:var(--fs);font-size:18px;color:var(--green-deep);margin:0 0 12px;}
+.ls-end-card .le-sub{font-size:13px;color:var(--text-light);margin-bottom:16px;}
+.ls-end-btn{width:100%;padding:13px;border:none;border-radius:var(--rs);font-family:var(--fa);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px;transition:all .15s;}
+.ls-end-btn.primary{background:var(--green-deep);color:#fff;}
+.ls-end-btn.warn{background:#cc0000;color:#fff;}
+.ls-end-btn.ghost{background:transparent;color:var(--text-mid);border:1.5px solid var(--border);}
 
 /* ═══ USER AVATAR (Header) ═══ */
 .hdr-avatar{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;margin-left:6px;cursor:pointer;}</style>
@@ -1319,6 +1352,34 @@ input[type=file]{display:none;}
       <div style="text-align:center;padding:24px;color:var(--text-light);font-size:12px;">Noch keine Fänge – nutze den Button unten</div>
     </div>
     <button class="live-quick-btn" onclick="openLiveCatchOv()">🐟 Fang melden</button>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="ls-end-btn ghost" style="flex:1;" onclick="pauseLiveSession()">⏸ Pausieren</button>
+      <button class="ls-end-btn warn" style="flex:1;" onclick="closeLiveOv();confirmEndLive()">⏹ Beenden</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ LIVE SESSION START OVERLAY ═══ -->
+<div class="ls-start-ov" id="ls-start-ov">
+  <div class="ls-start-card">
+    <h3>🎣 Live Session starten</h3>
+    <div style="font-size:13px;color:var(--text-light);margin-bottom:6px;">Echtzeit-Tracking mit automatischer GPS-Aufzeichnung</div>
+    <div class="ls-start-wx" id="ls-start-wx">
+      <div id="ls-wx-content">🌤️ Wetter wird geladen…</div>
+    </div>
+    <div class="ls-track-row">
+      <span>📍 Strecke tracken?</span>
+      <button class="ls-toggle on" id="ls-track-toggle" onclick="this.classList.toggle('on')"></button>
+    </div>
+    <button class="ls-end-btn primary" style="margin-top:16px;" onclick="_doStartLive()">🔴 Live Session starten</button>
+    <button class="ls-end-btn ghost" onclick="closeLiveStartOv()">Abbrechen</button>
+  </div>
+</div>
+
+<!-- ═══ LIVE SESSION END OVERLAY ═══ -->
+<div class="ls-end-ov" id="ls-end-ov">
+  <div class="ls-end-card" id="ls-end-card">
+    <!-- Content filled dynamically -->
   </div>
 </div>
 
@@ -1377,7 +1438,7 @@ input[type=file]{display:none;}
     <div id="obs3" style="display:none;">
       <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;font-weight:500;">Setze dir deine Ziele für diese Saison. Falls dein Wunschziel nicht dabei ist oder du einen Änderungswunsch hast, kontaktiere uns gerne!</p>
       <div id="ob-goals-list"></div>
-      <button onclick="obAddGoal()" style="width:100%;padding:11px;background:var(--green-mist);border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);margin-top:4px;">+ Weiteres Ziel</button>
+      <button onmousedown="event.preventDefault()" ontouchstart="event.preventDefault();obAddGoal()" onclick="obAddGoal()" style="width:100%;padding:11px;background:var(--green-mist);border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);margin-top:4px;">+ Weiteres Ziel</button>
     </div>
     <button class="obBtn" id="ob-btn" onclick="obNext()" disabled>Weiter →</button>
     <p style="font-size:11px;color:var(--text-light);margin-top:16px;line-height:1.6;text-align:center;">Alle Daten bleiben lokal auf deinem Gerät. <a href="#" onclick="showBurgSec('legal');finOb();return false;" style="color:var(--green-mid);">Datenschutz</a></p>
@@ -1405,10 +1466,11 @@ input[type=file]{display:none;}
       <div class="burg-sec">
         <div class="burg-slbl">Spot-Karte</div>
         <button class="bitem" onclick="showPage('map');closeBurg()"><span class="bitem-ico">🗺️</span><div><div class="bitem-txt">Spot-Karte öffnen</div><div class="bitem-sub">Alle Angelspots auf der Karte</div></div></button>
+        <button class="bitem" onclick="openSpotGpsLink();closeBurg()"><span class="bitem-ico">📌</span><div><div class="bitem-txt">Karte</div><div class="bitem-sub">Spot-Text mit GPS verknüpfen</div></div></button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Live Session</div>
-        <button class="bitem" id="burg-live-btn" onclick="closeBurg();_liveSession?endLiveSession():startLiveSession()">
+        <button class="bitem" id="burg-live-btn" onclick="closeBurg();_liveSession?openLiveOv():startLiveSession()">
           <span class="bitem-ico" id="burg-live-ico">🔴</span>
           <div><div class="bitem-txt" id="burg-live-txt">Live Session starten</div><div class="bitem-sub">Echtzeit-Tracking mit GPS</div></div>
         </button>
@@ -1620,6 +1682,21 @@ input[type=file]{display:none;}
           <span>✓</span><span id="silent-wx-txt">Wetterdaten automatisch im Hintergrund erfasst</span>
         </div>
       </div>
+      <!-- Sichttiefe + Trübung – Session-Level, nur Raubfisch -->
+      <div id="new-sicht-row" style="display:none;margin-bottom:10px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="ig">
+            <label class="il" for="s-sicht">Sichttiefe (cm)</label>
+            <input type="number" class="if" id="s-sicht" placeholder="z.B. 80" min="0" inputmode="numeric">
+          </div>
+          <div class="ig">
+            <label class="il" for="s-trueb">Trübung</label>
+            <input type="text" class="if" id="s-trueb" placeholder="z.B. milchig" autocomplete="off"
+              onfocus="rndrTruebChips()" oninput="rndrTruebChips()" onblur="setTimeout(()=>dHide('trueb-chips'),150)">
+            <div class="crow" id="trueb-chips" style="display:none;" role="listbox"></div>
+          </div>
+        </div>
+      </div>
       <!-- GPS: hidden after load -->
       <div id="gps-strip" class="gps-strip" style="display:none;">
         <span id="gps-ico">📍</span><span id="gps-txt">GPS wird ermittelt…</span>
@@ -1791,6 +1868,20 @@ input[type=file]{display:none;}
   <div class="fsov-scroll" id="fs-dwx-body" style="padding:16px;"></div>
 </div>
 
+<!-- AP4: Spot-GPS-Verknüpfung Overlay -->
+<div class="fsov" id="fs-spot-gps" role="dialog" aria-modal="true" style="z-index:118;">
+  <div class="fshdr">
+    <div><div class="fstitle">📌 Karte</div><div class="fsmeta">Spot-Text mit GPS verknüpfen</div></div>
+    <button class="xbtn" onclick="_closeSpotGps()">✕</button>
+  </div>
+  <div style="padding:10px 16px 6px;">
+    <select class="if" id="spot-gps-sel" style="width:100%;font-size:15px;" onchange="_onSpotSel()">
+      <option value="">Gewässer wählen…</option>
+    </select>
+  </div>
+  <div style="flex:1;position:relative;"><div id="spot-gps-map" style="position:absolute;inset:0;"></div></div>
+</div>
+
 <!-- AP2: Session Mini-Map Overlay -->
 <div class="fsov" id="fs-sess-map" role="dialog" aria-modal="true" style="z-index:117;">
   <div class="fshdr">
@@ -1820,7 +1911,7 @@ input[type=file]{display:none;}
 <div class="page" id="page-map">
   <div class="sc" style="padding:0;position:relative;overflow:hidden;">
     <div id="map-container"></div>
-    <button id="map-close-btn" onclick="showPage('fangbuch')" style="position:absolute;top:16px;right:16px;z-index:1000;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.1);box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);">✕</button>
+    <button id="map-close-btn" onclick="showPage('fangbuch')" style="position:absolute;top:16px;right:16px;z-index:10;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);border:1px solid rgba(0,0,0,.1);box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);">✕</button>
   </div>
 </div>
 
@@ -1846,15 +1937,29 @@ input[type=file]{display:none;}
         <label class="il" for="lc-len">Länge (cm)</label>
         <input type="number" class="if" id="lc-len" placeholder="65" min="1" max="300" step="0.5" inputmode="decimal">
       </div>
-      <div class="ig">
+      <div class="ig" id="lc-wt-wrap">
         <label class="il" for="lc-wt">Gewicht (kg)</label>
         <input type="number" class="if" id="lc-wt" placeholder="2.5" min="0" step="0.1" inputmode="decimal">
+      </div>
+      <div class="ig" id="lc-note-wrap" style="display:none;grid-column:2;">
+        <label class="il" for="lc-note">Notiz</label>
+        <input type="text" class="if" id="lc-note" placeholder="z.B. Released" autocomplete="off">
       </div>
     </div>
 
     <div class="ig" style="margin-bottom:10px;">
       <label class="il" for="lc-bait">Köder</label>
       <input type="text" class="if" id="lc-bait" placeholder="z.B. Gummifisch" autocomplete="off">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+      <div class="ig">
+        <label class="il" for="lc-bait-len">Köder-Länge (cm)</label>
+        <input type="number" class="if" id="lc-bait-len" placeholder="12" min="1" max="100" inputmode="numeric">
+      </div>
+      <div class="ig">
+        <label class="il" for="lc-bait-col">Köder-Farbe</label>
+        <input type="text" class="if" id="lc-bait-col" placeholder="Motoroil" autocomplete="off">
+      </div>
     </div>
 
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
@@ -2084,11 +2189,18 @@ async function syncProfileFromCloud(){
     const{data,error}=await _sb.from('profiles').select('*').eq('user_id',_sbUser.id).maybeSingle();
     if(error)throw error;
     if(data?.data){
-      // Cloud-Profil gefunden → lokal übernehmen falls kein lokales vorhanden
+      // Cloud-Profil gefunden → lokal übernehmen (merge: Cloud gewinnt bei fehlenden lokalen Daten)
       if(!profile){
         profile=data.data;
-        await saveProfile();
+      } else {
+        // Merge: Cloud-Felder überschreiben nur leere lokale Felder
+        const cp=data.data;
+        for(const k of Object.keys(cp)){
+          if(!profile[k]&&cp[k]) profile[k]=cp[k];
+        }
       }
+      await saveProfile();
+      applyProf();
     }
   }catch(e){console.warn('Profil-Cloud-Load Fehler:',e);}
 }
@@ -2204,6 +2316,10 @@ function setInputMode(mode){
   const hint=document.getElementById('silent-wx-hint');
   if(hint)hint.style.display=reduced?'block':'none';
 
+  // Sichttiefe + Trübung (Session-Level, nur Raubfisch)
+  const sichtRow=document.getElementById('new-sicht-row');
+  if(sichtRow)sichtRow.style.display=(mode==='raub')?'':'none';
+
   // Im reduzierten Modus: Wetter sofort im Hintergrund laden
   if(reduced&&!_lastWx){
     _silentFetchWx();
@@ -2211,14 +2327,17 @@ function setInputMode(mode){
 
   // Alle Fang-Blöcke aktualisieren
   for(let i=1;i<=catchCount;i++){
-    // Raubfisch-spezifische Felder (Köder, Notizen, Foto, Sichttiefe)
-    ['bait-row','note-row','photo-row','sicht-row'].forEach(key=>{
+    // Raubfisch-spezifische Felder (Köder, Notizen, Foto)
+    ['bait-row','note-row','photo-row'].forEach(key=>{
       const el=document.getElementById(`catch-${key}-${i}`);
       if(el)el.style.display=(mode==='raub')?'':'none';
     });
     // Friedfisch-spezifische Felder
     const friedEl=document.getElementById(`catch-fried-${i}`);
     if(friedEl)friedEl.style.display=fried?'':'none';
+    // Fischart-Placeholder je nach Modus
+    const ftEl=document.getElementById('ft-'+i);
+    if(ftEl)ftEl.placeholder=fried?'z.B. Rotauge':'z.B. Zander';
     // Länge: immer sichtbar in raub+reduced, in fried optional
     // C&R: immer sichtbar
   }
@@ -2631,7 +2750,7 @@ function obAddGoal(){
         <span class="gt-ico">🎣</span>Stückzahl
       </button>
       <button class="goal-type-btn" id="og-type-range-${idx}" onclick="obSelType(${idx},'range')">
-        <span class="gt-ico">📏</span>Korridor
+        <span class="gt-ico">📏</span>Range
       </button>
       <button class="goal-type-btn" id="og-type-pb-${idx}" onclick="obSelType(${idx},'pb')">
         <span class="gt-ico">🏆</span>PB
@@ -2669,8 +2788,12 @@ function obAddGoal(){
     <!-- Felder: PB -->
     <div id="og-fields-pb-${idx}" class="goal-fields g2" style="display:none;">
       <div class="ig">
-        <div class="il" style="margin-bottom:4px;">Ziel-Länge cm</div>
+        <div class="il" style="margin-bottom:4px;">Länge (cm)</div>
         <input type="number" class="if" id="og-pb-${idx}" placeholder="107" min="1" inputmode="numeric">
+      </div>
+      <div class="ig">
+        <div class="il" style="margin-bottom:4px;">Gewicht (kg)</div>
+        <input type="number" class="if" id="og-pbw-${idx}" placeholder="12.5" min="0" step="0.1" inputmode="decimal">
       </div>
     </div>`;
   el.appendChild(row);
@@ -2737,15 +2860,14 @@ function obNext(){
         goal={type:'range',fish,count:cnt,minLen,maxLen,label:`${cnt}× ${fish} ${minLen}–${maxLen>0?maxLen:'∞'}cm`,id:_newId()};
       } else {
         const pbLen=parseInt(document.getElementById('og-pb-'+i)?.value)||0;
-        if(pbLen<1)continue;
-        goal={type:'pb',fish,count:1,minLen:pbLen,maxLen:0,label:`PB ${fish} über ${pbLen}cm`,id:_newId()};
+        const pbWt=parseFloat(document.getElementById('og-pbw-'+i)?.value)||0;
+        if(pbLen<1&&pbWt<=0)continue;
+        goal={type:'pb',fish,count:1,minLen:pbLen,maxLen:0,pbWeight:pbWt,label:`PB ${fish}${pbLen>0?' über '+pbLen+'cm':''}${pbWt>0?' / '+pbWt+'kg':''}`,id:_newId()};
       }
       if(goal)goals.push(goal);
     }
     profile={...obData,goals};
     saveProfile();
-    document.activeElement.blur();
-    setTimeout(()=>window.scrollTo(0,0),100);
     finOb();
     return;
   }
@@ -2791,24 +2913,22 @@ function finOb(){
 
 function _finishOb(){
   clearTimeout(window._obFinishTimer);
-  // AP1: Tastatur-Space-Fix — Body temporär einschränken
+  // AP4: Harter Layout-Repaint für iOS-Tastatur-Viewport-Bug
   document.activeElement?.blur();
-  document.body.style.height='100vh';
-  document.body.style.overflow='hidden';
-  document.getElementById('onboarding').classList.add('hidden');
-  applyProf();
-  showPage('fangbuch');
-  rndrFangbuch();
-  window.scrollTo(0,0);
-  // Cloud-Sync nach Onboarding (falls eingeloggt)
-  if(_sbUser&&_authMode==='online'){
-    setTimeout(()=>syncToCloud(),1000);
-  }
-  // Body-Fix nach kurzer Verzögerung aufheben
   setTimeout(()=>{
-    document.body.style.height='';
-    document.body.style.overflow='';
-  },400);
+    window.scrollTo(0,0);
+    document.body.style.display='none';
+    document.body.offsetHeight; // Force reflow
+    document.body.style.display='block';
+    document.getElementById('onboarding').classList.add('hidden');
+    applyProf();
+    showPage('fangbuch');
+    rndrFangbuch();
+    // Cloud-Sync nach Onboarding (falls eingeloggt)
+    if(_sbUser&&_authMode==='online'){
+      setTimeout(()=>{syncToCloud();syncProfileToCloud();},1000);
+    }
+  },100);
 }
 
 function _obConfetti(container){
@@ -3120,6 +3240,17 @@ function bSel(id,v){
   updNoteChips(id);
 }
 
+// Trübung-Chips (Session-Level)
+const TRUEB_OPTS=['milchig','grünlich','kaffeebraun','klar','trüb','leicht trüb'];
+function rndrTruebChips(){
+  const el=document.getElementById('trueb-chips');if(!el)return;
+  const v=(document.getElementById('s-trueb')?.value||'').toLowerCase();
+  const filtered=v?TRUEB_OPTS.filter(t=>t.includes(v)):TRUEB_OPTS;
+  if(!filtered.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=filtered.map(t=>`<button class="chip" onmousedown="document.getElementById('s-trueb').value='${t}';dHide('trueb-chips')">💧 ${t}</button>`).join('');
+}
+
 // Notiz-Chips – gelernte Phrasen, Top 5, längere Phrasen zuerst
 // usedPhrases: bereits in diesem Notiz-Feld eingefügte Phrasen (Set pro catch-id)
 const _usedNoteChips={};
@@ -3298,7 +3429,7 @@ function addCatch(){
     <!-- Fischart – Chips als Dropdown, keine doppelten Favoritenbuttons -->
     <div class="ig" style="margin-bottom:6px;">
       <label class="il" for="ft-${id}">Fischart</label>
-      <input type="text" list="fdl-${id}" class="if" id="ft-${id}" placeholder="z.B. Zander"
+      <input type="text" list="fdl-${id}" class="if" id="ft-${id}" placeholder="${_inputMode==='fried'?'z.B. Rotauge':'z.B. Zander'}"
         value="${presetFish}"
         onfocus="rndrFChips(${id},this.value)" oninput="rndrFChips(${id},this.value);chkMMF(${id})" onblur="dHide('fc-${id}')" autocomplete="off">
       <datalist id="fdl-${id}">${FISH.map(f=>`<option value="${f}">`).join('')}</datalist>
@@ -3350,14 +3481,6 @@ function addCatch(){
         <div id="pa-${id}" class="phadd" onclick="trigPhoto(${id})" role="button" tabindex="0"><span>📷</span><span class="phlbl">Foto</span></div>
         <img id="pp-${id}" class="phpr" src="" alt="Fangfoto" style="display:none;" onclick="trigPhoto(${id})">
         <div style="flex:1;font-size:11px;color:var(--text-light);line-height:1.5;cursor:pointer;" onclick="trigPhoto(${id})">Foto hinzufügen</div>
-      </div>
-    </div>
-
-    <!-- Sichttiefe – nur im Raubfisch-Modus -->
-    <div id="catch-sicht-row-${id}" style="display:${_inputMode==='raub'?'':'none'};">
-      <div class="ig" style="margin-bottom:6px;">
-        <label class="il" for="f-sicht-${id}">Sichttiefe (cm)</label>
-        <input type="number" class="if" id="f-sicht-${id}" placeholder="z.B. 80" min="0" inputmode="numeric" style="max-width:140px;">
       </div>
     </div>
 
@@ -3592,9 +3715,6 @@ async function saveSess(){
             catchObj.ffPrebaited=document.getElementById('ff-pre-'+i)?.value||'';
             catchObj.ffPreDays=parseInt(document.getElementById('ff-pre-days-'+i)?.value)||0;
           }
-          if(_inputMode==='raub'){
-            catchObj.sichttiefe=parseInt(document.getElementById('f-sicht-'+i)?.value)||0;
-          }
           catches.push(catchObj);
           addFav('fish',type);if(bait)addFav('bait',bait);if(bait&&note)addBaitKw(bait,note);
         } else if(type||lenVal){
@@ -3619,7 +3739,9 @@ async function saveSess(){
       pressure:_lastWx?.pressure||null,windSpeed:_lastWx?.windSpeed||null,
       windDir:_lastWx?.windDir||null,humidity:_lastWx?.humidity||null,
       clouds:_lastWx?.clouds||null,precip:_lastWx?.precip||null,
-      catches,saved:new Date().toISOString()
+      catches,saved:new Date().toISOString(),
+      sichttiefe:parseInt(document.getElementById('s-sicht')?.value)||0,
+      truebung:document.getElementById('s-trueb')?.value.trim()||''
     };
     // Auto-Wetter: Wenn Wetterwerte null → historische Daten laden
     if(!sess.pressure&&!sess.windSpeed&&sess.date){
@@ -3843,6 +3965,10 @@ function stopK(){if(kAF)cancelAnimationFrame(kAF);document.getElementById('kcanv
 // Tab-Mapping: welcher btab wird bei welcher page aktiv
 const TAB_PAGE_MAP={fangbuch:'fangbuch',history:'fangbuch',forecast:'forecast',map:'map',stats:'stats'};
 function showPage(p){
+  // AP3: Alle offenen Overlays schließen und Edit-State resetten
+  document.querySelectorAll('.fsov.on').forEach(ov=>ov.classList.remove('on'));
+  _editPendingId=null;
+
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
   const pageEl=document.getElementById('page-'+p);
   if(pageEl)pageEl.classList.add('on');
@@ -4432,12 +4558,28 @@ function openSessMap(dateKey){
     _sessMap=L.map(container).setView([lat,lon],14);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OSM',maxZoom:18}).addTo(_sessMap);
     const bounds=[];
+    // Session-Marker (groß)
     daySess.forEach(s=>{
       const la=parseFloat(s.lat),lo=parseFloat(s.lon);
       bounds.push([la,lo]);
       const cnt=s.catches?.length||0;
       const popup=`<strong>${s.water||'–'}</strong><br>${s.start||''}–${s.end||''} Uhr<br>${cnt} Fang${cnt!==1?'e':''}`;
       L.marker([la,lo]).addTo(_sessMap).bindPopup(popup);
+      // Einzelne Fang-Marker (klein, farbig)
+      if(s.catches){
+        s.catches.forEach(c=>{
+          const cLat=parseFloat(c.lat),cLon=parseFloat(c.lon);
+          if(!isNaN(cLat)&&!isNaN(cLon)){
+            const catchIcon=L.divIcon({
+              html:`<div style="background:var(--green-mid);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 1px 4px rgba(0,0,0,.3);border:1.5px solid #fff;">${fIco(c.type)}</div>`,
+              className:'',iconSize:[22,22],iconAnchor:[11,22],popupAnchor:[0,-24]
+            });
+            const cPopup=`<strong>${c.type}</strong>${c.length?' · '+c.length+'cm':''}${c.bait?'<br>Köder: '+c.bait:''}${c.time?'<br>'+c.time:''}`;
+            L.marker([cLat,cLon],{icon:catchIcon}).addTo(_sessMap).bindPopup(cPopup);
+            bounds.push([cLat,cLon]);
+          }
+        });
+      }
     });
     if(bounds.length>1)_sessMap.fitBounds(bounds,{padding:[30,30]});
   },200);
@@ -4473,6 +4615,112 @@ function openSessMapManual(dateKey){
 function _closeSessMap(){
   closeFs('sess-map');
   if(_sessMap){_sessMap.remove();_sessMap=null;}
+  // Confirm-Button entfernen falls vorhanden
+  document.getElementById('catch-pos-confirm')?.remove();
+}
+
+// AP4: Spot-GPS-Verknüpfung
+let _spotGpsMap=null;
+function openSpotGpsLink(){
+  const sel=document.getElementById('spot-gps-sel');
+  const waters=[...new Set(sessions.map(s=>s.water).filter(Boolean))].sort();
+  sel.innerHTML='<option value="">Gewässer wählen…</option>'+waters.map(w=>{
+    const hasGps=sessions.some(s=>s.water===w&&s.lat&&s.lon);
+    return`<option value="${w}">${w}${hasGps?' 📍':''}</option>`;
+  }).join('');
+  openFs('spot-gps');
+  setTimeout(()=>{
+    const container=document.getElementById('spot-gps-map');
+    if(!container||typeof L==='undefined')return;
+    if(_spotGpsMap){_spotGpsMap.remove();_spotGpsMap=null;}
+    const startLat=_plzCoords?.lat||52.5,startLon=_plzCoords?.lon||10.0;
+    _spotGpsMap=L.map(container).setView([startLat,startLon],_plzCoords?11:6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OSM',maxZoom:18}).addTo(_spotGpsMap);
+    // Alle Spots mit GPS als Marker anzeigen
+    sessions.forEach(s=>{
+      if(s.water&&s.lat&&s.lon){
+        L.marker([parseFloat(s.lat),parseFloat(s.lon)]).addTo(_spotGpsMap)
+          .bindPopup(`<strong>${s.water}</strong>`);
+      }
+    });
+  },200);
+}
+
+function _onSpotSel(){
+  const sel=document.getElementById('spot-gps-sel');
+  const water=sel.value;
+  if(!water||!_spotGpsMap)return;
+  // Zu vorhandener GPS-Position springen falls vorhanden
+  const existing=sessions.find(s=>s.water===water&&s.lat&&s.lon);
+  if(existing){
+    _spotGpsMap.setView([parseFloat(existing.lat),parseFloat(existing.lon)],15);
+  }
+  // Klick-Handler für GPS-Zuweisung
+  _spotGpsMap.off('click');
+  let marker=existing?L.marker([parseFloat(existing.lat),parseFloat(existing.lon)]).addTo(_spotGpsMap):null;
+  showToast('📌',`Tippe auf die Karte für "${water}"`);
+  _spotGpsMap.on('click',async e=>{
+    if(marker)_spotGpsMap.removeLayer(marker);
+    marker=L.marker(e.latlng).addTo(_spotGpsMap);
+    const lat=String(e.latlng.lat.toFixed(6)),lon=String(e.latlng.lng.toFixed(6));
+    let count=0;
+    for(const s of sessions){
+      if(s.water===water){s.lat=lat;s.lon=lon;await saveOneSess(s);count++;}
+    }
+    showToast('📌',`GPS für "${water}" gespeichert (${count} Session${count>1?'s':''})`);
+    // Update Dropdown-Anzeige
+    const opt=sel.querySelector(`option[value="${water}"]`);
+    if(opt&&!opt.textContent.includes('📍'))opt.textContent=water+' 📍';
+  });
+}
+
+function _closeSpotGps(){
+  closeFs('spot-gps');
+  if(_spotGpsMap){_spotGpsMap.remove();_spotGpsMap=null;}
+}
+
+// AP3: Per-Catch Position markieren
+function openCatchPosMap(sessId,catchIdx){
+  const s=sessions.find(x=>String(x.id)===String(sessId));
+  if(!s||!s.catches||!s.catches[catchIdx])return;
+  const c=s.catches[catchIdx];
+  document.getElementById('fs-smap-meta').textContent=`📍 Position für ${c.type} markieren`;
+  openFs('sess-map');
+  setTimeout(()=>{
+    const container=document.getElementById('sess-map-container');
+    if(!container||typeof L==='undefined')return;
+    if(_sessMap){_sessMap.remove();_sessMap=null;}
+    // Startposition: vorhandene Catch-Coords > Session-Coords > PLZ > Default
+    const startLat=parseFloat(c.lat)||parseFloat(s.lat)||_plzCoords?.lat||52.5;
+    const startLon=parseFloat(c.lon)||parseFloat(s.lon)||_plzCoords?.lon||10.0;
+    const startZoom=(c.lat||s.lat)?15:(_plzCoords?11:6);
+    _sessMap=L.map(container).setView([startLat,startLon],startZoom);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OSM',maxZoom:18}).addTo(_sessMap);
+    let marker=c.lat?L.marker([parseFloat(c.lat),parseFloat(c.lon)]).addTo(_sessMap):null;
+
+    // Confirm-Button hinzufügen
+    const btn=document.createElement('button');
+    btn.id='catch-pos-confirm';
+    btn.textContent='✅ Position bestätigen';
+    btn.style.cssText='position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:1000;padding:14px 28px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-lg);display:none;';
+    container.parentElement.appendChild(btn);
+
+    _sessMap.on('click',e=>{
+      if(marker)_sessMap.removeLayer(marker);
+      marker=L.marker(e.latlng).addTo(_sessMap);
+      btn.style.display='block';
+      btn._latlng=e.latlng;
+    });
+
+    btn.onclick=async()=>{
+      if(!btn._latlng)return;
+      s.catches[catchIdx].lat=String(btn._latlng.lat.toFixed(6));
+      s.catches[catchIdx].lon=String(btn._latlng.lng.toFixed(6));
+      await saveOneSess(s);
+      showToast('📍',`Position für ${c.type} gespeichert`);
+      _closeSessMap();
+    };
+  },200);
 }
 
 // Löschen aus dem Day-Detail-Overlay heraus
@@ -4595,7 +4843,7 @@ function showDetail(id){
         <span class="crp ${c.taken?'tak':'rel'}">${c.taken?'Entnommen':'C&R'}</span>
         ${mm&&!mm.ok?`<span class="crp" style="background:var(--rose);color:var(--rose-t);margin-left:4px;">⚠️ unter ${mm.mm}cm</span>`:''}
       </div>
-      <div class="frt"><div class="flv">${c.length}</div><div class="flu">cm</div>${(profile?.angeltyp||'Allround')==='Raubfisch'?`<div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score}</div>`:''}</div>
+      <div class="frt"><div class="flv">${c.length}</div><div class="flu">cm</div>${(profile?.angeltyp||'Allround')==='Raubfisch'?`<div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score}</div>`:''}<button onclick="event.stopPropagation();openCatchPosMap('${s.id}',${i})" style="margin-top:4px;background:none;border:1px solid var(--green-pale);border-radius:6px;padding:2px 6px;font-size:10px;cursor:pointer;color:var(--green-mid);" title="Position markieren">${c.lat?'📍✓':'📍'}</button></div>
     </div>`;}).join('')}
   </div>
   <div style="display:flex;gap:10px;margin-top:4px;">
@@ -6377,18 +6625,39 @@ let _liveSession=null; // {startTime, catches:[], gpsTrack:[], watchId}
 let _liveTimer=null;
 let _liveGpsWatch=null;
 
+// ── Live Session Start: Overlay öffnen ──
 function startLiveSession(){
+  // Wetter in Start-Overlay laden
+  const wxEl=document.getElementById('ls-wx-content');
+  if(_lastWx){
+    wxEl.innerHTML=`${_lastWx.weather||'🌤️'} ${_lastWx.temp!=null?_lastWx.temp+'°C':'–'} · Wind ${_lastWx.windSpeed||'–'} km/h · ${_lastWx.humidity||'–'}% Feuchte`;
+  } else {
+    wxEl.textContent='🌤️ Wetter nicht verfügbar (offline)';
+  }
+  document.getElementById('ls-track-toggle').classList.add('on'); // Default: Tracking an
+  document.getElementById('ls-start-ov').classList.add('on');
+}
+
+function closeLiveStartOv(){
+  document.getElementById('ls-start-ov').classList.remove('on');
+}
+
+function _doStartLive(){
+  closeLiveStartOv();
+  const trackOn=document.getElementById('ls-track-toggle').classList.contains('on');
+
   _liveSession={
     startTime:Date.now(),
     catches:[],
     gpsTrack:[],
-    water:''
+    water:'',
+    paused:false,
+    trackGps:trackOn
   };
-  // Persist live state
   localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
 
-  // GPS tracking starten
-  if(navigator.geolocation){
+  // GPS tracking starten (wenn gewünscht)
+  if(trackOn&&navigator.geolocation){
     _liveGpsWatch=navigator.geolocation.watchPosition(pos=>{
       const coord={lat:pos.coords.latitude.toFixed(5),lon:pos.coords.longitude.toFixed(5),ts:Date.now()};
       _liveSession.gpsTrack.push(coord);
@@ -6411,8 +6680,85 @@ function startLiveSession(){
   document.getElementById('hdr-live-dot').style.display='block';
   const liveBtn=document.getElementById('hdr-live-btn');
   if(liveBtn){liveBtn.style.display='';liveBtn.classList.add('active');}
-  openLiveOv();
-  showToast('🔴','Live Session gestartet!');
+
+  // Petri Heil! Animation
+  const ph=document.createElement('div');
+  ph.className='petri-heil';
+  ph.innerHTML='<div class="ph-ico">🎣</div><div class="ph-txt">Petri Heil!</div>';
+  document.body.appendChild(ph);
+  setTimeout(()=>ph.remove(),2200);
+
+  setTimeout(()=>{
+    openLiveOv();
+    showToast('🔴','Live Session gestartet!');
+  },1200);
+}
+
+// ── Pause / Resume ──
+function pauseLiveSession(){
+  if(!_liveSession)return;
+  if(_liveSession.paused){
+    // Resume
+    _liveSession.paused=false;
+    _liveSession.startTime=Date.now()-_liveSession._elapsedAtPause;
+    delete _liveSession._elapsedAtPause;
+    _liveTimer=setInterval(_updateLiveTimer,1000);
+    if(_liveSession.trackGps&&navigator.geolocation){
+      _liveGpsWatch=navigator.geolocation.watchPosition(pos=>{
+        const coord={lat:pos.coords.latitude.toFixed(5),lon:pos.coords.longitude.toFixed(5),ts:Date.now()};
+        _liveSession.gpsTrack.push(coord);
+        gpsCoords={lat:coord.lat,lon:coord.lon};
+      },()=>{},{enableHighAccuracy:true,maximumAge:30000,timeout:15000});
+    }
+    localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
+    showToast('▶️','Session fortgesetzt');
+  } else {
+    // Pause
+    _liveSession.paused=true;
+    _liveSession._elapsedAtPause=Date.now()-_liveSession.startTime;
+    if(_liveTimer){clearInterval(_liveTimer);_liveTimer=null;}
+    if(_liveGpsWatch){navigator.geolocation.clearWatch(_liveGpsWatch);_liveGpsWatch=null;}
+    localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
+    showToast('⏸','Session pausiert');
+  }
+}
+
+// ── End Flow mit Schneider-Check ──
+function confirmEndLive(){
+  if(!_liveSession)return;
+  const card=document.getElementById('ls-end-card');
+  const hasCatches=_liveSession.catches.length>0;
+
+  if(hasCatches){
+    // Hat Fänge → direkt Bestätigungsmaske
+    card.innerHTML=`
+      <h3>🔴 Session beenden</h3>
+      <div class="le-sub">${_liveSession.catches.length} Fang${_liveSession.catches.length>1?'e':''} · ${document.getElementById('live-timer')?.textContent||'--:--:--'}</div>
+      <button class="ls-end-btn primary" onclick="_finalizeLive(false)">✅ Speichern & Beenden</button>
+      <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>`;
+  } else {
+    // Keine Fänge → Schneider-Frage
+    card.innerHTML=`
+      <h3>🤔 Schneider?</h3>
+      <div class="le-sub">Du hast noch keinen Fang eingetragen.</div>
+      <button class="ls-end-btn primary" onclick="_showEndOptions()">Ja, Schneider</button>
+      <button class="ls-end-btn ghost" onclick="closeLiveEndOv();openLiveCatchOv()">Nein, Fang eintragen</button>`;
+  }
+  document.getElementById('ls-end-ov').classList.add('on');
+}
+
+function _showEndOptions(){
+  const card=document.getElementById('ls-end-card');
+  card.innerHTML=`
+    <h3>📝 Session abschließen</h3>
+    <div class="le-sub">Schneider-Session</div>
+    <button class="ls-end-btn primary" onclick="closeLiveEndOv();openLiveCatchOv()">🐟 Weitere Infos eingeben</button>
+    <button class="ls-end-btn warn" onclick="_finalizeLive(true)">⏹ Abschließen</button>
+    <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>`;
+}
+
+function closeLiveEndOv(){
+  document.getElementById('ls-end-ov').classList.remove('on');
 }
 
 function _updateLiveTimer(){
@@ -6456,7 +6802,12 @@ function _renderLiveCatches(){
     el.innerHTML='<div style="text-align:center;padding:24px;color:var(--text-light);font-size:12px;">Noch keine Fänge – nutze den Button unten</div>';
     return;
   }
-  el.innerHTML=_liveSession.catches.map((c,i)=>`
+  // Deduplizierte Zusammenfassung (Chips) oben
+  const fishCounts={};
+  _liveSession.catches.forEach(c=>{fishCounts[c.type]=(fishCounts[c.type]||0)+1;});
+  const chips=Object.entries(fishCounts).map(([f,n])=>`<span style="display:inline-block;padding:3px 10px;background:var(--green-mist);border-radius:12px;font-size:11px;font-weight:600;color:var(--green-deep);margin:2px;">${fIco(f)} ${f}${n>1?' ×'+n:''}</span>`).join('');
+  // Einzelne Fänge
+  const cards=_liveSession.catches.map((c,i)=>`
     <div class="live-catch-card">
       <div class="live-catch-ico">${fIco(c.type)}</div>
       <div class="live-catch-info">
@@ -6464,16 +6815,25 @@ function _renderLiveCatches(){
         <div class="live-catch-meta">${c.time}${c.bait?' · '+c.bait:''}</div>
       </div>
     </div>`).join('');
+  el.innerHTML=`<div style="margin-bottom:8px;">${chips}</div>${cards}`;
 }
 
 async function endLiveSession(){
   if(!_liveSession)return;
-  const ok=await showConf('🔴','Live Session beenden','Session jetzt speichern?','Speichern & Beenden');
-  if(!ok)return;
+  closeLiveOv();
+  confirmEndLive();
+}
+
+async function _finalizeLive(isSkunked){
+  closeLiveEndOv();
+  if(!_liveSession)return;
 
   // Timer + GPS stoppen
-  if(_liveTimer)clearInterval(_liveTimer);
-  if(_liveGpsWatch)navigator.geolocation.clearWatch(_liveGpsWatch);
+  if(_liveTimer){clearInterval(_liveTimer);_liveTimer=null;}
+  if(_liveGpsWatch){navigator.geolocation.clearWatch(_liveGpsWatch);_liveGpsWatch=null;}
+
+  // Gewässername aus Live-Session oder Fallback
+  const waterName=_liveSession.water||'Live-Session';
 
   // Session-Objekt bauen
   const start=new Date(_liveSession.startTime);
@@ -6483,19 +6843,31 @@ async function endLiveSession(){
     date:start.toISOString().split('T')[0],
     start:start.getHours().toString().padStart(2,'0')+':'+start.getMinutes().toString().padStart(2,'0'),
     end:now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0'),
-    water:_liveSession.water||document.getElementById('s-water')?.value||'Live-Session',
+    water:waterName,
     weather:'',temp:null,
     lat:_liveSession.gpsTrack[0]?.lat||null,
     lon:_liveSession.gpsTrack[0]?.lon||null,
     ...getMoon(start.toISOString().split('T')[0]),
     moonIllum:getMoon(start.toISOString().split('T')[0]).illum,
-    skunked:!_liveSession.catches.length,
-    autoSkunked:!_liveSession.catches.length,
+    skunked:isSkunked||!_liveSession.catches.length,
+    autoSkunked:isSkunked||!_liveSession.catches.length,
     catches:_liveSession.catches,
     pressure:null,windSpeed:null,windDir:null,humidity:null,clouds:null,precip:null,
     saved:new Date().toISOString(),
     liveTrack:_liveSession.gpsTrack
   };
+
+  // Auto-Wetter laden
+  if(_lastWx){
+    sess.weather=_lastWx.weather||'';
+    sess.temp=_lastWx.temp;
+    sess.pressure=_lastWx.pressure;
+    sess.windSpeed=_lastWx.windSpeed;
+    sess.windDir=_lastWx.windDir;
+    sess.humidity=_lastWx.humidity;
+    sess.clouds=_lastWx.clouds;
+    sess.precip=_lastWx.precip;
+  }
 
   sessions.unshift(sess);
   await saveOneSess(sess);
@@ -6509,6 +6881,7 @@ async function endLiveSession(){
   const liveBtnEnd=document.getElementById('hdr-live-btn');
   if(liveBtnEnd){liveBtnEnd.style.display='none';liveBtnEnd.classList.remove('active');}
   closeLiveOv();
+  rndrFangbuch();
   showToast('✅','Live Session gespeichert!');
   showPage('fangbuch');
 }
@@ -6539,6 +6912,7 @@ let _lcPhotoData=null; // Base64-Fotodaten für Live-Catch
 
 function openLiveCatchOv(){
   if(!_liveSession){startLiveSession();return;}
+  const isRaub=_inputMode==='raub';
   // Datalist befüllen
   const dl=document.getElementById('lc-fdl');
   if(dl)dl.innerHTML=FISH.map(f=>`<option value="${f}">`).join('');
@@ -6546,7 +6920,19 @@ function openLiveCatchOv(){
   document.getElementById('lc-fish').value='';
   document.getElementById('lc-len').value='';
   document.getElementById('lc-wt').value='';
-  document.getElementById('lc-bait').value='';
+  const noteEl=document.getElementById('lc-note');
+  if(noteEl)noteEl.value='';
+  document.getElementById('lc-bait-len').value='';
+  document.getElementById('lc-bait-col').value='';
+  // Raubfisch: Notiz statt Gewicht
+  document.getElementById('lc-wt-wrap').style.display=isRaub?'none':'';
+  document.getElementById('lc-note-wrap').style.display=isRaub?'':'none';
+  // Köder aus vorherigem Fang vorausfüllen
+  const prevCatch=_liveSession.catches[_liveSession.catches.length-1];
+  document.getElementById('lc-bait').value=prevCatch?.bait||'';
+  if(prevCatch?.baitLen)document.getElementById('lc-bait-len').value=prevCatch.baitLen;
+  if(prevCatch?.baitColor)document.getElementById('lc-bait-col').value=prevCatch.baitColor;
+  // Foto reset
   document.getElementById('lc-pp').style.display='none';
   document.getElementById('lc-pp').src='';
   document.getElementById('lc-pa').style.display='';
@@ -6596,9 +6982,16 @@ function saveLiveCatch(){
   if(!fish){showToast('⚠️','Bitte Fischart eingeben!',true);return;}
   const len=parseFloat(document.getElementById('lc-len')?.value)||0;
   const wt=parseFloat(document.getElementById('lc-wt')?.value)||0;
+  const note=document.getElementById('lc-note')?.value.trim()||'';
   const bait=document.getElementById('lc-bait')?.value.trim()||'';
+  const baitLen=parseInt(document.getElementById('lc-bait-len')?.value)||0;
+  const baitColor=document.getElementById('lc-bait-col')?.value.trim()||'';
   const now=new Date();
   const time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+
+  // GPS-Koordinate des Fangs (für Multi-Marker auf Karte)
+  const catchLat=gpsCoords?.lat||null;
+  const catchLon=gpsCoords?.lon||null;
 
   // Foto speichern wenn vorhanden
   let photoKey=null;
@@ -6607,13 +7000,13 @@ function saveLiveCatch(){
     try{localStorage.setItem('fb_photo_'+photoKey,_lcPhotoData);}catch(e){console.warn('Foto zu groß für localStorage');}
   }
 
-  const c={type:fish,length:len,weight:wt,time,taken:false,bait,baitNote:'',score:fScore(fish,len),photoKey,inputMode:'raub'};
+  const c={type:fish,length:len,weight:wt,note,time,taken:false,bait,baitLen,baitColor,baitNote:'',score:fScore(fish,len),photoKey,inputMode:_inputMode,lat:catchLat,lon:catchLon};
   _liveSession.catches.push(c);
   localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
   _renderLiveCatches();
 
   closeLiveCatch();
-  showToast('🐟',`${fish}${len?' · '+len+'cm':''}${wt?' · '+wt+'kg':''} hinzugefügt!`);
+  showToast('🐟',`${fish}${len?' · '+len+'cm':''} hinzugefügt!`);
   addFav('fish',fish);
   if(bait)addFav('bait',bait);
 }
@@ -6783,6 +7176,7 @@ function _parseVoiceInput(catchId,text){
 // ═══════════════════════════════════════════════════════════
 let _leafletMap=null;
 let _mapMarkers=[];
+let _mapCluster=null;
 
 function initMap(){
   const container=document.getElementById('map-container');
@@ -6819,22 +7213,25 @@ function initMap(){
 function _updateMapMarkers(){
   if(!_leafletMap)return;
 
-  // Alte Marker entfernen
+  // Alte Marker/Cluster entfernen
   _mapMarkers.forEach(m=>_leafletMap.removeLayer(m));
   _mapMarkers=[];
+  if(_mapCluster){_leafletMap.removeLayer(_mapCluster);_mapCluster=null;}
 
   // Sessions mit GPS-Koordinaten auf Karte setzen
   const withCoords=sessions.filter(s=>s.lat&&s.lon);
   if(!withCoords.length)return;
 
-  // Custom-Icon
-  const fishIcon=L.divIcon({
-    html:'<div style="background:var(--green-deep);color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.3);border:2px solid #fff;">🐟</div>',
-    className:'',
-    iconSize:[32,32],
-    iconAnchor:[16,32],
-    popupAnchor:[0,-34]
-  });
+  // MarkerCluster Gruppe
+  _mapCluster=L.markerClusterGroup({maxClusterRadius:40,spiderfyOnMaxZoom:true,showCoverageOnHover:false});
+
+  // Farbige Icons je nach Fangzahl
+  function _mkIcon(color){
+    return L.divIcon({
+      html:`<div style="background:${color};color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.3);border:2px solid #fff;">🐟</div>`,
+      className:'',iconSize:[32,32],iconAnchor:[16,32],popupAnchor:[0,-34]
+    });
+  }
 
   const bounds=[];
   withCoords.forEach(s=>{
@@ -6842,7 +7239,11 @@ function _updateMapMarkers(){
     if(isNaN(lat)||isNaN(lon))return;
 
     const catchCount=s.catches?.length||0;
-    const catchList=s.catches?.map(c=>`${fIco(c.type)} ${c.type} ${c.length}cm`).join('<br>')||'Schneider';
+    const isSkunked=s.skunked||catchCount===0;
+    // Farb-Logik: Schneider=rot, wenig Fänge=grün, viele(≥3)=hellgrün
+    const color=isSkunked?'#cc0000':catchCount>=3?'#7BAE8A':'#2D4A35';
+
+    const catchList=s.catches?.map(c=>`${fIco(c.type)} ${c.type}${c.length?' '+c.length+'cm':''}`).join('<br>')||'Schneider 🎣';
     const popupHtml=`
       <div style="min-width:160px;">
         <div style="font-family:var(--fs);font-weight:600;font-size:14px;margin-bottom:4px;">${s.water||'–'}</div>
@@ -6851,12 +7252,13 @@ function _updateMapMarkers(){
         ${s.temp!=null?`<div style="font-size:11px;color:#888;margin-top:4px;">${s.weather||''} ${s.temp}°C</div>`:''}
       </div>`;
 
-    const marker=L.marker([lat,lon],{icon:fishIcon})
-      .addTo(_leafletMap)
-      .bindPopup(popupHtml);
-    _mapMarkers.push(marker);
+    const marker=L.marker([lat,lon],{icon:_mkIcon(color)}).bindPopup(popupHtml);
+    _mapCluster.addLayer(marker);
+    _mapMarkers.push(_mapCluster);
     bounds.push([lat,lon]);
   });
+
+  _leafletMap.addLayer(_mapCluster);
 
   // Karte auf alle Marker zoomen
   if(bounds.length>1){
