@@ -1342,7 +1342,7 @@ input[type=file]{display:none;}
 .hdr-avatar{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;margin-left:6px;cursor:pointer;}
 
 /* ═══════════════════════════════════════════════════════
-   SOCIAL & GROUP ENGINE (v44)
+   SOCIAL & GROUP ENGINE (v45)
 ═══════════════════════════════════════════════════════ */
 
 /* ── Group Hub Tabs ── */
@@ -1456,6 +1456,92 @@ input[type=file]{display:none;}
 .schon-warn-btn.yes{background:var(--gold-l);color:var(--gold-d);}
 .schon-warn-btn.no{background:var(--green-mist);color:var(--green-mid);}
 .schon-warn-btn.cancel{background:transparent;color:var(--text-light);border:1px solid var(--cream-dark);}
+
+/* ═══ v45 CSS ADDITIONS ═══ */
+
+/* Clear button for inputs */
+.if-wrap{position:relative;display:flex;align-items:center;}
+.if-wrap .if{padding-right:34px;flex:1;width:100%;}
+.if-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;border:none;background:var(--cream-dark);color:var(--text-light);font-size:13px;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;line-height:1;z-index:2;}
+.if-clear.vis{display:flex;}
+.if-wrap .if:focus ~ .if-clear.vis,.if-wrap .if:not(:placeholder-shown) ~ .if-clear{display:flex;}
+
+/* Chart Scroll Lock */
+.fc-chart-touch{touch-action:none;-ms-touch-action:none;}
+
+/* Magic Header – replaces tooltips */
+.chart-magic-hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;margin-bottom:6px;background:var(--green-mist);border-radius:8px;font-size:12px;font-weight:600;color:var(--green-deep);}
+.chart-magic-hdr .cmh-val{font-weight:700;font-size:13px;}
+.chart-magic-hdr .cmh-lbl{font-size:10px;color:var(--text-light);margin-bottom:1px;}
+
+/* Crosshair line */
+.chart-crosshair{position:absolute;top:0;bottom:0;width:1.5px;background:var(--red);pointer-events:none;z-index:5;display:none;}
+
+/* Luftdruck Chart section */
+.fc-sec.pressure .fc-sec-title{color:var(--text-light);}
+
+/* Session split button */
+.sess-split-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--blue);border:1px solid rgba(12,68,124,.15);border-radius:20px;font-size:11px;font-weight:600;color:var(--blue-t);cursor:pointer;font-family:var(--fa);border:none;transition:background .15s;}
+.sess-split-btn:hover{background:#cce3f5;}
+
+/* Smart Import */
+.smart-import-btn{width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(102,126,234,.3);margin-top:10px;}
+.smart-import-btn:hover{filter:brightness(1.05);}
+
+/* Stats Dropdown */
+.st-year-select{padding:6px 28px 6px 12px;border:1.5px solid var(--green-pale);border-radius:20px;font-size:12px;font-weight:600;font-family:var(--fa);background:#fff;color:var(--green-deep);cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234A7C59' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+
+/* Live End Summary (Fitness Style) */
+.ls-summary{position:absolute;inset:0;z-index:150;background:linear-gradient(180deg,#1a3522 0%,#2D4A35 100%);color:#fff;display:none;flex-direction:column;overflow-y:auto;}
+.ls-summary.on{display:flex;}
+.ls-sum-hero{padding:28px 20px 16px;text-align:center;}
+.ls-sum-badge{font-size:56px;margin-bottom:8px;}
+.ls-sum-title{font-family:var(--fs);font-size:24px;font-weight:700;margin-bottom:4px;}
+.ls-sum-sub{font-size:13px;opacity:.7;}
+.ls-sum-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.1);margin:0 16px 16px;border-radius:12px;overflow:hidden;}
+.ls-sum-stat{background:rgba(255,255,255,.05);padding:14px 8px;text-align:center;}
+.ls-sum-stat-val{font-size:22px;font-weight:700;margin-bottom:2px;}
+.ls-sum-stat-lbl{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.5px;}
+.ls-sum-map{height:200px;margin:0 16px 16px;border-radius:12px;overflow:hidden;background:rgba(255,255,255,.1);}
+.ls-sum-catches{padding:0 16px 20px;}
+.ls-sum-catch{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,.08);border-radius:8px;margin-bottom:6px;}
+.ls-sum-catch-ico{font-size:20px;}
+.ls-sum-catch-info{flex:1;}
+.ls-sum-catch-name{font-size:14px;font-weight:600;}
+.ls-sum-catch-meta{font-size:11px;opacity:.6;margin-top:2px;}
+.ls-sum-done{margin:0 16px 24px;padding:16px;background:var(--gold);color:#1a1a1a;border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:var(--fa);cursor:pointer;text-align:center;}
+
+/* C&R Toggle in live catch */
+.cr-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--green-mist);border-radius:var(--rs);margin-bottom:10px;}
+.cr-toggle-label{font-size:12px;font-weight:600;color:var(--green-deep);}
+
+/* KI Expert Card */
+.ki-expert{margin:0 16px 16px;background:linear-gradient(135deg,#e8eaf6,#fce4ec);border-radius:var(--rs);padding:14px;box-shadow:var(--sh-sm);border:1px solid #c5cae9;cursor:pointer;}
+.ki-expert-title{font-size:13px;font-weight:700;color:#283593;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.ki-expert-text{font-size:11px;color:#37474f;line-height:1.6;}
+
+/* Group floating sub-nav */
+.grp-float-nav{position:sticky;top:0;z-index:5;display:flex;background:rgba(248,245,239,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:10px;margin:0 16px 12px;padding:3px;border:1px solid rgba(200,221,208,.4);box-shadow:var(--sh-sm);}
+.grp-float-btn{flex:1;text-align:center;padding:8px 4px;border:none;border-radius:8px;font-size:11px;font-weight:600;font-family:var(--fa);cursor:pointer;transition:all .2s;background:transparent;color:var(--text-mid);}
+.grp-float-btn.on{background:#fff;color:var(--green-deep);box-shadow:0 2px 6px rgba(0,0,0,.1);}
+
+/* Comment section */
+.catch-comments{padding:10px 14px 4px;background:var(--cream);border-top:1px solid var(--cream-dark);}
+.catch-comment{display:flex;gap:8px;padding:6px 0;font-size:12px;}
+.catch-comment-name{font-weight:700;color:var(--text-dark);flex-shrink:0;}
+.catch-comment-text{color:var(--text-mid);flex:1;line-height:1.4;}
+.catch-comment-input{display:flex;gap:6px;padding-top:6px;border-top:1px solid var(--cream-dark);margin-top:4px;}
+.catch-comment-input input{flex:1;padding:6px 10px;border:1px solid var(--cream-dark);border-radius:16px;font-size:11px;font-family:var(--fa);outline:none;}
+.catch-comment-input button{padding:4px 10px;border:none;border-radius:16px;background:var(--green-deep);color:#fff;font-size:11px;font-weight:600;cursor:pointer;}
+
+/* Group Map Filter Header */
+.grp-map-filter{display:flex;gap:6px;padding:8px 12px;background:rgba(255,255,255,.9);border-radius:10px;margin:0 16px 10px;backdrop-filter:blur(6px);overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap;}
+.grp-map-filter::-webkit-scrollbar{display:none;}
+.grp-map-filter select,.grp-map-filter input{padding:6px 10px;border:1px solid var(--cream-dark);border-radius:20px;font-size:11px;font-family:var(--fa);background:#fff;color:var(--text-dark);min-width:80px;}
+
+/* Header Live button styling */
+.hlive-btn{font-size:11px!important;font-weight:700!important;letter-spacing:.3px;padding:0 10px!important;width:auto!important;white-space:nowrap;}
+.hlive-btn.active{background:#cc0000!important;animation:livePulse 1.5s infinite;}
 </style>
 </head>
 <body>
@@ -1558,6 +1644,19 @@ input[type=file]{display:none;}
   <div class="ls-end-card" id="ls-end-card">
     <!-- Content filled dynamically -->
   </div>
+</div>
+
+<!-- v45: Live Session Summary (Fitness-App-Style) -->
+<div class="ls-summary" id="ls-summary">
+  <div class="ls-sum-hero">
+    <div class="ls-sum-badge" id="ls-sum-badge">🎣</div>
+    <div class="ls-sum-title" id="ls-sum-title">Session beendet!</div>
+    <div class="ls-sum-sub" id="ls-sum-sub">Dümmer See · Steg Nord</div>
+  </div>
+  <div class="ls-sum-stats" id="ls-sum-stats"></div>
+  <div class="ls-sum-map" id="ls-sum-map"></div>
+  <div class="ls-sum-catches" id="ls-sum-catches"></div>
+  <button class="ls-sum-done" onclick="_closeLsSummary()">Weiter →</button>
 </div>
 
 <!-- Live-Session FAB -->
@@ -1672,7 +1771,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v44 · Supabase · Leaflet · PWA</div>
+    <div class="burg-ver">Fishing Buddy v45 · Supabase · Leaflet · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -1807,6 +1906,7 @@ input[type=file]{display:none;}
     <div class="expopt" onclick="doExp('text')"><div class="expico">📋</div><div><div class="exptitle">Angelbuch als Text</div><div class="expsub2">Mit Wetter &amp; Köder-Details</div></div></div>
     <div class="expdiv"><span>Import</span></div>
     <div class="expopt imp" onclick="trigImp()"><div class="expico">📥</div><div><div class="exptitle">Backup importieren</div><div class="expsub2">JSON-Backup wiederherstellen</div></div></div>
+    <div class="expopt" onclick="_smartImport()" style="background:linear-gradient(135deg,rgba(102,126,234,.08),rgba(118,75,162,.08));border:1px solid rgba(102,126,234,.2);border-radius:var(--rs);margin:8px 0;"><div class="expico">🤖</div><div><div class="exptitle" style="color:#5c6bc0;">Smart Import (AI)</div><div class="expsub2">Beliebige Dateien per KI konvertieren</div></div></div>
     <input type="file" id="imp-inp" accept=".json" onchange="handleImp(event)">
     <input type="file" id="photo-inp" accept="image/*" onchange="handlePhoto(event)">
     <input type="file" id="photo-cam" accept="image/*" capture="environment" onchange="handlePhoto(event)">
@@ -1839,7 +1939,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v44</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v45</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
@@ -2155,13 +2255,13 @@ input[type=file]{display:none;}
       </div>
       <button class="map-hdr-btn" onclick="showPage('fangbuch')" style="width:36px;padding:0;justify-content:center;font-size:16px;">✕</button>
     </div>
-    <!-- v44: Map Layer Toggle -->
+    <!-- v45: Map Layer Toggle -->
     <div class="map-layer-toggle" id="map-layer-toggle">
       <button class="map-layer-btn on" id="ml-private" onclick="_setMapLayer('private')">🔒 Meine</button>
       <button class="map-layer-btn" id="ml-group" onclick="_setMapLayer('group')">👥 Gruppe</button>
     </div>
-    <!-- AP3: Floating Spot markieren Button -->
-    <button onclick="_floatingSpotMark()" style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:400;padding:12px 24px;background:var(--green-deep);color:#fff;border:none;border-radius:24px;font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(45,74,53,.4);display:flex;align-items:center;gap:8px;">📌 Spot markieren</button>
+    <!-- v45: Floating Spot markieren – above nav, not covering it -->
+    <button onclick="_floatingSpotMark()" style="position:absolute;bottom:100px;left:50%;transform:translateX(-50%);z-index:400;padding:12px 24px;background:var(--green-deep);color:#fff;border:none;border-radius:24px;font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(45,74,53,.4);display:flex;align-items:center;gap:8px;">📌 Spot markieren</button>
   </div>
 </div>
 
@@ -2208,9 +2308,15 @@ input[type=file]{display:none;}
       </div>
     </div>
 
+    <!-- v45: C&R Toggle -->
+    <div class="cr-toggle-row" style="margin-bottom:10px;">
+      <span class="cr-toggle-label">🐟 Catch & Release</span>
+      <div class="tw"><input type="checkbox" id="lc-cr" onchange="_lcCrToggle(this.checked)"><span class="tsl"></span></div>
+    </div>
+
     <div class="ig" style="margin-bottom:10px;" id="lc-note-wrap2">
       <label class="il" for="lc-note">Notizen</label>
-      <input type="text" class="if" id="lc-note" placeholder="z.B. Released, am Grund" autocomplete="off">
+      <input type="text" class="if" id="lc-note" placeholder="z.B. Am Grund, Steinpackung" autocomplete="off">
     </div>
 
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
@@ -2402,7 +2508,7 @@ function sbInit(){
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v44`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v45`;
       } else {
         _sbUser=null;
       }
@@ -2418,7 +2524,7 @@ async function _checkAuthSession(){
     if(data?.session?.user){
       _sbUser=data.session.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v44`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v45`;
       return true;
     }
   }catch(e){console.warn('Auth-Check Fehler:',e);}
@@ -2459,7 +2565,7 @@ async function handleAuth(e){
       _sbUser=result.data.user;
       _authMode='online';
       document.getElementById('login-ov')?.classList.add('hidden');
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v44`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v45`;
       // Cloud-Sync: Profil + Sessions laden
       await syncFromCloud();
       // Profil anwenden und Fangbuch rendern
@@ -2484,7 +2590,7 @@ async function handleAuth(e){
         _sbUser=result.data.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v44`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v45`;
         // Onboarding starten
         document.getElementById('onboarding').classList.remove('hidden');
         document.getElementById('ob-btn').disabled=true;
@@ -2505,7 +2611,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v44';
+  document.getElementById('hdr-sub').textContent='Offline · v45';
   if(!profile){
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('ob-btn').disabled=true;
@@ -2599,7 +2705,7 @@ async function sbLogout(){
   _sbUser=null;
   _authMode='offline';
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v44';
+  document.getElementById('hdr-sub').textContent='Offline · v45';
   showToast('👋','Abgemeldet');
 }
 
@@ -3341,7 +3447,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v44`:`PLZ ${profile.plz||'–'} · v44`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v45`:`PLZ ${profile.plz||'–'} · v45`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -3897,25 +4003,25 @@ function addCatch(){
     <div class="mmw" id="mm-${id}" role="alert"></div>
     <div class="mmw" id="ct-warn-${id}" role="alert" style="color:var(--gold-d);"></div>
 
-    <!-- AP2: Köder (volle Breite) + Größe + Farbe – nur im Raubfisch-Modus -->
+    <!-- AP2: Köder/Farbe/Größe – 3-column layout nur im Raubfisch-Modus -->
     <div id="catch-bait-row-${id}" style="display:${_inputMode==='raub'?'':'none'};margin-top:8px;">
-      <div class="ig" style="margin-bottom:6px;">
-        <label class="il" for="fb-${id}">Köder</label>
-        <input type="text" class="if" id="fb-${id}" placeholder="z.B. Gummifisch"
-          value="${presetBait}" style="width:100%;"
-          onfocus="_gatedBChips(${id})" oninput="rndrBChips(${id},this.value);updNoteChips(${id})" onblur="dHide('bc-${id}')" autocomplete="off">
-        <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
         <div class="ig">
-          <label class="il" for="fbsz-${id}">Größe</label>
-          <input type="text" class="if" id="fbsz-${id}" placeholder='12cm' autocomplete="off">
+          <label class="il" for="fb-${id}">Köder</label>
+          <input type="text" class="if" id="fb-${id}" placeholder="Gummifisch"
+            value="${presetBait}"
+            onfocus="_gatedBChips(${id})" oninput="rndrBChips(${id},this.value);updNoteChips(${id})" onblur="dHide('bc-${id}')" autocomplete="off">
         </div>
         <div class="ig">
           <label class="il" for="fbcol-${id}">Farbe</label>
           <input type="text" class="if" id="fbcol-${id}" placeholder="Motoroil" autocomplete="off">
         </div>
+        <div class="ig">
+          <label class="il" for="fbsz-${id}">Größe</label>
+          <input type="text" class="if" id="fbsz-${id}" placeholder="12cm" autocomplete="off">
+        </div>
       </div>
+      <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
     </div>
 
     <!-- Notizen – nur im Raubfisch-Modus -->
@@ -4228,7 +4334,7 @@ async function saveSess(){
       }catch(e){/* Hintergrund-Fehler ignorieren */}
     }
 
-    // v44: Schonzeit-Wächter
+    // v45: Schonzeit-Wächter
     for(const c of catches){
       if(c.type){
         const szCheck=_checkSchonzeit(c.type,date);
@@ -5527,9 +5633,10 @@ function showDetail(id){
     </div>`;}).join('')}
   </div>
   <div style="display:flex;gap:10px;margin-top:4px;">
-    <button class="btn" onclick="editSess('${s.id}')" style="flex:1;">✏️ Bearbeiten</button>
+    <button class="btn" onclick="_patchedEditSess('${s.id}')" style="flex:1;">✏️ Bearbeiten</button>
     <button class="btn danger" onclick="delSess('${s.id}')" style="flex:1;">Löschen</button>
   </div>
+  ${s.catches?.length>=2?`<button class="sess-split-btn" onclick="_splitSession('${s.id}')" style="margin-top:6px;width:100%;">✂️ Session splitten (${Math.ceil(s.catches.length/2)} + ${Math.floor(s.catches.length/2)} Fänge)</button>`:''}
   ${_groups.length&&s.catches?.length?`<button class="btn" onclick="_openShareModal('${s.id}')" style="margin-top:6px;background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);">👥 In Gruppe teilen</button>`:''}`;
   // Load photos async AFTER DOM rendered
   sorted.forEach(async(c,i)=>{
@@ -5660,15 +5767,27 @@ async function editSess(id){
 // ═══════════════════════════════════════════════════════════
 // STATISTIK – Dashboard v11: Saison-Toggle, saubere Kacheln
 // ═══════════════════════════════════════════════════════════
-let _statSeason='year'; // 'year' | 'all'
-function setSeason(s){_statSeason=s;rndrStats();}
+let _statSeason='year'; // 'year' | 'all' | '2025' | '2024' etc.
+let _statMonth='all'; // 'all' | '01'..'12'
+function setSeason(s){_statSeason=s;_statMonth='all';rndrStats();}
+function setStatMonth(m){_statMonth=m;rndrStats();}
 
 function rndrStats(){
   const el=document.getElementById('stats-con');
   const curYear=new Date().getFullYear();
-  const filtered=_statSeason==='year'
-    ?sessions.filter(s=>s.date&&s.date.startsWith(String(curYear)))
-    :sessions;
+  // v45: Dynamic year list from all session data
+  const allYears=[...new Set(sessions.filter(s=>s.date).map(s=>s.date.substring(0,4)))].sort().reverse();
+  if(!allYears.includes(String(curYear)))allYears.unshift(String(curYear));
+  let filtered;
+  if(_statSeason==='all') filtered=sessions;
+  else {
+    const yr=_statSeason==='year'?String(curYear):_statSeason;
+    filtered=sessions.filter(s=>s.date&&s.date.startsWith(yr));
+  }
+  // v45: Month filter
+  if(_statMonth!=='all'){
+    filtered=filtered.filter(s=>s.date&&s.date.substring(5,7)===_statMonth);
+  }
 
   if(!sessions.length){
     el.innerHTML=`<div class="empty"><div class="empty-ico">📊</div><div class="empty-t">Noch keine Daten</div><div class="empty-s">Erfasse Sessionen um Statistiken zu sehen.</div></div>`;
@@ -5689,16 +5808,25 @@ function rndrStats(){
   const hrsH=Math.floor(hrsTotal),hrsM=Math.round((hrs-hrsH)*60);
   const hrsLabel=hrsH>0?`${hrsH}h${hrsM>0?` ${String(hrsM).padStart(2,'0')}m`:''}`:`${hrsM}m`;
 
-  const seasonToggle=`<div style="display:flex;gap:6px;">
-    <button onclick="setSeason('year')" class="chip cf${_statSeason==='year'?' on':''}" style="font-size:11px;padding:5px 12px;">Saison ${curYear}</button>
-    <button onclick="setSeason('all')" class="chip cf${_statSeason==='all'?' on':''}" style="font-size:11px;padding:5px 12px;">Gesamt</button>
+  // v45: Dropdown statt starre Buttons
+  const MONTHS=['','Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  const selYear=_statSeason==='year'?String(curYear):_statSeason;
+  const seasonToggle=`<div style="display:flex;gap:6px;align-items:center;">
+    <select class="st-year-select" onchange="setSeason(this.value)">
+      ${allYears.map(y=>`<option value="${y}"${selYear===y?' selected':''}>${y}</option>`).join('')}
+      <option value="all"${_statSeason==='all'?' selected':''}>Gesamt</option>
+    </select>
+    <select class="st-year-select" onchange="setStatMonth(this.value)" style="min-width:64px;">
+      <option value="all"${_statMonth==='all'?' selected':''}>Alle</option>
+      ${MONTHS.slice(1).map((m,i)=>`<option value="${String(i+1).padStart(2,'0')}"${_statMonth===String(i+1).padStart(2,'0')?' selected':''}>${m}</option>`).join('')}
+    </select>
   </div>`;
 
   el.innerHTML=`
     <div class="st-headline">
       <div>
-        <div class="st-headline-title">${_statSeason==='year'?'Saison '+curYear:'Gesamt'}</div>
-        <div class="st-headline-sub">${total} Session${total!==1?'s':''} · ${allC.length} Fänge</div>
+        <div class="st-headline-title">${_statSeason==='all'?'Gesamt':'Saison '+selYear}${_statMonth!=='all'?' · '+MONTHS[parseInt(_statMonth)]:''}</div>
+        <div class="st-headline-sub">${total} Session${total!==1?'s':''} · ${allC.reduce((s,c)=>s+_getFishCountForStats(c),0)} Fänge</div>
       </div>
       ${seasonToggle}
     </div>
@@ -5706,7 +5834,7 @@ function rndrStats(){
     <!-- 4 KPI-Kacheln – clean, zentriert -->
     <div class="st-grid">
       <div class="st-tile" onclick="openFsCatches()" style="text-align:center;">
-        <div class="st-tile-val" style="color:var(--text-dark);">${allC.length}</div>
+        <div class="st-tile-val" style="color:var(--text-dark);">${allC.reduce((s,c)=>s+_getFishCountForStats(c),0)}</div>
         <div class="st-tile-lbl">Fänge gesamt</div>
         <div class="st-tile-hint">→ Details</div>
       </div>
@@ -6034,14 +6162,18 @@ function openAddGoal(){
       </div>
     </div>
 
-    <div id="ag-fields-pb" class="goal-fields g2" style="display:none;">
+    <div id="ag-fields-pb" class="goal-fields" style="display:none;grid-template-columns:1fr 1fr 1fr;">
       <div class="ig">
-        <div class="il">Ziel-Länge (cm)</div>
-        <input type="number" class="if" id="ag-pb-len" placeholder="z.B. 107" min="1" inputmode="numeric">
+        <div class="il">Länge (cm)</div>
+        <input type="number" class="if" id="ag-pb-len" placeholder="107" min="1" inputmode="numeric">
+      </div>
+      <div class="ig">
+        <div class="il">Gewicht (kg)</div>
+        <input type="number" class="if" id="ag-pb-wt" placeholder="12.5" min="0" step="0.1" inputmode="decimal">
       </div>
       <div class="ig" style="align-self:flex-end;">
-        <div class="il" style="color:var(--green-mid);">Personal Best</div>
-        <div id="ag-pb-current" style="font-size:13px;padding:13px 14px;background:var(--green-mist);border-radius:var(--rs);color:var(--green-deep);font-weight:600;">Lade…</div>
+        <div class="il" style="color:var(--green-mid);font-size:10px;">Aktueller PB</div>
+        <div id="ag-pb-current" style="font-size:12px;padding:11px 8px;background:var(--green-mist);border-radius:var(--rs);color:var(--green-deep);font-weight:600;">Lade…</div>
       </div>
     </div>
 
@@ -6101,9 +6233,10 @@ async function saveNewGoal(){
     goal={type:'range',fish,count:cnt,minLen,maxLen,label,year:goalYear,id:_newId()};
   } else {
     const pbLen=parseInt(document.getElementById('ag-pb-len')?.value)||0;
-    if(pbLen<1){showToast('⚠️','Ziel-Länge eingeben!',true);return;}
-    const label=`PB ${fish} über ${pbLen}cm`;
-    goal={type:'pb',fish,count:1,minLen:pbLen,maxLen:0,label,year:goalYear,id:_newId()};
+    const pbWt=parseFloat(document.getElementById('ag-pb-wt')?.value)||0;
+    if(pbLen<1&&pbWt<=0){showToast('⚠️','Ziel-Länge oder Gewicht eingeben!',true);return;}
+    const label=`PB ${fish}${pbLen>0?' über '+pbLen+'cm':''}${pbWt>0?' / '+pbWt+'kg':''}`;
+    goal={type:'pb',fish,count:1,minLen:pbLen,maxLen:0,pbWeight:pbWt,label,year:goalYear,id:_newId()};
   }
 
   profile.goals.push(goal);
@@ -6482,7 +6615,18 @@ function _renderFcDashboard(){
       </div>
       <div class="fc-kachel-val">${Math.round(today.tmax??0)}°</div>
     </div>
+
+    <!-- v45: Luftdruck-Kachel -->
+    <div class="fc-kachel" onclick="openWxChart('pressure')">
+      <div class="fc-kachel-ico">🔵</div>
+      <div class="fc-kachel-info">
+        <div class="fc-kachel-title">Luftdruck</div>
+        <div class="fc-kachel-sub">Drucktendenz heute</div>
+      </div>
+      <div class="fc-kachel-val" style="font-size:16px;">${Math.round(today.pres||1013)} hPa</div>
+    </div>
   </div>
+  ${_rndrKiExpert()}
   ${_rndrPhaenoCard()}`;
 }
 
@@ -6825,7 +6969,12 @@ async function _renderTideCal(river,startDate){
           },
           scales:{
             x:{ticks:{color:'#6a7a6f',font:{size:9},maxRotation:0,
-              autoSkip:true,maxTicksLimit:13},
+              autoSkip:false,
+              callback:function(val,idx){
+                // Show only full hours 00:00, 02:00, ..., 24:00
+                if(idx%8===0)return GRID_LABELS[idx];
+                return '';
+              }},
               grid:{color:'rgba(0,0,0,.05)'}},
             y:{min:vMin,max:vMax,
               ticks:{color:'#6a7a6f',font:{size:10},callback:v=>v+' cm'},
@@ -6850,12 +6999,25 @@ async function _renderTideCal(river,startDate){
 async function openWxChart(type){
   if(!_fcData||!_fcData.daily){showToast('⚠️','Vorhersage noch nicht geladen',true);return;}
 
-  const ovId2=type==='wind'?'wx-wind':type==='rain'?'wx-rain':'wx-temp';
-  const bodyId=type==='wind'?'fs-wind-body':type==='rain'?'fs-rain-body':'fs-temp-body';
-  const metaId=type==='wind'?'fs-wind-meta':type==='rain'?'fs-rain-meta':'fs-temp-meta';
+  // v45: pressure chart support
+  const ovMap={wind:'wx-wind',rain:'wx-rain',temp:'wx-temp',pressure:'wx-temp'};
+  const bodyMap={wind:'fs-wind-body',rain:'fs-rain-body',temp:'fs-temp-body',pressure:'fs-temp-body'};
+  const metaMap={wind:'fs-wind-meta',rain:'fs-rain-meta',temp:'fs-temp-meta',pressure:'fs-temp-meta'};
+  const ovId2=ovMap[type]||'wx-temp';
+  const bodyId=bodyMap[type]||'fs-temp-body';
+  const metaId=metaMap[type]||'fs-temp-meta';
 
   openFs(ovId2);
   if(metaId&&document.getElementById(metaId))document.getElementById(metaId).textContent='14-Tage Vorhersage';
+  // v45: Update overlay title for pressure (reuses temp overlay)
+  if(type==='pressure'){
+    const titleEl=document.querySelector('#fs-wx-temp .fstitle, [id="wx-temp"] .fstitle');
+    if(!titleEl){const t2=document.getElementById('fs-temp-body')?.closest('.fsov')?.querySelector('.fstitle');if(t2)t2.textContent='🔵 Luftdruck';}
+    else titleEl.textContent='🔵 Luftdruck';
+  }else if(type==='temp'){
+    const titleEl=document.getElementById('fs-temp-body')?.closest('.fsov')?.querySelector('.fstitle');
+    if(titleEl)titleEl.textContent='🌡 Temperatur';
+  }
 
   const bodyEl=document.getElementById(bodyId);
   if(!bodyEl)return;
@@ -6888,6 +7050,7 @@ async function openWxChart(type){
     }).join('');
 
     bodyEl.innerHTML=`
+      ${_chartMagicHeader('wind',' km/h',winds.filter(v=>v!=null))}
       <div class="fc-sec" style="margin:0 0 12px;padding:4px 8px 8px;">
         <div class="fc-sec-title" style="margin:6px 0 4px;">💨 Wind + Böen · 14 Tage</div>
         <div class="fc-chart-wrap cw-xl"><canvas id="wx-wind-chart"></canvas></div>
@@ -6901,9 +7064,10 @@ async function openWxChart(type){
       const c=document.getElementById('wx-wind-chart');if(!c||typeof Chart==='undefined')return;
       const datasets=[{label:'Wind',data:winds,borderColor:'#4a90d9',backgroundColor:'rgba(74,144,217,.15)',fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2.5}];
       if(gusts.some(v=>v!=null))datasets.push({label:'Böen',data:gusts,borderColor:'#a0c4f0',backgroundColor:'rgba(0,0,0,0)',fill:false,tension:.35,pointRadius:2,borderWidth:1.5,borderDash:[4,4]});
-      new Chart(c,{type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:gusts.some(v=>v!=null),labels:{boxWidth:12,font:{size:10}}},tooltip:{...TT,callbacks:{label:c2=>`${c2.dataset.label}: ${c2.parsed.y} km/h${dirs[c2.dataIndex]?' · '+dirs[c2.dataIndex]:''}`}}},
-        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:0,title:{display:true,text:'in km/h',font:{size:9},color:TICK},ticks:{color:TICK,font:{size:8}},grid:{color:GRID}}}}});
+      const ch=new Chart(c,{type:'line',data:{labels,datasets},plugins:[_wx14CrosshairPlugin],options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:gusts.some(v=>v!=null),labels:{boxWidth:12,font:{size:10}}},tooltip:{enabled:false}},
+        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:0,title:{display:true,text:'km/h',font:{size:9},color:TICK},ticks:{color:TICK,font:{size:8}},grid:{color:GRID}}}}});
+      ch._magicId='wind';ch._magicUnit=' km/h';ch._magicDefault=winds.filter(v=>v!=null)[0]||0;
     });
 
   } else if(type==='rain'){
@@ -6920,6 +7084,7 @@ async function openWxChart(type){
     }).join('');
 
     bodyEl.innerHTML=`
+      ${_chartMagicHeader('rain',' mm',precip.filter(v=>v!=null))}
       <div class="fc-sec" style="margin:0 0 12px;">
         <div class="fc-sec-title">🌧 Niederschlag · 14 Tage</div>
         <div class="fc-chart-wrap"><canvas id="wx-rain-chart"></canvas></div>
@@ -6931,11 +7096,13 @@ async function openWxChart(type){
 
     requestAnimationFrame(()=>{
       const c=document.getElementById('wx-rain-chart');if(!c||typeof Chart==='undefined')return;
-      new Chart(c,{type:'bar',data:{labels,datasets:[{label:'mm',data:precip,
+      const ch=new Chart(c,{type:'bar',data:{labels,datasets:[{label:'mm',data:precip,
         backgroundColor:'rgba(74,144,220,.65)',borderColor:'rgba(74,144,220,.9)',borderWidth:0,borderRadius:4,borderSkipped:false}]},
+        plugins:[_wx14CrosshairPlugin],
         options:{responsive:true,maintainAspectRatio:false,
-          plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c2=>`${c2.parsed.y} mm`}}},
+          plugins:{legend:{display:false},tooltip:{enabled:false}},
           scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:0,ticks:{color:TICK,font:{size:10},callback:v=>v+' mm'},grid:{color:GRID}}}}});
+      ch._magicId='rain';ch._magicUnit=' mm';ch._magicDefault=precip.filter(v=>v!=null)[0]||0;
     });
 
   } else {
@@ -6955,6 +7122,7 @@ async function openWxChart(type){
     }).join('');
 
     bodyEl.innerHTML=`
+      ${_chartMagicHeader('temp','°',tmax.filter(v=>v!=null))}
       <div class="fc-sec" style="margin:0 0 12px;">
         <div class="fc-sec-title">🌡 Temperatur · 14 Tage</div>
         <div class="fc-chart-wrap"><canvas id="wx-temp-chart"></canvas></div>
@@ -6968,12 +7136,53 @@ async function openWxChart(type){
       const c=document.getElementById('wx-temp-chart');if(!c||typeof Chart==='undefined')return;
       const vMin=Math.floor(Math.min(...tmin.filter(v=>v!=null))-2);
       const vMax=Math.ceil(Math.max(...tmax.filter(v=>v!=null))+2);
-      new Chart(c,{type:'line',data:{labels,datasets:[
+      const ch=new Chart(c,{type:'line',data:{labels,datasets:[
         {label:'Max',data:tmax,borderColor:'#e07030',backgroundColor:'rgba(224,112,48,.15)',fill:true,tension:.35,pointRadius:3,pointHoverRadius:6,borderWidth:2.5},
         {label:'Min',data:tmin,borderColor:'#6a9ec0',backgroundColor:'rgba(106,158,192,.1)',fill:true,tension:.35,pointRadius:2,borderWidth:1.5}
-      ]},options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:true,labels:{boxWidth:12,font:{size:10}}},tooltip:{...TT,callbacks:{label:c2=>`${c2.dataset.label}: ${c2.parsed.y}°C`}}},
+      ]},plugins:[_wx14CrosshairPlugin],options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:true,labels:{boxWidth:12,font:{size:10}}},tooltip:{enabled:false}},
         scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:10},stepSize:5,callback:v=>Math.round(v)+'°'},grid:{color:GRID}}}}});
+      ch._magicId='temp';ch._magicUnit='°';ch._magicDefault=tmax.filter(v=>v!=null)[0]||0;
+    });
+  }
+
+  // v45: Luftdruck chart
+  if(type==='pressure'){
+    const pres=(d.surface_pressure_mean||[]).map(v=>v!=null?Math.round(v):null);
+    if(!pres.some(v=>v!=null)){bodyEl.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">Keine Druckdaten verfügbar.</div>';return;}
+
+    const tblRows=d.time.map((t,i)=>{
+      const bg=i===0?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
+      const trend=i>0&&pres[i]!=null&&pres[i-1]!=null?(pres[i]-pres[i-1]>1?'↑ steigend':pres[i]-pres[i-1]<-1?'↓ fallend':'→ stabil'):'';
+      return`<div class="wx14-row" data-cols="3" style="${bg}">
+        <div class="wx14-date">${labels[i]}</div>
+        <div class="wx14-val" style="font-weight:700;">${pres[i]||'–'} hPa</div>
+        <div class="wx14-val" style="font-size:10px;">${trend}</div>
+      </div>`;
+    }).join('');
+
+    bodyEl.innerHTML=`
+      ${_chartMagicHeader('pres','hPa',pres.filter(v=>v!=null))}
+      <div class="fc-sec" style="margin:0 0 12px;">
+        <div class="fc-sec-title">🔵 Luftdruck · 14 Tage</div>
+        <div class="fc-chart-wrap cw-xl"><canvas id="wx-pres-chart"></canvas></div>
+      </div>
+      <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
+        <div class="wx14-hdr" data-cols="3"><div class="wx14-date">Tag</div><div class="wx14-val">hPa</div><div class="wx14-val">Tendenz</div></div>
+        ${tblRows}
+      </div>`;
+
+    requestAnimationFrame(()=>{
+      const c=document.getElementById('wx-pres-chart');if(!c||typeof Chart==='undefined')return;
+      const validPres=pres.filter(v=>v!=null);
+      const presMin=Math.min(...validPres)-5;
+      const presMax=Math.max(...validPres)+5;
+      const ch=new Chart(c,{type:'line',data:{labels,datasets:[
+        {label:'hPa',data:pres,borderColor:'#5c6bc0',backgroundColor:'rgba(92,107,192,.12)',fill:true,tension:.4,pointRadius:3,pointHoverRadius:6,borderWidth:2.5}
+      ]},plugins:[_wx14CrosshairPlugin],options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{enabled:false}},
+        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:presMin,max:presMax,ticks:{color:TICK,font:{size:10},callback:v=>v+' hPa'},grid:{color:GRID}}}}});
+      ch._magicId='pres';ch._magicUnit=' hPa';ch._magicDefault=validPres[0]||1013;
     });
   }
 }
@@ -7842,7 +8051,9 @@ async function _finalizeLive(isSkunked){
   if(liveBtnEnd){liveBtnEnd.classList.remove('active');liveBtnEnd.textContent='🔴 Live';}
   closeLiveOv();
   rndrFangbuch();
-  showToast('✅','Live Session gespeichert!');
+
+  // v45: Fitness-App-Style Summary statt einfachem Toast
+  _showLsSummary(sess);
   showPage('fangbuch');
 }
 
@@ -7969,7 +8180,9 @@ function saveLiveCatch(){
     try{localStorage.setItem('fb_photo_'+photoKey,_lcPhotoData);}catch(e){console.warn('Foto zu groß für localStorage');}
   }
 
-  const c={type:fish,length:len,weight:wt,note,time,taken:false,bait,baitLen,baitColor,baitNote:'',score:fScore(fish,len),photoKey,inputMode:_inputMode,lat:catchLat,lon:catchLon};
+  // v45: C&R toggle
+  const isCR=document.getElementById('lc-cr')?.checked||false;
+  const c={type:fish,length:len,weight:wt,note,time,taken:!isCR,bait,baitLen,baitColor,baitNote:'',score:fScore(fish,len),photoKey,inputMode:_inputMode,lat:catchLat,lon:catchLon,_lat:catchLat?parseFloat(catchLat):null,_lon:catchLon?parseFloat(catchLon):null};
   _liveSession.catches.push(c);
   localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
   _renderLiveCatches();
@@ -8262,7 +8475,7 @@ function _updateMapMarkers(){
 
   let withCoords=sessions.filter(s=>s.lat&&s.lon);
 
-  // v44: Group layer – add group shared catches with GPS
+  // v45: Group layer – add group shared catches with GPS
   let groupCatches=[];
   if(_mapLayer==='group'){
     _groups.forEach(g=>{
@@ -8312,11 +8525,12 @@ function _updateMapMarkers(){
 
     const catchList=s.catches?.map(c=>`${fIco(c.type)} ${c.type}${c.length?' '+c.length+'cm':''}`).join('<br>')||'Schneider 🎣';
     const popupHtml=`
-      <div style="min-width:160px;">
+      <div style="min-width:160px;cursor:pointer;" onclick="showDetail('${s.id}')">
         <div style="font-family:var(--fs);font-weight:600;font-size:14px;margin-bottom:4px;">${s.water||'–'}${s.spot?' · '+s.spot:''}</div>
         <div style="font-size:11px;color:#666;margin-bottom:6px;">${fmtDate(s.date)} · ${s.start}–${s.end||'?'}</div>
         <div style="font-size:12px;line-height:1.6;">${catchList}</div>
         ${s.temp!=null?`<div style="font-size:11px;color:#888;margin-top:4px;">${s.weather||''} ${s.temp}°C</div>`:''}
+        <div style="font-size:10px;color:var(--green-mid);margin-top:6px;font-weight:600;">→ Details anzeigen</div>
       </div>`;
 
     const marker=L.marker([lat,lon],{icon:_mkIcon(color)}).bindPopup(popupHtml);
@@ -8341,7 +8555,7 @@ function _updateMapMarkers(){
     });
   });
 
-  // v44: Add group shared catches to map
+  // v45: Add group shared catches to map
   groupCatches.forEach(c=>{
     const cLat=parseFloat(c.lat),cLon=parseFloat(c.lon);
     if(isNaN(cLat)||isNaN(cLon))return;
@@ -8433,7 +8647,7 @@ function _updateMapMarkers(){
 })();
 
 // ═══════════════════════════════════════════════════════════
-// SOCIAL & GROUP ENGINE (v44)
+// SOCIAL & GROUP ENGINE (v45)
 // ═══════════════════════════════════════════════════════════
 
 // ── State ──
@@ -8711,8 +8925,13 @@ function _openGroupDetail(gId){
 }
 
 function _grpDetailTab(tab){
+  // v45: Update both old tabs and new floating nav
   document.querySelectorAll('#grp-detail-tabs .grp-tab').forEach((b,i)=>{
     b.classList.toggle('on',['feed','insights','map','members'][i]===tab);
+  });
+  document.querySelectorAll('.grp-float-btn').forEach(b=>{
+    b.classList.toggle('on',b.textContent.trim().toLowerCase()===
+      (tab==='feed'?'feed':tab==='insights'?'insights':tab==='map'?'karte':'mitglieder'));
   });
   const chatBar=document.getElementById('grp-chat-bar');
   chatBar.style.display=(tab==='feed')?'flex':'none';
@@ -8729,7 +8948,9 @@ function _rndrGroupFeed(){
   const el=document.getElementById('grp-detail-content');
   const myId=_sbUser?.id||g.members?.find(m=>m.role==='admin'&&m.name===(profile?.name||''))?.id||'me';
 
-  let html='<div class="feed-stream">';
+  // v45: Floating sub-nav
+  let html=_rndrGrpFloatNav('feed');
+  html+='<div class="feed-stream">';
   let lastDate='';
 
   g.feed.forEach((item,idx)=>{
@@ -8831,16 +9052,57 @@ async function _grpLike(gId,catchId){
 }
 
 function _grpComment(gId,catchId){
-  const text=prompt('Kommentar:');
-  if(!text?.trim())return;
+  // v45: Expand inline comment section under the catch card
+  const existing=document.getElementById('comment-expand-'+catchId);
+  if(existing){existing.remove();return;} // toggle off
+  const g=_groups.find(x=>x.id===gId);
+  if(!g)return;
+  const sc=g.sharedCatches?.find(c=>c.id===catchId);
+  if(!sc)return;
+  const myId=_sbUser?.id||'me';
+  const myName=profile?.name?.split(' ')[0]||'Ich';
+
+  // Build comments list + input
+  const comments=(sc.comments||[]).map(cm=>{
+    const cmMember=g.members?.find(m=>m.id===cm.userId)||{name:'?'};
+    const cmColor=_userColor(cm.userId);
+    const cmTime=new Date(cm.ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    return `<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;">
+      <div class="catch-card-avatar" style="background:${cmColor};width:22px;height:22px;font-size:10px;flex-shrink:0;">${cmMember.name.charAt(0)}</div>
+      <div style="flex:1;"><span style="font-weight:700;font-size:11px;color:${cmColor};">${_esc(cmMember.name)}</span><span style="font-size:11px;color:var(--text-light);margin-left:4px;">${cmTime}</span><div style="font-size:12px;color:var(--text-dark);margin-top:1px;">${_esc(cm.text)}</div></div>
+    </div>`;
+  }).join('');
+
+  // Find the catch card button and insert after the card body
+  const btn=event.target.closest('.catch-card');
+  if(!btn)return;
+  const expand=document.createElement('div');
+  expand.id='comment-expand-'+catchId;
+  expand.className='comment-expand';
+  expand.innerHTML=`
+    <div style="padding:10px 12px;background:var(--cream);border-top:1px solid var(--green-pale);border-radius:0 0 12px 12px;">
+      ${comments||'<div style="font-size:11px;color:var(--text-light);margin-bottom:6px;">Noch keine Kommentare</div>'}
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <input type="text" class="if" id="cm-input-${catchId}" placeholder="Kommentar..." style="flex:1;font-size:12px;padding:8px 10px;">
+        <button onclick="_submitComment('${gId}','${catchId}')" style="background:var(--green-deep);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;">↑</button>
+      </div>
+    </div>`;
+  btn.appendChild(expand);
+  setTimeout(()=>document.getElementById('cm-input-'+catchId)?.focus(),100);
+}
+
+function _submitComment(gId,catchId){
+  const input=document.getElementById('cm-input-'+catchId);
+  const text=input?.value?.trim();
+  if(!text)return;
   const g=_groups.find(x=>x.id===gId);
   if(!g)return;
   const myId=_sbUser?.id||'me';
   const sc=g.sharedCatches?.find(c=>c.id===catchId);
   if(sc){
     if(!sc.comments)sc.comments=[];
-    sc.comments.push({userId:myId,text:text.trim(),ts:Date.now()});
-    g.feed.push({type:'msg',text:text.trim(),ts:Date.now(),userId:myId});
+    sc.comments.push({userId:myId,text,ts:Date.now()});
+    g.feed.push({type:'msg',text,ts:Date.now(),userId:myId});
     _saveGroups();
     _rndrGroupFeed();
   }
@@ -8890,7 +9152,9 @@ function _rndrGroupInsights(){
   });
   const leaderboard=Object.entries(userStats).sort((a,b)=>b[1].count-a[1].count);
 
-  let html=`
+  // v45: Floating sub-nav
+  let html=_rndrGrpFloatNav('insights');
+  html+=`
     <div class="dash-section">
       <div class="dash-section-title">📊 Trends der letzten 7 Tage</div>
       <div class="dash-trend-chips">
@@ -8978,33 +9242,58 @@ function _rndrGroupMap(){
   const el=document.getElementById('grp-detail-content');
   const catches=g.sharedCatches?.filter(c=>c.shareGps&&c.lat&&c.lon)||[];
 
-  el.innerHTML=`<div style="padding:16px;">
-    <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:10px;">Geteilte Spots (${catches.length})</div>
-    ${catches.length?`<div id="grp-map-container" style="width:100%;height:300px;border-radius:var(--rs);overflow:hidden;margin-bottom:14px;"></div>`:'<div style="text-align:center;padding:30px;color:var(--text-light);font-size:13px;">📍 Noch keine GPS-Freigaben.<br>Mitglieder können beim Teilen GPS aktivieren.</div>'}
-    <div style="font-size:11px;color:var(--text-light);margin-bottom:10px;background:var(--yellow);border:1px solid var(--yellow-b);border-radius:var(--rs);padding:10px;color:var(--yellow-t);">🛡️ <strong>Spot-Schutz:</strong> GPS wird nur bei expliziter Freigabe geteilt. Nutze Gebiets-Sharing statt exakter Punkte.</div>
-    ${catches.map(c=>`<div class="grp-item" style="margin-bottom:6px;">
-      <div class="catch-card-avatar" style="background:${_userColor(c.userId)};width:28px;height:28px;font-size:12px;">${(c.userName||'?').charAt(0)}</div>
-      <div class="grp-item-info">
-        <div class="grp-item-name">${fIco(c.type)} ${_esc(c.type)} · ${c.length}cm</div>
-        <div class="grp-item-sub">${_esc(c.userName||'?')} · ${c.water||''} · ${c.date||''}</div>
-      </div>
-    </div>`).join('')}
-  </div>`;
+  // v45: Floating sub-nav + filter header + full-height map
+  const allGrpFish=[...new Set(catches.map(c=>c.type).filter(Boolean))].sort();
+  const allGrpMembers=[...new Set(catches.map(c=>c.userName).filter(Boolean))].sort();
+  el.innerHTML=_rndrGrpFloatNav('map')+`
+    <div style="display:flex;gap:6px;padding:8px 12px;flex-wrap:wrap;background:var(--green-mist);border-radius:8px;margin:0 12px 8px;">
+      <select class="if" id="grp-map-f-fish" style="flex:1;min-width:80px;font-size:11px;padding:6px 8px;" onchange="_grpMapApplyFilter()">
+        <option value="">Alle Fische</option>
+        ${allGrpFish.map(f=>`<option value="${f}">${f}</option>`).join('')}
+      </select>
+      <select class="if" id="grp-map-f-member" style="flex:1;min-width:80px;font-size:11px;padding:6px 8px;" onchange="_grpMapApplyFilter()">
+        <option value="">Alle Mitglieder</option>
+        ${allGrpMembers.map(m=>`<option value="${_esc(m)}">${_esc(m)}</option>`).join('')}
+      </select>
+    </div>
+    ${catches.length?`<div id="grp-map-container" style="width:100%;height:calc(100vh - 280px);min-height:300px;overflow:hidden;"></div>`:'<div style="text-align:center;padding:30px;color:var(--text-light);font-size:13px;">📍 Noch keine GPS-Freigaben.<br>Mitglieder können beim Teilen GPS aktivieren.</div>'}
+    <div style="font-size:10px;color:var(--text-light);text-align:center;padding:6px 12px;background:var(--yellow);border:1px solid var(--yellow-b);margin:0 12px;border-radius:8px;">🛡️ Spot-Schutz: GPS nur bei expliziter Freigabe</div>`;
 
-  if(catches.length){
-    requestAnimationFrame(()=>{
-      const mapEl=document.getElementById('grp-map-container');
-      if(!mapEl||typeof L==='undefined')return;
-      const gMap=L.map(mapEl).setView([parseFloat(catches[0].lat),parseFloat(catches[0].lon)],10);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(gMap);
-      catches.forEach(c=>{
-        const icon=L.divIcon({html:`<div style="width:24px;height:24px;border-radius:50%;background:${_userColor(c.userId)};display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);">${fIco(c.type)}</div>`,className:'',iconSize:[24,24],iconAnchor:[12,12]});
-        L.marker([parseFloat(c.lat),parseFloat(c.lon)],{icon}).addTo(gMap)
-          .bindPopup(`<strong>${_esc(c.userName)}</strong><br>${fIco(c.type)} ${c.type} · ${c.length}cm<br>🎣 ${_esc(c.bait||'')}`);
-      });
-      setTimeout(()=>gMap.invalidateSize(),200);
+  _grpMapRender(catches);
+}
+
+let _grpLeafletMap=null;
+function _grpMapRender(catches){
+  if(!catches.length)return;
+  requestAnimationFrame(()=>{
+    const mapEl=document.getElementById('grp-map-container');
+    if(!mapEl||typeof L==='undefined')return;
+    if(_grpLeafletMap){_grpLeafletMap.remove();_grpLeafletMap=null;}
+    _grpLeafletMap=L.map(mapEl).setView([parseFloat(catches[0].lat),parseFloat(catches[0].lon)],10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(_grpLeafletMap);
+    const bounds=[];
+    catches.forEach(c=>{
+      const lat=parseFloat(c.lat),lon=parseFloat(c.lon);
+      if(isNaN(lat)||isNaN(lon))return;
+      const icon=L.divIcon({html:`<div style="width:28px;height:28px;border-radius:50%;background:${_userColor(c.userId)};display:flex;align-items:center;justify-content:center;font-size:13px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);">${fIco(c.type)}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]});
+      L.marker([lat,lon],{icon}).addTo(_grpLeafletMap)
+        .bindPopup(`<div style="min-width:130px;"><strong style="color:${_userColor(c.userId)};">${_esc(c.userName)}</strong><br>${fIco(c.type)} ${c.type} · ${c.length}cm<br>🎣 ${_esc(c.bait||'–')}<br><span style="font-size:10px;color:#888;">${c.date||''} · ${c.water||''}</span></div>`);
+      bounds.push([lat,lon]);
     });
-  }
+    if(bounds.length>1)_grpLeafletMap.fitBounds(bounds,{padding:[30,30],maxZoom:13});
+    setTimeout(()=>_grpLeafletMap.invalidateSize(),200);
+  });
+}
+
+function _grpMapApplyFilter(){
+  const g=_groups.find(x=>x.id===_activeGroupId);
+  if(!g)return;
+  let catches=g.sharedCatches?.filter(c=>c.shareGps&&c.lat&&c.lon)||[];
+  const fishF=document.getElementById('grp-map-f-fish')?.value;
+  const memberF=document.getElementById('grp-map-f-member')?.value;
+  if(fishF)catches=catches.filter(c=>c.type===fishF);
+  if(memberF)catches=catches.filter(c=>c.userName===memberF);
+  _grpMapRender(catches);
 }
 
 // ── Group Members ──
@@ -9015,7 +9304,9 @@ function _rndrGroupMembers(){
   const myId=_sbUser?.id||'me';
   const isAdmin=g.members?.find(m=>m.id===myId)?.role==='admin'||g.createdBy===myId;
 
-  let html=`<div style="padding:16px;">
+  // v45: Floating sub-nav
+  let html=_rndrGrpFloatNav('members');
+  html+=`<div style="padding:16px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
       <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);">${g.members?.length||0} Mitglieder</div>
       ${isAdmin?`<button onclick="_copyInvite('${g.inviteCode}')" style="padding:6px 12px;background:var(--green-mist);border:1px solid var(--green-pale);border-radius:20px;font-size:11px;font-weight:600;color:var(--green-mid);font-family:var(--fa);cursor:pointer;">🔗 Einladen: ${g.inviteCode}</button>`:''}
@@ -9238,6 +9529,294 @@ function _relTime(ts){
   return new Date(ts).toLocaleDateString('de-DE',{day:'numeric',month:'short'});
 }
 
+// ═══════════════════════════════════════════════════════════
+// v45 ADDITIONS – Code Red Release Candidate
+// ═══════════════════════════════════════════════════════════
+
+// ── GLOBAL: Clear-Button für Inputs ──
+function _initClearBtns(){
+  document.querySelectorAll('.if').forEach(inp => {
+    if(inp.type==='date'||inp.type==='time'||inp.tagName==='SELECT'||inp.closest('.if-wrap'))return;
+    const parent=inp.parentElement;
+    if(!parent)return;
+    const wrap=document.createElement('div');
+    wrap.className='if-wrap';
+    parent.insertBefore(wrap,inp);
+    wrap.appendChild(inp);
+    const btn=document.createElement('button');
+    btn.className='if-clear';
+    btn.type='button';
+    btn.innerHTML='✕';
+    btn.onclick=function(e){e.preventDefault();e.stopPropagation();inp.value='';inp.dispatchEvent(new Event('input'));btn.classList.remove('vis');inp.focus();};
+    wrap.appendChild(btn);
+    inp.addEventListener('input',()=>{btn.classList.toggle('vis',inp.value.length>0);});
+    inp.addEventListener('focus',()=>{if(inp.value.length>0)btn.classList.add('vis');});
+    inp.addEventListener('blur',()=>{setTimeout(()=>btn.classList.remove('vis'),150);});
+    if(inp.value.length>0)btn.classList.add('vis');
+  });
+}
+
+// ── GLOBAL: Chip-Deduplizierung ──
+function _dedupeChips(arr){
+  const seen=new Set();
+  return arr.filter(v=>{const k=v.trim().toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
+}
+
+// ── Live Session C&R Toggle ──
+function _lcCrToggle(checked){
+  const note=document.getElementById('lc-note');
+  if(note){
+    if(checked&&!note.value.includes('released')){
+      // Don't auto-fill, just hint
+    }
+  }
+}
+
+// ── Smart Import (AI) – Vorbereitung ──
+function _smartImport(){
+  showToast('🤖','Smart Import (AI) wird in einem zukünftigen Update verfügbar sein – Dateien werden per KI ins App-Format gewandelt.');
+}
+
+// ── Session Splitten ──
+function _splitSession(id){
+  const sess=sessions.find(s=>s.id===id);
+  if(!sess||!sess.catches.length||sess.catches.length<2){
+    showToast('⚠️','Session hat zu wenige Fänge zum Splitten.',true);return;
+  }
+  const mid=Math.ceil(sess.catches.length/2);
+  const c1=sess.catches.slice(0,mid);
+  const c2=sess.catches.slice(mid);
+  // Create second session
+  const sess2={...JSON.parse(JSON.stringify(sess)),id:_newId(),catches:c2,saved:new Date().toISOString()};
+  // If catches have times, adjust session times
+  if(c2[0]?.time)sess2.start=c2[0].time;
+  if(c1[c1.length-1]?.time)sess.end=c1[c1.length-1].time;
+  sess.catches=c1;
+  sessions.push(sess2);
+  saveSessions();
+  showToast('✂️',`Session in 2 Teile gesplittet (${c1.length} + ${c2.length} Fänge)`);
+  showDetail(id);
+}
+
+// ── Edit Session: scrollTop + blur fix ──
+const _origEditSess=typeof editSess==='function'?editSess:null;
+function _patchedEditSess(id){
+  if(_origEditSess)_origEditSess(id);
+  // After edit loads, scroll to top and blur all inputs
+  requestAnimationFrame(()=>{
+    const sc=document.querySelector('#page-new .sc');
+    if(sc)sc.scrollTop=0;
+    document.querySelectorAll('#page-new .if').forEach(inp=>inp.blur());
+  });
+}
+
+// ── Fang melden UX: Prevent keyboard after water input ──
+function _autoTabWater(){
+  // Original function exists - we patch to NOT focus next input
+  // blur everything after water change
+  setTimeout(()=>{document.activeElement?.blur();},50);
+}
+
+// ── Chart Scroll-Lock ──
+function _initChartScrollLock(){
+  document.querySelectorAll('.fc-chart-wrap, .fc-canvas-wrap, .fc-rain-wrap').forEach(el=>{
+    el.classList.add('fc-chart-touch');
+    el.addEventListener('touchstart',e=>{
+      if(e.touches.length===1)el.style.touchAction='none';
+    },{passive:false});
+    el.addEventListener('touchend',()=>{el.style.touchAction='';});
+  });
+}
+
+// ── Magic Header for Charts (dynamic update on hover) ──
+function _chartMagicHeader(chartId,label,values){
+  if(!values||!values.length)return '';
+  const cur=values[values.length>12?12:0];
+  const mn=Math.min(...values.filter(v=>v!=null));
+  const mx=Math.max(...values.filter(v=>v!=null));
+  return `<div class="chart-magic-hdr" id="cmh-${chartId}">
+    <div><div class="cmh-lbl" id="cmh-lbl-${chartId}">Aktuell</div><div class="cmh-val" id="cmh-cur-${chartId}">${Math.round(cur)}${label}</div></div>
+    <div><div class="cmh-lbl">Min</div><div class="cmh-val">${Math.round(mn)}${label}</div></div>
+    <div><div class="cmh-lbl">Max</div><div class="cmh-val">${Math.round(mx)}${label}</div></div>
+  </div>`;
+}
+
+// ── 14-Day Chart Crosshair + Magic Header Update Plugin ──
+const _wx14CrosshairPlugin={
+  id:'wx14Crosshair',
+  afterDatasetsDraw(chart){
+    if(!chart._magicId)return;
+    const active=chart.getActiveElements();
+    if(!active||!active.length)return;
+    const x=active[0].element.x;
+    const ctx=chart.ctx;
+    const top=chart.scales.y.top,bot=chart.scales.y.bottom;
+    ctx.save();
+    ctx.strokeStyle='rgba(45,74,53,.4)';
+    ctx.lineWidth=1;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bot);ctx.stroke();
+    ctx.restore();
+  },
+  afterEvent(chart,args){
+    if(!chart._magicId||args.replay)return;
+    const evt=args.event;
+    if((evt.type==='mousemove'||evt.type==='click')&&args.inChartArea){
+      const els=chart.getElementsAtEventForMode(evt,'index',{intersect:false},true);
+      if(els.length){
+        const idx=els[0].index;
+        const val=chart.data.datasets[0]?.data?.[idx];
+        const lbl=chart.data.labels?.[idx]||'';
+        const curEl=document.getElementById('cmh-cur-'+chart._magicId);
+        const lblEl=document.getElementById('cmh-lbl-'+chart._magicId);
+        if(curEl&&val!=null)curEl.textContent=Math.round(val)+(chart._magicUnit||'');
+        if(lblEl)lblEl.textContent=lbl;
+      }
+    }else if(evt.type==='mouseout'||!args.inChartArea){
+      // Reset to default
+      const curEl=document.getElementById('cmh-cur-'+chart._magicId);
+      const lblEl=document.getElementById('cmh-lbl-'+chart._magicId);
+      if(curEl&&chart._magicDefault!=null)curEl.textContent=Math.round(chart._magicDefault)+(chart._magicUnit||'');
+      if(lblEl)lblEl.textContent='Aktuell';
+    }
+  }
+};
+
+// ── KI Vorhersage Experten-Text ──
+function _rndrKiExpert(){
+  const p=_getCurrentPhaeno();
+  const month=new Date().getMonth()+1;
+  let txt='';
+  if(month>=3&&month<=5)txt='Aufgrund des milden Frühjahrs beginnen Barsche und Zander früher mit der Nahrungsaufnahme. Die Wassertemperaturen steigen, Friedfische ziehen ins Flachwasser. Gummifische in natürlichen Farben und langsame Führung sind jetzt besonders erfolgreich.';
+  else if(month>=6&&month<=8)txt='Die hohen Wassertemperaturen treiben Raubfische in tiefere Schichten. Frühmorgens und spätabends sind die besten Beißzeiten. Topwater-Köder bei Dämmerung und tiefläufende Wobbler tagsüber bringen die besten Ergebnisse.';
+  else if(month>=9&&month<=11)txt='Der Herbst ist die absolute Raubfisch-Hochsaison. Hechte und Zander fressen sich Winterreserven an. Größere Köder und aggressive Führung sind jetzt trumpf. An Kanten und Abbrüchen stehen die Fische besonders konzentriert.';
+  else txt='Winterliche Bedingungen verlangsamen den Stoffwechsel der Fische. Vertikalangeln mit kleinen Gummifischen und extrem langsamer Führung bringt jetzt die besten Ergebnisse. Quappen beginnen ihre Laichzeit und sind nachts aktiv.';
+  return `<div class="ki-expert" onclick="showToast('🧠','KI-Analyse wird laufend verbessert')">
+    <div class="ki-expert-title">🧠 Phänologischer Experte</div>
+    <div class="ki-expert-text">${txt}</div>
+  </div>`;
+}
+
+// ── Live Session Summary (Fitness-App Style) ──
+let _lsSummaryMap=null;
+function _showLsSummary(sess){
+  const el=document.getElementById('ls-summary');
+  if(!el)return;
+
+  // Hero
+  const badge=sess.catches.length>3?'🏆':sess.catches.length>0?'🎣':'🪝';
+  document.getElementById('ls-sum-badge').textContent=badge;
+  document.getElementById('ls-sum-title').textContent=sess.catches.length?`${sess.catches.length} Fänge!`:'Schneider – nächstes Mal!';
+  document.getElementById('ls-sum-sub').textContent=`${sess.water||'Unbekannt'}${sess.spot?' · '+sess.spot:''}`;
+
+  // Stats
+  const duration=calcHrs(sess.start,sess.end);
+  const dH=Math.floor(duration),dM=Math.round((duration-dH)*60);
+  const pauseMin=sess._pauseMin||0;
+  const totalMin=dH*60+dM-pauseMin;
+  const netH=Math.floor(totalMin/60),netM=totalMin%60;
+  document.getElementById('ls-sum-stats').innerHTML=`
+    <div class="ls-sum-stat"><div class="ls-sum-stat-val">${sess.start}</div><div class="ls-sum-stat-lbl">Start</div></div>
+    <div class="ls-sum-stat"><div class="ls-sum-stat-val">${sess.end}</div><div class="ls-sum-stat-lbl">Ende</div></div>
+    <div class="ls-sum-stat"><div class="ls-sum-stat-val">${netH}h${String(netM).padStart(2,'0')}m</div><div class="ls-sum-stat-lbl">Netto${pauseMin>0?' (-'+pauseMin+'m)':''}</div></div>`;
+
+  // Map with track & fish markers
+  const mapEl=document.getElementById('ls-sum-map');
+  if(sess.liveTrack&&sess.liveTrack.length>1){
+    mapEl.style.display='block';
+    setTimeout(()=>{
+      if(_lsSummaryMap){_lsSummaryMap.remove();_lsSummaryMap=null;}
+      _lsSummaryMap=L.map(mapEl,{zoomControl:false,attributionControl:false});
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(_lsSummaryMap);
+      const points=sess.liveTrack.map(p=>[parseFloat(p.lat),parseFloat(p.lon)]);
+      const polyline=L.polyline(points,{color:'#cc0000',weight:3,opacity:.8}).addTo(_lsSummaryMap);
+      // Fish markers
+      sess.catches.forEach(c=>{
+        if(c._lat&&c._lon){
+          L.circleMarker([c._lat,c._lon],{radius:8,fillColor:'#2D4A35',color:'#fff',weight:2,fillOpacity:1})
+            .bindPopup(`${fIco(c.type)} ${c.type} ${c.length?c.length+'cm':''}`)
+            .addTo(_lsSummaryMap);
+        }
+      });
+      _lsSummaryMap.fitBounds(polyline.getBounds().pad(0.15));
+    },200);
+  } else {
+    mapEl.style.display='none';
+  }
+
+  // Catches list
+  const catchesEl=document.getElementById('ls-sum-catches');
+  if(sess.catches.length){
+    catchesEl.innerHTML=`<div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;opacity:.5;margin-bottom:8px;">Fänge</div>`+
+      sess.catches.map(c=>`<div class="ls-sum-catch">
+        <div class="ls-sum-catch-ico">${fIco(c.type)}</div>
+        <div class="ls-sum-catch-info">
+          <div class="ls-sum-catch-name">${c.type}${c.length?' · '+c.length+'cm':''}</div>
+          <div class="ls-sum-catch-meta">${c.time||''}${c.bait?' · '+c.bait:''}${c.taken?'':' · C&R'}</div>
+        </div>
+      </div>`).join('');
+  } else {
+    catchesEl.innerHTML='';
+  }
+
+  el.classList.add('on');
+}
+
+function _closeLsSummary(){
+  document.getElementById('ls-summary').classList.remove('on');
+  if(_lsSummaryMap){_lsSummaryMap.remove();_lsSummaryMap=null;}
+}
+
+// ── Map: Zoom controls position fix ──
+function _fixMapZoom(){
+  const css=document.createElement('style');
+  css.textContent=`.leaflet-control-zoom{position:absolute!important;bottom:120px!important;right:12px!important;top:auto!important;left:auto!important;}`;
+  document.head.appendChild(css);
+}
+
+// ── Friedfisch: Gesamtanzahl als echte Fischzahl werten ──
+function _getFishCountForStats(c){
+  if(c.inputMode==='fried'&&c.ffCount&&c.ffCount>1)return c.ffCount;
+  return 1;
+}
+
+// ── Group: Floating sub-nav (replaces grp-tabs in detail) ──
+function _rndrGrpFloatNav(activeTab){
+  return `<div class="grp-float-nav">
+    <button class="grp-float-btn${activeTab==='feed'?' on':''}" onclick="_grpDetailTab('feed')">Feed</button>
+    <button class="grp-float-btn${activeTab==='insights'?' on':''}" onclick="_grpDetailTab('insights')">Insights</button>
+    <button class="grp-float-btn${activeTab==='map'?' on':''}" onclick="_grpDetailTab('map')">Karte</button>
+    <button class="grp-float-btn${activeTab==='members'?' on':''}" onclick="_grpDetailTab('members')">Mitglieder</button>
+  </div>`;
+}
+
+// ── Group Map: Filter Header ──
+function _rndrGrpMapFilter(){
+  return `<div class="grp-map-filter">
+    <select onchange="_grpMapFilterChange('date',this.value)">
+      <option value="all">Alle Zeiten</option>
+      <option value="7d">Letzte 7 Tage</option>
+      <option value="30d">Letzte 30 Tage</option>
+      <option value="90d">Letzte 90 Tage</option>
+    </select>
+    <select onchange="_grpMapFilterChange('fish',this.value)">
+      <option value="all">Alle Fische</option>
+      <option value="Hecht">Hecht</option>
+      <option value="Zander">Zander</option>
+      <option value="Barsch">Barsch</option>
+    </select>
+    <select onchange="_grpMapFilterChange('catch',this.value)">
+      <option value="all">Alle</option>
+      <option value="yes">Mit Fang</option>
+      <option value="no">Schneider</option>
+    </select>
+  </div>`;
+}
+function _grpMapFilterChange(key,val){
+  // Placeholder for group map filtering
+  showToast('🔍','Filter: '+key+' = '+val);
+}
+
 (async function boot(){
   // Supabase initialisieren
   sbInit();
@@ -9286,7 +9865,7 @@ function _relTime(ts){
 
   addCatch();
 
-  // v44: Gruppen laden
+  // v45: Gruppen laden
   await _loadGroups();
 
   // Live-Session wiederherstellen (nach App-Neustart)
@@ -9342,6 +9921,13 @@ function _relTime(ts){
       }catch(e){/* Hintergrund-Fehler ignorieren */}
     }, 3000);
   }
+
+  // v45: Initialize clear buttons, chart scroll lock, map zoom fix
+  setTimeout(()=>{
+    _initClearBtns();
+    _initChartScrollLock();
+    _fixMapZoom();
+  },500);
 
   // Demo-Daten sind nur via ?demo=1 URL-Parameter ladbar.
   if(!sessions.length&&new URLSearchParams(location.search).get('demo')==='1'){
