@@ -583,6 +583,11 @@ position:relative;}
 }
 .goal-card.achieved .goal-name{color:#7a5a00;}
 .goal-card.achieved .goal-progress{color:#7a5a00;font-weight:800;}
+.goal-achieved-badge{
+  margin-top:3px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;
+  color:#fff;background:linear-gradient(135deg,#d4a640,#b8860b);
+  padding:2px 8px;border-radius:10px;
+}
 .goal-ring{width:48px;height:48px;margin-bottom:6px;}
 .goal-name{font-size:11px;font-weight:700;color:var(--text-dark);margin-bottom:2px;line-height:1.2;
   overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
@@ -705,7 +710,8 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .chip{background:var(--green-pale);color:var(--green-deep);font-size:12px;font-weight:600;padding:5px 11px;border-radius:20px;border:none;cursor:pointer;font-family:var(--fa);transition:background .15s,transform .1s;white-space:nowrap;}
 .chip:hover{background:var(--green-light);color:#fff;transform:scale(1.03);}
 .chip:active{transform:scale(.97);}
-#trueb-chips{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
+#trueb-chips{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;width:100%;}
+#spot-chips{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;}
 
 /* AP3: Floating Edit-Save Button */
 .edit-save-fab{
@@ -1542,6 +1548,40 @@ input[type=file]{display:none;}
 /* Header Live button styling */
 .hlive-btn{font-size:11px!important;font-weight:700!important;letter-spacing:.3px;padding:0 10px!important;width:auto!important;white-space:nowrap;}
 .hlive-btn.active{background:#cc0000!important;animation:livePulse 1.5s infinite;}
+
+/* ── AP4: Group Sub-Nav (fixed bottom bar inside overlay) ── */
+.grp-subnav{flex:0 0 auto!important;overflow:visible!important;display:flex;gap:0;padding:6px 8px;background:rgba(248,245,239,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(200,221,208,.5);}
+.grp-subnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px 5px;border:none;border-radius:10px;background:transparent;font-size:10px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--text-light);transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.grp-subnav-btn .grp-sn-ico{font-size:16px;line-height:1;}
+.grp-subnav-btn.on{background:var(--green-deep);color:#fff;box-shadow:0 2px 8px rgba(45,74,53,.25);}
+.grp-subnav-btn:active{transform:scale(.92);}
+
+/* ── AP4: WhatsApp-style Chat Input ── */
+.grp-chat-wa{flex:0 0 auto!important;overflow:visible!important;display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--cream);border-top:1px solid var(--cream-dark);}
+.grp-chat-wa-btn{width:32px;height:32px;border:none;border-radius:50%;background:transparent;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-mid);-webkit-tap-highlight-color:transparent;}
+.grp-chat-wa-btn:active{background:var(--cream-dark);}
+.grp-chat-wa-input{flex:1;padding:9px 14px;border:1.5px solid var(--green-pale);border-radius:24px;font-size:13px;font-family:var(--fa);outline:none;background:#fff;min-width:0;}
+.grp-chat-wa-input:focus{border-color:var(--green-mid);}
+.grp-chat-wa-send{width:36px;height:36px;border-radius:50%;border:none;background:var(--green-deep);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .1s;}
+.grp-chat-wa-send:active{transform:scale(.9);}
+
+/* ── AP4: Own messages right-aligned ── */
+.feed-msg.own{flex-direction:row-reverse;}
+.feed-msg.own .feed-msg-bubble{border-radius:16px 16px 4px 16px;background:var(--green-mist);margin-left:auto;}
+.feed-msg.own .feed-msg-name{display:none;}
+.feed-msg.own .catch-card-avatar{display:none;}
+
+/* ── AP4: Map full height ── */
+.grp-map-full{width:100%;height:calc(100vh - 150px);min-height:350px;overflow:hidden;}
+.grp-map-wrap{position:relative;}
+.grp-map-fab{position:absolute;top:10px;right:10px;z-index:400;padding:8px 14px;background:rgba(255,255,255,.95);border-radius:20px;border:1px solid var(--cream-dark);font-size:12px;font-weight:600;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+.grp-map-fab:active{transform:scale(.95);}
+.grp-map-filter-dd{position:absolute;top:44px;right:10px;z-index:401;background:#fff;border-radius:var(--rs);box-shadow:var(--sh-lg);padding:12px;min-width:210px;display:none;}
+.grp-map-filter-dd.on{display:block;}
+.grp-map-filter-dd .gmf-row{margin-bottom:10px;}
+.grp-map-filter-dd .gmf-row:last-child{margin-bottom:0;}
+.grp-map-filter-dd .gmf-lbl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;}
+.grp-map-filter-dd select,.grp-map-filter-dd input{width:100%;padding:7px 10px;border:1px solid var(--cream-dark);border-radius:8px;font-size:12px;font-family:var(--fa);background:#fff;}
 </style>
 </head>
 <body>
@@ -1813,9 +1853,10 @@ input[type=file]{display:none;}
       <label class="il" for="pe-plz">PLZ (für Wetter)</label>
       <input type="text" class="if" id="pe-plz" placeholder="z.B. 49377" inputmode="numeric" maxlength="5">
     </div>
-    <!-- AP1: Dokumente -->
+    <!-- AP5: Dokumente mit Upload + Vorschau -->
     <div style="margin-bottom:20px;padding:14px 16px;background:var(--cream-dark);border-radius:var(--r);">
       <div class="il" style="margin-bottom:10px;">Dokumente</div>
+      <div id="pe-doc-previews"></div>
       <button type="button" onclick="_uploadDoc('fischereischein')" style="width:100%;padding:12px;background:#fff;border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);margin-bottom:8px;display:flex;align-items:center;gap:8px;justify-content:center;">📄 Fischereischein hochladen</button>
       <button type="button" onclick="_uploadDoc('angelkarte')" style="width:100%;padding:12px;background:#fff;border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);display:flex;align-items:center;gap:8px;justify-content:center;">🎫 Angelkarte hochladen</button>
     </div>
@@ -1889,7 +1930,7 @@ input[type=file]{display:none;}
     <div class="suclist" id="suc-list"></div>
     <button class="sucdis" onclick="disSuc()">Weiter →</button>
     <button class="bshare" id="share-btn" onclick="doShare()" style="display:none;">📤 Erfolg teilen</button>
-    <button class="bshare" id="grp-share-btn" onclick="_openShareModal(_lastSavedId)" style="display:none;background:var(--green-mist);color:var(--green-deep);border:1.5px solid var(--green-pale);margin-top:6px;">👥 In Gruppe teilen</button>
+    <button class="bshare" id="grp-share-btn" onclick="disSuc();_openShareModal(_lastSavedId)" style="display:none;background:var(--green-mist);color:var(--green-deep);border:1.5px solid var(--green-pale);margin-top:6px;">👥 In Gruppe teilen</button>
   </div>
 </div>
 
@@ -2210,6 +2251,24 @@ input[type=file]{display:none;}
   <div style="flex:1;position:relative;"><div id="sess-map-container" style="position:absolute;inset:0;"></div></div>
 </div>
 
+<!-- AP1: Session Split Modal -->
+<div class="fsov" id="fs-split-modal" role="dialog" aria-modal="true" style="z-index:118;background:#f5f7f5;">
+  <div class="fshdr">
+    <div><div class="fstitle">✂️ Session splitten</div><div class="fsmeta">Fänge auf 2 Sessions verteilen</div></div>
+    <button class="xbtn" onclick="closeFs('split-modal')">✕</button>
+  </div>
+  <div class="fsov-scroll" id="split-modal-body" style="padding:16px;"></div>
+</div>
+
+<!-- AP1: Detail Map Overlay -->
+<div class="fsov" id="fs-detail-map" role="dialog" aria-modal="true" style="z-index:117;">
+  <div class="fshdr">
+    <div><div class="fstitle">🗺️ Session-Karte</div><div class="fsmeta" id="fs-detmap-meta"></div></div>
+    <button class="xbtn" onclick="_closeDetailMap()">✕</button>
+  </div>
+  <div style="flex:1;position:relative;"><div id="detail-map-container" style="position:absolute;inset:0;"></div></div>
+</div>
+
 <!-- AP3: Karten-Filter Overlay -->
 <div class="fsov" id="fs-map-filter" role="dialog" aria-modal="true" style="z-index:120;background:#f5f7f5;">
   <div class="fshdr">
@@ -2308,10 +2367,16 @@ input[type=file]{display:none;}
       </div>
     </div>
 
-    <!-- v45: C&R Toggle -->
-    <div class="cr-toggle-row" style="margin-bottom:10px;">
-      <span class="cr-toggle-label">🐟 Catch & Release</span>
-      <div class="tw"><input type="checkbox" id="lc-cr" onchange="_lcCrToggle(this.checked)"><span class="tsl"></span></div>
+    <!-- v45: C&R Toggle (AP3-Fix: volles State-Update) -->
+    <div class="crr" id="lc-crr" style="margin-bottom:10px;">
+      <div class="crl">
+        <span class="crm" id="lc-crm">Fisch mitgenommen?</span>
+        <span class="crs" id="lc-crs">Nein – zurückgesetzt (C&R)</span>
+      </div>
+      <label class="tw" aria-label="Fisch entnommen?">
+        <input type="checkbox" id="lc-cr" onchange="_lcCrToggle(this.checked)" role="switch" aria-checked="false">
+        <span class="tsl"></span>
+      </label>
     </div>
 
     <div class="ig" style="margin-bottom:10px;" id="lc-note-wrap2">
@@ -2349,7 +2414,7 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- ═══ GROUP DETAIL / FEED OVERLAY ═══ -->
+<!-- ═══ GROUP DETAIL / FEED OVERLAY (AP4: restructured) ═══ -->
 <div class="fsov" id="fs-group-detail" style="z-index:116;">
   <div class="fshdr" id="grp-detail-hdr" style="background:var(--green-deep);">
     <div>
@@ -2358,18 +2423,30 @@ input[type=file]{display:none;}
     </div>
     <button class="xbtn" onclick="closeFs('group-detail')" style="color:#fff;">✕</button>
   </div>
-  <div class="grp-tabs" id="grp-detail-tabs" style="margin-top:12px;">
-    <button class="grp-tab on" onclick="_grpDetailTab('feed')">Feed</button>
-    <button class="grp-tab" onclick="_grpDetailTab('insights')">Insights</button>
-    <button class="grp-tab" onclick="_grpDetailTab('map')">Karte</button>
-    <button class="grp-tab" onclick="_grpDetailTab('members')">Mitglieder</button>
+  <div class="fsov-scroll" id="grp-detail-scroll">
+    <div id="grp-detail-content"></div>
   </div>
-  <div class="fsov-scroll" id="grp-detail-scroll" style="position:relative;">
-    <div id="grp-detail-content" style="padding-bottom:70px;"></div>
-    <div class="feed-input-bar" id="grp-chat-bar" style="display:none;">
-      <input class="feed-input" id="grp-chat-input" placeholder="Nachricht schreiben…" autocomplete="off">
-      <button class="feed-send" onclick="_grpSendMsg()">➤</button>
-    </div>
+  <!-- AP4: WhatsApp-style Chat Input -->
+  <div class="grp-chat-wa" id="grp-chat-bar" style="display:none;">
+    <button class="grp-chat-wa-btn" onclick="_grpAttachPhoto()" title="Foto">📷</button>
+    <button class="grp-chat-wa-btn" onclick="_grpShareLocation()" title="Standort">📍</button>
+    <input class="grp-chat-wa-input" id="grp-chat-input" placeholder="Nachricht schreiben…" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();_grpSendMsg();}">
+    <button class="grp-chat-wa-send" onclick="_grpSendMsg()" title="Senden">➤</button>
+  </div>
+  <!-- AP4: Group Sub-Nav (floating above main nav) -->
+  <div class="grp-subnav" id="grp-subnav">
+    <button class="grp-subnav-btn on" data-tab="feed" onclick="_grpDetailTab('feed')"><span class="grp-sn-ico">💬</span>Feed</button>
+    <button class="grp-subnav-btn" data-tab="insights" onclick="_grpDetailTab('insights')"><span class="grp-sn-ico">📊</span>Insights</button>
+    <button class="grp-subnav-btn" data-tab="map" onclick="_grpDetailTab('map')"><span class="grp-sn-ico">🗺</span>Karte</button>
+    <button class="grp-subnav-btn" data-tab="members" onclick="_grpDetailTab('members')"><span class="grp-sn-ico">👥</span>Mitglieder</button>
+  </div>
+</div>
+
+<!-- ═══ CATCH DETAIL OVERLAY (AP4) ═══ -->
+<div class="fsov" id="fs-catch-detail" style="z-index:118;">
+  <button class="xbtn" onclick="closeFs('catch-detail')" style="position:absolute;top:16px;right:16px;z-index:5;background:rgba(0,0,0,.4);color:#fff;border-radius:50%;width:36px;height:36px;">✕</button>
+  <div class="fsov-scroll" id="catch-detail-scroll" style="padding:0;">
+    <div id="catch-detail-content"></div>
   </div>
 </div>
 
@@ -2475,6 +2552,10 @@ input[type=file]{display:none;}
     <svg class="btab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
     <span class="btab-lbl">Vorhersage</span>
   </button>
+  <button class="btab" id="btab-groups" role="tab" aria-selected="false" onclick="_openGroupHub()">
+    <svg class="btab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <span class="btab-lbl">Gruppen</span>
+  </button>
   <button class="btab" id="btab-map" role="tab" aria-selected="false" onclick="showPage('map')">
     <svg class="btab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
     <span class="btab-lbl">Karte</span>
@@ -2491,6 +2572,32 @@ input[type=file]{display:none;}
 </div>
 </div><!-- /phone -->
 <script>
+// ═══════════════════════════════════════════════════════════
+// AP5: GLOBAL CHART.JS CROSSHAIR PLUGIN
+// Vertikale gestrichelte Linie bei Hover für ALLE Charts
+// ═══════════════════════════════════════════════════════════
+if(typeof Chart!=='undefined'){
+  Chart.register({
+    id:'globalCrosshair',
+    afterDatasetsDraw(chart){
+      // Doughnut/Pie/Radar → kein Crosshair
+      if(!chart.scales||!chart.scales.x)return;
+      const active=chart.getActiveElements();
+      if(!active||!active.length)return;
+      const x=active[0].element.x;
+      const ctx=chart.ctx;
+      const yScale=chart.scales.y||Object.values(chart.scales).find(s=>s.axis==='y');
+      if(!yScale)return;
+      ctx.save();
+      ctx.strokeStyle='rgba(200,40,40,.6)';
+      ctx.lineWidth=1;
+      ctx.setLineDash([5,5]);
+      ctx.beginPath();ctx.moveTo(x,yScale.top);ctx.lineTo(x,yScale.bottom);ctx.stroke();
+      ctx.restore();
+    }
+  });
+}
+
 // ═══════════════════════════════════════════════════════════
 // SUPABASE CLIENT (v40)
 // ═══════════════════════════════════════════════════════════
@@ -3477,6 +3584,7 @@ function openProfileEdit(){
     document.getElementById('pe-'+t)?.classList.toggle('sel',t===_peTyp);
   });
   openFs('profile-edit');
+  _renderDocPreviews();
 }
 function peSel(t){
   _peTyp=t;
@@ -3504,11 +3612,78 @@ async function saveProfileEdit(){
   closeFs('profile-edit');
   showToast('✅','Profil gespeichert!');
 }
-// AP1: Dokument-Upload Dummy
+// AP5: Dokument-Upload mit Base64-Speicherung
 function _uploadDoc(type){
   const labels={fischereischein:'Fischereischein',angelkarte:'Angelkarte'};
-  showToast('📄',`${labels[type]||'Dokument'} wird hochgeladen…`);
-  setTimeout(()=>showToast('⏳','Upload-Funktion kommt in einem Update!'),1500);
+  const inp=document.createElement('input');
+  inp.type='file';
+  inp.accept='image/*,.pdf';
+  inp.onchange=async()=>{
+    const file=inp.files[0];
+    if(!file)return;
+    if(file.size>10*1024*1024){showToast('⚠️','Datei zu groß (max. 10 MB)',true);return;}
+    showToast('📄',`${labels[type]} wird verarbeitet…`);
+    try{
+      const b64=await new Promise((res,rej)=>{
+        const reader=new FileReader();
+        reader.onload=()=>res(reader.result);
+        reader.onerror=()=>rej(reader.error);
+        reader.readAsDataURL(file);
+      });
+      if(!profile.docs)profile.docs={};
+      profile.docs[type]={name:file.name,data:b64,type:file.type,uploaded:new Date().toISOString()};
+      await saveProfile();
+      syncProfileToCloud();
+      showToast('✅',`${labels[type]} gespeichert!`);
+      _renderDocPreviews();
+    }catch(e){showToast('⚠️','Upload fehlgeschlagen',true);}
+  };
+  inp.click();
+}
+function _renderDocPreviews(){
+  const wrap=document.getElementById('pe-doc-previews');
+  if(!wrap||!profile?.docs)return;
+  const docs=profile.docs;
+  let html='';
+  ['fischereischein','angelkarte'].forEach(type=>{
+    const doc=docs[type];
+    if(!doc)return;
+    const isPdf=doc.type==='application/pdf'||doc.name?.endsWith('.pdf');
+    html+=`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:#fff;border-radius:var(--rs);margin-bottom:6px;border:1px solid var(--green-pale);">
+      <div onclick="_viewDoc('${type}')" style="cursor:pointer;width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--green-mist);display:flex;align-items:center;justify-content:center;">
+        ${isPdf?'<span style="font-size:22px;">📄</span>':`<img src="${doc.data}" style="width:100%;height:100%;object-fit:cover;">`}
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12px;font-weight:700;color:var(--text-dark);">${type==='fischereischein'?'Fischereischein':'Angelkarte'}</div>
+        <div style="font-size:10px;color:var(--text-light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${doc.name}</div>
+      </div>
+      <button onclick="_deleteDoc('${type}')" style="background:none;border:none;font-size:16px;cursor:pointer;padding:4px;">🗑️</button>
+    </div>`;
+  });
+  wrap.innerHTML=html;
+}
+function _viewDoc(type){
+  const doc=profile?.docs?.[type];
+  if(!doc)return;
+  const isPdf=doc.type==='application/pdf'||doc.name?.endsWith('.pdf');
+  if(isPdf){
+    const win=window.open();
+    if(win){win.document.write(`<iframe src="${doc.data}" style="width:100%;height:100%;border:none;"></iframe>`);win.document.title=doc.name;}
+  }else{
+    const lb=document.createElement('div');
+    lb.className='photo-lightbox';
+    lb.innerHTML=`<button class="photo-lightbox-close" onclick="this.parentElement.remove()">✕</button><img src="${doc.data}" alt="${doc.name}">`;
+    lb.onclick=e=>{if(e.target===lb)lb.remove();};
+    document.body.appendChild(lb);
+  }
+}
+async function _deleteDoc(type){
+  if(!profile?.docs?.[type])return;
+  delete profile.docs[type];
+  await saveProfile();
+  syncProfileToCloud();
+  showToast('🗑️','Dokument entfernt');
+  _renderDocPreviews();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -3608,7 +3783,7 @@ function ctxIdx(){
 }
 function topN(map,n=5){return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0]);}
 function topFavs(k,n=5){const c={};(favs[k]||[]).forEach(v=>{c[v]=(c[v]||0)+1;});return Object.entries(c).sort((a,b)=>b[1]-a[1]).map(e=>e[0]).slice(0,n);}
-function addFav(k,v){if(!v||v.trim().length<2)return;favs[k]=favs[k]||[];favs[k].push(v.trim());if(favs[k].length>400)favs[k]=favs[k].slice(-400);saveFavs();}
+function addFav(k,v){if(!v||v.trim().length<2)return;const tv=v.trim();favs[k]=favs[k]||[];favs[k].push(tv);if(favs[k].length>400)favs[k]=favs[k].slice(-400);saveFavs();}
 // Erweiterte addBaitKw die auch Phrasen lernt
 function addBaitKw(bait,note){
   if(!bait||!note)return;
@@ -3952,7 +4127,8 @@ function _lastCatchBait(){
 
 function addCatch(){
   catchCount++;const id=catchCount;
-  const n=new Date();const t=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+  // AP2-Task3: Fangzeit = Mittelwert(Start,End) oder Start+30min, nie Systemzeit
+  const t=_smartCatchTime();
 
   // Memory: Fang #2+ bekommt Fischart/Köder des zuletzt ausgefüllten Fangs (Fix 7)
   const presetFish=id>1?_lastCatchFish():'';
@@ -3976,14 +4152,21 @@ function addCatch(){
       </div>
     </div>
 
-    <!-- Fischart – Chips als Dropdown, keine doppelten Favoritenbuttons -->
-    <div class="ig" style="margin-bottom:6px;">
-      <label class="il" for="ft-${id}">Fischart</label>
-      <input type="text" list="fdl-${id}" class="if" id="ft-${id}" placeholder="${_inputMode==='fried'?'z.B. Rotauge':'z.B. Zander'}"
-        value="${presetFish}"
-        onfocus="rndrFChips(${id},this.value)" oninput="rndrFChips(${id},this.value);chkMMF(${id})" onblur="dHide('fc-${id}')" autocomplete="off">
-      <datalist id="fdl-${id}">${FISH.map(f=>`<option value="${f}">`).join('')}</datalist>
-      <div class="crow" id="fc-${id}" style="display:none;" role="listbox"></div>
+    <!-- Fischart + Gesamtzahl (nebeneinander) -->
+    <div style="display:grid;grid-template-columns:1fr auto;gap:6px;margin-bottom:6px;">
+      <div class="ig">
+        <label class="il" for="ft-${id}">Fischart</label>
+        <input type="text" list="fdl-${id}" class="if" id="ft-${id}" placeholder="${_inputMode==='fried'?'z.B. Rotauge':'z.B. Zander'}"
+          value="${presetFish}"
+          onfocus="rndrFChips(${id},this.value)" oninput="rndrFChips(${id},this.value);chkMMF(${id})" onblur="dHide('fc-${id}')" autocomplete="off">
+        <datalist id="fdl-${id}">${FISH.map(f=>`<option value="${f}">`).join('')}</datalist>
+        <div class="crow" id="fc-${id}" style="display:none;" role="listbox"></div>
+      </div>
+      <div class="ig" style="width:80px;">
+        <label class="il" for="fmass-${id}">Anzahl</label>
+        <input type="number" class="if" id="fmass-${id}" placeholder="–" min="0" inputmode="numeric"
+          oninput="_onMassChange(${id})">
+      </div>
     </div>
 
     <!-- Länge + Uhrzeit -->
@@ -3992,10 +4175,10 @@ function addCatch(){
         <label class="il" for="fl-${id}">Länge (cm)</label>
         <input type="number" class="if" id="fl-${id}" placeholder="65" min="1" max="300" step="0.5"
           inputmode="decimal"
-          oninput="chkMMF(${id})"
+          oninput="chkMMF(${id});_onLengthInput(${id})"
           onblur="_autoTabLength(${id})">
       </div>
-      <div class="ig">
+      <div class="ig" id="ftime-wrap-${id}">
         <label class="il" for="ftime-${id}">Uhrzeit</label>
         <input type="time" class="if" id="ftime-${id}" value="${t}" oninput="chkCatchTime(${id})">
       </div>
@@ -4003,7 +4186,7 @@ function addCatch(){
     <div class="mmw" id="mm-${id}" role="alert"></div>
     <div class="mmw" id="ct-warn-${id}" role="alert" style="color:var(--gold-d);"></div>
 
-    <!-- AP2: Köder/Farbe/Größe – 3-column layout nur im Raubfisch-Modus -->
+    <!-- Köder/Größe/Farbe – Reihenfolge: Köder → Größe → Farbe -->
     <div id="catch-bait-row-${id}" style="display:${_inputMode==='raub'?'':'none'};margin-top:8px;">
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
         <div class="ig">
@@ -4011,17 +4194,21 @@ function addCatch(){
           <input type="text" class="if" id="fb-${id}" placeholder="Gummifisch"
             value="${presetBait}"
             onfocus="_gatedBChips(${id})" oninput="rndrBChips(${id},this.value);updNoteChips(${id})" onblur="dHide('bc-${id}')" autocomplete="off">
-        </div>
-        <div class="ig">
-          <label class="il" for="fbcol-${id}">Farbe</label>
-          <input type="text" class="if" id="fbcol-${id}" placeholder="Motoroil" autocomplete="off">
+          <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
         </div>
         <div class="ig">
           <label class="il" for="fbsz-${id}">Größe</label>
-          <input type="text" class="if" id="fbsz-${id}" placeholder="12cm" autocomplete="off">
+          <input type="text" class="if" id="fbsz-${id}" placeholder="12cm" autocomplete="off"
+            onfocus="_rndrSzChips(${id})" onblur="dHide('szc-${id}')">
+          <div class="crow" id="szc-${id}" style="display:none;" role="listbox"></div>
+        </div>
+        <div class="ig">
+          <label class="il" for="fbcol-${id}">Farbe</label>
+          <input type="text" class="if" id="fbcol-${id}" placeholder="Motoroil" autocomplete="off"
+            onfocus="_rndrColChips(${id})" onblur="dHide('colc-${id}')">
+          <div class="crow" id="colc-${id}" style="display:none;" role="listbox"></div>
         </div>
       </div>
-      <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
     </div>
 
     <!-- Notizen – nur im Raubfisch-Modus -->
@@ -4165,13 +4352,15 @@ function _focusLength(id){
 function favFishSel(id,v){
   document.getElementById('ft-'+id).value=v;
   document.getElementById('fc-'+id).style.display='none';
-  chkMMF(id);rndrBChips(id,'');
-  _focusLength(id); // Länge: keine Chips → Tastatur öffnet sofort
+  chkMMF(id);
+  // AP2-Fix: Köder-Chips NICHT bei Fischart-Auswahl triggern – erst nach Länge
+  _focusLength(id);
 }
 function fSel(id,v){
   document.getElementById('ft-'+id).value=v;
   document.getElementById('fc-'+id).style.display='none';
-  chkMMF(id);rndrBChips(id,'');
+  chkMMF(id);
+  // AP2-Fix: Köder-Chips NICHT bei Fischart-Auswahl triggern – erst nach Länge
   _focusLength(id);
 }
 
@@ -4192,6 +4381,103 @@ function updNoteChips(id){
   // _usedNoteChips für diesen Block zurücksetzen (neuer Köder = neue Vorschläge)
   delete _usedNoteChips[id];
   rndrNChips(id,'');
+}
+
+// ── AP2: Smart Catch Time – Session-Zeitfenster statt Systemzeit ──
+function _smartCatchTime(){
+  const sEl=document.getElementById('s-start');
+  const eEl=document.getElementById('s-end');
+  const start=sEl?.value, end=eEl?.value;
+  if(start){
+    const[sh,sm]=start.split(':').map(Number);
+    const sMin=sh*60+sm;
+    if(end){
+      const[eh,em]=end.split(':').map(Number);
+      const eMin=eh*60+em;
+      // Mittelwert zwischen Start und Ende
+      const mid=eMin>sMin?Math.round((sMin+eMin)/2):Math.round((sMin+(eMin+1440))/2)%1440;
+      return String(Math.floor(mid/60)).padStart(2,'0')+':'+String(mid%60).padStart(2,'0');
+    }
+    // Nur Start → Start + 30min
+    const t30=(sMin+30)%1440;
+    return String(Math.floor(t30/60)).padStart(2,'0')+':'+String(t30%60).padStart(2,'0');
+  }
+  // Fallback: aktuelle Uhrzeit
+  const n=new Date();
+  return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+}
+
+// ── AP2: Gesamtzahl (Massenfang) – Uhrzeit ausblenden, Länge optional ──
+function _onMassChange(id){
+  const cnt=parseInt(document.getElementById('fmass-'+id)?.value)||0;
+  const timeWrap=document.getElementById('ftime-wrap-'+id);
+  if(timeWrap)timeWrap.style.display=cnt>0?'none':'';
+}
+
+// ── AP2: Köder-Chips erst nach Länge-Eingabe anzeigen (via oninput) ──
+function _onLengthInput(id){
+  // Wenn Länge jetzt einen Wert hat → Köder-Chips dürfen erscheinen
+  // (werden aber erst bei Focus auf Köder-Feld tatsächlich gerendert)
+}
+
+// ── AP2: Lernende Chips für Größe & Farbe ──
+function _rndrSzChips(id){
+  const el=document.getElementById('szc-'+id);if(!el)return;
+  const bait=document.getElementById('fb-'+id)?.value?.trim()||'';
+  const v=document.getElementById('fbsz-'+id)?.value?.toLowerCase()||'';
+  // Aus bisherigen Sessions lernen: welche Größen wurden bei diesem Köder benutzt?
+  let chips=[];
+  if(bait){
+    const szMap={};
+    sessions.forEach(s=>s.catches?.forEach(c=>{
+      if(c.bait===bait&&c.baitSize)szMap[c.baitSize]=(szMap[c.baitSize]||0)+1;
+    }));
+    chips=Object.entries(szMap).sort((a,b)=>b[1]-a[1]).slice(0,5).map(e=>e[0]);
+  }
+  if(!chips.length){
+    // Globale Größen-Favoriten
+    const allSz={};
+    sessions.forEach(s=>s.catches?.forEach(c=>{
+      if(c.baitSize)allSz[c.baitSize]=(allSz[c.baitSize]||0)+1;
+    }));
+    chips=Object.entries(allSz).sort((a,b)=>b[1]-a[1]).slice(0,5).map(e=>e[0]);
+  }
+  if(v)chips=chips.filter(c=>c.toLowerCase().includes(v));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(c=>{
+    const safe=c.replace(/'/g,"\\'");
+    return`<button class="chip ct" onmousedown="document.getElementById('fbsz-${id}').value='${safe}';dHide('szc-${id}')">📏 ${c}</button>`;
+  }).join('');
+}
+
+function _rndrColChips(id){
+  const el=document.getElementById('colc-'+id);if(!el)return;
+  const bait=document.getElementById('fb-'+id)?.value?.trim()||'';
+  const v=document.getElementById('fbcol-'+id)?.value?.toLowerCase()||'';
+  // Aus bisherigen Sessions lernen: welche Farben bei diesem Köder?
+  let chips=[];
+  if(bait){
+    const colMap={};
+    sessions.forEach(s=>s.catches?.forEach(c=>{
+      if(c.bait===bait&&c.baitColor)colMap[c.baitColor]=(colMap[c.baitColor]||0)+1;
+    }));
+    chips=Object.entries(colMap).sort((a,b)=>b[1]-a[1]).slice(0,5).map(e=>e[0]);
+  }
+  if(!chips.length){
+    const allCol={};
+    sessions.forEach(s=>s.catches?.forEach(c=>{
+      if(c.baitColor)allCol[c.baitColor]=(allCol[c.baitColor]||0)+1;
+    }));
+    chips=Object.entries(allCol).sort((a,b)=>b[1]-a[1]).slice(0,5).map(e=>e[0]);
+  }
+  if(v)chips=chips.filter(c=>c.toLowerCase().includes(v));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(c=>{
+    const safe=c.replace(/'/g,"\\'");
+    return`<button class="chip cc" onmousedown="document.getElementById('fbcol-${id}').value='${safe}';dHide('colc-${id}')">🎨 ${c}</button>`;
+  }).join('');
 }
 
 function updCR(id){
@@ -4256,18 +4542,22 @@ async function saveSess(){
               tcol=document.getElementById('fbcol-'+i),tsz=document.getElementById('fbsz-'+i);
         if(!te)continue;
         const type=te.value.trim(),lenVal=le?.value?.trim(),len=parseFloat(lenVal);
-        // Wenn Fischart vorhanden aber Länge fehlt → Abbruch mit Fokus
-        if(type&&(!lenVal||isNaN(len)||len<=0)){
+        const massEl=document.getElementById('fmass-'+i);
+        const massCount=parseInt(massEl?.value)||0;
+        // AP2: Wenn Gesamtzahl > 0 → Länge NICHT pflicht
+        // Sonst: Wenn Fischart vorhanden aber Länge fehlt → Abbruch mit Fokus
+        if(type&&massCount<=0&&(!lenVal||isNaN(len)||len<=0)){
           showToast('⚠️',`Bitte Länge für ${type} eingeben!`,true);
           if(le){le.focus();le.scrollIntoView({behavior:'smooth',block:'center'});}
           return; // _saving wird im finally-Block zurückgesetzt
         }
-        if(type&&!isNaN(len)&&len>0){
+        const hasLen=!isNaN(len)&&len>0;
+        if(type&&(hasLen||massCount>0)){
           const bait=tb?.value.trim()||'',note=tn?.value.trim()||'';
           const pk=(window._pm||{})[i]||null;
           const baitColor=tcol?.value?.trim()||'';
           const baitSize=tsz?.value?.trim()||'';
-          const catchObj={type,length:len,time:ti?.value||'',taken:tk?.checked||false,bait,baitColor,baitSize,baitNote:note,score:fScore(type,len),photoKey:pk,inputMode:_inputMode};
+          const catchObj={type,length:hasLen?len:0,time:ti?.value||'',taken:tk?.checked||false,bait,baitColor,baitSize,baitNote:note,score:hasLen?fScore(type,len):0,photoKey:pk,inputMode:_inputMode,massCount:massCount||0};
           // Friedfisch-Daten hinzufügen wenn im Friedfisch-Modus
           if(_inputMode==='fried'){
             catchObj.ffCount=parseInt(document.getElementById('ff-cnt-'+i)?.value)||0;
@@ -4424,14 +4714,16 @@ function resetForm(){
 // SUCCESS OVERLAY – v8: "Weiter" → Verlauf
 // ═══════════════════════════════════════════════════════════
 function showSuc(catches,water){
-  const freq={};catches.forEach(c=>{freq[c.type]=(freq[c.type]||0)+1;});
+  const freq={};catches.forEach(c=>{const n=_getFishCountForStats(c);freq[c.type]=(freq[c.type]||0)+n;});
   const mf=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];const ft=mf[0];
   const allC=sessions.slice(1).flatMap(s=>s.catches);
-  const prev=allC.filter(c=>c.type===ft).length;
-  const fin=prev+catches.filter(c=>c.type===ft).length;
-  _shareData={ft,total:fin,water:water||'',count:catches.length};
+  const prev=allC.filter(c=>c.type===ft).reduce((s,c)=>s+_getFishCountForStats(c),0);
+  const newCnt=catches.filter(c=>c.type===ft).reduce((s,c)=>s+_getFishCountForStats(c),0);
+  const fin=prev+newCnt;
+  const totalFish=_totalCatchCount(catches);
+  _shareData={ft,total:fin,water:water||'',count:totalFish};
   document.getElementById('suc-ico').textContent=fIco(ft);
-  document.getElementById('suc-hl').textContent=`${profile?profile.name.split(' ')[0]+' – ':''}Toller Fang!`;
+  document.getElementById('suc-hl').textContent=`${profile?profile.name.split(' ')[0]+' – ':''}${totalFish>1?totalFish+' Fische':'Toller Fang'}!`;
   document.getElementById('cnt-lbl').textContent=`${ft} insgesamt`;
   document.getElementById('cnt-num').textContent=prev;
   document.getElementById('suc-list').innerHTML=Object.entries(freq).map(([f,c])=>`<span class="succhip">${fIco(f)} ${f} ×${c}</span>`).join('');
@@ -4482,8 +4774,8 @@ function _checkGoalAchieved(newCatches){
   for(const g of profile.goals){
     const target = g.count || 1;
     const prevCount = prevSessions.flatMap(s => s.catches)
-      .filter(c => _catchQualifiesForGoal(c, g)).length;
-    const newCount = newCatches.filter(c => _catchQualifiesForGoal(c, g)).length;
+      .filter(c => _catchQualifiesForGoal(c, g)).reduce((s,c)=>s+_getFishCountForStats(c),0);
+    const newCount = newCatches.filter(c => _catchQualifiesForGoal(c, g)).reduce((s,c)=>s+_getFishCountForStats(c),0);
     const totalNow = prevCount + newCount;
     // Schwelle wurde genau in dieser Session erreicht
     if(prevCount < target && totalNow >= target){
@@ -4724,12 +5016,13 @@ function rndrFangbuch(){
   let html='';
   monthKeys.forEach(ym=>{
     const[yr,mo]=ym.split('-').map(Number);
-    const mCatches=byMonth[ym].flatMap(dk=>byDate[dk].flatMap(s=>s.catches)).length;
+    const mCatchArr=byMonth[ym].flatMap(dk=>byDate[dk].flatMap(s=>s.catches));
+    const mCatches=_totalCatchCount(mCatchArr);
     html+='<div class="fb-month-sep"><span class="fb-month-label">'+MNAMES[mo-1]+' '+yr+'</span><span class="fb-month-line"></span><span class="fb-month-count">'+mCatches+' Fang'+(mCatches!==1?'e':'')+'</span></div>';
     byMonth[ym].forEach(dateKey=>{
       const daySess=byDate[dateKey];
       const allCatches=daySess.flatMap(s=>s.catches);
-      const totalCnt=allCatches.length;
+      const totalCnt=_totalCatchCount(allCatches);
       const isSkunked=totalCnt===0&&daySess.every(s=>s.skunked||!s.catches.length);
       const waters=[...new Set(daySess.map(s=>s.water).filter(Boolean))];
       const spots=[...new Set(daySess.map(s=>s.spot).filter(Boolean))];
@@ -4743,7 +5036,7 @@ function rndrFangbuch(){
       let timeLabel=isSkunked?(timeSpan!=='–'?timeSpan+' · Schneider':'Schneider'):timeSpan;
       let fishLabel='';
       if(!isSkunked){
-        const freq={};allCatches.forEach(c=>{if(c.type)freq[c.type]=(freq[c.type]||0)+1;});
+        const freq={};allCatches.forEach(c=>{const n=_getFishCountForStats(c);if(c.type)freq[c.type]=(freq[c.type]||0)+n;});
         fishLabel=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([f])=>f).join(' · ');
       }
 
@@ -4893,7 +5186,7 @@ async function openDayDetail(dateKey){
   // Alle Fänge chronologisch nach Uhrzeit sortiert
   const allCatches=daySess.flatMap(s=>s.catches.map(c=>({...c,_sessId:s.id,_sessWater:s.water,_sessSpot:s.spot}))).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
 
-  const totalCnt=allCatches.length;
+  const totalCnt=_totalCatchCount(allCatches);
   const isSkunked=totalCnt===0&&daySess.every(s=>s.skunked||!s.catches.length);
   const waters=[...new Set(daySess.map(s=>s.water).filter(Boolean))];
   const spots=[...new Set(daySess.map(s=>s.spot).filter(Boolean))];
@@ -5603,7 +5896,7 @@ function showDetail(id){
     <div class="dhdr">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;">
         <button class="bback" onclick="showPage('fangbuch')">‹ Zurück</button>
-        <button class="bico" style="color:rgba(255,255,255,.7);" onclick="editSess('${s.id}')" aria-label="Bearbeiten">✏️</button>
+        <button class="bico" style="color:rgba(255,255,255,.7);" onclick="_patchedEditSess('${s.id}')" aria-label="Bearbeiten">✏️</button>
       </div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
         <span style="font-size:28px;">${s.moonIcon||'🌕'}</span>
@@ -5612,13 +5905,30 @@ function showDetail(id){
       <div class="dmeta">${s.water}${s.spot?' · '+s.spot:''} · ${s.weather}${s.temp!=null?' · '+s.temp+'°C':''}${s.pressure?` · ${Math.round(s.pressure)}hPa`:''}${s.lat?' · 📍':''}</div>
       <div class="dmeta">${s.start}–${s.end||'?'} Uhr · ${dur}${s.clarity?` · ${s.clarity}`:''}</div>
       ${s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:12px;font-weight:600;">💡 Automatisch als Schneider erkannt</div>`:''}
-      ${s.skunked&&!s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:14px;font-weight:600;">🪝 Schneider</div>`:!s.skunked?`<div class="sg3"><div class="sm"><div class="sv">${s.catches.length}</div><div class="sl">Fänge</div></div><div class="sm"><div class="sv">${avgL}cm</div><div class="sl">Ø Länge</div></div><div class="sm"><div class="sv">${maxL}cm</div><div class="sl">Rekord</div></div></div>`:''}
+      ${s.skunked&&!s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:14px;font-weight:600;">🪝 Schneider</div>`:!s.skunked?`<div class="sg3" style="grid-template-columns:repeat(3,1fr);"><div class="sm"><div class="sv">${_totalCatchCount(s.catches)}</div><div class="sl">Fänge</div></div><div class="sm"><div class="sv">${avgL}cm</div><div class="sl">Ø Länge</div></div><div class="sm"><div class="sv">${maxL}cm</div><div class="sl">Rekord</div></div></div>`:''}
     </div>`;
   const body=document.getElementById('detail-body');
-  if(s.skunked||!s.catches.length){body.innerHTML=`<div class="empty"><div class="empty-ico">🪝</div><div class="empty-t">Kein Fang</div></div><div style="padding:0 2px;display:flex;flex-direction:column;gap:10px;"><button class="btn" onclick="editSess('${s.id}')">✏️ Bearbeiten</button><button class="btn danger" onclick="delSess('${s.id}')">Löschen</button></div>`;return;}
+  if(s.skunked||!s.catches.length){body.innerHTML=`<div class="empty"><div class="empty-ico">🪝</div><div class="empty-t">Kein Fang</div></div><div style="padding:0 2px;display:flex;flex-direction:column;gap:10px;">${!s.lat?`<button class="btn" onclick="_openSessGpsMap('${s.id}')" style="background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);">📍 Standort nachtragen</button>`:''}<button class="btn" onclick="_patchedEditSess('${s.id}')">✏️ Bearbeiten</button><button class="btn danger" onclick="delSess('${s.id}')">Löschen</button></div>`;return;}
+  // AP5: Wetter-Sektion für Session-Detail (historisch via API)
+  let wxDetailHtml='';
+  if(s.pressure||s.windSpeed!=null||s.temp!=null){
+    let wxTiles='';
+    if(s.temp!=null)wxTiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">🌡️</div><div class="dd-wx-val">${s.temp}°C</div><div class="dd-wx-lbl">Temp.</div></div>`;
+    if(s.pressure)wxTiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">📊</div><div class="dd-wx-val">${Math.round(s.pressure)} hPa</div><div class="dd-wx-lbl">Druck</div></div>`;
+    if(s.windSpeed!=null)wxTiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">💨</div><div class="dd-wx-val">${s.windSpeed} km/h</div><div class="dd-wx-lbl">Wind ${_windDir(s.windDir)}</div></div>`;
+    if(s.humidity!=null)wxTiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">💧</div><div class="dd-wx-val">${s.humidity}%</div><div class="dd-wx-lbl">Luftf.</div></div>`;
+    if(s.clouds!=null)wxTiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">☁️</div><div class="dd-wx-val">${s.clouds}%</div><div class="dd-wx-lbl">Bewölk.</div></div>`;
+    if(s.precip!=null)wxTiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">🌧</div><div class="dd-wx-val">${s.precip} mm</div><div class="dd-wx-lbl">Nieders.</div></div>`;
+    if(wxTiles)wxDetailHtml=`<div class="slbl">Bedingungen</div><div class="dd-wx-grid">${wxTiles}</div>`;
+  } else {
+    // AP5: Wetter nachladen
+    wxDetailHtml=`<div id="sd-wx-${s.id}" style="margin-bottom:8px;"></div>`;
+    _loadSessionWeather(s);
+  }
+
   const sorted=[...s.catches].sort((a,b)=>b.length-a.length);
   // v8 BUGFIX: pure synchronous HTML – no await in template, photos loaded after
-  body.innerHTML=`<div class="slbl">Fänge</div><div class="card">
+  body.innerHTML=`${wxDetailHtml}<div class="slbl">Fänge</div><div class="card">
     ${sorted.map((c,i)=>{const mm=chkMM(c.type,c.length);return`<div class="fr">
       <div class="fa2 fa2-${i}" style="${i===0?'background:var(--gold-l);':''}">${i===0?'🏆':fIco(c.type)}</div>
       <div style="flex:1;min-width:0;">
@@ -5632,12 +5942,21 @@ function showDetail(id){
       <div class="frt"><div class="flv">${c.length}</div><div class="flu">cm</div>${(profile?.angeltyp||'Allround')==='Raubfisch'?`<div style="font-size:11px;color:var(--gold);font-weight:600;margin-top:2px;">⭐${c.score}</div>`:''}<button onclick="event.stopPropagation();openCatchPosMap('${s.id}',${i})" style="margin-top:4px;background:none;border:1px solid var(--green-pale);border-radius:6px;padding:2px 6px;font-size:10px;cursor:pointer;color:var(--green-mid);" title="Position markieren">${c.lat?'📍✓':'📍'}</button></div>
     </div>`;}).join('')}
   </div>
-  <div style="display:flex;gap:10px;margin-top:4px;">
+  <div class="slbl" style="margin-top:8px;">Karte</div>
+  <div class="card" style="padding:0;overflow:hidden;cursor:pointer;height:140px;position:relative;z-index:0;isolation:isolate;" onclick="_openDetailMap('${s.id}')">
+    <div id="detail-map-tile-${s.id}" style="position:absolute;inset:0;background:var(--green-mist);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--green-mid);">
+      ${s.lat?'🗺️ Karte laden...':'📍 Kein Standort – Tippen zum Nachtragen'}
+    </div>
+  </div>
+  ${!s.lat?`<button class="btn" onclick="_openSessGpsMap('${s.id}')" style="margin-top:6px;background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);width:100%;">📍 Standort nachtragen</button>`:''}
+  <div style="display:flex;gap:10px;margin-top:8px;">
     <button class="btn" onclick="_patchedEditSess('${s.id}')" style="flex:1;">✏️ Bearbeiten</button>
     <button class="btn danger" onclick="delSess('${s.id}')" style="flex:1;">Löschen</button>
   </div>
-  ${s.catches?.length>=2?`<button class="sess-split-btn" onclick="_splitSession('${s.id}')" style="margin-top:6px;width:100%;">✂️ Session splitten (${Math.ceil(s.catches.length/2)} + ${Math.floor(s.catches.length/2)} Fänge)</button>`:''}
+  ${s.catches?.length>=2?`<button class="sess-split-btn" onclick="_openSplitModal('${s.id}')" style="margin-top:6px;width:100%;">✂️ Session splitten</button>`:''}
   ${_groups.length&&s.catches?.length?`<button class="btn" onclick="_openShareModal('${s.id}')" style="margin-top:6px;background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);">👥 In Gruppe teilen</button>`:''}`;
+  // AP1-Task4: Render mini map tile after DOM
+  _renderDetailMapTile(s);
   // Load photos async AFTER DOM rendered
   sorted.forEach(async(c,i)=>{
     if(!c.photoKey)return;
@@ -5722,6 +6041,8 @@ async function editSess(id){
       if(g('fbcol'))g('fbcol').value=c.baitColor||'';
       if(g('fbsz'))g('fbsz').value=c.baitSize||'';
       if(g('fn'))g('fn').value=c.baitNote||'';
+      // AP2: Gesamtzahl wiederherstellen
+      if(c.massCount&&g('fmass')){g('fmass').value=c.massCount;_onMassChange(cid);}
       // Friedfisch-Felder wiederherstellen
       if(c.inputMode==='fried'){
         if(g('ff-cnt'))g('ff-cnt').value=c.ffCount||'';
@@ -5799,8 +6120,8 @@ function rndrStats(){
   const allC=filtered.flatMap(s=>s.catches);
   const maxC=allC.length?allC.reduce((a,b)=>b.length>a.length?b:a):null;
   const hrs=filtered.reduce((s,x)=>s+calcHrs(x.start,x.end),0);
-  const tkN=allC.filter(c=>c.taken).length;
-  const freq={};allC.forEach(c=>{if(c.type)freq[c.type]=(freq[c.type]||0)+1;});
+  const tkN=allC.filter(c=>c.taken).reduce((s,c)=>s+_getFishCountForStats(c),0);
+  const freq={};allC.forEach(c=>{if(c.type)freq[c.type]=(freq[c.type]||0)+_getFishCountForStats(c);});
   const topF=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6);
   const scored=allC.map(c=>({...c,fS:fScore(c.type,c.length)})).sort((a,b)=>b.fS-a.fS).slice(0,3);
   const medals=['🥇','🥈','🥉'];
@@ -5887,6 +6208,15 @@ function rndrStats(){
       </div>`).join('')}
     </div>`:''}
 
+    <!-- AP5: Ziel-Fortschritt direkt im Dashboard -->
+    ${(()=>{
+      const goals=profile?.goals||[];
+      if(!goals.length)return'';
+      const yr=_statSeason==='year'?String(curYear):_statSeason;
+      const gCatches=_statSeason==='all'?allC:sessions.filter(s=>s.date?.startsWith(yr)).flatMap(s=>s.catches);
+      return`<div class="slbl">🎯 Saisonziele</div><div class="goal-grid">${goals.map(g=>_goalCardHtml(g,gCatches,true,parseInt(yr))).join('')}</div>`;
+    })()}
+
     <!-- CTA: Weitere Statistiken (Erfolgsquote + Donut + Ziele) -->
     <div class="st-mehr-kachel" onclick="openMoreStats()">
       <div>
@@ -5911,7 +6241,7 @@ function openMoreStats(){
 // Ziel-Kachel HTML erzeugen (wiederverwendbar für Saison + Gesamt-Ansicht)
 function _goalCardHtml(g, catches, isYear, yr){
   const target = g.count || 1;
-  const qualifying = catches.filter(c => _catchQualifiesForGoal(c, g)).length;
+  const qualifying = catches.filter(c => _catchQualifiesForGoal(c, g)).reduce((s,c)=>s+_getFishCountForStats(c),0);
   const pct = Math.min(100, Math.round(qualifying / target * 100));
   const achieved = qualifying >= target;
   const r=20,circ=2*Math.PI*r;
@@ -5928,6 +6258,7 @@ function _goalCardHtml(g, catches, isYear, yr){
     </svg>
     <div class="goal-name">${g.label}</div>
     <div class="goal-progress">${qualifying}/${target}</div>
+    ${achieved?'<div class="goal-achieved-badge">Erreicht!</div>':''}
   </div>`;
 }
 
@@ -5944,7 +6275,7 @@ function _renderMoreStats(){
   const autoSk = filtered.filter(s => s.autoSkunked).length;
   const rate = total ? Math.round(suSess.length / total * 100) : 0;
   const allC = filtered.flatMap(s => s.catches);
-  const freq = {}; allC.forEach(c => { if(c.type) freq[c.type] = (freq[c.type]||0)+1; });
+  const freq = {}; allC.forEach(c => { if(c.type) freq[c.type] = (freq[c.type]||0)+_getFishCountForStats(c); });
   const topF = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0,6);
 
   document.getElementById('fs-more-meta').textContent =
@@ -6065,16 +6396,23 @@ function _renderGoalEdit(){
   }
 
   const curYear = new Date().getFullYear();
+  const yrCatches = sessions.filter(s => s.date?.startsWith(String(curYear))).flatMap(s => s.catches);
+
   body.innerHTML = `
     <div style="padding:16px 16px 0;">
       ${goals.map(g => {
         const gType = g.type || 'count';
         const typeBadge = gType==='pb'?'🏆 PB':gType==='range'?'📏 Range':'🎣 Stückzahl';
         const yrBadge = g.year ? `<span style="font-size:10px;color:var(--text-light);margin-left:6px;">${g.year}</span>` : '';
-        return `<div style="background:#fff;border-radius:var(--r);padding:14px 16px;margin-bottom:10px;border:1px solid rgba(200,221,208,.4);box-shadow:var(--sh-sm);display:flex;align-items:center;gap:14px;">
+        const target = g.count || 1;
+        const qualifying = yrCatches.filter(c => _catchQualifiesForGoal(c, g)).reduce((s,c)=>s+_getFishCountForStats(c),0);
+        const pct = Math.min(100, Math.round(qualifying / target * 100));
+        const achieved = qualifying >= target;
+        return `<div style="background:${achieved?'linear-gradient(120deg,#f5e49e,#e8c84a 50%,#f5e49e)':'#fff'};border-radius:var(--r);padding:14px 16px;margin-bottom:10px;border:${achieved?'1.5px solid #d4a640':'1px solid rgba(200,221,208,.4)'};box-shadow:var(--sh-sm);display:flex;align-items:center;gap:14px;">
           <div style="flex:1;min-width:0;">
-            <div style="font-size:14px;font-weight:700;color:var(--text-dark);margin-bottom:3px;line-height:1.3;">${g.label}${yrBadge}</div>
-            <div style="font-size:11px;color:var(--text-light);font-weight:600;letter-spacing:.4px;">${typeBadge}</div>
+            <div style="font-size:14px;font-weight:700;color:${achieved?'#7a5a00':'var(--text-dark)'};margin-bottom:3px;line-height:1.3;">${g.label}${yrBadge}</div>
+            <div style="font-size:11px;color:var(--text-light);font-weight:600;letter-spacing:.4px;">${typeBadge} · ${qualifying}/${target} ${achieved?'<span style="color:#7a5a00;">✅ Erreicht!</span>':pct+'%'}</div>
+            <div style="height:4px;background:rgba(200,221,208,.3);border-radius:2px;margin-top:6px;"><div style="height:100%;border-radius:2px;background:${achieved?'#d4a640':'var(--green-mid)'};width:${pct}%;transition:width .3s;"></div></div>
           </div>
           <button onclick="delGoal('${g.id}')" style="background:rgba(200,60,60,.1);border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;" aria-label="Ziel löschen" onmouseover="this.style.background='rgba(200,60,60,.2)'" onmouseout="this.style.background='rgba(200,60,60,.1)'">🗑️</button>
         </div>`;
@@ -6142,8 +6480,8 @@ function openAddGoal(){
         <input type="number" class="if" id="ag-cnt" placeholder="z.B. 100" min="1" inputmode="numeric">
       </div>
       <div class="ig">
-        <div class="il">Mind. Länge (optional)</div>
-        <input type="number" class="if" id="ag-min-c" placeholder="0 = egal" min="0" inputmode="numeric">
+        <div class="il" style="color:var(--text-light);">Mind. Länge <span style="font-weight:400;font-size:10px;">(kein Pflichtfeld)</span></div>
+        <input type="number" class="if" id="ag-min-c" placeholder="0 = jede Länge zählt" min="0" inputmode="numeric">
       </div>
     </div>
 
@@ -6296,7 +6634,7 @@ function setFsSort(k){
 function rndrFsSessions(){
   let s=[...sessions];
   if(_fsSessSort==='new')s.sort((a,b)=>b.date.localeCompare(a.date));
-  else if(_fsSessSort==='most')s.sort((a,b)=>b.catches.length-a.catches.length);
+  else if(_fsSessSort==='most')s.sort((a,b)=>_totalCatchCount(b.catches)-_totalCatchCount(a.catches));
   else s=s.filter(x=>x.skunked);
   document.getElementById('fs-sessions-meta').textContent=`${s.length} Sessions`;
   document.getElementById('fs-sessions-list').innerHTML=s.map(x=>`
@@ -6307,7 +6645,7 @@ function rndrFsSessions(){
         <div class="sbadge">${x.skunked?`<span class="badge bgr">🪝 Schneider</span>`:`<span class="badge bg">🐟</span>`}</div>
       </div>
       <div style="font-size:24px;font-weight:700;color:${x.skunked?'#d06060':'var(--green-deep)'};min-width:32px;text-align:right;">
-        ${x.skunked?'–':x.catches.length}
+        ${x.skunked?'–':_totalCatchCount(x.catches)}
       </div>
     </div>`).join('');
 }
@@ -6783,7 +7121,7 @@ async function _renderTideCal(river,startDate){
 
   let dataSource='PEGELONLINE WSV';
   try{
-    let values;
+    let values,_tideMeasured,_tideRealCount=0;
 
     if(isBshRange){
       // BSH PEGELONLINE-Daten (gestern/heute/morgen)
@@ -6800,14 +7138,19 @@ async function _renderTideCal(river,startDate){
       }
       // Messwerte auf 15-Min-Raster mappen
       values=new Array(97).fill(null);
+      _tideMeasured=new Array(97).fill(false);
       _tideCache[river].data.forEach(p=>{
         if((p.timestamp||'').slice(0,10)!==startDate)return;
         const hhmm=(p.timestamp||'').slice(11,16);
         const[hh,mm]=hhmm.split(':').map(Number);
         const slot=Math.round((hh*60+mm)/15);
-        if(slot>=0&&slot<97&&p.value!=null)values[slot]=Math.round(p.value);
+        if(slot>=0&&slot<97&&p.value!=null){values[slot]=Math.round(p.value);_tideMeasured[slot]=true;}
       });
-      if(values.filter(v=>v!=null).length<5)throw new Error('Keine Messdaten für diesen Tag');
+      // Fill remaining null slots with harmonic prediction for full 24h coverage
+      _tideRealCount=_tideMeasured.filter(Boolean).length;
+      for(let i=0;i<97;i++){if(values[i]==null)values[i]=_predictTideHarmonic(river,startDate,i*15);}
+      if(_tideRealCount>0&&_tideRealCount<90)dataSource='PEGELONLINE + Vorhersage';
+      else if(_tideRealCount===0)dataSource='Astronomische Vorhersage (harmonisch)';
     }else{
       // Astronomische Vorhersage (harmonisches Modell)
       dataSource='Astronomische Vorhersage (harmonisch)';
@@ -6862,7 +7205,9 @@ async function _renderTideCal(river,startDate){
       </div>`:'';
 
     // Datenquellen-Badge
-    const srcBadge=isBshRange
+    const srcBadge=_tideMeasured&&_tideRealCount>0&&_tideRealCount<90
+      ?'<span style="display:inline-block;background:linear-gradient(90deg,rgba(42,140,186,.12),rgba(180,140,60,.12));color:#6a7a6f;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-left:6px;">Live + Prognose</span>'
+      :isBshRange&&_tideRealCount>=90
       ?'<span style="display:inline-block;background:rgba(42,140,186,.12);color:#2a7ab0;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-left:6px;">BSH Live</span>'
       :'<span style="display:inline-block;background:rgba(180,140,60,.12);color:#a08030;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-left:6px;">Astronomisch</span>';
 
@@ -6944,16 +7289,20 @@ async function _renderTideCal(river,startDate){
         ctx.restore();
       }};
 
-      const lineColor=isBshRange?'#2a8cba':'#b08c3c';
-      const datasets=[{
-        label:isBshRange?'Messung':'Vorhersage',data:values,
-        borderColor:lineColor,
-        backgroundColor:isBshRange?'rgba(42,140,186,.18)':'rgba(176,140,60,.12)',
-        fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,
-        pointBackgroundColor:lineColor,borderWidth:2.5,
-        borderDash:isBshRange?[]:[6,3],
-        spanGaps:true
-      }];
+      // Build datasets: dual-line when mixed measured+predicted
+      const datasets=[];
+      if(_tideMeasured&&_tideRealCount>0&&_tideRealCount<90){
+        const mVals=values.map((v,i)=>_tideMeasured[i]?v:null);
+        const pVals=values.map((v,i)=>!_tideMeasured[i]?v:null);
+        // Connect: duplicate last measured point into predicted for seamless join
+        let lastM=-1;for(let i=96;i>=0;i--){if(_tideMeasured[i]){lastM=i;break;}}
+        if(lastM>=0&&lastM<96)pVals[lastM]=values[lastM];
+        datasets.push({label:'Messung',data:mVals,borderColor:'#2a8cba',backgroundColor:'rgba(42,140,186,.18)',fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,pointBackgroundColor:'#2a8cba',borderWidth:2.5,spanGaps:true});
+        datasets.push({label:'Vorhersage',data:pVals,borderColor:'#b08c3c',backgroundColor:'rgba(176,140,60,.08)',fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,pointBackgroundColor:'#b08c3c',borderWidth:2,borderDash:[6,3],spanGaps:true});
+      }else{
+        const lineColor=isBshRange?'#2a8cba':'#b08c3c';
+        datasets.push({label:isBshRange?'Messung':'Vorhersage',data:values,borderColor:lineColor,backgroundColor:isBshRange?'rgba(42,140,186,.18)':'rgba(176,140,60,.12)',fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,pointBackgroundColor:lineColor,borderWidth:2.5,borderDash:isBshRange?[]:[6,3],spanGaps:true});
+      }
 
       new Chart(c,{
         type:'line',
@@ -6962,9 +7311,9 @@ async function _renderTideCal(river,startDate){
         options:{
           responsive:false,maintainAspectRatio:false,
           plugins:{
-            legend:{display:false},
+            legend:{display:datasets.length>1,labels:{boxWidth:10,font:{size:10}}},
             tooltip:{mode:'index',intersect:false,
-              callbacks:{label:c2=>`${c2.parsed.y} cm`},
+              callbacks:{label:c2=>`${c2.dataset.label}: ${c2.parsed.y} cm`},
               backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'}
           },
           scales:{
@@ -7154,7 +7503,7 @@ async function openWxChart(type){
     const tblRows=d.time.map((t,i)=>{
       const bg=i===0?'background:var(--green-mist);':i%2===0?'background:#fff;':'background:#fafcfa;';
       const trend=i>0&&pres[i]!=null&&pres[i-1]!=null?(pres[i]-pres[i-1]>1?'↑ steigend':pres[i]-pres[i-1]<-1?'↓ fallend':'→ stabil'):'';
-      return`<div class="wx14-row" data-cols="3" style="${bg}">
+      return`<div class="wx14-row" data-cols="3" style="${bg}cursor:pointer;" onclick="openDailyWeather('${t}')">
         <div class="wx14-date">${labels[i]}</div>
         <div class="wx14-val" style="font-weight:700;">${pres[i]||'–'} hPa</div>
         <div class="wx14-val" style="font-size:10px;">${trend}</div>
@@ -7198,19 +7547,7 @@ function _dwDestroy(){_dwCharts.forEach(c=>{try{c.destroy();}catch(e){}});_dwCha
 // Crosshair-Linie + synchrone Hover-Events über alle Tages-Charts
 const _dwCrosshairPlugin={
   id:'dwCrosshair',
-  afterDatasetsDraw(chart){
-    const active=chart.getActiveElements();
-    if(!active||!active.length)return;
-    const x=active[0].element.x;
-    const ctx=chart.ctx;
-    const top=chart.scales.y.top,bot=chart.scales.y.bottom;
-    ctx.save();
-    ctx.strokeStyle='rgba(45,74,53,.35)';
-    ctx.lineWidth=1;
-    ctx.setLineDash([4,3]);
-    ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bot);ctx.stroke();
-    ctx.restore();
-  },
+  // AP5: Crosshair-Linie wird jetzt global gezeichnet – hier nur noch Sync-Events
   afterEvent(chart,args){
     if(args.replay)return;
     const evt=args.event;
@@ -7334,6 +7671,7 @@ function openDailyWeather(dateStr){
   const hGusts=hIdx.map(i=>h.windgusts_10m?.[i]!=null?Math.round(h.windgusts_10m[i]):null);
   const hRain=hIdx.map(i=>h.precipitation_probability?.[i]!=null?h.precipitation_probability[i]:null);
   const hWDir=hIdx.map(i=>h.winddirection_10m?.[i]);
+  const hPres=hIdx.map(i=>h.surface_pressure?.[i]!=null?Math.round(h.surface_pressure[i]):null);
 
   // Body
   document.getElementById('fs-dw-body').innerHTML=`
@@ -7377,14 +7715,24 @@ function openDailyWeather(dateStr){
       <div class="fc-chart-wrap cw-lg"><canvas id="dw-wind-chart"></canvas></div>
     </div>
     <!-- AP4: Niederschlag mit Magic Header -->
-    <div class="fc-sec" style="margin:0 0 24px;">
+    <div class="fc-sec" style="margin:0 0 8px;">
       <div class="fc-sec-title">🌧 Regenwahrscheinlichkeit · stündlich</div>
       <div id="dw-rain-info" style="font-size:11px;font-weight:600;color:var(--text-mid);padding:2px 10px 4px;display:flex;gap:12px;">
         <span>Max: ${Math.max(...hRain.filter(v=>v!=null))}%</span>
         <span id="dw-rain-hover" style="color:var(--green-mid);"></span>
       </div>
       <div class="fc-chart-wrap cw-lg"><canvas id="dw-rain-chart"></canvas></div>
-    </div>`;
+    </div>
+    <!-- AP3: Luftdruck stündlich -->
+    ${hPres.some(v=>v!=null)?`<div class="fc-sec" style="margin:0 0 24px;">
+      <div class="fc-sec-title">🔵 Luftdruck · stündlich</div>
+      <div id="dw-pres-info" style="font-size:11px;font-weight:600;color:var(--text-mid);padding:2px 10px 4px;display:flex;gap:12px;">
+        <span>Min: ${Math.min(...hPres.filter(v=>v!=null))} hPa</span>
+        <span>Max: ${Math.max(...hPres.filter(v=>v!=null))} hPa</span>
+        <span id="dw-pres-hover" style="color:var(--green-mid);"></span>
+      </div>
+      <div class="fc-chart-wrap cw-lg"><canvas id="dw-pres-chart"></canvas></div>
+    </div>`:''}`;
 
   // Swipe gesture
   const scrollEl=document.getElementById('fs-dw-body');
@@ -7447,6 +7795,22 @@ function openDailyWeather(dateStr){
       ch3._isToday=isToday;
       ch3._infoId='dw-rain-hover';ch3._infoUnit='%';
       _dwCharts.push(ch3);
+    }
+
+    // Pressure chart (AP3)
+    const c4=document.getElementById('dw-pres-chart');
+    if(c4&&hPres.some(v=>v!=null)){
+      const validP=hPres.filter(v=>v!=null);
+      const pMin=Math.min(...validP)-3;
+      const pMax=Math.max(...validP)+3;
+      const ch4=new Chart(c4,{type:'line',data:{labels:hLabels,datasets:[
+        {label:'Luftdruck',data:hPres,borderColor:'#5c6bc0',backgroundColor:'rgba(92,107,192,.1)',fill:true,tension:.35,pointRadius:2,pointHoverRadius:5,borderWidth:2.5}
+      ]},plugins:DW_PLUGINS,options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c5=>`${c5.parsed.y} hPa`}}},
+        scales:{x:XOPT,y:{min:pMin,max:pMax,ticks:{color:TICK,font:{size:9},callback:v=>v+' hPa'},grid:{color:GRID}}}}});
+      ch4._isToday=isToday;
+      ch4._infoId='dw-pres-hover';ch4._infoUnit=' hPa';
+      _dwCharts.push(ch4);
     }
   });
 }
@@ -8519,7 +8883,7 @@ function _updateMapMarkers(){
     const lat=parseFloat(s.lat),lon=parseFloat(s.lon);
     if(isNaN(lat)||isNaN(lon))return;
 
-    const catchCnt=s.catches?.length||0;
+    const catchCnt=_totalCatchCount(s.catches||[]);
     const isSkunked=s.skunked||catchCnt===0;
     const color=isSkunked?'#cc0000':catchCnt>=3?'#7BAE8A':'#2D4A35';
 
@@ -8925,16 +9289,13 @@ function _openGroupDetail(gId){
 }
 
 function _grpDetailTab(tab){
-  // v45: Update both old tabs and new floating nav
-  document.querySelectorAll('#grp-detail-tabs .grp-tab').forEach((b,i)=>{
-    b.classList.toggle('on',['feed','insights','map','members'][i]===tab);
+  // AP4: Update subnav buttons
+  document.querySelectorAll('#grp-subnav .grp-subnav-btn').forEach(b=>{
+    b.classList.toggle('on',b.getAttribute('data-tab')===tab);
   });
-  document.querySelectorAll('.grp-float-btn').forEach(b=>{
-    b.classList.toggle('on',b.textContent.trim().toLowerCase()===
-      (tab==='feed'?'feed':tab==='insights'?'insights':tab==='map'?'karte':'mitglieder'));
-  });
+  // Show chat bar only in feed tab
   const chatBar=document.getElementById('grp-chat-bar');
-  chatBar.style.display=(tab==='feed')?'flex':'none';
+  if(chatBar)chatBar.style.display=(tab==='feed')?'flex':'none';
 
   if(tab==='feed')_rndrGroupFeed();
   else if(tab==='insights')_rndrGroupInsights();
@@ -8948,9 +9309,7 @@ function _rndrGroupFeed(){
   const el=document.getElementById('grp-detail-content');
   const myId=_sbUser?.id||g.members?.find(m=>m.role==='admin'&&m.name===(profile?.name||''))?.id||'me';
 
-  // v45: Floating sub-nav
-  let html=_rndrGrpFloatNav('feed');
-  html+='<div class="feed-stream">';
+  let html='<div class="feed-stream">';
   let lastDate='';
 
   g.feed.forEach((item,idx)=>{
@@ -8964,6 +9323,7 @@ function _rndrGroupFeed(){
     const member=g.members.find(m=>m.id===item.userId)||{name:'Unbekannt'};
     const color=_userColor(item.userId);
     const timeStr=d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    const isOwn=item.userId===myId;
 
     if(item.type==='system'){
       html+=`<div style="text-align:center;font-size:11px;color:var(--text-light);padding:4px;font-style:italic;">ℹ️ ${_esc(item.text)}</div>`;
@@ -8978,11 +9338,12 @@ function _rndrGroupFeed(){
     else if(item.type==='catch'&&item.catchData){
       const c=item.catchData;
       const sc=g.sharedCatches?.find(sc=>sc.type===c.type&&sc.length===c.length&&sc.userId===item.userId);
+      const scId=sc?.id||'';
       const liked=sc?.likes?.includes(myId);
       const likeCount=sc?.likes?.length||0;
       const commentCount=sc?.comments?.length||0;
 
-      html+=`<div class="catch-card">
+      html+=`<div class="catch-card" style="cursor:pointer;" onclick="_openCatchDetail('${g.id}','${scId}')">
         <div class="catch-card-body">
           <div class="catch-card-user">
             <div class="catch-card-avatar" style="background:${color};">${member.name.charAt(0)}</div>
@@ -8996,16 +9357,16 @@ function _rndrGroupFeed(){
             <div class="catch-card-chip">🎣 ${_esc(c.bait||'–')}</div>
             ${c.baitNote?`<div class="catch-card-chip">${_esc(c.baitNote)}</div>`:''}
           </div>
-          <div class="catch-card-actions">
-            <button class="catch-card-act${liked?' liked':''}" onclick="_grpLike('${g.id}','${sc?.id||''}')"><span class="cc-ico">${liked?'❤️':'🤍'}</span> ${likeCount||''}</button>
-            <button class="catch-card-act" onclick="_grpComment('${g.id}','${sc?.id||''}')"><span class="cc-ico">💬</span> ${commentCount||''}</button>
-            <button class="catch-card-act" onclick="_grpCopySetup('${_esc(c.bait||'')}','${_esc(c.baitNote||'')}')"><span class="cc-ico">📋</span> Kopieren</button>
+          <div class="catch-card-actions" onclick="event.stopPropagation();">
+            <button class="catch-card-act${liked?' liked':''}" id="like-btn-${scId}" onclick="event.stopPropagation();_grpLike('${g.id}','${scId}')"><span class="cc-ico">${liked?'❤️':'🤍'}</span> <span class="like-cnt">${likeCount||''}</span></button>
+            <button class="catch-card-act" onclick="event.stopPropagation();_grpComment('${g.id}','${scId}')"><span class="cc-ico">💬</span> ${commentCount||''}</button>
+            <button class="catch-card-act" onclick="event.stopPropagation();_grpCopySetup('${_esc(c.bait||'')}','${_esc(c.baitNote||'')}')"><span class="cc-ico">📋</span> Kopieren</button>
           </div>
         </div>
       </div>`;
     }
     else if(item.type==='msg'){
-      html+=`<div class="feed-msg">
+      html+=`<div class="feed-msg${isOwn?' own':''}">
         <div class="catch-card-avatar" style="background:${color};width:24px;height:24px;font-size:11px;margin-top:2px;flex-shrink:0;">${member.name.charAt(0)}</div>
         <div class="feed-msg-bubble">
           <div class="feed-msg-name" style="color:${color};">${_esc(member.name)}</div>
@@ -9019,7 +9380,7 @@ function _rndrGroupFeed(){
   html+='</div>';
   el.innerHTML=html;
 
-  // Scroll to bottom
+  // Auto-scroll to bottom
   const scroll=document.getElementById('grp-detail-scroll');
   if(scroll)requestAnimationFrame(()=>scroll.scrollTop=scroll.scrollHeight);
 }
@@ -9038,6 +9399,7 @@ async function _grpSendMsg(){
 }
 
 async function _grpLike(gId,catchId){
+  // AP4: DOM-only update – no re-render, viewport stays in place
   const g=_groups.find(x=>x.id===gId);
   if(!g)return;
   const myId=_sbUser?.id||'me';
@@ -9047,8 +9409,17 @@ async function _grpLike(gId,catchId){
   const idx=sc.likes.indexOf(myId);
   if(idx>=0)sc.likes.splice(idx,1);
   else sc.likes.push(myId);
-  await _saveGroups();
-  _rndrGroupFeed();
+  // Update DOM only – don't re-render feed
+  const btn=document.getElementById('like-btn-'+catchId);
+  if(btn){
+    const liked=sc.likes.includes(myId);
+    btn.classList.toggle('liked',liked);
+    const ico=btn.querySelector('.cc-ico');
+    if(ico)ico.textContent=liked?'❤️':'🤍';
+    const cnt=btn.querySelector('.like-cnt');
+    if(cnt)cnt.textContent=sc.likes.length||'';
+  }
+  _saveGroups();
 }
 
 function _grpComment(gId,catchId){
@@ -9152,9 +9523,7 @@ function _rndrGroupInsights(){
   });
   const leaderboard=Object.entries(userStats).sort((a,b)=>b[1].count-a[1].count);
 
-  // v45: Floating sub-nav
-  let html=_rndrGrpFloatNav('insights');
-  html+=`
+  let html=`
     <div class="dash-section">
       <div class="dash-section-title">📊 Trends der letzten 7 Tage</div>
       <div class="dash-trend-chips">
@@ -9242,22 +9611,25 @@ function _rndrGroupMap(){
   const el=document.getElementById('grp-detail-content');
   const catches=g.sharedCatches?.filter(c=>c.shareGps&&c.lat&&c.lon)||[];
 
-  // v45: Floating sub-nav + filter header + full-height map
+  // AP4: Full-height map with floating filter FAB
   const allGrpFish=[...new Set(catches.map(c=>c.type).filter(Boolean))].sort();
   const allGrpMembers=[...new Set(catches.map(c=>c.userName).filter(Boolean))].sort();
-  el.innerHTML=_rndrGrpFloatNav('map')+`
-    <div style="display:flex;gap:6px;padding:8px 12px;flex-wrap:wrap;background:var(--green-mist);border-radius:8px;margin:0 12px 8px;">
-      <select class="if" id="grp-map-f-fish" style="flex:1;min-width:80px;font-size:11px;padding:6px 8px;" onchange="_grpMapApplyFilter()">
-        <option value="">Alle Fische</option>
-        ${allGrpFish.map(f=>`<option value="${f}">${f}</option>`).join('')}
-      </select>
-      <select class="if" id="grp-map-f-member" style="flex:1;min-width:80px;font-size:11px;padding:6px 8px;" onchange="_grpMapApplyFilter()">
-        <option value="">Alle Mitglieder</option>
-        ${allGrpMembers.map(m=>`<option value="${_esc(m)}">${_esc(m)}</option>`).join('')}
-      </select>
+  el.innerHTML=catches.length?`<div class="grp-map-wrap" style="position:relative;">
+      <button class="grp-map-fab" onclick="document.getElementById('grp-map-dd').classList.toggle('on')">🔍 Filter</button>
+      <div class="grp-map-filter-dd" id="grp-map-dd">
+        <div class="gmf-row"><div class="gmf-lbl">Zeitraum</div>
+          <select id="grp-map-f-date" onchange="_grpMapApplyFilter()"><option value="">Alle Zeiten</option><option value="7">Letzte 7 Tage</option><option value="30">Letzte 30 Tage</option><option value="90">Letzte 90 Tage</option></select></div>
+        <div class="gmf-row"><div class="gmf-lbl">Fang</div>
+          <select id="grp-map-f-catch" onchange="_grpMapApplyFilter()"><option value="">Alle</option><option value="yes">Mit Fang</option></select></div>
+        <div class="gmf-row"><div class="gmf-lbl">Zielfisch</div>
+          <select id="grp-map-f-fish" onchange="_grpMapApplyFilter()"><option value="">Alle Fische</option>${allGrpFish.map(f=>`<option value="${f}">${fIco(f)} ${f}</option>`).join('')}</select></div>
+        <div class="gmf-row"><div class="gmf-lbl">Mitglied</div>
+          <select id="grp-map-f-member" onchange="_grpMapApplyFilter()"><option value="">Alle Mitglieder</option>${allGrpMembers.map(m=>`<option value="${_esc(m)}">${_esc(m)}</option>`).join('')}</select></div>
+      </div>
+      <div id="grp-map-container" class="grp-map-full"></div>
     </div>
-    ${catches.length?`<div id="grp-map-container" style="width:100%;height:calc(100vh - 280px);min-height:300px;overflow:hidden;"></div>`:'<div style="text-align:center;padding:30px;color:var(--text-light);font-size:13px;">📍 Noch keine GPS-Freigaben.<br>Mitglieder können beim Teilen GPS aktivieren.</div>'}
-    <div style="font-size:10px;color:var(--text-light);text-align:center;padding:6px 12px;background:var(--yellow);border:1px solid var(--yellow-b);margin:0 12px;border-radius:8px;">🛡️ Spot-Schutz: GPS nur bei expliziter Freigabe</div>`;
+    <div style="font-size:10px;color:var(--text-light);text-align:center;padding:6px 12px;background:var(--yellow);border:1px solid var(--yellow-b);margin:8px 12px;border-radius:8px;">🛡️ Spot-Schutz: GPS nur bei expliziter Freigabe</div>`
+    :'<div style="text-align:center;padding:40px;color:var(--text-light);font-size:13px;">📍 Noch keine GPS-Freigaben.<br>Mitglieder können beim Teilen GPS aktivieren.</div>';
 
   _grpMapRender(catches);
 }
@@ -9291,8 +9663,12 @@ function _grpMapApplyFilter(){
   let catches=g.sharedCatches?.filter(c=>c.shareGps&&c.lat&&c.lon)||[];
   const fishF=document.getElementById('grp-map-f-fish')?.value;
   const memberF=document.getElementById('grp-map-f-member')?.value;
+  const dateF=document.getElementById('grp-map-f-date')?.value;
+  const catchF=document.getElementById('grp-map-f-catch')?.value;
   if(fishF)catches=catches.filter(c=>c.type===fishF);
   if(memberF)catches=catches.filter(c=>c.userName===memberF);
+  if(dateF){const cutoff=Date.now()-parseInt(dateF)*86400000;catches=catches.filter(c=>c.date&&new Date(c.date).getTime()>=cutoff);}
+  if(catchF==='yes')catches=catches.filter(c=>c.type&&c.length>0);
   _grpMapRender(catches);
 }
 
@@ -9304,9 +9680,7 @@ function _rndrGroupMembers(){
   const myId=_sbUser?.id||'me';
   const isAdmin=g.members?.find(m=>m.id===myId)?.role==='admin'||g.createdBy===myId;
 
-  // v45: Floating sub-nav
-  let html=_rndrGrpFloatNav('members');
-  html+=`<div style="padding:16px;">
+  let html=`<div style="padding:16px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
       <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);">${g.members?.length||0} Mitglieder</div>
       ${isAdmin?`<button onclick="_copyInvite('${g.inviteCode}')" style="padding:6px 12px;background:var(--green-mist);border:1px solid var(--green-pale);border-radius:20px;font-size:11px;font-weight:600;color:var(--green-mid);font-family:var(--fa);cursor:pointer;">🔗 Einladen: ${g.inviteCode}</button>`:''}
@@ -9325,6 +9699,120 @@ function _rndrGroupMembers(){
 
 function _copyInvite(code){
   navigator.clipboard?.writeText(code).then(()=>showToast('📋',`Code ${code} kopiert!`));
+}
+
+// ── AP4: Catch Detail Overlay ──
+function _openCatchDetail(gId,catchId){
+  const g=_groups.find(x=>x.id===gId);
+  if(!g)return;
+  const sc=g.sharedCatches?.find(c=>c.id===catchId);
+  if(!sc)return;
+  const member=g.members?.find(m=>m.id===sc.userId)||{name:sc.userName||'Unbekannt'};
+  const color=_userColor(sc.userId);
+  openFs('catch-detail');
+
+  let html='';
+  // Photo placeholder (no photo storage in shared catches yet)
+  html+=`<div style="background:linear-gradient(135deg,var(--green-deep),#1a3522);padding:60px 20px 30px;text-align:center;">
+    <div style="font-size:64px;margin-bottom:8px;">${fIco(sc.type)}</div>
+    <div style="font-size:24px;font-weight:700;color:#fff;font-family:var(--fs);">${_esc(sc.type)}</div>
+    <div style="font-size:14px;color:rgba(255,255,255,.7);margin-top:4px;">${sc.length}cm${sc.weight?' · '+sc.weight+'kg':''}</div>
+  </div>`;
+
+  // Angler info
+  html+=`<div style="padding:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div class="catch-card-avatar" style="background:${color};width:36px;height:36px;font-size:16px;">${member.name.charAt(0)}</div>
+      <div>
+        <div style="font-weight:700;font-size:14px;color:var(--text-dark);">${_esc(member.name)}</div>
+        <div style="font-size:11px;color:var(--text-light);">${sc.date||''} · ${sc.time||''}</div>
+      </div>
+    </div>`;
+
+  // Session info cards
+  html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+    <div style="background:#fff;padding:12px;border-radius:var(--rs);box-shadow:var(--sh-sm);">
+      <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;">Gewässer</div>
+      <div style="font-size:14px;font-weight:600;margin-top:4px;">${_esc(sc.water||'–')}</div>
+    </div>
+    <div style="background:#fff;padding:12px;border-radius:var(--rs);box-shadow:var(--sh-sm);">
+      <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;">Spot</div>
+      <div style="font-size:14px;font-weight:600;margin-top:4px;">${_esc(sc.spot||'–')}</div>
+    </div>
+  </div>`;
+
+  // Catch data
+  html+=`<div style="background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);margin-bottom:16px;">
+    <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Fangdaten</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div><span style="font-size:11px;color:var(--text-light);">Fischart:</span><br><strong>${_esc(sc.type)}</strong></div>
+      <div><span style="font-size:11px;color:var(--text-light);">Länge:</span><br><strong>${sc.length} cm</strong></div>
+      ${sc.weight?`<div><span style="font-size:11px;color:var(--text-light);">Gewicht:</span><br><strong>${sc.weight} kg</strong></div>`:''}
+      <div><span style="font-size:11px;color:var(--text-light);">Köder:</span><br><strong>🎣 ${_esc(sc.bait||'–')}</strong></div>
+    </div>
+    ${sc.baitNote?`<div style="margin-top:8px;padding:8px 12px;background:var(--green-mist);border-radius:8px;font-size:12px;color:var(--green-deep);">${_esc(sc.baitNote)}</div>`:''}
+  </div>`;
+
+  // Mini-map (if GPS available)
+  if(sc.shareGps&&sc.lat&&sc.lon){
+    html+=`<div style="background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);margin-bottom:16px;">
+      <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">📍 Fangspot</div>
+      <div id="catch-detail-map" style="width:100%;height:200px;border-radius:8px;overflow:hidden;isolation:isolate;"></div>
+    </div>`;
+  }
+
+  // Likes & Comments
+  const likeCount=sc.likes?.length||0;
+  const comments=sc.comments||[];
+  html+=`<div style="background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);margin-bottom:24px;">
+    <div style="display:flex;gap:16px;margin-bottom:${comments.length?'10':'0'}px;">
+      <span style="font-size:13px;">❤️ ${likeCount} Like${likeCount!==1?'s':''}</span>
+      <span style="font-size:13px;">💬 ${comments.length} Kommentar${comments.length!==1?'e':''}</span>
+    </div>
+    ${comments.map(cm=>{
+      const cmMember=g.members?.find(m=>m.id===cm.userId)||{name:'?'};
+      const cmColor=_userColor(cm.userId);
+      const cmTime=new Date(cm.ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+      return`<div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--cream-dark);">
+        <div class="catch-card-avatar" style="background:${cmColor};width:24px;height:24px;font-size:11px;">${cmMember.name.charAt(0)}</div>
+        <div style="flex:1;"><strong style="font-size:11px;color:${cmColor};">${_esc(cmMember.name)}</strong> <span style="font-size:10px;color:var(--text-light);">${cmTime}</span><div style="font-size:12px;margin-top:2px;">${_esc(cm.text)}</div></div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  html+=`</div>`; // close padding wrapper
+
+  document.getElementById('catch-detail-content').innerHTML=html;
+
+  // Render mini-map after DOM update
+  if(sc.shareGps&&sc.lat&&sc.lon){
+    requestAnimationFrame(()=>{
+      const mapEl=document.getElementById('catch-detail-map');
+      if(!mapEl||typeof L==='undefined')return;
+      const m=L.map(mapEl,{zoomControl:false,attributionControl:false}).setView([sc.lat,sc.lon],13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
+      const icon=L.divIcon({html:`<div style="width:32px;height:32px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:15px;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);">${fIco(sc.type)}</div>`,className:'',iconSize:[32,32],iconAnchor:[16,16]});
+      L.marker([sc.lat,sc.lon],{icon}).addTo(m);
+      setTimeout(()=>m.invalidateSize(),200);
+    });
+  }
+}
+
+// ── AP4: Chat helper functions ──
+function _grpAttachPhoto(){
+  showToast('📷','Foto-Upload kommt bald – Feature in Entwicklung');
+}
+function _grpShareLocation(){
+  if(!navigator.geolocation){showToast('⚠️','GPS nicht verfügbar');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const g=_groups.find(x=>x.id===_activeGroupId);
+    if(!g)return;
+    const myId=_sbUser?.id||g.members?.find(m=>m.name===(profile?.name||''))?.id||'me';
+    g.feed.push({type:'msg',text:`📍 Standort geteilt: ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`,ts:Date.now(),userId:myId});
+    _saveGroups();
+    _rndrGroupFeed();
+    showToast('📍','Standort im Chat geteilt');
+  },()=>showToast('⚠️','GPS-Zugriff verweigert'));
 }
 
 // ── Share to Group ──
@@ -9564,12 +10052,15 @@ function _dedupeChips(arr){
 
 // ── Live Session C&R Toggle ──
 function _lcCrToggle(checked){
-  const note=document.getElementById('lc-note');
-  if(note){
-    if(checked&&!note.value.includes('released')){
-      // Don't auto-fill, just hint
-    }
-  }
+  // AP3-Fix: Visuelles State-Update für C&R Toggle
+  const row=document.getElementById('lc-crr');
+  const label=document.getElementById('lc-crm');
+  const status=document.getElementById('lc-crs');
+  const cb=document.getElementById('lc-cr');
+  if(cb)cb.setAttribute('aria-checked',String(checked));
+  if(row)row.classList.toggle('tk',checked);
+  if(label)label.textContent=checked?'Fisch entnommen':'Fisch mitgenommen?';
+  if(status)status.textContent=checked?'Ja – Fisch mitgenommen':'Nein – zurückgesetzt (C&R)';
 }
 
 // ── Smart Import (AI) – Vorbereitung ──
@@ -9577,37 +10068,317 @@ function _smartImport(){
   showToast('🤖','Smart Import (AI) wird in einem zukünftigen Update verfügbar sein – Dateien werden per KI ins App-Format gewandelt.');
 }
 
-// ── Session Splitten ──
-function _splitSession(id){
-  const sess=sessions.find(s=>s.id===id);
-  if(!sess||!sess.catches.length||sess.catches.length<2){
+// ── Session Splitten – Modal (AP1-Task3) ──
+let _smSessId=null;
+let _splitAssign={}; // catchIdx → 1 or 2
+
+function _openSplitModal(id){
+  const sess=sessions.find(s=>String(s.id)===String(id));
+  if(!sess||!sess.catches||sess.catches.length<2){
     showToast('⚠️','Session hat zu wenige Fänge zum Splitten.',true);return;
   }
+  _smSessId=String(id);
+  _splitAssign={};
+  // Default: first half → Part 1, second half → Part 2
   const mid=Math.ceil(sess.catches.length/2);
-  const c1=sess.catches.slice(0,mid);
-  const c2=sess.catches.slice(mid);
-  // Create second session
-  const sess2={...JSON.parse(JSON.stringify(sess)),id:_newId(),catches:c2,saved:new Date().toISOString()};
-  // If catches have times, adjust session times
-  if(c2[0]?.time)sess2.start=c2[0].time;
-  if(c1[c1.length-1]?.time)sess.end=c1[c1.length-1].time;
-  sess.catches=c1;
-  sessions.push(sess2);
-  saveSessions();
-  showToast('✂️',`Session in 2 Teile gesplittet (${c1.length} + ${c2.length} Fänge)`);
-  showDetail(id);
+  sess.catches.forEach((_,i)=>{_splitAssign[i]=i<mid?1:2;});
+
+  const body=document.getElementById('split-modal-body');
+  const waterOpts=(favs?.waters||[]).map(w=>`<option value="${w}">${w}</option>`).join('');
+
+  body.innerHTML=`
+    <div style="margin-bottom:16px;">
+      <div style="font-size:13px;color:var(--text-light);margin-bottom:8px;">Tippe auf einen Fang um ihn zuzuordnen:</div>
+      <div id="split-catches-list"></div>
+    </div>
+    <div class="card" style="margin-bottom:12px;">
+      <div style="font-weight:700;font-size:15px;margin-bottom:10px;">📗 Teil 1</div>
+      <label class="lbl">Endzeit Teil 1</label>
+      <input type="time" id="split-end1" class="if" value="${sess.end||''}" style="margin-bottom:8px;">
+      <label class="lbl">Gewässer</label>
+      <input type="text" id="split-water1" class="if" value="${sess.water||''}" list="split-wl1" style="margin-bottom:8px;">
+      <datalist id="split-wl1">${waterOpts}</datalist>
+      <label class="lbl">Spot</label>
+      <input type="text" id="split-spot1" class="if" value="${sess.spot||''}" style="margin-bottom:0;">
+    </div>
+    <div class="card" style="margin-bottom:12px;">
+      <div style="font-weight:700;font-size:15px;margin-bottom:10px;">📘 Teil 2</div>
+      <label class="lbl">Startzeit Teil 2</label>
+      <input type="time" id="split-start2" class="if" value="${sess.end||''}" style="margin-bottom:8px;">
+      <label class="lbl">Endzeit Teil 2</label>
+      <input type="time" id="split-end2" class="if" value="${sess.end||''}" style="margin-bottom:8px;">
+      <label class="lbl">Gewässer</label>
+      <input type="text" id="split-water2" class="if" value="${sess.water||''}" list="split-wl2" style="margin-bottom:8px;">
+      <datalist id="split-wl2">${waterOpts}</datalist>
+      <label class="lbl">Spot</label>
+      <input type="text" id="split-spot2" class="if" value="" style="margin-bottom:0;">
+    </div>
+    <button class="btn" onclick="_executeSplit()" style="width:100%;margin-top:8px;font-size:16px;font-weight:700;">✂️ Splitten</button>
+  `;
+  _renderSplitCatches(sess);
+  openFs('split-modal');
 }
 
-// ── Edit Session: scrollTop + blur fix ──
+function _renderSplitCatches(sess){
+  const list=document.getElementById('split-catches-list');
+  if(!list)return;
+  list.innerHTML=sess.catches.map((c,i)=>{
+    const part=_splitAssign[i]||1;
+    const bg=part===1?'rgba(76,175,80,0.15)':'rgba(33,150,243,0.15)';
+    const border=part===1?'var(--green-mid)':'#2196f3';
+    const label=part===1?'📗 Teil 1':'📘 Teil 2';
+    return`<div onclick="_toggleSplitCatch(${i})" style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:4px;border-radius:var(--rs);background:${bg};border:1.5px solid ${border};cursor:pointer;transition:all .2s;">
+      <span style="font-size:11px;font-weight:700;color:${border};white-space:nowrap;">${label}</span>
+      <span style="flex:1;font-size:13px;font-weight:600;">${fIco(c.type)} ${c.type}</span>
+      <span style="font-size:13px;color:var(--text-light);">${c.time||''} · ${c.length}cm</span>
+    </div>`;
+  }).join('');
+}
+
+function _toggleSplitCatch(idx){
+  _splitAssign[idx]=_splitAssign[idx]===1?2:1;
+  const sess=sessions.find(s=>String(s.id)===_smSessId);
+  if(sess)_renderSplitCatches(sess);
+}
+
+async function _executeSplit(){
+  const sess=sessions.find(s=>String(s.id)===_smSessId);
+  if(!sess){showToast('⚠️','Session nicht gefunden.',true);return;}
+
+  const c1=[],c2=[];
+  sess.catches.forEach((c,i)=>{
+    if(_splitAssign[i]===2)c2.push(JSON.parse(JSON.stringify(c)));
+    else c1.push(JSON.parse(JSON.stringify(c)));
+  });
+
+  if(!c1.length||!c2.length){
+    showToast('⚠️','Beide Teile brauchen mindestens 1 Fang.',true);return;
+  }
+
+  // Read modal fields
+  const end1=document.getElementById('split-end1')?.value||sess.end;
+  const start2=document.getElementById('split-start2')?.value||sess.end;
+  const end2=document.getElementById('split-end2')?.value||sess.end;
+  const water1=document.getElementById('split-water1')?.value||sess.water;
+  const spot1=document.getElementById('split-spot1')?.value||sess.spot||'';
+  const water2=document.getElementById('split-water2')?.value||sess.water;
+  const spot2=document.getElementById('split-spot2')?.value||'';
+
+  // Update original session (Teil 1)
+  sess.catches=c1;
+  sess.end=end1;
+  sess.water=water1;
+  sess.spot=spot1;
+  sess.saved=new Date().toISOString();
+
+  // Create new session (Teil 2)
+  const sess2=JSON.parse(JSON.stringify(sess));
+  sess2.id=_newId();
+  sess2.catches=c2;
+  sess2.start=start2;
+  sess2.end=end2;
+  sess2.water=water2;
+  sess2.spot=spot2;
+  sess2.saved=new Date().toISOString();
+
+  sessions.push(sess2);
+  await saveSessions();
+
+  closeFs('split-modal');
+  showToast('✂️',`Session gesplittet: ${c1.length} + ${c2.length} Fänge`);
+  showDetail(sess.id);
+}
+
+// ── Session-Level GPS nachtragen (AP1-Task2) ──
+function _openSessGpsMap(id){
+  const s=sessions.find(x=>String(x.id)===String(id));
+  if(!s){showToast('⚠️','Session nicht gefunden.',true);return;}
+  document.getElementById('fs-smap-meta').textContent='📍 Session-Standort markieren';
+  openFs('sess-map');
+  setTimeout(()=>{
+    const container=document.getElementById('sess-map-container');
+    if(!container||typeof L==='undefined')return;
+    if(_sessMap){_sessMap.remove();_sessMap=null;}
+    const startLat=parseFloat(s.lat)||_plzCoords?.lat||52.5;
+    const startLon=parseFloat(s.lon)||_plzCoords?.lon||10.0;
+    const startZoom=s.lat?15:(_plzCoords?11:6);
+    _sessMap=L.map(container).setView([startLat,startLon],startZoom);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OSM',maxZoom:18}).addTo(_sessMap);
+    let marker=s.lat?L.marker([parseFloat(s.lat),parseFloat(s.lon)]).addTo(_sessMap):null;
+
+    const btn=document.createElement('button');
+    btn.id='catch-pos-confirm';
+    btn.textContent='✅ Standort bestätigen';
+    btn.style.cssText='position:absolute;bottom:80px;left:50%;transform:translateX(-50%);z-index:1000;padding:16px 32px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:16px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.35);display:none;';
+    container.parentElement.appendChild(btn);
+
+    _sessMap.on('click',e=>{
+      if(marker)_sessMap.removeLayer(marker);
+      marker=L.marker(e.latlng).addTo(_sessMap);
+      btn.style.display='block';
+      btn._latlng=e.latlng;
+    });
+
+    btn.onclick=async()=>{
+      if(!btn._latlng)return;
+      s.lat=String(btn._latlng.lat.toFixed(6));
+      s.lon=String(btn._latlng.lng.toFixed(6));
+      await saveOneSess(s);
+      showToast('📍','Session-Standort gespeichert');
+      _closeSessMap();
+      showDetail(id); // Refresh detail view
+    };
+  },200);
+}
+
+// ── AP5: Wetter nachladen für Session-Detail (historisch) ──
+async function _loadSessionWeather(s){
+  const el=document.getElementById('sd-wx-'+s.id);
+  if(!el)return;
+  try{
+    const lat=parseFloat(s.lat)||_plzCoords?.lat;
+    const lon=parseFloat(s.lon)||_plzCoords?.lon;
+    if(!lat||!lon){el.innerHTML='';return;}
+    el.innerHTML='<div style="text-align:center;padding:8px;font-size:12px;color:var(--text-light);">🌡️ Wetter wird geladen…</div>';
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant,precipitation_sum,weathercode&hourly=surface_pressure,relativehumidity_2m,cloudcover&timezone=Europe/Berlin&start_date=${s.date}&end_date=${s.date}`;
+    const resp=await fetch(url);
+    if(!resp.ok)throw new Error('API error');
+    const data=await resp.json();
+    const d=data.daily;const h=data.hourly;
+    if(!d||!d.time||!d.time.length){el.innerHTML='';return;}
+    const tMax=d.temperature_2m_max?.[0],tMin=d.temperature_2m_min?.[0];
+    const wind=d.windspeed_10m_max?.[0],wDir=d.winddirection_10m_dominant?.[0];
+    const rain=d.precipitation_sum?.[0];
+    const hPress=h?.surface_pressure||[];
+    const avgPress=hPress.length?Math.round(hPress.reduce((a,v)=>a+(v||0),0)/hPress.filter(v=>v!=null).length):null;
+    const hHum=h?.relativehumidity_2m||[];
+    const avgHum=hHum.length?Math.round(hHum.reduce((a,v)=>a+(v||0),0)/hHum.filter(v=>v!=null).length):null;
+    const hCloud=h?.cloudcover||[];
+    const avgCloud=hCloud.length?Math.round(hCloud.reduce((a,v)=>a+(v||0),0)/hCloud.filter(v=>v!=null).length):null;
+    // Session-Objekt aktualisieren für zukünftige Aufrufe
+    if(tMax!=null)s.temp=Math.round((tMax+(tMin||tMax))/2*10)/10;
+    if(avgPress)s.pressure=avgPress;if(wind!=null)s.windSpeed=wind;if(wDir!=null)s.windDir=wDir;
+    if(avgHum!=null)s.humidity=avgHum;if(avgCloud!=null)s.clouds=avgCloud;if(rain!=null)s.precip=rain;
+    await saveOneSess(s);
+    let tiles='';
+    if(tMax!=null)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">🌡️</div><div class="dd-wx-val">${tMin!=null?tMin+'–':''}${tMax}°C</div><div class="dd-wx-lbl">Temp.</div></div>`;
+    if(avgPress)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">📊</div><div class="dd-wx-val">${avgPress} hPa</div><div class="dd-wx-lbl">Druck</div></div>`;
+    if(wind!=null)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">💨</div><div class="dd-wx-val">${wind} km/h</div><div class="dd-wx-lbl">Wind ${_windDir(wDir)}</div></div>`;
+    if(avgHum!=null)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">💧</div><div class="dd-wx-val">${avgHum}%</div><div class="dd-wx-lbl">Luftf.</div></div>`;
+    if(avgCloud!=null)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">☁️</div><div class="dd-wx-val">${avgCloud}%</div><div class="dd-wx-lbl">Bewölk.</div></div>`;
+    if(rain!=null&&rain>0)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">🌧</div><div class="dd-wx-val">${rain} mm</div><div class="dd-wx-lbl">Nieders.</div></div>`;
+    if(tiles)el.innerHTML=`<div class="slbl">Bedingungen</div><div class="dd-wx-grid">${tiles}</div>`;
+    else el.innerHTML='';
+  }catch(e){el.innerHTML='';}
+}
+
+// ── Detail Map Tile + Overlay (AP1-Task4) ──
+let _detailMap=null;
+
+function _renderDetailMapTile(s){
+  const container=document.getElementById('detail-map-tile-'+s.id);
+  if(!container||typeof L==='undefined')return;
+  if(!s.lat){
+    container.innerHTML='<div style="text-align:center;padding:20px;"><div style="font-size:28px;margin-bottom:6px;">📍</div><div style="font-size:12px;color:var(--text-light);">Kein Standort – Tippen zum Nachtragen</div></div>';
+    container.onclick=()=>_openSessGpsMap(s.id);
+    return;
+  }
+  // Render static mini map
+  const lat=parseFloat(s.lat),lon=parseFloat(s.lon);
+  if(isNaN(lat)||isNaN(lon))return;
+  const mapDiv=document.createElement('div');
+  mapDiv.style.cssText='position:absolute;inset:0;';
+  container.innerHTML='';
+  container.appendChild(mapDiv);
+  const miniMap=L.map(mapDiv,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false}).setView([lat,lon],14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(miniMap);
+  L.marker([lat,lon]).addTo(miniMap);
+  // Add catch markers if they have coords
+  if(s.catches?.length){
+    s.catches.forEach(c=>{
+      if(c.lat&&c.lon){
+        const cla=parseFloat(c.lat),clo=parseFloat(c.lon);
+        if(!isNaN(cla)&&!isNaN(clo)){
+          L.circleMarker([cla,clo],{radius:6,color:'#ff5722',fillColor:'#ff5722',fillOpacity:0.8,weight:2}).addTo(miniMap);
+        }
+      }
+    });
+  }
+  // Invalidate after render
+  setTimeout(()=>miniMap.invalidateSize(),100);
+  // Clean up when navigating away
+  container._miniMap=miniMap;
+}
+
+function _openDetailMap(id){
+  const s=sessions.find(x=>String(x.id)===String(id));
+  if(!s)return;
+  // If no GPS → open GPS nachtragen instead
+  if(!s.lat){_openSessGpsMap(id);return;}
+
+  document.getElementById('fs-detmap-meta').textContent=`${s.water}${s.spot?' · '+s.spot:''}`;
+  openFs('detail-map');
+  setTimeout(()=>{
+    const container=document.getElementById('detail-map-container');
+    if(!container||typeof L==='undefined')return;
+    if(_detailMap){_detailMap.remove();_detailMap=null;}
+    const lat=parseFloat(s.lat),lon=parseFloat(s.lon);
+    _detailMap=L.map(container).setView([lat,lon],15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OSM',maxZoom:18}).addTo(_detailMap);
+
+    // Session marker
+    L.marker([lat,lon]).addTo(_detailMap).bindPopup(`<b>${s.water}</b>${s.spot?'<br>'+s.spot:''}`).openPopup();
+
+    // Catch markers with fish icons
+    const bounds=[L.latLng(lat,lon)];
+    if(s.catches?.length){
+      s.catches.forEach((c,i)=>{
+        if(c.lat&&c.lon){
+          const cla=parseFloat(c.lat),clo=parseFloat(c.lon);
+          if(!isNaN(cla)&&!isNaN(clo)){
+            bounds.push(L.latLng(cla,clo));
+            const icon=L.divIcon({className:'',html:`<div style="background:#ff5722;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);">${fIco(c.type)}</div>`,iconSize:[28,28],iconAnchor:[14,14]});
+            L.marker([cla,clo],{icon}).addTo(_detailMap).bindPopup(`<b>${c.type}</b><br>${c.length}cm · ${c.time||''}`);
+          }
+        }
+      });
+    }
+
+    // GPS track for live sessions
+    if(s.gpsTrack?.length){
+      const trackCoords=s.gpsTrack.map(p=>[p.lat,p.lon]);
+      L.polyline(trackCoords,{color:'var(--green-mid)',weight:3,opacity:0.8}).addTo(_detailMap);
+      trackCoords.forEach(c=>bounds.push(L.latLng(c[0],c[1])));
+    }
+
+    // Fit bounds if multiple points
+    if(bounds.length>1){
+      _detailMap.fitBounds(L.latLngBounds(bounds),{padding:[30,30],maxZoom:16});
+    }
+  },200);
+}
+
+function _closeDetailMap(){
+  closeFs('detail-map');
+  if(_detailMap){_detailMap.remove();_detailMap=null;}
+}
+
+// ── Edit Session: scrollTop + blur fix (AP1-Task1: await + beat addCatch timer) ──
 const _origEditSess=typeof editSess==='function'?editSess:null;
-function _patchedEditSess(id){
-  if(_origEditSess)_origEditSess(id);
-  // After edit loads, scroll to top and blur all inputs
-  requestAnimationFrame(()=>{
+async function _patchedEditSess(id){
+  if(_origEditSess) await _origEditSess(id);
+  // addCatch() hat scrollIntoView + setTimeout(focus,150) pro Fang
+  // Wir müssen NACH dem letzten addCatch-Timer feuern (>150ms)
+  const _doScrollBlur=()=>{
     const sc=document.querySelector('#page-new .sc');
     if(sc)sc.scrollTop=0;
-    document.querySelectorAll('#page-new .if').forEach(inp=>inp.blur());
-  });
+    document.querySelectorAll('#page-new input, #page-new select, #page-new textarea').forEach(inp=>inp.blur());
+    if(document.activeElement&&document.activeElement!==document.body)document.activeElement.blur();
+  };
+  // Sofort + nach 200ms (schlägt die 150ms Auto-Focus-Timer von addCatch)
+  _doScrollBlur();
+  setTimeout(_doScrollBlur,200);
+  setTimeout(_doScrollBlur,400);
 }
 
 // ── Fang melden UX: Prevent keyboard after water input ──
@@ -9644,20 +10415,7 @@ function _chartMagicHeader(chartId,label,values){
 // ── 14-Day Chart Crosshair + Magic Header Update Plugin ──
 const _wx14CrosshairPlugin={
   id:'wx14Crosshair',
-  afterDatasetsDraw(chart){
-    if(!chart._magicId)return;
-    const active=chart.getActiveElements();
-    if(!active||!active.length)return;
-    const x=active[0].element.x;
-    const ctx=chart.ctx;
-    const top=chart.scales.y.top,bot=chart.scales.y.bottom;
-    ctx.save();
-    ctx.strokeStyle='rgba(45,74,53,.4)';
-    ctx.lineWidth=1;
-    ctx.setLineDash([4,3]);
-    ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bot);ctx.stroke();
-    ctx.restore();
-  },
+  // AP5: Crosshair-Linie wird jetzt global gezeichnet – hier nur Magic Header Update
   afterEvent(chart,args){
     if(!chart._magicId||args.replay)return;
     const evt=args.event;
@@ -9704,9 +10462,10 @@ function _showLsSummary(sess){
   if(!el)return;
 
   // Hero
-  const badge=sess.catches.length>3?'🏆':sess.catches.length>0?'🎣':'🪝';
+  const lsCnt=_totalCatchCount(sess.catches);
+  const badge=lsCnt>3?'🏆':lsCnt>0?'🎣':'🪝';
   document.getElementById('ls-sum-badge').textContent=badge;
-  document.getElementById('ls-sum-title').textContent=sess.catches.length?`${sess.catches.length} Fänge!`:'Schneider – nächstes Mal!';
+  document.getElementById('ls-sum-title').textContent=lsCnt?`${lsCnt} Fänge!`:'Schneider – nächstes Mal!';
   document.getElementById('ls-sum-sub').textContent=`${sess.water||'Unbekannt'}${sess.spot?' · '+sess.spot:''}`;
 
   // Stats
@@ -9774,10 +10533,23 @@ function _fixMapZoom(){
   document.head.appendChild(css);
 }
 
-// ── Friedfisch: Gesamtanzahl als echte Fischzahl werten ──
+// ── AP5: Massenfang & Friedfisch – echte Fischzahl statt Array-Länge ──
 function _getFishCountForStats(c){
-  if(c.inputMode==='fried'&&c.ffCount&&c.ffCount>1)return c.ffCount;
+  // Massenfang: Gesamtanzahl zählt (z.B. 10 Rotaugen auf einmal)
+  if(c.massCount && c.massCount > 1) return c.massCount;
+  // Friedfisch-Modus: ffCount als Fischzahl
+  if(c.inputMode==='fried' && c.ffCount && c.ffCount > 1) return c.ffCount;
   return 1;
+}
+// AP5: Globaler Zähler – summiert echte Fischzahlen statt Array-Länge
+function _totalCatchCount(catches){
+  if(!catches||!catches.length) return 0;
+  return catches.reduce((s,c) => s + _getFishCountForStats(c), 0);
+}
+// AP5: Globale Chip-Deduplizierung
+function _dedup(arr){
+  if(!arr||!arr.length) return arr;
+  return [...new Set(arr)];
 }
 
 // ── Group: Floating sub-nav (replaces grp-tabs in detail) ──
