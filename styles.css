@@ -1997,3 +1997,21 @@ select.if{
 
 /* Generic layout helpers */
 .cr-toggle-label{font-size:13px;font-weight:500;color:var(--ink);}
+
+/* ─────────────────────────────────────────────────────────────
+   DEFAULT-HIDDEN OVERLAYS (JS toggelt .on bzw. style.display)
+───────────────────────────────────────────────────────────── */
+/* Live-Session-Summary: nur sichtbar wenn .on via _showLsSummary() */
+.ls-summary{display:none;position:absolute;inset:0;z-index:155;background:var(--paper);overflow-y:auto;padding:var(--s-4) var(--s-4) calc(var(--footer-h) + var(--safe-bot) + var(--s-4));}
+.ls-summary.on{display:block;}
+
+/* Live-Session FAB: nur sichtbar wenn JS style.display='block' setzt (via openLiveOv) */
+.live-fab{display:none;}
+.live-fab.on{display:inline-flex;}
+
+/* Edit-Save-FAB: nur sichtbar wenn .on class gesetzt ist */
+.edit-save-fab{display:none;}
+.edit-save-fab.on{display:flex;}
+
+/* Icon-Wrapper für Lucide: 22x22 in Tab-Icons */
+.btab-ico svg, .btab-ico i{width:22px;height:22px;}
