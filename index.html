@@ -276,7 +276,14 @@ position:relative;}
   padding:0 6px 12px;
 }
 /* Mini-Tagesreihe in Vorhersage-Kachel */
-.fc-mini-days{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
+.fc-mini-days{
+  display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;scroll-behavior:smooth;
+  /* AP1: Smooth Snap-Scroll – Kacheln rasten beim Wischen sauber ein */
+  scroll-snap-type:x mandatory;
+  scroll-padding-left:6px;scroll-padding-right:6px;
+  overscroll-behavior-x:contain;
+}
 .fc-mini-days::-webkit-scrollbar{display:none;}
 /* AP3: 14-Tage-Kacheln als Ganzes anklickbar */
 .fc-mini-day *{pointer-events:none;}
@@ -284,6 +291,8 @@ position:relative;}
   display:flex;flex-direction:column;align-items:center;gap:3px;
   padding:8px 6px;border-radius:10px;cursor:pointer;min-width:46px;
   transition:background .15s;flex-shrink:0;
+  /* AP1: Snap-Einrastpunkt pro Tag */
+  scroll-snap-align:start;scroll-snap-stop:always;
 }
 .fc-mini-day:hover{background:var(--green-mist);}
 .fc-mini-day.today{background:var(--green-deep);}
@@ -339,6 +348,64 @@ position:relative;}
 .fc-detail-chip.bite-hi{background:#d4f4e2;color:#1a5c33;}
 .fc-detail-chip.bite-mid{background:#fef3cd;color:#8a6820;}
 .fc-detail-chip.bite-lo{background:var(--cream-dark);color:var(--text-mid);}
+
+/* AP2: Daily-Weather Header – Hero + Datums-Leiste */
+#fs-dw-hdr{
+  background:#fff;border-bottom:1px solid rgba(200,221,208,.4);
+  padding:10px 0 0;position:relative;flex-shrink:0;
+}
+.dw-hero{padding:24px 16px 14px;}
+.dw-hero-date{
+  font-size:12px;font-weight:700;color:var(--text-light);
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;
+}
+.dw-hero-row{display:flex;align-items:center;gap:10px;}
+.dw-hero-ico{font-size:44px;line-height:1;flex-shrink:0;}
+.dw-hero-temp{display:flex;align-items:baseline;gap:8px;flex:1;}
+.dw-hero-tmax{
+  font-family:var(--fs);font-size:48px;font-weight:700;
+  color:var(--text-dark);line-height:1;letter-spacing:-.02em;
+}
+.dw-hero-tmin{
+  font-family:var(--fs);font-size:22px;font-weight:500;
+  color:var(--text-light);line-height:1;
+}
+.dw-hero-side{text-align:right;line-height:1.2;}
+.dw-hero-wind{
+  font-family:var(--fs);font-size:18px;font-weight:700;
+  color:var(--text-dark);
+}
+.dw-hero-wind .dw-hero-unit{font-size:10px;font-weight:600;color:var(--text-light);margin-left:2px;}
+.dw-hero-wdir{font-size:11px;color:var(--text-light);font-weight:600;}
+
+.dw-strip{
+  display:flex;gap:4px;overflow-x:auto;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  scroll-snap-type:x mandatory;scroll-padding:0 12px;
+  padding:6px 12px 10px;
+  border-top:1px solid rgba(200,221,208,.35);
+  background:linear-gradient(180deg,#fff 0%,#fafcfa 100%);
+}
+.dw-strip::-webkit-scrollbar{display:none;}
+.dw-strip-day{
+  flex:0 0 auto;min-width:46px;padding:7px 6px;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  border:none;background:transparent;cursor:pointer;
+  border-radius:10px;scroll-snap-align:center;
+  transition:background .15s;font-family:var(--fa);
+}
+.dw-strip-day:active{background:var(--green-mist);}
+.dw-strip-day.on{background:var(--green-deep);}
+.dw-strip-dow{
+  font-size:10px;font-weight:700;color:var(--text-light);
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.dw-strip-num{
+  font-family:var(--fs);font-size:14px;font-weight:700;
+  color:var(--text-dark);line-height:1.1;
+}
+.dw-strip-day.on .dw-strip-dow,
+.dw-strip-day.on .dw-strip-num{color:#fff;}
 /* Swipe-Dots */
 .fc-day-dots{display:flex;gap:6px;justify-content:center;padding:8px 0 4px;}
 .fc-day-dot{width:6px;height:6px;border-radius:50%;background:rgba(74,124,89,.2);transition:all .2s;}
@@ -383,10 +450,24 @@ position:relative;}
   position:relative;display:block;
   height:160px;max-height:160px;
   overflow:hidden;
+  /* AP4: Touch-Fix – nur vertikal scrollen lassen, horizontales Swipe bleibt im Chart */
+  touch-action:pan-y;-ms-touch-action:pan-y;
 }
-.fc-chart-wrap.cw-lg{height:200px;max-height:200px;}
-.fc-chart-wrap.cw-xl{height:240px;max-height:240px;}
+/* AP3: Multi-Chart Tagesansicht – schlanke Sparklines */
+.fc-chart-wrap.cw-lg{height:128px;max-height:128px;}
+.fc-chart-wrap.cw-xl{height:220px;max-height:220px;}
 .fc-chart-wrap canvas{display:block;width:100%!important;height:100%!important;}
+
+/* AP2: Edge-to-Edge Charts – Chart-Wraps brechen aus Sec-Padding aus */
+.fc-sec > .fc-chart-wrap{
+  margin-left:-16px;margin-right:-16px;
+  width:calc(100% + 32px);max-width:none;
+  border-radius:0;
+}
+/* Letzter Chart-Wrap in einer Section: untere Ecken runden */
+.fc-sec > .fc-chart-wrap:last-child{
+  border-radius:0 0 14px 14px;margin-bottom:-14px;
+}
 
 /* Chart Hover-Info */
 .fc-hover-info{
@@ -412,6 +493,107 @@ position:relative;}
 /* Tide Overlay */
 .fc-tide-canvas-wrap{position:relative;height:180px;width:100%;margin-bottom:8px;}
 .fc-tide-day-nav{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px;}
+
+/* AP-Tide: Apple-Style Cockpit Header */
+.tide-cockpit{
+  background:linear-gradient(180deg,#fff 0%,#f4f8f5 100%);
+  padding:0 0 10px;border-bottom:1px solid rgba(200,221,208,.35);
+}
+.tide-river-seg{
+  display:flex;gap:4px;padding:10px 12px 8px;
+  background:transparent;
+}
+.tide-river-seg-btn{
+  flex:1;padding:10px 6px;border:none;cursor:pointer;
+  border-radius:10px;background:var(--cream-dark);
+  font-family:var(--fa);font-size:12px;font-weight:700;color:var(--text-mid);
+  letter-spacing:.02em;transition:all .2s;
+}
+.tide-river-seg-btn.on{
+  background:var(--green-deep);color:#fff;
+  box-shadow:0 4px 12px rgba(45,74,53,.22);
+}
+.tide-river-seg-btn .sub{display:block;font-size:9px;font-weight:500;opacity:.7;margin-top:2px;letter-spacing:.04em;}
+.tide-river-seg-btn.on .sub{opacity:.85;}
+
+/* Hero: Nächstes Ereignis */
+.tide-hero{
+  padding:6px 16px 10px;display:flex;align-items:flex-end;gap:12px;
+}
+.tide-hero-main{flex:1;min-width:0;}
+.tide-hero-kicker{
+  font-size:10px;font-weight:700;color:var(--text-light);
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;
+}
+.tide-hero-big{
+  font-family:var(--fs);font-size:32px;font-weight:700;
+  color:var(--text-dark);line-height:1;letter-spacing:-.02em;
+  display:flex;align-items:baseline;gap:6px;
+}
+.tide-hero-big .arrow{font-size:22px;color:var(--green-deep);font-weight:800;}
+.tide-hero-big .dir-dn{color:#2a7ab0;}
+.tide-hero-sub{font-size:12px;color:var(--text-mid);margin-top:4px;font-weight:500;}
+.tide-hero-flow{
+  text-align:right;line-height:1.1;flex-shrink:0;
+  border-left:1px solid rgba(200,221,208,.5);padding-left:12px;
+}
+.tide-hero-flow-val{
+  font-family:var(--fs);font-size:22px;font-weight:700;
+  color:var(--green-deep);font-variant-numeric:tabular-nums;
+}
+.tide-hero-flow-unit{font-size:10px;font-weight:600;color:var(--text-light);margin-left:2px;}
+.tide-hero-flow-lbl{
+  font-size:9px;font-weight:700;color:var(--text-light);
+  text-transform:uppercase;letter-spacing:.06em;margin-top:2px;
+}
+.tide-hero-flow-lbl.err{color:var(--red);}
+
+/* Datums-Strip */
+.tide-strip{
+  display:flex;gap:4px;overflow-x:auto;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  scroll-snap-type:x mandatory;scroll-padding:0 12px;
+  padding:2px 12px 6px;
+}
+.tide-strip::-webkit-scrollbar{display:none;}
+.tide-strip-day{
+  flex:0 0 auto;min-width:52px;padding:7px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  border:none;background:transparent;cursor:pointer;
+  border-radius:10px;scroll-snap-align:center;
+  transition:background .15s;font-family:var(--fa);
+}
+.tide-strip-day:active{background:var(--green-mist);}
+.tide-strip-day.on{background:var(--green-deep);}
+.tide-strip-dow{
+  font-size:10px;font-weight:700;color:var(--text-light);
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.tide-strip-num{
+  font-family:var(--fs);font-size:14px;font-weight:700;
+  color:var(--text-dark);line-height:1.1;
+}
+.tide-strip-day.on .tide-strip-dow,
+.tide-strip-day.on .tide-strip-num{color:#fff;}
+
+/* Beißindex mit Fisch-Silhouetten */
+.tide-bite{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;margin:8px 14px 4px;
+  background:linear-gradient(135deg,rgba(74,124,89,.08) 0%,rgba(74,124,89,.02) 100%);
+  border-radius:var(--rs);border:1px solid rgba(74,124,89,.12);
+}
+.tide-bite-icons{display:flex;gap:4px;flex-shrink:0;}
+.tide-bite-fish{
+  font-size:22px;line-height:1;filter:grayscale(1);opacity:.28;
+  transition:all .2s;
+}
+.tide-bite-fish.active{filter:none;opacity:1;}
+.tide-bite-info{flex:1;min-width:0;line-height:1.2;}
+.tide-bite-title{
+  font-family:var(--fs);font-size:14px;font-weight:700;color:var(--text-dark);
+}
+.tide-bite-sub{font-size:11px;color:var(--text-mid);margin-top:2px;font-weight:500;}
 /* AP3: Tide Day Nav mit ‹ › + Datum */
 .tide-day-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 4px;margin-top:6px;background:rgba(255,255,255,.6);border-radius:var(--rs);}
 .tide-nav-arrow{width:40px;height:40px;border:none;background:var(--green-mist);color:var(--green-deep);border-radius:50%;font-size:22px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .1s;}
@@ -2007,7 +2189,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v47</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v48</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
@@ -2641,7 +2823,7 @@ function sbInit(){
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v47`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v48`;
       } else {
         _sbUser=null;
       }
@@ -2657,7 +2839,7 @@ async function _checkAuthSession(){
     if(data?.session?.user){
       _sbUser=data.session.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v47`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v48`;
       return true;
     }
   }catch(e){console.warn('Auth-Check Fehler:',e);}
@@ -2698,7 +2880,7 @@ async function handleAuth(e){
       _sbUser=result.data.user;
       _authMode='online';
       document.getElementById('login-ov')?.classList.add('hidden');
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v47`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v48`;
       // AP1: Cloud-Sync mit authoritative-Flag — Cloud = Single Source of Truth bei Login
       await syncFromCloud({authoritative:true});
       // Profil anwenden und Fangbuch rendern
@@ -2721,7 +2903,7 @@ async function handleAuth(e){
         _sbUser=result.data.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v47`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v48`;
         // Onboarding starten
         document.getElementById('onboarding').classList.remove('hidden');
         document.getElementById('ob-btn').disabled=true;
@@ -2742,7 +2924,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v47';
+  document.getElementById('hdr-sub').textContent='Offline · v48';
   if(!profile){
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('ob-btn').disabled=true;
@@ -2861,7 +3043,7 @@ async function sbLogout(){
   _sbUser=null;
   _authMode='offline';
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v47';
+  document.getElementById('hdr-sub').textContent='Offline · v48';
   showToast('👋','Abgemeldet');
 }
 
@@ -2971,6 +3153,104 @@ function _forgetSpotGps(water,spot){
   if(!profile?.spotMap)return;
   const k=_spotKey(water,spot);
   if(k&&profile.spotMap[k]){delete profile.spotMap[k];saveProfile();}
+}
+
+// ═══════════════════════════════════════════════════════════
+// AP4: MAP INTELLIGENCE · Haversine + Radius-Matching + Aliasing
+// Zentrale Spot-Geo-Datenbank lebt in profile.spotMap als
+// Tupel {lat, lon, water, spot, ts} pro Schlüssel "water|spot".
+// ═══════════════════════════════════════════════════════════
+
+// Haversine-Formel — Distanz zwischen zwei GPS-Punkten in Meter
+function _haversineDistance(lat1,lon1,lat2,lon2){
+  const la1=parseFloat(lat1),lo1=parseFloat(lon1);
+  const la2=parseFloat(lat2),lo2=parseFloat(lon2);
+  if(!isFinite(la1)||!isFinite(lo1)||!isFinite(la2)||!isFinite(lo2))return Infinity;
+  const R=6371000; // Erdradius in Metern
+  const rad=Math.PI/180;
+  const dLat=(la2-la1)*rad;
+  const dLon=(lo2-lo1)*rad;
+  const a=Math.sin(dLat/2)**2 + Math.cos(la1*rad)*Math.cos(la2*rad)*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+
+// Alle gespeicherten Spot-Tupel als Array
+// Rückgabe: [{water, spot, lat, lon, ts}, ...]
+function _spotMapAll(){
+  const out=[];
+  const sm=profile?.spotMap||{};
+  Object.entries(sm).forEach(([k,v])=>{
+    if(!v||v.lat==null||v.lon==null)return;
+    const[water,spot]=k.split('|');
+    out.push({
+      water:water||'',
+      spot:spot||'',
+      lat:parseFloat(v.lat),
+      lon:parseFloat(v.lon),
+      ts:v.ts||0
+    });
+  });
+  return out;
+}
+
+// AP4: Reverse-Lookup "Gewässer+Spot → GPS" (bereits via _lookupSpotGps vorhanden).
+// Wrapper liefert immer {lat, lon} als Numbers oder null.
+function findGpsForChipCombo(water,spot){
+  const hit=_lookupSpotGps(water,spot);
+  if(!hit)return null;
+  const lat=parseFloat(hit.lat),lon=parseFloat(hit.lon);
+  if(!isFinite(lat)||!isFinite(lon))return null;
+  return{lat,lon,ts:hit.ts||0};
+}
+
+// AP4: Reverse-Geo-Lookup "GPS → Spot"
+// Findet den EIGENEN Spot, der am nächsten zum gegebenen GPS-Punkt liegt
+// (innerhalb des Radius, default 25m).
+function findSpotByGeo(lat,lon,radius){
+  const r=radius||25;
+  const all=_spotMapAll();
+  let best=null;
+  all.forEach(entry=>{
+    const d=_haversineDistance(lat,lon,entry.lat,entry.lon);
+    if(d<=r&&(!best||d<best.distance)){
+      best={...entry,distance:d};
+    }
+  });
+  return best;
+}
+
+// AP4: Alias-Erkennung für Gruppen-Fänge
+// "Nutzer B hat einen Fang mit Chip 'Weserufer' geteilt. Nutzer A klickt darauf.
+//  Wenn A denselben Punkt (±25m) als 'Weserkurve' gespeichert hat → Alias-Label."
+function findLocalSpotAlias(lat,lon,foreignWater,foreignSpot,radius){
+  const local=findSpotByGeo(lat,lon,radius||25);
+  if(!local)return null;
+  // Nur wenn die Bezeichnung tatsächlich abweicht, ist es ein "Alias"
+  const fw=(foreignWater||'').trim().toLowerCase();
+  const fs=(foreignSpot||'').trim().toLowerCase();
+  const lw=local.water.toLowerCase(),ls=local.spot.toLowerCase();
+  const isAlias=(fw&&fw!==lw)||(fs&&fs!==ls);
+  return{
+    localWater:local.water,localSpot:local.spot,
+    distance:Math.round(local.distance),
+    isAlias:isAlias,
+    foreignWater:foreignWater||'',foreignSpot:foreignSpot||''
+  };
+}
+
+// AP4: Catch-Objekt mit GPS anreichern (vor dem Speichern)
+// Wenn catch keine eigenen lat/lon hat, aber die Session ein Gewässer+Spot
+// hat, das schon gemappt ist → übernehmen.
+function _enrichCatchWithGeo(catchObj,sessionWater,sessionSpot){
+  if(!catchObj)return catchObj;
+  const hasLat=catchObj.lat!=null&&catchObj.lat!==''&&isFinite(parseFloat(catchObj.lat));
+  const hasLon=catchObj.lon!=null&&catchObj.lon!==''&&isFinite(parseFloat(catchObj.lon));
+  if(hasLat&&hasLon)return catchObj; // schon gesetzt (z.B. Live-Fang)
+  const hit=findGpsForChipCombo(sessionWater,sessionSpot);
+  if(!hit)return catchObj;
+  catchObj.lat=hit.lat;catchObj.lon=hit.lon;
+  catchObj._autoGeo=true; // Marker: GPS stammt aus Chip-Mapping (nicht vom Gerät)
+  return catchObj;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -3678,7 +3958,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v47`:`PLZ ${profile.plz||'–'} · v47`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v48`:`PLZ ${profile.plz||'–'} · v48`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -3907,7 +4187,15 @@ function ctxIdx(){
 }
 function topN(map,n=5){return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0]);}
 function topFavs(k,n=5){const c={};(favs[k]||[]).forEach(v=>{c[v]=(c[v]||0)+1;});return Object.entries(c).sort((a,b)=>b[1]-a[1]).map(e=>e[0]).slice(0,n);}
-function addFav(k,v){if(!v||v.trim().length<2)return;const tv=v.trim();favs[k]=favs[k]||[];favs[k].push(tv);if(favs[k].length>400)favs[k]=favs[k].slice(-400);saveFavs();}
+// AP3: addFav leitet auf dictAdd um (Multi-Word-safe, Counter statt Array-Duplikate)
+function addFav(k,v){
+  if(!v||typeof v!=='string'||v.trim().length<2)return;
+  if(typeof dictAdd==='function'){dictAdd(k,v.trim());return;}
+  // Fallback für Pre-Init (falls vor dictAdd aufgerufen)
+  const tv=v.trim();favs[k]=favs[k]||[];favs[k].push(tv);
+  if(favs[k].length>400)favs[k]=favs[k].slice(-400);
+  saveFavs();
+}
 // Erweiterte addBaitKw die auch Phrasen lernt
 function addBaitKw(bait,note){
   if(!bait||!note)return;
@@ -3965,16 +4253,197 @@ function dHide(id){
   setTimeout(()=>{const el=document.getElementById(id);if(el)el.style.display='none';},200);
 }
 
-// ── GEWÄSSER-CHIPS ──────────────────────────────────────────
+// ═════════════════════════════════════════════════════════════════════════════
+//  AP3: GLOBAL CHIP DICTIONARY  —  Das zentrale Wörterbuch
+//  Alle Formulare (Fang melden, Live-Session, Session-Edit, Sets) beziehen
+//  ihre Chip-Vorschläge aus globalDict und lernen neue Einträge dorthin.
+//  Persistenz über das bestehende favs-Objekt (IDB).
+// ═════════════════════════════════════════════════════════════════════════════
+let globalDict={waters:{},spots:{},fish:{},bait:{},notes:{},tags:{}};
+
+function _ensureDictCat(cat){
+  if(!globalDict[cat])globalDict[cat]={};
+  return globalDict[cat];
+}
+
+// Rebuild aus favs + allen Session-Daten → wird bei App-Start gerufen
+function _rebuildGlobalDict(){
+  globalDict={waters:{},spots:{},fish:{},bait:{},notes:{},tags:{}};
+  const cats=['waters','spots','fish','bait','notes','tags'];
+  cats.forEach(cat=>{
+    (favs?.[cat]||[]).forEach(v=>{
+      if(!v||typeof v!=='string')return;
+      const k=v.trim();if(k.length<2)return;
+      const c=_ensureDictCat(cat);
+      c[k]=c[k]||{count:0,last:0};
+      c[k].count++;
+      if(!c[k].last)c[k].last=Date.now();
+    });
+  });
+  // Aus realen Sessions nachlernen (Bestand)
+  (sessions||[]).forEach(s=>{
+    if(s.water)_dictBump('waters',s.water,/*skipSave*/true);
+    if(s.spot)_dictBump('spots',s.spot,true);
+    (s.catches||[]).forEach(c=>{
+      if(c.type)_dictBump('fish',c.type,true);
+      if(c.bait)_dictBump('bait',c.bait,true);
+      if(c.baitNote&&typeof c.baitNote==='string'){
+        const n=c.baitNote.trim();
+        if(n.length>=2)_dictBump('notes',n,true);
+      }
+    });
+  });
+}
+
+// Interne Bump-Funktion (wird auch bei skipSave genutzt)
+function _dictBump(cat,val,skipSave){
+  if(!val||typeof val!=='string')return;
+  const k=val.trim();if(k.length<2)return;
+  const c=_ensureDictCat(cat);
+  c[k]=c[k]||{count:0,last:0};
+  c[k].count++;
+  c[k].last=Date.now();
+  if(!skipSave){
+    favs[cat]=favs[cat]||[];
+    favs[cat].push(k);
+    if(favs[cat].length>400)favs[cat]=favs[cat].slice(-400);
+  }
+}
+
+// Public API: Chip hinzufügen (erhält den GANZEN String, kein Splitting!)
+function dictAdd(cat,val){
+  _dictBump(cat,val,false);
+  if(typeof saveFavs==='function')saveFavs();
+}
+
+// Public API: Chip dauerhaft löschen
+function dictRemove(cat,val){
+  if(!val)return;
+  const k=(typeof val==='string'?val:'').trim();
+  if(!k)return;
+  if(globalDict[cat])delete globalDict[cat][k];
+  if(favs[cat])favs[cat]=favs[cat].filter(v=>v!==k);
+  // Auch aus baitKeywords entfernen (falls bait oder notes)
+  if(cat==='bait'&&favs.baitKeywords&&favs.baitKeywords[k]){
+    delete favs.baitKeywords[k];
+  }
+  if(typeof saveFavs==='function')saveFavs();
+}
+
+// Public API: Top-N Vorschläge mit Live-Filter
+function dictTop(cat,query,limit){
+  const lim=limit||5;
+  const src=globalDict[cat]||{};
+  let entries=Object.entries(src);
+  if(query){
+    const q=String(query).toLowerCase();
+    entries=entries.filter(([k])=>k.toLowerCase().includes(q));
+  }
+  // Primär nach count desc, sekundär nach last desc (selbstheilend: Typos mit count=1 rutschen nach hinten)
+  entries.sort((a,b)=>{
+    const dc=b[1].count-a[1].count;
+    if(dc)return dc;
+    return (b[1].last||0)-(a[1].last||0);
+  });
+  return entries.slice(0,lim).map(e=>e[0]);
+}
+
+// Session → Dictionary indexieren (beim Session-Save aufrufen)
+function _indexSessionToDict(sess){
+  if(!sess)return;
+  if(sess.water)dictAdd('waters',sess.water);
+  if(sess.spot)dictAdd('spots',sess.spot);
+  (sess.catches||[]).forEach(c=>{
+    if(c.type)dictAdd('fish',c.type);
+    if(c.bait)dictAdd('bait',c.bait);
+    if(c.baitNote&&typeof c.baitNote==='string'){
+      const n=c.baitNote.trim();
+      if(n.length>=2)dictAdd('notes',n);
+    }
+  });
+}
+
+// ── AP3: Long-Press Delete (globale Delegation) ─────────────────────
+// Chips bekommen data-dict-cat + data-dict-val Attribute.
+// Rechtsklick (Desktop) oder Touch-Halten ≥550ms (Mobile) löst Löschen aus.
+let _lpTimer=null,_lpTarget=null,_lpStartX=0,_lpStartY=0;
+
+function _chipLongPressDelete(chip){
+  if(!chip)return;
+  const cat=chip.dataset.dictCat;
+  const val=chip.dataset.dictVal;
+  if(!cat||!val)return;
+  if(navigator.vibrate){try{navigator.vibrate(12);}catch(e){}}
+  if(confirm(`Chip "${val}" dauerhaft aus dem Wörterbuch löschen?`)){
+    dictRemove(cat,val);
+    if(typeof showToast==='function')showToast('🗑️',`"${val}" gelöscht`);
+    chip.style.transition='all .18s ease';
+    chip.style.transform='scale(.6)';chip.style.opacity='0';
+    setTimeout(()=>chip.remove(),180);
+  }
+}
+
+document.addEventListener('contextmenu',e=>{
+  const chip=e.target.closest('[data-dict-cat][data-dict-val]');
+  if(chip){e.preventDefault();_chipLongPressDelete(chip);}
+});
+document.addEventListener('touchstart',e=>{
+  const chip=e.target.closest('[data-dict-cat][data-dict-val]');
+  if(!chip)return;
+  const t=e.touches?.[0];
+  _lpTarget=chip;
+  _lpStartX=t?t.clientX:0;_lpStartY=t?t.clientY:0;
+  clearTimeout(_lpTimer);
+  _lpTimer=setTimeout(()=>{
+    if(_lpTarget===chip){_chipLongPressDelete(chip);_lpTarget=null;}
+  },550);
+},{passive:true});
+document.addEventListener('touchmove',e=>{
+  if(!_lpTarget)return;
+  const t=e.touches?.[0];
+  if(!t)return;
+  if(Math.hypot(t.clientX-_lpStartX,t.clientY-_lpStartY)>10){
+    clearTimeout(_lpTimer);_lpTarget=null;
+  }
+},{passive:true});
+['touchend','touchcancel'].forEach(ev=>{
+  document.addEventListener(ev,()=>{clearTimeout(_lpTimer);_lpTarget=null;},{passive:true});
+});
+
+// Helper für Chip-HTML mit Dict-Attributen
+function _chipAttr(cat,val){
+  const safe=(val||'').replace(/"/g,'&quot;');
+  return `data-dict-cat="${cat}" data-dict-val="${safe}"`;
+}
+
+// Multi-Word-Commit Helper: Enter/Comma/Blur → dictAdd, Komma entfernen
+function _wireDictInput(inputEl,cat){
+  if(!inputEl||inputEl._dictWired)return;
+  inputEl._dictWired=true;
+  const commit=()=>{
+    let v=(inputEl.value||'').trim();
+    // Trailing Komma abschneiden (Nutzer kann mit , committen)
+    v=v.replace(/,+\s*$/,'').trim();
+    if(v.length>=2){dictAdd(cat,v);inputEl.value=v;}
+  };
+  inputEl.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===','){
+      e.preventDefault();commit();
+      inputEl.blur();
+    }
+  });
+  inputEl.addEventListener('blur',commit);
+}
+
+// ── GEWÄSSER-CHIPS (AP3: globalDict) ────────────────────────
 function rndrWChips(fv){
   const el=document.getElementById('w-chips');if(!el)return;
-  let chips=[...new Set(topFavs('waters',5))];
-  if(fv)chips=chips.filter(w=>w.toLowerCase().includes(fv.toLowerCase()));
+  const chips=dictTop('waters',fv,5);
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
   el.innerHTML=chips.map(w=>{
     const s=w.replace(/'/g,"\\'");
-    return`<button class="chip cw" onmousedown="wSel('${s}')">${w}</button>`;
+    return`<button class="chip cw" ${_chipAttr('waters',w)} onmousedown="wSel('${s}')">${w}</button>`;
   }).join('');
 }
 function wSel(v){
@@ -3984,31 +4453,56 @@ function wSel(v){
   for(let i=1;i<=catchCount;i++)rndrFChips(i,'');
   // Spot-Chips aktualisieren (Gewässer-Kontext)
   rndrSpotChips('');
+  // AP4: Auto-GPS-Hinweis aktualisieren
+  try{_updAutoGpsHint();}catch(e){}
 }
 
-// ── SPOT-CHIPS ─────────────────────────────────────────────
+// ── SPOT-CHIPS (AP3: globalDict + Gewässer-Kontext) ─────────
 function rndrSpotChips(fv){
   const el=document.getElementById('spot-chips');if(!el)return;
   const water=document.getElementById('s-water')?.value?.trim()||'';
-  // Spots aus Sessions für dieses Gewässer + globale Favs, dedupliziert
+  // Kontext: Spots aus Sessions dieses Gewässers (bevorzugt)
   let chips=[];
   if(water){
-    const wSpots=[...new Set(sessions.filter(s=>s.water===water&&s.spot).map(s=>s.spot))];
-    chips=wSpots.slice(0,5);
+    const ctxCnt={};
+    sessions.forEach(s=>{if(s.water===water&&s.spot){ctxCnt[s.spot]=(ctxCnt[s.spot]||0)+1;}});
+    chips=Object.entries(ctxCnt).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
   }
-  if(!chips.length) chips=topFavs('spots',5);
-  if(fv)chips=chips.filter(w=>w.toLowerCase().includes(fv.toLowerCase()));
-  chips=[...new Set(chips)]; // Deduplizierung
+  // Fallback: globales Dict
+  if(!chips.length)chips=dictTop('spots','',5);
+  // Live-Filter
+  if(fv){const q=fv.toLowerCase();chips=chips.filter(w=>w.toLowerCase().includes(q));}
+  chips=[...new Set(chips)].slice(0,5);
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
   el.innerHTML=chips.map(w=>{
     const s=w.replace(/'/g,"\\'");
-    return`<button class="chip cw" onmousedown="spotSel('${s}')">${w}</button>`;
+    return`<button class="chip cw" ${_chipAttr('spots',w)} onmousedown="spotSel('${s}')">${w}</button>`;
   }).join('');
 }
 function spotSel(v){
   document.getElementById('s-spot').value=v;
   document.getElementById('spot-chips').style.display='none';
+  // AP4: Auto-GPS-Hinweis anzeigen wenn Spot bekannt
+  try{_updAutoGpsHint();}catch(e){}
+}
+
+// AP4: Optischer Hinweis unter dem Spot-Feld, wenn GPS bereits gemappt ist
+function _updAutoGpsHint(){
+  const water=document.getElementById('s-water')?.value?.trim()||'';
+  const spot=document.getElementById('s-spot')?.value?.trim()||'';
+  if(!water)return;
+  const hit=typeof findGpsForChipCombo==='function'?findGpsForChipCombo(water,spot):null;
+  const strip=document.getElementById('gps-strip');
+  if(!strip)return;
+  // Nur einblenden wenn nichts anderes aktiv ist und wir wirklich einen Treffer haben
+  if(hit&&!gpsCoords){
+    const icoEl=document.getElementById('gps-ico');
+    const txtEl=document.getElementById('gps-txt');
+    if(icoEl)icoEl.textContent='📍';
+    if(txtEl)txtEl.textContent=`GPS auto aus "${spot||water}" (${hit.lat.toFixed(4)}, ${hit.lon.toFixed(4)})`;
+    strip.style.display='flex';
+  }
 }
 
 // ── STARTZEIT-CHIPS (Uhrzeit-Vorschläge) ───────────────────
@@ -4022,7 +4516,7 @@ function startSel(v){
   document.getElementById('start-chips').style.display='none';
 }
 
-// ── FISCH-CHIPS (Top 5, Gewässer-Kontext > globale Favs) ───
+// ── FISCH-CHIPS (AP3: Kontext + globalDict) ─────────────────
 function rndrFChips(id,fv){
   const el=document.getElementById('fc-'+id);if(!el)return;
   const ctx=ctxIdx();
@@ -4032,18 +4526,15 @@ function rndrFChips(id,fv){
   if(water&&ctx.wF[water]&&Object.keys(ctx.wF[water]).length){
     chips=topN(ctx.wF[water],5);isCtx=true;
   }
-  // 2. Fallback: globale Top-5 aus allen Sessions (nur eigene Daten)
-  if(!chips.length){
-    chips=topFavs('fish',5);
-  }
-  chips=[...new Set(chips)]; // Deduplizierung
-  if(!chips.length){el.style.display='none';return;}
-  if(fv)chips=chips.filter(f=>f.toLowerCase().includes(fv.toLowerCase()));
+  // 2. Fallback: globales Dict
+  if(!chips.length)chips=dictTop('fish','',5);
+  chips=[...new Set(chips)];
+  if(fv){const q=fv.toLowerCase();chips=chips.filter(f=>f.toLowerCase().includes(q));}
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
   el.innerHTML=chips.map(f=>{
     const s=f.replace(/'/g,"\\'");
-    return`<button class="chip${isCtx?' cc':''}" onmousedown="fSel(${id},'${s}')">${fIco(f)} ${f}</button>`;
+    return`<button class="chip${isCtx?' cc':''}" ${_chipAttr('fish',f)} onmousedown="fSel(${id},'${s}')">${fIco(f)} ${f}</button>`;
   }).join('');
 }
 
@@ -4063,7 +4554,6 @@ function rndrBChips(id,fv){
   const el=document.getElementById('bc-'+id);if(!el)return;
   const ctx=ctxIdx();
   const ft=document.getElementById('ft-'+id)?.value?.trim()||'';
-  // AP4: Predictive-Chips — auch aus spotBaits für aktuelles Gewässer+Spot
   const curWater=document.getElementById('s-water')?.value?.trim()||'';
   const curSpot=document.getElementById('s-spot')?.value?.trim()||'';
   let chips=[],isCtx=false,spotChips=[];
@@ -4074,22 +4564,19 @@ function rndrBChips(id,fv){
   if(ft&&ctx.fB[ft]&&Object.keys(ctx.fB[ft]).length){
     chips=topN(ctx.fB[ft],5);isCtx=true;
   }
-  // 2. Fallback: globale Top-5 eigene Köder
-  if(!chips.length){
-    chips=topFavs('bait',5);
-  }
-  // AP4: Spot-Chips zuerst, dann Kontext — dedupliziert
+  // 2. Fallback: globales Dict (AP3)
+  if(!chips.length)chips=dictTop('bait','',5);
+  // Spot-Chips zuerst, dann Kontext — dedupliziert
   const combined=[...spotChips,...chips];
   chips=[...new Set(combined)].slice(0,8);
-  if(!chips.length){el.style.display='none';return;}
-  if(fv)chips=chips.filter(b=>b.toLowerCase().includes(fv.toLowerCase()));
+  if(fv){const q=fv.toLowerCase();chips=chips.filter(b=>b.toLowerCase().includes(q));}
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
   el.innerHTML=chips.map(b=>{
     const s=b.replace(/'/g,"\\'");
     const isSpot=spotChips.includes(b);
     const icon=isSpot?'📍':(isCtx?'🎯':'🪝');
-    return`<button class="chip${isCtx||isSpot?' cc':''}" onmousedown="bSel(${id},'${s}')">${icon} ${b}</button>`;
+    return`<button class="chip${isCtx||isSpot?' cc':''}" ${_chipAttr('bait',b)} onmousedown="bSel(${id},'${s}')">${icon} ${b}</button>`;
   }).join('');
 }
 function bSel(id,v){
@@ -4117,24 +4604,31 @@ const _usedNoteChips={};
 function rndrNChips(id,fv){
   const el=document.getElementById('nc-'+id);if(!el)return;
   const bait=document.getElementById('fb-'+id)?.value?.trim();
-  if(!bait||!favs.baitKeywords?.[bait]){el.style.display='none';el.innerHTML='';return;}
-
-  // Alle Phrasen nach Score, längere bevorzugt (Länge × Häufigkeit)
-  const kws=favs.baitKeywords[bait];
-  const scored=Object.entries(kws)
-    .map(([ph,cnt])=>({ph,score:cnt*(ph.includes(' ')?ph.split(' ').length:1)}))
-    .sort((a,b)=>b.score-a.score);
-
-  // Bereits verwendete rausfiltern
   const used=_usedNoteChips[id]||new Set();
-  let chips=scored.filter(x=>!used.has(x.ph)).slice(0,5).map(x=>x.ph);
+  let chips=[];
 
-  if(fv)chips=chips.filter(c=>c.toLowerCase().includes(fv.toLowerCase()));
+  // AP3: Global-Dict-Notizen (ganze Multi-Word-Strings!) — höchste Priorität
+  const dictNotes=dictTop('notes','',10).filter(n=>!used.has(n));
+  chips.push(...dictNotes);
+
+  // Legacy: Bait-spezifische Phrasen (Bigrams/Trigrams) als Fallback
+  if(bait&&favs.baitKeywords?.[bait]){
+    const kws=favs.baitKeywords[bait];
+    const scored=Object.entries(kws)
+      .map(([ph,cnt])=>({ph,score:cnt*(ph.includes(' ')?ph.split(' ').length:1)}))
+      .sort((a,b)=>b.score-a.score)
+      .filter(x=>!used.has(x.ph))
+      .map(x=>x.ph);
+    chips.push(...scored);
+  }
+
+  chips=[...new Set(chips)].slice(0,5);
+  if(fv){const q=fv.toLowerCase();chips=chips.filter(c=>c.toLowerCase().includes(q));}
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
   el.innerHTML=chips.map(n=>{
-    const s=n.replace(/'/g,"\\'");
-    return`<button class="chip cc" onmousedown="nSel(${id},'${s}')">${n}</button>`;
+    const s=n.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    return`<button class="chip cc" ${_chipAttr('notes',n)} onmousedown="nSel(${id},'${s}')">${n}</button>`;
   }).join('');
 }
 
@@ -4716,6 +5210,8 @@ async function saveSess(){
           }
           catches.push(catchObj);
           addFav('fish',type);if(bait)addFav('bait',bait);if(bait&&note)addBaitKw(bait,note);
+          // AP4: Catch mit Auto-GPS anreichern (wenn Session-Spot schon gemappt ist)
+          try{_enrichCatchWithGeo(catchObj,waterVal,document.getElementById('s-spot')?.value?.trim()||'');}catch(e){}
           // AP2+AP4: Spot-Bait-Memory lernen
           const _w=document.getElementById('s-water')?.value?.trim()||'';
           const _sp=document.getElementById('s-spot')?.value?.trim()||'';
@@ -4794,6 +5290,8 @@ async function saveSess(){
     // AP2: Spot-GPS lernen wenn manuell gesetzt
     if(gpsCoords&&sess.water)_learnSpotGps(sess.water,sess.spot,gpsCoords.lat,gpsCoords.lon);
     await saveOneSess(sess);
+    // AP3: Session in globales Chip-Wörterbuch indexieren
+    try{_indexSessionToDict(sess);}catch(e){}
 
     // Cloud-Sync (nicht-blockierend)
     if(_authMode==='online')syncToCloud().catch(()=>{});
@@ -7101,7 +7599,7 @@ function rndrForecast(){
   el.innerHTML='<div style="text-align:center;padding:50px;color:var(--text-light);">🔄 Lade Vorhersage…</div>';
   const lat=coords.lat,lon=coords.lon;
   Promise.all([
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant,precipitation_sum,precipitation_probability_max,surface_pressure_mean&timezone=auto&forecast_days=14`).then(r=>r.json()),
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant,precipitation_sum,precipitation_probability_max,surface_pressure_mean,sunrise,sunset&timezone=auto&forecast_days=14`).then(r=>r.json()),
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,windspeed_10m,winddirection_10m,windgusts_10m,precipitation_probability,weathercode,surface_pressure&timezone=auto&forecast_days=14`).then(r=>r.json())
   ])
   .then(([daily,hourly])=>{
@@ -7417,6 +7915,101 @@ function openMapForDay(dateKey){
   },200);
 }
 
+// AP-Tide: Abfluss (m³/s) via PEGELONLINE · binnen-Stationen mit Q-Messwerten
+const TIDE_FLOW_STATIONS={
+  weser:{station:'INTSCHEDE',label:'Intschede'},
+  elbe: {station:'NEU%20DARCHAU',label:'Neu Darchau'},
+  ems:  {station:'VERSEN',label:'Versen'}
+};
+const _tideFlowCache={}; // {river:{q,ts,station}}
+
+async function _fetchPegelonlineFlow(river){
+  const st=TIDE_FLOW_STATIONS[river];
+  if(!st)return null;
+  const cached=_tideFlowCache[river];
+  if(cached&&Date.now()-cached.ts<10*60*1000)return cached;
+  const url=`https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/${st.station}/Q/currentmeasurement.json`;
+  try{
+    let resp;
+    try{resp=await fetch(url);}
+    catch(e){resp=await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);}
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const data=await resp.json();
+    const q=typeof data?.value==='number'?data.value:null;
+    const entry={q,ts:Date.now(),station:st.label,timestamp:data?.timestamp||null};
+    _tideFlowCache[river]=entry;
+    return entry;
+  }catch(e){
+    const entry={q:null,ts:Date.now(),station:st.label,error:e.message||'API-Fehler'};
+    _tideFlowCache[river]=entry;
+    return entry;
+  }
+}
+
+// AP-Tide: Sonnenauf-/untergang für ein Datum + Koordinaten
+// Primär aus _fcData.daily.sunrise/sunset, fallback astronomische Näherung
+function _sunTimesForDate(dateStr){
+  // Primär: aus geladener Open-Meteo Vorhersage
+  if(_fcData?.daily?.sunrise&&_fcData?.daily?.time){
+    const idx=_fcData.daily.time.indexOf(dateStr);
+    if(idx>=0){
+      const srStr=_fcData.daily.sunrise?.[idx];
+      const ssStr=_fcData.daily.sunset?.[idx];
+      if(srStr&&ssStr){
+        const sr=new Date(srStr);const ss=new Date(ssStr);
+        return{sunrise:sr,sunset:ss,source:'open-meteo'};
+      }
+    }
+  }
+  // Fallback: NOAA-Näherung für Nordwestdeutschland (ca. 53° N, 9° E)
+  const d=new Date(dateStr+'T12:00:00');
+  const lat=_plzCoords?.lat||53.1;
+  const lon=_plzCoords?.lon||9.0;
+  const n=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);
+  const rad=Math.PI/180;
+  const P=Math.asin(0.39795*Math.cos(0.98563*rad*(n-173)));
+  const arg=-Math.tan(lat*rad)*Math.tan(P);
+  if(arg<-1||arg>1)return null;
+  const H=Math.acos(arg)/rad;
+  // Zeitzonen-Offset der aktuellen Umgebung (inkl. DST)
+  const tzOff=-d.getTimezoneOffset()/60;
+  const noonUTC=12-lon/15;
+  const sunriseH=noonUTC-H/15+tzOff;
+  const sunsetH=noonUTC+H/15+tzOff;
+  const mk=(h)=>{const tot=((h%24)+24)%24;const hh=Math.floor(tot);const mm=Math.round((tot-hh)*60);
+    const dd=new Date(d);dd.setHours(hh,mm,0,0);return dd;};
+  return{sunrise:mk(sunriseH),sunset:mk(sunsetH),source:'noaa-approx'};
+}
+
+// AP-Tide: Beißindex-Score 1..3 aus Tide, Strömung & Dämmerung
+function _tideBiteScore({hwNw,sun,nowDate,flow,isToday}){
+  let score=1;
+  const reasons=[];
+  const nowMin=nowDate.getHours()*60+nowDate.getMinutes();
+  // +1 wenn nahe an HW oder NW (±60min)
+  if(hwNw&&hwNw.length){
+    const near=hwNw.find(e=>{
+      const[h,m]=e.label.split(':').map(Number);
+      return Math.abs(nowMin-(h*60+m))<=60;
+    });
+    if(near){score++;reasons.push('Kentern '+near.event+' nahe');}
+  }
+  // +1 bei Dämmerung (±60min um Sonnenauf- oder untergang)
+  if(sun){
+    const srMin=sun.sunrise.getHours()*60+sun.sunrise.getMinutes();
+    const ssMin=sun.sunset.getHours()*60+sun.sunset.getMinutes();
+    if(Math.abs(nowMin-srMin)<=60){score++;reasons.push('Morgendämmerung');}
+    else if(Math.abs(nowMin-ssMin)<=60){score++;reasons.push('Abenddämmerung');}
+  }
+  // Nicht-heute: Score auf Basis von HW/NW-Tageshöhepunkt (Beste Zeit des Tages)
+  if(!isToday&&hwNw&&hwNw.length){
+    score=Math.min(3,1+Math.floor(hwNw.length/2));
+    reasons.length=0;
+    reasons.push(`${hwNw.length} Tidenwechsel heute`);
+  }
+  return{score:Math.max(1,Math.min(3,score)),reasons};
+}
+
 async function _renderTideCal(river,startDate){
   _tideRiver=river;
 
@@ -7435,37 +8028,79 @@ async function _renderTideCal(river,startDate){
   const isBshRange=dayDiff>=-1&&dayDiff<=1;
   const isToday=startDate===todayStr;
 
-  // AP3: Tag-Navigation mit ‹ › + aktuelles Datum/Tag
-  const DOW_F=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  // AP-Tide: Apple-Style Cockpit Header
+  const DOW_S=['So','Mo','Di','Mi','Do','Fr','Sa'];
   const MON_S=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-  const dowStr=dayDiff===0?'Heute':dayDiff===-1?'Gestern':dayDiff===1?'Morgen':DOW_F[selDate.getDay()];
-  const[yy,mm,dd]=startDate.split('-');
-  const dateStr=`${dowStr}, ${parseInt(dd)}. ${MON_S[parseInt(mm)-1]}`;
-  // Prev/Next Dates
-  const prev=new Date(selDate);prev.setDate(prev.getDate()-1);
-  const next=new Date(selDate);next.setDate(next.getDate()+1);
-  const prevStr=_localDateStr(prev),nextStr=_localDateStr(next);
-  const navHtml=`
-    <div class="fc-tide-day-nav">
-      ${Object.entries(STATIONS).map(([rv,s])=>`
-        <button class="fc-tide-day-btn${rv===river?' on':''}"
-          onclick="_renderTideCal('${rv}','${startDate}')">${s.label}</button>`).join('')}
-    </div>
-    <div class="tide-day-nav">
-      <button class="tide-nav-arrow" onclick="_renderTideCal('${river}','${prevStr}')" aria-label="Vorheriger Tag">‹</button>
-      <div class="tide-nav-label">${dateStr}</div>
-      <button class="tide-nav-arrow" onclick="_renderTideCal('${river}','${nextStr}')" aria-label="Nächster Tag">›</button>
-    </div>
-    <div class="fc-tide-day-nav" style="margin-top:4px;align-items:center;">
-      <input type="date" id="tide-date-pick" value="${startDate}"
-        onchange="_renderTideCal('${river}',this.value)"
-        class="fc-tide-date-pick">
-      <button class="fc-tide-day-btn${isToday?' on':''}"
-        onclick="_renderTideCal('${river}','${todayStr}')">Heute</button>
+
+  // 14-Tage Strip (−1 … +12)
+  const stripDays=[];
+  for(let off=-1;off<=12;off++){
+    const d=new Date(today);d.setDate(d.getDate()+off);
+    stripDays.push({date:_localDateStr(d),dObj:new Date(d),off});
+  }
+  const stripHtml=stripDays.map(sd=>{
+    const active=sd.date===startDate;
+    const lbl=sd.off===0?'Heu':sd.off===-1?'Ges':sd.off===1?'Mor':DOW_S[sd.dObj.getDay()];
+    return`<button class="tide-strip-day${active?' on':''}" data-date="${sd.date}"
+      onclick="_renderTideCal('${river}','${sd.date}')">
+      <span class="tide-strip-dow">${lbl}</span>
+      <span class="tide-strip-num">${sd.dObj.getDate()}.</span>
+    </button>`;
+  }).join('');
+
+  // River-Segment-Buttons mit Untertiteln
+  const riverSubs={weser:'Oslebshausen',elbe:'St. Pauli',ems:'Emden'};
+  const riverSeg=Object.entries(STATIONS).map(([rv,s])=>`
+    <button class="tide-river-seg-btn${rv===river?' on':''}"
+      onclick="_renderTideCal('${rv}','${startDate}')">
+      ${s.label}<span class="sub">${riverSubs[rv]||''}</span>
+    </button>`).join('');
+
+  // Initiales Hero-Placeholder (wird nach Datenload befüllt)
+  const cockpitHtml=`
+    <div class="tide-cockpit">
+      <div class="tide-river-seg">${riverSeg}</div>
+      <div class="tide-hero" id="tide-hero-slot">
+        <div class="tide-hero-main">
+          <div class="tide-hero-kicker">Lade Tide…</div>
+          <div class="tide-hero-big">–:–</div>
+          <div class="tide-hero-sub">${st.display}</div>
+        </div>
+        <div class="tide-hero-flow" id="tide-flow-slot">
+          <div class="tide-hero-flow-val">–<span class="tide-hero-flow-unit">m³/s</span></div>
+          <div class="tide-hero-flow-lbl">Abfluss</div>
+        </div>
+      </div>
+      <div class="tide-strip" id="tide-strip-slot">${stripHtml}</div>
     </div>`;
 
   const bodyEl=document.getElementById('fs-tide-body');
-  bodyEl.innerHTML=navHtml+`<div style="text-align:center;padding:24px;color:var(--text-light);">🔄 Lade Tidendaten…</div>`;
+  bodyEl.innerHTML=cockpitHtml+`<div style="text-align:center;padding:24px;color:var(--text-light);">🔄 Lade Tidendaten…</div>`;
+
+  // Aktiven Strip-Tag in die Mitte scrollen
+  requestAnimationFrame(()=>{
+    const strip=document.getElementById('tide-strip-slot');
+    const active=strip?.querySelector('.tide-strip-day.on');
+    if(strip&&active){
+      const offL=active.offsetLeft-strip.clientWidth/2+active.offsetWidth/2;
+      strip.scrollTo({left:Math.max(0,offL),behavior:'smooth'});
+    }
+  });
+
+  // Abfluss parallel laden (non-blocking, UI erscheint sofort)
+  _fetchPegelonlineFlow(river).then(f=>{
+    const slot=document.getElementById('tide-flow-slot');
+    if(!slot)return;
+    if(f&&f.q!=null){
+      slot.innerHTML=`
+        <div class="tide-hero-flow-val">${Math.round(f.q)}<span class="tide-hero-flow-unit">m³/s</span></div>
+        <div class="tide-hero-flow-lbl">Abfluss · ${f.station}</div>`;
+    }else{
+      slot.innerHTML=`
+        <div class="tide-hero-flow-val" style="color:var(--text-light);">–</div>
+        <div class="tide-hero-flow-lbl err">Abfluss offline</div>`;
+    }
+  });
 
   // Festes 15-Min-Raster: 00:00 – 24:00 (97 Datenpunkte)
   const GRID_LABELS=[];
@@ -7475,12 +8110,12 @@ async function _renderTideCal(river,startDate){
 
   let dataSource='PEGELONLINE WSV';
   try{
-    // AP3: API-TRENNUNG — Nur ein einziges Dataset, keine Überlappung
-    // gestern/heute/morgen → AUSSCHLIESSLICH PEGELONLINE Live-Messung (bzw. Cache)
-    // Alle anderen Tage → AUSSCHLIESSLICH astronomische Prognose
+    // AP-Tide: 24h-Hybrid — Astro-Basis für volle 24h, PEGELONLINE-Messwerte
+    // überschreiben vorhandene Slots. So entsteht KEINE Lücke nach "jetzt".
     let values;
+    const astroBase=GRID_LABELS.map((_,i)=>_predictTideHarmonic(river,startDate,i*15));
+    let liveCount=0;
     if(isBshRange){
-      dataSource='PEGELONLINE WSV · Live-Messung';
       const cached=_tideCache[river];
       if(!cached||Date.now()-cached.ts>15*60*1000){
         const directUrl=`https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/${st.uuid}/W/measurements.json?start=P2D`;
@@ -7491,25 +8126,23 @@ async function _renderTideCal(river,startDate){
         if(!resp.ok)throw new Error(`PEGELONLINE HTTP ${resp.status}`);
         _tideCache[river]={data:await resp.json(),ts:Date.now()};
       }
-      // Messwerte auf 15-Min-Raster mappen – NICHT mit Astro-Modell auffüllen
-      values=new Array(97).fill(null);
+      // Astro-Array ist schon voll — Messwerte nur überlagern, wo vorhanden
+      values=astroBase.slice();
       _tideCache[river].data.forEach(p=>{
         if((p.timestamp||'').slice(0,10)!==startDate)return;
         const hhmm=(p.timestamp||'').slice(11,16);
         const[hh,mm]=hhmm.split(':').map(Number);
         const slot=Math.round((hh*60+mm)/15);
-        if(slot>=0&&slot<97&&p.value!=null){values[slot]=Math.round(p.value);}
+        if(slot>=0&&slot<97&&p.value!=null){values[slot]=Math.round(p.value);liveCount++;}
       });
-      const realCount=values.filter(v=>v!=null).length;
-      if(realCount===0){
-        // Keine Messwerte aus Cache gefunden (z.B. weit vor Cache-Zeitraum) → Fallback Astro
-        values=GRID_LABELS.map((_,i)=>_predictTideHarmonic(river,startDate,i*15));
-        dataSource='Astronomische Prognose (Fallback)';
+      if(liveCount>0){
+        dataSource=isToday?'Live-Messung + Prognose':'PEGELONLINE Live-Messung';
+      }else{
+        dataSource='Astronomische Prognose (keine Live-Werte)';
       }
     }else{
-      // Astronomische Vorhersage (harmonisches Modell)
       dataSource='Astronomische Prognose (harmonisch)';
-      values=GRID_LABELS.map((_,i)=>_predictTideHarmonic(river,startDate,i*15));
+      values=astroBase;
     }
 
     const validVals=values.filter(v=>v!=null);
@@ -7547,7 +8180,7 @@ async function _renderTideCal(river,startDate){
       }
     });
 
-    // AP3: HW/NW als 2-Spalten-Grid, ohne "cm"
+    // AP-Tide: HW/NW als 2-Spalten-Grid, Wert groß ohne "cm"-Suffix
     const hwNwHtml=filteredHwNw.length?`
       <div class="tide-hwnw-grid">
         ${filteredHwNw.map(e=>{
@@ -7560,13 +8193,65 @@ async function _renderTideCal(river,startDate){
         }).join('')}
       </div>`:'';
 
-    // AP3: Datenquellen-Badge — nur 2 Zustände
-    const srcBadge=isBshRange
+    // AP-Tide: Hero-Info nachrüsten (nächstes Ereignis oder Status)
+    const sunTimes=_sunTimesForDate(startDate);
+    const heroSlot=document.getElementById('tide-hero-slot');
+    if(heroSlot){
+      let kicker='Nächstes Ereignis',big='–',sub=st.display,arrow='';
+      if(filteredHwNw.length){
+        let nextEv=null;
+        if(isToday){
+          const nowMin=new Date().getHours()*60+new Date().getMinutes();
+          nextEv=filteredHwNw.find(e=>{
+            const[h,m]=e.label.split(':').map(Number);
+            return h*60+m>nowMin;
+          })||filteredHwNw[0];
+        } else {
+          nextEv=filteredHwNw[0];
+        }
+        if(nextEv){
+          const isHW=nextEv.event==='HW';
+          kicker=isToday?`Nächstes ${isHW?'Hochwasser':'Niedrigwasser'}`:`Erstes ${isHW?'Hochwasser':'Niedrigwasser'}`;
+          arrow=isHW?'<span class="arrow">▲</span>':'<span class="arrow dir-dn">▼</span>';
+          big=nextEv.label;
+          sub=`${st.display} · ${nextEv.value} cm`;
+        }
+      }
+      heroSlot.querySelector('.tide-hero-main').innerHTML=`
+        <div class="tide-hero-kicker">${kicker}</div>
+        <div class="tide-hero-big">${arrow}<span>${big}</span></div>
+        <div class="tide-hero-sub">${sub}</div>`;
+    }
+
+    // AP-Tide: Beißindex
+    const bite=_tideBiteScore({
+      hwNw:filteredHwNw,sun:sunTimes,nowDate:new Date(),
+      flow:_tideFlowCache[river]?.q,isToday
+    });
+    const fishIco='<span class="tide-bite-fish">🐟</span>';
+    const fishIcoAct='<span class="tide-bite-fish active">🐟</span>';
+    const biteLabel=bite.score>=3?'Top-Beißzeit':bite.score===2?'Gute Beißzeit':'Mäßig';
+    const biteSub=bite.reasons.length?bite.reasons.join(' · '):'Keine starken Beißsignale';
+    const biteHtml=`
+      <div class="tide-bite">
+        <div class="tide-bite-icons">
+          ${bite.score>=1?fishIcoAct:fishIco}
+          ${bite.score>=2?fishIcoAct:fishIco}
+          ${bite.score>=3?fishIcoAct:fishIco}
+        </div>
+        <div class="tide-bite-info">
+          <div class="tide-bite-title">${biteLabel}</div>
+          <div class="tide-bite-sub">${biteSub}</div>
+        </div>
+      </div>`;
+
+    // Datenquellen-Badge
+    const srcBadge=liveCount>0
       ?'<span style="display:inline-block;background:rgba(42,140,186,.12);color:#2a7ab0;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-left:6px;">Live-Messung</span>'
       :'<span style="display:inline-block;background:rgba(180,140,60,.12);color:#a08030;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-left:6px;">Astronomische Prognose</span>';
 
-    bodyEl.innerHTML=navHtml+`
-      <div style="margin-top:12px;">
+    bodyEl.innerHTML=cockpitHtml+biteHtml+`
+      <div style="margin-top:4px;">
         <div class="fc-sec">
           <div class="fc-sec-title">🌊 ${st.display} · ${startDate} ${srcBadge}</div>
           ${hwNwHtml}
@@ -7579,6 +8264,52 @@ async function _renderTideCal(river,startDate){
           </div>
         </div>
       </div>`;
+
+    // Hero + Strip aus Cockpit nach innerHTML-Rebuild neu mounten (bodyEl wurde komplett neu gesetzt)
+    // Wir haben cockpitHtml oben erneut eingefügt → Hero-Slot neu befüllen
+    const heroSlot2=document.getElementById('tide-hero-slot');
+    if(heroSlot2&&filteredHwNw.length){
+      let nextEv=null;
+      if(isToday){
+        const nowMin=new Date().getHours()*60+new Date().getMinutes();
+        nextEv=filteredHwNw.find(e=>{
+          const[h,m]=e.label.split(':').map(Number);
+          return h*60+m>nowMin;
+        })||filteredHwNw[0];
+      } else nextEv=filteredHwNw[0];
+      if(nextEv){
+        const isHW=nextEv.event==='HW';
+        const kicker=isToday?`Nächstes ${isHW?'Hochwasser':'Niedrigwasser'}`:`Erstes ${isHW?'Hochwasser':'Niedrigwasser'}`;
+        const arrow=isHW?'<span class="arrow">▲</span>':'<span class="arrow dir-dn">▼</span>';
+        heroSlot2.querySelector('.tide-hero-main').innerHTML=`
+          <div class="tide-hero-kicker">${kicker}</div>
+          <div class="tide-hero-big">${arrow}<span>${nextEv.label}</span></div>
+          <div class="tide-hero-sub">${st.display} · ${nextEv.value} cm</div>`;
+      }
+    }
+    // Flow-Slot erneut befüllen (Cache hat ggf. schon Daten)
+    const flowCached=_tideFlowCache[river];
+    const flowSlot2=document.getElementById('tide-flow-slot');
+    if(flowSlot2){
+      if(flowCached&&flowCached.q!=null){
+        flowSlot2.innerHTML=`
+          <div class="tide-hero-flow-val">${Math.round(flowCached.q)}<span class="tide-hero-flow-unit">m³/s</span></div>
+          <div class="tide-hero-flow-lbl">Abfluss · ${flowCached.station}</div>`;
+      } else if(flowCached){
+        flowSlot2.innerHTML=`
+          <div class="tide-hero-flow-val" style="color:var(--text-light);">–</div>
+          <div class="tide-hero-flow-lbl err">Abfluss offline</div>`;
+      }
+    }
+    // Aktiven Strip-Tag in Mitte scrollen (nach Rebuild)
+    requestAnimationFrame(()=>{
+      const strip=document.getElementById('tide-strip-slot');
+      const active=strip?.querySelector('.tide-strip-day.on');
+      if(strip&&active){
+        const offL=active.offsetLeft-strip.clientWidth/2+active.offsetWidth/2;
+        strip.scrollTo({left:Math.max(0,offL),behavior:'auto'});
+      }
+    });
 
     requestAnimationFrame(()=>{
       const c=document.getElementById('tide-main-chart');
@@ -7666,17 +8397,52 @@ async function _renderTideCal(river,startDate){
         ctx.restore();
       }};
 
-      // AP3: Ein einziges Dataset je nach Quelle (keine Mischung)
+      // AP-Tide: Sonnenauf- & untergang-Marker + Dämmerungs-Schattierung
+      const sunPlugin={id:'sunMarkers',beforeDatasetsDraw(chart){
+        if(!sunTimes)return;
+        const scaleX=chart.scales.x,scaleY=chart.scales.y;
+        const ctx=chart.ctx;
+        const mkIdx=(d)=>(d.getHours()*60+d.getMinutes())/15;
+        const srIdx=mkIdx(sunTimes.sunrise);
+        const ssIdx=mkIdx(sunTimes.sunset);
+        // Nacht-Schattierung (vor Sunrise + nach Sunset)
+        ctx.save();
+        ctx.fillStyle='rgba(30,40,80,.04)';
+        const xL=scaleX.left, xR=scaleX.right;
+        const xSR=scaleX.getPixelForValue(srIdx);
+        const xSS=scaleX.getPixelForValue(ssIdx);
+        if(xSR>xL)ctx.fillRect(xL,scaleY.top,xSR-xL,scaleY.bottom-scaleY.top);
+        if(xSS<xR)ctx.fillRect(xSS,scaleY.top,xR-xSS,scaleY.bottom-scaleY.top);
+        // Dämmerungs-Streifen ±30min um SR/SS
+        ctx.fillStyle='rgba(255,180,80,.12)';
+        [srIdx,ssIdx].forEach(idx=>{
+          const a=scaleX.getPixelForValue(Math.max(0,idx-2));
+          const b=scaleX.getPixelForValue(Math.min(96,idx+2));
+          ctx.fillRect(a,scaleY.top,b-a,scaleY.bottom-scaleY.top);
+        });
+        // Sonnen-Icons auf X-Achse
+        ctx.font='14px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText('🌅',xSR,scaleY.bottom+14);
+        ctx.fillText('🌇',xSS,scaleY.bottom+14);
+        ctx.font='bold 9px system-ui';ctx.fillStyle='#a08030';
+        const fmt=d=>String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+        ctx.fillText(fmt(sunTimes.sunrise),xSR,scaleY.bottom+26);
+        ctx.fillText(fmt(sunTimes.sunset),xSS,scaleY.bottom+26);
+        ctx.restore();
+      }};
+
+      // AP-Tide: Ein einziges Dataset (volle 24h, Hybrid-Quelle)
       const datasets=[];
-      const lineColor=isBshRange?'#2a8cba':'#b08c3c';
-      datasets.push({label:isBshRange?'Messung':'Vorhersage',data:values,borderColor:lineColor,backgroundColor:isBshRange?'rgba(42,140,186,.18)':'rgba(176,140,60,.12)',fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,pointBackgroundColor:lineColor,borderWidth:2.5,borderDash:isBshRange?[]:[6,3],spanGaps:true});
+      const lineColor=liveCount>0?'#2a8cba':'#b08c3c';
+      datasets.push({label:liveCount>0?'Wasserstand':'Vorhersage',data:values,borderColor:lineColor,backgroundColor:liveCount>0?'rgba(42,140,186,.18)':'rgba(176,140,60,.12)',fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,pointBackgroundColor:lineColor,borderWidth:2.5,borderDash:(liveCount===0)?[6,3]:[],spanGaps:true});
 
       new Chart(c,{
         type:'line',
         data:{labels:GRID_LABELS,datasets},
-        plugins:[sessHighlightPlugin,hoverPlugin,hwAnnotPlugin,nowLinePlugin],
+        plugins:[sunPlugin,sessHighlightPlugin,hoverPlugin,hwAnnotPlugin,nowLinePlugin],
         options:{
           responsive:false,maintainAspectRatio:false,
+          layout:{padding:{bottom:28}},
           plugins:{
             legend:{display:datasets.length>1,labels:{boxWidth:10,font:{size:10}}},
             tooltip:{mode:'index',intersect:false,
@@ -7684,10 +8450,12 @@ async function _renderTideCal(river,startDate){
               backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'}
           },
           scales:{
-            x:{ticks:{color:'#6a7a6f',font:{size:9},maxRotation:0,
+            // AP-Tide: X-Achse strikt 0..96 (= 00:00 bis 24:00 Uhr)
+            x:{min:0,max:96,
+              ticks:{color:'#6a7a6f',font:{size:9},maxRotation:0,
               autoSkip:false,
               callback:function(val,idx){
-                // Show only full hours 00:00, 02:00, ..., 24:00
+                // Nur volle Stunden alle 2h: 00:00, 02:00, ..., 24:00
                 if(idx%8===0)return GRID_LABELS[idx];
                 return '';
               }},
@@ -8034,16 +8802,46 @@ function openDailyWeather(dateStr){
   const hasPrev=idx>0;
   const hasNext=idx<dates.length-1;
 
-  // Header
+  // AP2: Neuer Header = Hero + horizontal scrollbare Datums-Leiste
+  const DOW_S=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const dateStrip=dates.map((d,i)=>{
+    const dObj=new Date(d+'T12:00:00');
+    const lbl=i===0?'Heu':DOW_S[dObj.getDay()];
+    const dayNum=dObj.getDate();
+    const active=d===dateStr;
+    return`<button class="dw-strip-day${active?' on':''}" onclick="openDailyWeather('${d}')" data-date="${d}">
+      <span class="dw-strip-dow">${lbl}</span>
+      <span class="dw-strip-num">${dayNum}.</span>
+    </button>`;
+  }).join('');
+
   document.getElementById('fs-dw-hdr').innerHTML=`
-    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
-      <button onclick="openDailyWeather('${hasPrev?dates[idx-1]:dateStr}')" style="width:36px;height:36px;border:none;border-radius:50%;background:${hasPrev?'rgba(74,124,89,.15)':'transparent'};font-size:18px;cursor:${hasPrev?'pointer':'default'};opacity:${hasPrev?'1':'.2'};font-family:var(--fa);" ${hasPrev?'':'disabled'}>‹</button>
-      <div style="flex:1;text-align:center;min-width:0;">
-        <div class="fstitle" style="font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${wxIco(wc)} ${dateLabel}</div>
+    <button class="xbtn" onclick="_dwDestroy();closeFs('daily-weather')" style="position:absolute;top:10px;right:12px;z-index:3;">✕</button>
+    <div class="dw-hero">
+      <div class="dw-hero-date">${dateLabel}</div>
+      <div class="dw-hero-row">
+        <div class="dw-hero-ico">${wxIco(wc)}</div>
+        <div class="dw-hero-temp">
+          <span class="dw-hero-tmax">${tmax!=null?Math.round(tmax):'–'}°</span>
+          <span class="dw-hero-tmin">${tmin!=null?Math.round(tmin):'–'}°</span>
+        </div>
+        <div class="dw-hero-side">
+          <div class="dw-hero-wind">${wind!=null?Math.round(wind):'–'} <span class="dw-hero-unit">km/h</span></div>
+          <div class="dw-hero-wdir">${windLabel(windDir)||''}</div>
+        </div>
       </div>
-      <button onclick="openDailyWeather('${hasNext?dates[idx+1]:dateStr}')" style="width:36px;height:36px;border:none;border-radius:50%;background:${hasNext?'rgba(74,124,89,.15)':'transparent'};font-size:18px;cursor:${hasNext?'pointer':'default'};opacity:${hasNext?'1':'.2'};font-family:var(--fa);" ${hasNext?'':'disabled'}>›</button>
     </div>
-    <button class="xbtn" onclick="_dwDestroy();closeFs('daily-weather')">✕</button>`;
+    <div class="dw-strip" id="dw-strip">${dateStrip}</div>`;
+
+  // AP2: Aktiven Tag in die Mitte der Datums-Leiste scrollen
+  requestAnimationFrame(()=>{
+    const strip=document.getElementById('dw-strip');
+    const active=strip?.querySelector('.dw-strip-day.on');
+    if(strip&&active){
+      const off=active.offsetLeft - strip.clientWidth/2 + active.offsetWidth/2;
+      strip.scrollTo({left:Math.max(0,off),behavior:'smooth'});
+    }
+  });
 
   // Hourly data for this day
   const h=_fcHourlyData.hourly;
@@ -8132,12 +8930,19 @@ function openDailyWeather(dateStr){
 
   const TICK='#6a7a6f',GRID='rgba(0,0,0,.06)';
   const TT={mode:'index',intersect:false,backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'};
-  const XOPT={ticks:{color:TICK,font:{size:9},maxTicksLimit:12,autoSkip:true,maxRotation:0},grid:{color:GRID}};
+  // AP3: Zwei X-Achsen-Varianten – versteckt (obere Charts) und sichtbar (unterster Chart)
+  const XOPT_HIDDEN={display:false,grid:{display:false,drawBorder:false},ticks:{display:false}};
+  const XOPT_VISIBLE={ticks:{color:TICK,font:{size:9},maxTicksLimit:12,autoSkip:true,maxRotation:0},grid:{color:GRID}};
 
   requestAnimationFrame(()=>{
     if(typeof Chart==='undefined')return;
 
     const DW_PLUGINS=[_dwCrosshairPlugin,_dwNowPlugin,_dwInfoPlugin];
+
+    // AP3: Ermittle welcher Chart als unterster gerendert wird (bekommt X-Achse)
+    const hasPres=hPres.some(v=>v!=null)&&document.getElementById('dw-pres-chart');
+    const lastChartId=hasPres?'dw-pres-chart':'dw-rain-chart';
+    const xFor=id=>id===lastChartId?XOPT_VISIBLE:XOPT_HIDDEN;
 
     // Temp chart
     const c1=document.getElementById('dw-temp-chart');
@@ -8145,10 +8950,11 @@ function openDailyWeather(dateStr){
       const vMin=Math.floor(Math.min(...hTemp.filter(v=>v!=null))-2);
       const vMax=Math.ceil(Math.max(...hTemp.filter(v=>v!=null))+2);
       const ch1=new Chart(c1,{type:'line',data:{labels:hLabels,datasets:[
-        {label:'Temperatur',data:hTemp,borderColor:'#e07030',backgroundColor:'rgba(224,112,48,.12)',fill:true,tension:.35,pointRadius:2,pointHoverRadius:5,borderWidth:2.5}
+        {label:'Temperatur',data:hTemp,borderColor:'#e07030',backgroundColor:'rgba(224,112,48,.12)',fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,borderWidth:2.5}
       ]},plugins:DW_PLUGINS,options:{responsive:true,maintainAspectRatio:false,
+        layout:{padding:{left:10,right:10,top:4,bottom:0}},
         plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c2=>`${c2.parsed.y}°C`}}},
-        scales:{x:XOPT,y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:9},stepSize:2,callback:v=>Math.round(v)+'°'},grid:{color:GRID}}}}});
+        scales:{x:xFor('dw-temp-chart'),y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:9},stepSize:2,callback:v=>Math.round(v)+'°'},grid:{color:GRID,drawBorder:false}}}}});
       ch1._isToday=isToday;
       ch1._infoId='dw-temp-hover';ch1._infoUnit='°C';
       _dwCharts.push(ch1);
@@ -8157,12 +8963,13 @@ function openDailyWeather(dateStr){
     // Wind chart
     const c2=document.getElementById('dw-wind-chart');
     if(c2){
-      const ds=[{label:'Wind',data:hWind,borderColor:'#4a90d9',backgroundColor:'rgba(74,144,217,.12)',fill:true,tension:.35,pointRadius:2,pointHoverRadius:5,borderWidth:2.5}];
-      if(hGusts.some(v=>v!=null))ds.push({label:'Böen',data:hGusts,borderColor:'#a0c4f0',fill:false,tension:.35,pointRadius:1,borderWidth:1.5,borderDash:[4,4]});
+      const ds=[{label:'Wind',data:hWind,borderColor:'#4a90d9',backgroundColor:'rgba(74,144,217,.12)',fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,borderWidth:2.5}];
+      if(hGusts.some(v=>v!=null))ds.push({label:'Böen',data:hGusts,borderColor:'#a0c4f0',fill:false,tension:.4,pointRadius:0,borderWidth:1.5,borderDash:[4,4]});
       const ch2=new Chart(c2,{type:'line',data:{labels:hLabels,datasets:ds},plugins:DW_PLUGINS,options:{responsive:true,maintainAspectRatio:false,
+        layout:{padding:{left:10,right:10,top:4,bottom:0}},
         plugins:{legend:{display:ds.length>1,labels:{boxWidth:10,font:{size:10}}},tooltip:{...TT,callbacks:{label:c3=>{
           const i=c3.dataIndex;return`${c3.dataset.label}: ${c3.parsed.y} km/h${hWDir[i]!=null?' · '+windLabel(hWDir[i]):''}`;}}}},
-        scales:{x:XOPT,y:{min:0,title:{display:true,text:'in km/h',font:{size:9},color:TICK},ticks:{color:TICK,font:{size:8}},grid:{color:GRID}}}}});
+        scales:{x:xFor('dw-wind-chart'),y:{min:0,title:{display:false},ticks:{color:TICK,font:{size:8}},grid:{color:GRID,drawBorder:false}}}}});
       ch2._isToday=isToday;
       ch2._infoId='dw-wind-hover';ch2._infoUnit=' km/h';
       _dwCharts.push(ch2);
@@ -8174,8 +8981,9 @@ function openDailyWeather(dateStr){
       const ch3=new Chart(c3,{type:'bar',data:{labels:hLabels,datasets:[
         {label:'Regen %',data:hRain,backgroundColor:'rgba(74,144,220,.55)',borderColor:'rgba(74,144,220,.8)',borderWidth:0,borderRadius:3,borderSkipped:false}
       ]},plugins:DW_PLUGINS,options:{responsive:true,maintainAspectRatio:false,
+        layout:{padding:{left:10,right:10,top:4,bottom:0}},
         plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c4=>`${c4.parsed.y}%`}}},
-        scales:{x:XOPT,y:{min:0,max:100,ticks:{color:TICK,font:{size:9},stepSize:25,callback:v=>v+'%'},grid:{color:GRID}}}}});
+        scales:{x:xFor('dw-rain-chart'),y:{min:0,max:100,ticks:{color:TICK,font:{size:9},stepSize:25,callback:v=>v+'%'},grid:{color:GRID,drawBorder:false}}}}});
       ch3._isToday=isToday;
       ch3._infoId='dw-rain-hover';ch3._infoUnit='%';
       _dwCharts.push(ch3);
@@ -8188,21 +8996,69 @@ function openDailyWeather(dateStr){
       const pMin=Math.min(...validP)-3;
       const pMax=Math.max(...validP)+3;
       const ch4=new Chart(c4,{type:'line',data:{labels:hLabels,datasets:[
-        {label:'Luftdruck',data:hPres,borderColor:'#5c6bc0',backgroundColor:'rgba(92,107,192,.1)',fill:true,tension:.35,pointRadius:2,pointHoverRadius:5,borderWidth:2.5}
+        {label:'Luftdruck',data:hPres,borderColor:'#5c6bc0',backgroundColor:'rgba(92,107,192,.1)',fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,borderWidth:2.5}
       ]},plugins:DW_PLUGINS,options:{responsive:true,maintainAspectRatio:false,
+        layout:{padding:{left:10,right:10,top:4,bottom:0}},
         plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c5=>`${c5.parsed.y} hPa`}}},
-        scales:{x:XOPT,y:{min:pMin,max:pMax,ticks:{color:TICK,font:{size:9},callback:v=>v+' hPa'},grid:{color:GRID}}}}});
+        scales:{x:xFor('dw-pres-chart'),y:{min:pMin,max:pMax,ticks:{color:TICK,font:{size:9},callback:v=>v+' hPa'},grid:{color:GRID,drawBorder:false}}}}});
       ch4._isToday=isToday;
       ch4._infoId='dw-pres-hover';ch4._infoUnit=' hPa';
       _dwCharts.push(ch4);
     }
+
+    // AP4: touchend → Tooltips/Cursor auf allen Charts zurücksetzen
+    _dwAttachTouchReset();
+    // AP4: Touch-Scroll-Lock nachträglich auf die neuen Chart-Container binden
+    if(typeof _initChartScrollLock==='function')_initChartScrollLock();
+  });
+}
+
+// AP4: Globaler Touch-Reset für Daily-Weather Charts
+// Wird beim Verlassen des Charts aufgerufen – Tooltip & Cursor-Linie weg
+function _dwAttachTouchReset(){
+  _dwCharts.forEach(ch=>{
+    if(!ch||!ch.canvas||ch._touchResetBound)return;
+    const reset=()=>{
+      _dwSyncActive=-1;
+      _dwCharts.forEach(other=>{
+        if(!other)return;
+        other.setActiveElements([]);
+        if(other.tooltip)other.tooltip.setActiveElements([],{x:0,y:0});
+        other.draw();
+      });
+      // Magic-Header/Info-Leisten leeren
+      ['dw-temp-hover','dw-wind-hover','dw-rain-hover','dw-pres-hover'].forEach(id=>{
+        const el=document.getElementById(id);if(el)el.textContent='';
+      });
+    };
+    ch.canvas.addEventListener('touchend',reset,{passive:true});
+    ch.canvas.addEventListener('touchcancel',reset,{passive:true});
+    ch.canvas.addEventListener('mouseleave',reset);
+    ch._touchResetBound=true;
   });
 }
 
 
-// ── 14-Tage Vorhersage-Übersicht (Tabelle) ──────────────────
-
+// ── 14-Tage Vorhersage: Klick auf Mini-Day → DIREKT Tages-Detail ──
+// AP1: Kein Tabellen-Zwischenschritt mehr. openFcDayDetail routet jetzt
+// direkt auf das daily-weather Overlay mit allen Stunden-Charts.
+// Die alte 14-Tage-Tabelle (_renderFc14Table) ist weiterhin verfügbar
+// für alternative Einstiege (z.B. aus Wetter-Overlays "Alle 14 Tage").
 function openFcDayDetail(dayIdx,dateStr){
+  if(!_fcData)return;
+  // Fallback: wenn Datum fehlt, nimm Index aus _fcData.daily.time
+  const ds=dateStr||_fcData?.daily?.time?.[dayIdx];
+  if(ds&&typeof openDailyWeather==='function'&&_fcHourlyData){
+    openDailyWeather(ds);
+    return;
+  }
+  // Fallback auf Tabelle, wenn Stundendaten nicht verfügbar
+  openFs('fc-day');
+  _renderFc14Table();
+}
+
+// Alter Einstieg bleibt für direkten Tabellen-Aufruf erhalten
+function openFc14Table(){
   if(!_fcData)return;
   openFs('fc-day');
   _renderFc14Table();
@@ -8502,29 +9358,35 @@ function startLiveSession(){
 
 function closeLiveStartOv(){closeFs('live-start');}
 
-// Chips für Live-Start Gewässer/Spot
+// Chips für Live-Start Gewässer/Spot (AP3: globalDict)
 function rndrLsWChips(fv){
   const el=document.getElementById('ls-w-chips');if(!el)return;
-  let chips=topFavs('waters',6);
-  if(fv)chips=chips.filter(w=>w.toLowerCase().includes(fv.toLowerCase()));
-  chips=[...new Set(chips)];
+  const chips=dictTop('waters',fv,6);
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
-  el.innerHTML=chips.map(w=>`<button class="chip cw" onmousedown="document.getElementById('ls-water').value='${w.replace(/'/g,"\\'")}';dHide('ls-w-chips')">${w}</button>`).join('');
+  el.innerHTML=chips.map(w=>{
+    const s=w.replace(/'/g,"\\'");
+    return`<button class="chip cw" ${_chipAttr('waters',w)} onmousedown="document.getElementById('ls-water').value='${s}';dHide('ls-w-chips')">${w}</button>`;
+  }).join('');
 }
 function rndrLsSpotChips(fv){
   const el=document.getElementById('ls-spot-chips');if(!el)return;
   const water=document.getElementById('ls-water')?.value?.trim()||'';
   let chips=[];
   if(water){
-    chips=[...new Set(sessions.filter(s=>s.water===water&&s.spot).map(s=>s.spot))].slice(0,5);
+    const ctxCnt={};
+    sessions.forEach(s=>{if(s.water===water&&s.spot){ctxCnt[s.spot]=(ctxCnt[s.spot]||0)+1;}});
+    chips=Object.entries(ctxCnt).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
   }
-  if(!chips.length)chips=topFavs('spots',5);
-  if(fv)chips=chips.filter(w=>w.toLowerCase().includes(fv.toLowerCase()));
-  chips=[...new Set(chips)];
+  if(!chips.length)chips=dictTop('spots','',5);
+  if(fv){const q=fv.toLowerCase();chips=chips.filter(w=>w.toLowerCase().includes(q));}
+  chips=[...new Set(chips)].slice(0,5);
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
-  el.innerHTML=chips.map(w=>`<button class="chip cw" onmousedown="document.getElementById('ls-spot').value='${w.replace(/'/g,"\\'")}';dHide('ls-spot-chips')">${w}</button>`).join('');
+  el.innerHTML=chips.map(w=>{
+    const s=w.replace(/'/g,"\\'");
+    return`<button class="chip cw" ${_chipAttr('spots',w)} onmousedown="document.getElementById('ls-spot').value='${s}';dHide('ls-spot-chips')">${w}</button>`;
+  }).join('');
 }
 
 function _doStartLive(){
@@ -8894,20 +9756,22 @@ function _whisperPlaceholder(){
   showToast('🎙️','Whisper-Spracherkennung wird in einem zukünftigen Update verfügbar sein.');
 }
 
-// AP2: Live Session – deduplizierte Fisch-Chips (Set verhindert Wiederholung)
+// AP3: Live Session – Fisch-Chips aus globalDict (Multi-Word safe)
 function rndrLcFishChips(val){
   const con=document.getElementById('lc-fc');
   if(!con)return;
   const v=(val||'').toLowerCase();
-  let list;
-  if(v){
+  // Priorität: globalDict (gelerntes Wörterbuch) → dann FISH-Fallback
+  let list=dictTop('fish',v,8);
+  if(!list.length&&v){
     list=FISH.filter(f=>f.toLowerCase().includes(v)).slice(0,8);
-  } else {
-    list=[...new Set((favs.fish||[]))].slice(0,8);
   }
   if(!list.length){con.style.display='none';return;}
   con.style.display='flex';
-  con.innerHTML=list.map(f=>`<button class="fav-btn" onmousedown="document.getElementById('lc-fish').value='${f}';dHide('lc-fc')">${f}</button>`).join('');
+  con.innerHTML=list.map(f=>{
+    const s=f.replace(/'/g,"\\'");
+    return`<button class="fav-btn" ${_chipAttr('fish',f)} onmousedown="document.getElementById('lc-fish').value='${s}';dHide('lc-fc')">${f}</button>`;
+  }).join('');
 }
 
 // AP4: Live-Fotos auch aus Mediathek
@@ -8955,8 +9819,13 @@ function saveLiveCatch(){
   const time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
 
   // GPS-Koordinate des Fangs (für Multi-Marker auf Karte)
-  const catchLat=gpsCoords?.lat||null;
-  const catchLon=gpsCoords?.lon||null;
+  let catchLat=gpsCoords?.lat||null;
+  let catchLon=gpsCoords?.lon||null;
+  // AP4: Reverse-Lookup — wenn kein Live-GPS, nutze Chip-gemappte Koordinaten
+  if((!catchLat||!catchLon)&&_liveSession?.water&&typeof findGpsForChipCombo==='function'){
+    const hit=findGpsForChipCombo(_liveSession.water,_liveSession.spot||'');
+    if(hit){catchLat=hit.lat;catchLon=hit.lon;}
+  }
 
   // Foto speichern wenn vorhanden
   let photoKey=null;
@@ -8974,8 +9843,10 @@ function saveLiveCatch(){
 
   closeLiveCatch();
   showToast('🐟',`${fish}${len?' · '+len+'cm':''} hinzugefügt!`);
-  addFav('fish',fish);
-  if(bait)addFav('bait',bait);
+  // AP3: Alle Eingaben ins globale Chip-Wörterbuch
+  dictAdd('fish',fish);
+  if(bait)dictAdd('bait',bait);
+  if(note&&note.length>=2)dictAdd('notes',note);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -10121,7 +10992,16 @@ function _grpMapRender(catches){
         if(c.id&&typeof _openCatchDetail==='function')_openCatchDetail(gId,c.id);
         else marker.openPopup();
       });
-      marker.bindPopup(`<div style="min-width:130px;"><strong style="color:${_userColor(c.userId)};">${_esc(c.userName)}</strong><br>${fIco(c.type)} ${c.type} · ${c.length}cm<br>🎣 ${_esc(c.bait||'–')}<br><span style="font-size:10px;color:#888;">${c.date||''} · ${c.water||''}</span><br><button onclick="_openCatchDetail('${gId}','${c.id||''}')" style="margin-top:6px;padding:6px 10px;background:var(--green-deep);color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;">Details öffnen →</button></div>`);
+      // AP4: Alias-Erkennung — wenn der fremde GPS-Punkt ±25m zu einem
+      // eigenen Spot liegt, zeige dem Nutzer "seinen" Namen dafür an.
+      let aliasHtml='';
+      try{
+        const alias=findLocalSpotAlias(lat,lon,c.water,c.spot,25);
+        if(alias&&alias.isAlias){
+          aliasHtml=`<div style="margin-top:4px;padding:4px 8px;background:rgba(74,124,89,.1);border-radius:6px;font-size:10px;color:var(--green-deep);"><strong>📍 Dein Spot:</strong> ${_esc(alias.localSpot||alias.localWater)} <span style="opacity:.7;">(${alias.distance}m)</span></div>`;
+        }
+      }catch(e){}
+      marker.bindPopup(`<div style="min-width:150px;"><strong style="color:${_userColor(c.userId)};">${_esc(c.userName)}</strong><br>${fIco(c.type)} ${c.type} · ${c.length}cm<br>🎣 ${_esc(c.bait||'–')}<br><span style="font-size:10px;color:#888;">${c.date||''} · ${c.water||''}${c.spot?' · '+_esc(c.spot):''}</span>${aliasHtml}<br><button onclick="_openCatchDetail('${gId}','${c.id||''}')" style="margin-top:6px;padding:6px 10px;background:var(--green-deep);color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;">Details öffnen →</button></div>`);
       bounds.push([lat,lon]);
     });
     if(bounds.length>1)_grpLeafletMap.fitBounds(bounds,{padding:[30,30],maxZoom:13});
@@ -10899,14 +11779,32 @@ function _autoTabWater(){
   setTimeout(()=>{document.activeElement?.blur();},50);
 }
 
-// ── Chart Scroll-Lock ──
+// ── Chart Scroll-Lock (AP4) ──
+// Horizontales Wischen auf Chart = Tooltip/Cursor bewegen, NICHT Seite scrollen.
+// Vertikales Wischen = Page-Scroll (pan-y).
 function _initChartScrollLock(){
   document.querySelectorAll('.fc-chart-wrap, .fc-canvas-wrap, .fc-rain-wrap').forEach(el=>{
+    if(el._scrollLockBound)return;
     el.classList.add('fc-chart-touch');
+    let sx=0,sy=0,locked=false;
     el.addEventListener('touchstart',e=>{
-      if(e.touches.length===1)el.style.touchAction='none';
+      if(e.touches.length!==1){locked=false;return;}
+      sx=e.touches[0].clientX;sy=e.touches[0].clientY;locked=false;
+    },{passive:true});
+    el.addEventListener('touchmove',e=>{
+      if(e.touches.length!==1)return;
+      const dx=Math.abs(e.touches[0].clientX-sx);
+      const dy=Math.abs(e.touches[0].clientY-sy);
+      // Horizontale Geste → stoppen, damit Page nicht seitlich wischt
+      if(dx>dy&&dx>6){
+        locked=true;
+        e.stopPropagation();
+        if(e.cancelable)e.preventDefault();
+      }
     },{passive:false});
-    el.addEventListener('touchend',()=>{el.style.touchAction='';});
+    el.addEventListener('touchend',()=>{locked=false;},{passive:true});
+    el.addEventListener('touchcancel',()=>{locked=false;},{passive:true});
+    el._scrollLockBound=true;
   });
 }
 
@@ -10926,6 +11824,31 @@ function _chartMagicHeader(chartId,label,values){
 // ── 14-Day Chart Crosshair + Magic Header Update Plugin ──
 const _wx14CrosshairPlugin={
   id:'wx14Crosshair',
+  // AP4: Beim Chart-Init touchend/cancel/mouseleave-Listener binden,
+  // damit Tooltip & Cursor-Linie nach Loslassen sauber verschwinden
+  afterInit(chart){
+    if(!chart.canvas||chart._wx14TouchBound)return;
+    const reset=()=>{
+      try{
+        chart.setActiveElements([]);
+        if(chart.tooltip)chart.tooltip.setActiveElements([],{x:0,y:0});
+        // Magic-Header zurück auf Default
+        if(chart._magicId){
+          const curEl=document.getElementById('cmh-cur-'+chart._magicId);
+          const lblEl=document.getElementById('cmh-lbl-'+chart._magicId);
+          if(curEl&&chart._magicDefault!=null)curEl.textContent=Math.round(chart._magicDefault)+(chart._magicUnit||'');
+          if(lblEl)lblEl.textContent='Aktuell';
+        }
+        chart.draw();
+      }catch(e){}
+    };
+    chart.canvas.addEventListener('touchend',reset,{passive:true});
+    chart.canvas.addEventListener('touchcancel',reset,{passive:true});
+    chart.canvas.addEventListener('mouseleave',reset);
+    chart._wx14TouchBound=true;
+    // Scroll-Lock auf Chart-Container nachziehen
+    if(typeof _initChartScrollLock==='function')_initChartScrollLock();
+  },
   // AP5: Crosshair-Linie wird jetzt global gezeichnet – hier nur Magic Header Update
   afterEvent(chart,args){
     if(!chart._magicId||args.replay)return;
@@ -11134,6 +12057,8 @@ function _grpMapFilterChange(key,val){
       const lf=localStorage.getItem('fb_favs_v8')||localStorage.getItem('fb_favs_v7');
       if(lf){try{favs=JSON.parse(lf);await saveFavs();}catch(e){}}
     }
+    // AP3: Globales Chip-Wörterbuch aus favs + sessions aufbauen
+    try{_rebuildGlobalDict();}catch(e){console.warn('dict rebuild:',e);}
     // Forecast-Cache TTL: älter als 6h → verwerfen (Fix 11)
     const fcTs=await idbG('profile','_fc_timestamp');
     if(fcTs){
