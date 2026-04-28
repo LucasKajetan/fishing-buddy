@@ -98,7 +98,11 @@ body{
   justify-content:center;
   align-items:flex-start;
   padding:24px 16px 24px;
+  /* v51: 100vh-Fallback für ältere Browser, 100dvh für moderne Mobile-Browser
+     (vermeidet iOS-Adressleisten-Sprung). Reihenfolge wichtig — letzte Deklaration
+     gewinnt wenn unterstützt. */
   min-height:100vh;
+  min-height:100dvh;
 }
 
 /* ── .phone: Das Gehäuse ── */
@@ -124,11 +128,16 @@ body{
     background:var(--green-deep);
     align-items:stretch;
     justify-content:stretch;
+    min-height:100vh;        /* Fallback */
     min-height:100dvh;
+    height:100vh;            /* Fallback */
     height:100dvh;
   }
   .phone{
     width:100%;
+    min-height:100vh;        /* Fallback */
+    min-height:100dvh;
+    height:100vh;            /* Fallback */
     height:100dvh;
     border-radius:0;
     box-shadow:none;
@@ -136,6 +145,13 @@ body{
     padding-top:env(safe-area-inset-top,0px);
     padding-bottom:env(safe-area-inset-bottom,0px);
   }
+  /* v51 Edge-to-Edge: Pages und Scroll-Container füllen die echte Geräte-Höhe.
+     Wichtig:
+     - Reihenfolge zwingend vh→dvh (vh als Fallback, dvh überschreibt in modernen Browsern)
+     - --nav-clearance bleibt als padding-bottom auf Scroll-Containern erhalten,
+       damit Content nicht hinter der schwebenden Bottom-Nav verschwindet. */
+  .pages{min-height:100vh;min-height:100dvh;}
+  .page{height:100%;min-height:100vh;min-height:100dvh;}
 }
 
 /* STATUS BAR */
@@ -183,9 +199,9 @@ body{
 .btab.on .btab-ico{color:var(--green-mid);transform:scale(1.1);}
 .btab.on .btab-lbl{color:var(--green-mid);font-weight:700;}
 
-/* PAGES */
-.pages{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
-.page{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+/* PAGES — v51: explizit height:100% + flex:1 für Edge-to-Edge */
+.pages{display:flex;flex-direction:column;flex:1;height:100%;min-height:0;overflow:hidden;}
+.page{display:none;flex-direction:column;flex:1;height:100%;min-height:0;overflow:hidden;}
 .page.on{display:flex;}
 
 /* SCROLL-BEREICH – AP2: globaler Navi-Cutoff-Fix · nutzt --nav-clearance damit
@@ -1334,7 +1350,8 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .burg-hdr{background:var(--green-deep);padding:40px 22px 20px;color:#fff;}
 .burg-n{font-family:var(--fs);font-size:19px;font-weight:600;color:#fff;}
 .burg-s{font-size:12px;color:rgba(255,255,255,.65);margin-top:4px;}
-.burg-body{flex:1;padding:14px;}
+/* v51: Burger-Body scrollbar mit Nav-Clearance, damit unten nichts hinter der Bottom-Nav verschwindet */
+.burg-body{flex:1;padding:14px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(14px + var(--nav-clearance));}
 .burg-sec{margin-bottom:18px;}
 .burg-slbl{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-light);margin-bottom:8px;padding-left:4px;}
 .bitem{display:flex;align-items:center;gap:12px;padding:13px 10px;border-radius:var(--rs);cursor:pointer;transition:background .15s;border:none;background:transparent;width:100%;font-family:var(--fa);text-align:left;}
@@ -1369,7 +1386,8 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .ob-finish-btn{padding:16px 36px;background:var(--gold);color:var(--green-deep);border:none;border-radius:var(--rs);font-size:16px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.25);}
 .obtit{font-family:var(--fs);font-size:28px;font-weight:600;color:#fff;line-height:1.25;margin-bottom:8px;}
 .obsub{font-size:14px;color:rgba(255,255,255,.65);line-height:1.6;}
-.obbody{flex:1;background:var(--cream);border-radius:28px 28px 0 0;padding:28px 24px 36px;overflow-y:auto;}
+/* v51: Onboarding-Body — letzter Button sicher über der Bottom-Nav */
+.obbody{flex:1;background:var(--cream);border-radius:28px 28px 0 0;padding:28px 24px max(36px,var(--nav-clearance));overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .obig{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
 .oblbl{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);}
 
@@ -1681,6 +1699,43 @@ input[type=file]{display:none;}
 .dash-lb-name{flex:1;font-size:13px;font-weight:600;color:var(--text-dark);}
 .dash-lb-val{font-size:13px;font-weight:700;color:var(--green-deep);}
 
+/* ───────────────────────────────────────────────────────────
+   v51 Insights 2.0 — Köder-Wissenschaft, Druck-Korrelation, Beißzeiten
+─────────────────────────────────────────────────────────── */
+.insights-bs{display:flex;flex-direction:column;gap:10px;}
+.bs-row{background:var(--cream);border:1px solid var(--cream-dark);border-radius:10px;padding:10px 12px;}
+.bs-fish{font-size:13px;color:var(--text-dark);margin-bottom:8px;}
+.bs-cnt{font-size:10px;color:var(--text-light);font-weight:500;margin-left:6px;}
+.bs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.bs-cell{background:#fff;border-radius:8px;padding:7px 8px;text-align:center;}
+.bs-cell-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);font-weight:700;margin-bottom:2px;}
+.bs-cell-val{font-size:11px;font-weight:600;color:var(--text-dark);line-height:1.3;}
+.bs-cell-val small{font-size:9px;color:var(--text-light);font-weight:400;}
+.bs-na{color:var(--text-light);font-weight:400;}
+
+.insights-pr-summary{padding:10px 12px;background:var(--cream);border-radius:10px;margin-bottom:10px;text-align:center;}
+.insights-pr-bars{display:flex;flex-direction:column;gap:8px;}
+.insights-pr-bar{}
+.insights-pr-bar-head{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dark);margin-bottom:4px;}
+.insights-pr-bar-val{margin-left:auto;font-size:11px;color:var(--text-light);font-weight:700;}
+.insights-pr-bar-track{height:8px;background:var(--cream);border-radius:6px;overflow:hidden;}
+.insights-pr-bar-fill{height:100%;border-radius:6px;transition:width .6s cubic-bezier(.22,1,.36,1);}
+.insights-pr-bar-sub{font-size:10px;color:var(--text-light);margin-top:3px;}
+.insights-pr-takeaway{margin-top:12px;padding:10px 12px;background:var(--green-mist);border-left:3px solid var(--green-mid);border-radius:8px;font-size:12px;color:var(--green-deep);line-height:1.5;}
+
+.insights-bt{}
+.bt-chart{display:flex;align-items:flex-end;gap:2px;height:90px;padding:4px 4px 0;background:var(--cream);border-radius:10px 10px 0 0;}
+.bt-col{flex:1;height:100%;display:flex;align-items:flex-end;}
+.bt-fill{width:100%;border-radius:3px 3px 0 0;transition:height .5s cubic-bezier(.22,1,.36,1);}
+.bt-labels{display:flex;justify-content:space-between;padding:4px 4px 8px;background:var(--cream);border-radius:0 0 10px 10px;font-size:9px;color:var(--text-light);font-weight:600;letter-spacing:.5px;}
+.bt-summary{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
+.bt-pill{display:inline-block;padding:5px 11px;background:var(--green-deep);color:#fff;font-size:11px;font-weight:700;border-radius:14px;}
+.bt-periods{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+.bt-period{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;background:var(--cream);border-radius:8px;font-size:10px;color:var(--text-mid);}
+.bt-period strong{font-size:13px;color:var(--text-dark);}
+.bt-period.top{background:var(--green-mist);color:var(--green-deep);}
+.bt-period.top strong{color:var(--green-deep);}
+
 /* ── Map Layer Toggle ── */
 .map-layer-toggle{position:absolute;bottom:70px;right:12px;z-index:400;display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.95);border-radius:10px;padding:4px;box-shadow:var(--sh-md);backdrop-filter:blur(8px);}
 .map-layer-btn{padding:8px 12px;border:none;border-radius:8px;font-size:11px;font-weight:700;font-family:var(--fa);cursor:pointer;transition:all .15s;background:transparent;color:var(--text-mid);}
@@ -1782,6 +1837,28 @@ input[type=file]{display:none;}
 .catch-comment-input{display:flex;gap:6px;padding-top:6px;border-top:1px solid var(--cream-dark);margin-top:4px;}
 .catch-comment-input input{flex:1;padding:6px 10px;border:1px solid var(--cream-dark);border-radius:16px;font-size:11px;font-family:var(--fa);outline:none;}
 .catch-comment-input button{padding:4px 10px;border:none;border-radius:16px;background:var(--green-deep);color:#fff;font-size:11px;font-weight:600;cursor:pointer;}
+
+/* v51: Inline-Kommentar-Expand unter Catch-Card.
+   Wichtig:
+   - voller Breitenbezug auf die Card (linke/rechte Margin = 0, Padding intern für Abstände)
+   - Klicks im Expand-Bereich blubbern NICHT zur catch-card (verhindert ungewolltes Detail-Overlay)
+   - Input flex:1 + gap, Button auto-width — kein Overflow */
+.cm-expand{display:block;background:var(--cream);border-top:1px solid var(--green-pale);border-radius:0 0 12px 12px;padding:12px 14px;margin:0;}
+.cm-expand-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.cm-expand-list:empty{display:none;}
+.cm-expand-empty{font-size:11px;color:var(--text-light);margin-bottom:8px;text-align:center;}
+.cm-expand-row{display:flex;gap:8px;align-items:flex-start;}
+.cm-expand-row .catch-card-avatar{width:24px;height:24px;font-size:11px;flex-shrink:0;}
+.cm-expand-row-body{flex:1;min-width:0;}
+.cm-expand-row-name{font-weight:700;font-size:11px;}
+.cm-expand-row-time{font-size:10px;color:var(--text-light);margin-left:6px;}
+.cm-expand-row-text{font-size:12.5px;color:var(--text-dark);margin-top:2px;line-height:1.45;word-wrap:break-word;}
+.cm-expand-form{display:flex;gap:8px;align-items:center;width:100%;margin:0;}
+.cm-expand-form input{flex:1 1 auto;min-width:0;width:100%;padding:9px 14px;border:1.5px solid var(--green-pale);border-radius:22px;font-size:13px;font-family:var(--fa);outline:none;background:#fff;transition:border-color .15s;}
+.cm-expand-form input:focus{border-color:var(--green-mid);}
+.cm-expand-form button{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:none;background:var(--green-deep);color:#fff;font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s,opacity .15s;}
+.cm-expand-form button:active{transform:scale(.92);}
+.cm-expand-form button:disabled{opacity:.45;cursor:not-allowed;}
 
 /* Group Map Filter Header */
 .grp-map-filter{display:flex;gap:6px;padding:8px 12px;background:rgba(255,255,255,.9);border-radius:10px;margin:0 16px 10px;backdrop-filter:blur(6px);overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap;}
@@ -2109,7 +2186,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v50 · Supabase · Leaflet · PWA</div>
+    <div class="burg-ver">Fishing Buddy v51 · Supabase · Leaflet · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -2278,7 +2355,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v50</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v51</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
@@ -2904,7 +2981,7 @@ if(typeof Chart!=='undefined'){
 }
 
 // ═══════════════════════════════════════════════════════════
-// SUPABASE CLIENT (v50)
+// SUPABASE CLIENT (v51)
 // ═══════════════════════════════════════════════════════════
 const SB_URL='https://diiggjftcpoagsnxsaez.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpaWdnamZ0Y3BvYWdzbnhzYWV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNzE4NjQsImV4cCI6MjA5MTY0Nzg2NH0.XaBkQcjEl300NIZ3XIfcgEgWVwkfQTqInfECfvUGG6s';
@@ -2962,7 +3039,7 @@ function sbInit(){
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v50`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v51`;
       } else {
         _sbUser=null;
       }
@@ -2978,7 +3055,7 @@ async function _checkAuthSession(){
     if(data?.session?.user){
       _sbUser=data.session.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v50`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v51`;
       return true;
     }
   }catch(e){console.warn('Auth-Check Fehler:',e);}
@@ -3024,7 +3101,7 @@ async function handleAuth(e){
       //   5. ERST jetzt Login-Overlay weg + auf Fangbuch wechseln
       _sbUser=result.data.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v50`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v51`;
       // Cloud = Single Source of Truth bei Login. _renderAll() läuft am Ende.
       await syncFromCloud({authoritative:true});
       // Sicherheits-Re-Render falls syncFromCloud früh ausstieg (z.B. offline mid-flight)
@@ -3047,7 +3124,7 @@ async function handleAuth(e){
         _sbUser=result.data.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v50`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v51`;
         // Onboarding starten
         document.getElementById('onboarding').classList.remove('hidden');
         document.getElementById('ob-btn').disabled=true;
@@ -3100,7 +3177,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v50';
+  document.getElementById('hdr-sub').textContent='Offline · v51';
   if(!profile){
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('ob-btn').disabled=true;
@@ -3239,7 +3316,7 @@ function _buildProfileBundle(){
     spotBaits:profile?.spotBaits||null,
     docs:profile?.docs||null,
     photos,
-    schemaVersion:50,
+    schemaVersion:51,
     updatedAt:Date.now()
   };
 }
@@ -3400,7 +3477,7 @@ async function sbLogout(){
   _lsRemove(LS_FAVS);
   _lsRemove(LS_GROUPS);
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v50';
+  document.getElementById('hdr-sub').textContent='Offline · v51';
   showToast('👋','Abgemeldet');
 }
 
@@ -3428,7 +3505,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='fb-v9-50';const A=['https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='fb-v9-51';const A=['https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -4334,7 +4411,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v50`:`PLZ ${profile.plz||'–'} · v50`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v51`:`PLZ ${profile.plz||'–'} · v51`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -11505,7 +11582,7 @@ function _rndrGroupFeed(){
           </div>
           <div class="catch-card-actions" onclick="event.stopPropagation();">
             <button class="catch-card-act${liked?' liked':''}" id="like-btn-${scId}" onclick="event.stopPropagation();_grpLike('${g.id}','${scId}')"><span class="cc-ico">${liked?'❤️':'🤍'}</span> <span class="like-cnt">${likeCount||''}</span></button>
-            <button class="catch-card-act" onclick="event.stopPropagation();_grpComment('${g.id}','${scId}')"><span class="cc-ico">💬</span> ${commentCount||''}</button>
+            <button class="catch-card-act" onclick="event.stopPropagation();_grpComment('${g.id}','${scId}',event)"><span class="cc-ico">💬</span> ${commentCount||''}</button>
             <button class="catch-card-act" onclick="event.stopPropagation();_grpCopySetup('${_esc(c.bait||'')}','${_esc(c.baitNote||'')}')"><span class="cc-ico">📋</span> Kopieren</button>
           </div>
         </div>
@@ -11579,61 +11656,96 @@ async function _grpLike(gId,catchId){
   _saveGroups();
 }
 
-function _grpComment(gId,catchId){
-  // v45: Expand inline comment section under the catch card
+// v51 Fix: Kommentar-Expand unter Catch-Card.
+// Bug-Fixes ggü. v50:
+//  - Klicks im Expand-Bereich blubberten zur catch-card → öffneten ungewollt das
+//    Detail-Overlay. Fix: stopPropagation auf dem Expand-Container.
+//  - Layout: Eingabefeld + Button waren zu schmal/eng → eigenes CSS .cm-expand-form
+//    mit voller Breite und sauberen Margins.
+//  - Auto-Scroll und :focus-handling damit Input direkt nutzbar ist.
+function _grpComment(gId,catchId,evt){
+  evt=evt||window.event;
   const existing=document.getElementById('comment-expand-'+catchId);
   if(existing){existing.remove();return;} // toggle off
   const g=_groups.find(x=>x.id===gId);
   if(!g)return;
   const sc=g.sharedCatches?.find(c=>c.id===catchId);
   if(!sc)return;
-  const myId=_sbUser?.id||'me';
-  const myName=profile?.name?.split(' ')[0]||'Ich';
 
-  // Build comments list + input
-  const comments=(sc.comments||[]).map(cm=>{
-    const cmMember=g.members?.find(m=>m.id===cm.userId)||{name:'?'};
+  // Comments-Liste rendern
+  const commentsHtml=(sc.comments||[]).map(cm=>{
+    const cmMember=g.members?.find(m=>m.id===cm.userId)||{name:cm.userName||'?'};
     const cmColor=_userColor(cm.userId);
     const cmTime=new Date(cm.ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-    return `<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;">
-      <div class="catch-card-avatar" style="background:${cmColor};width:22px;height:22px;font-size:10px;flex-shrink:0;">${cmMember.name.charAt(0)}</div>
-      <div style="flex:1;"><span style="font-weight:700;font-size:11px;color:${cmColor};">${_esc(cmMember.name)}</span><span style="font-size:11px;color:var(--text-light);margin-left:4px;">${cmTime}</span><div style="font-size:12px;color:var(--text-dark);margin-top:1px;">${_esc(cm.text)}</div></div>
+    return `<div class="cm-expand-row">
+      <div class="catch-card-avatar" style="background:${cmColor};">${(cmMember.name||'?').charAt(0)}</div>
+      <div class="cm-expand-row-body">
+        <span class="cm-expand-row-name" style="color:${cmColor};">${_esc(cmMember.name||'?')}</span>
+        <span class="cm-expand-row-time">${cmTime}</span>
+        <div class="cm-expand-row-text">${_esc(cm.text)}</div>
+      </div>
     </div>`;
   }).join('');
 
-  // Find the catch card button and insert after the card body
-  const btn=event.target.closest('.catch-card');
-  if(!btn)return;
+  // Trigger-Card finden (Klick war auf dem 💬-Button innerhalb der catch-card)
+  let card=null;
+  if(evt&&evt.target)card=evt.target.closest('.catch-card');
+  if(!card){
+    const likeBtn=document.getElementById('like-btn-'+catchId);
+    card=likeBtn?.closest('.catch-card');
+  }
+  if(!card)return;
+
+  // Expand-Container aufbauen + Klick-Bubbling stoppen
   const expand=document.createElement('div');
   expand.id='comment-expand-'+catchId;
-  expand.className='comment-expand';
+  expand.className='cm-expand';
+  // KRITISCH: jeder Klick INNERHALB des Expand-Bereichs darf NICHT zur Card hochblubbern,
+  // sonst feuert catch-card.onclick (= _openCatchDetail) bei jedem Tap.
+  expand.addEventListener('click',e=>e.stopPropagation());
+  expand.addEventListener('mousedown',e=>e.stopPropagation());
+  expand.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
+
   expand.innerHTML=`
-    <div style="padding:10px 12px;background:var(--cream);border-top:1px solid var(--green-pale);border-radius:0 0 12px 12px;">
-      ${comments||'<div style="font-size:11px;color:var(--text-light);margin-bottom:6px;">Noch keine Kommentare</div>'}
-      <div style="display:flex;gap:6px;margin-top:6px;">
-        <input type="text" class="if" id="cm-input-${catchId}" placeholder="Kommentar..." style="flex:1;font-size:12px;padding:8px 10px;">
-        <button onclick="_submitComment('${gId}','${catchId}')" style="background:var(--green-deep);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;">↑</button>
-      </div>
-    </div>`;
-  btn.appendChild(expand);
-  setTimeout(()=>document.getElementById('cm-input-'+catchId)?.focus(),100);
+    ${commentsHtml?`<div class="cm-expand-list">${commentsHtml}</div>`:'<div class="cm-expand-empty">Noch keine Kommentare — sag etwas Nettes 💬</div>'}
+    <form class="cm-expand-form" onsubmit="event.preventDefault();_submitComment('${gId}','${catchId}');" autocomplete="off">
+      <input type="text" id="cm-input-${catchId}" placeholder="Kommentar schreiben…" maxlength="280" autocomplete="off">
+      <button type="submit" id="cm-send-${catchId}" aria-label="Senden">➤</button>
+    </form>`;
+  card.appendChild(expand);
+
+  // Auto-Scroll: Expand sichtbar machen + Input fokussieren (keine Page-Scroll-Sprünge)
+  setTimeout(()=>{
+    const input=document.getElementById('cm-input-'+catchId);
+    if(input){
+      input.focus({preventScroll:true});
+      try{expand.scrollIntoView({block:'center',behavior:'smooth'});}catch(e){}
+    }
+  },80);
 }
 
-function _submitComment(gId,catchId){
+async function _submitComment(gId,catchId){
   const input=document.getElementById('cm-input-'+catchId);
   const text=input?.value?.trim();
   if(!text)return;
   const g=_groups.find(x=>x.id===gId);
   if(!g)return;
   const myId=_sbUser?.id||'me';
+  const myName=profile?.name||profile?.vorname||'Angler';
   const sc=g.sharedCatches?.find(c=>c.id===catchId);
-  if(sc){
-    if(!sc.comments)sc.comments=[];
-    sc.comments.push({userId:myId,text,ts:Date.now()});
-    g.feed.push({type:'msg',text,ts:Date.now(),userId:myId});
-    _saveGroups();
-    _rndrGroupFeed();
-  }
+  if(!sc)return;
+  if(!sc.comments)sc.comments=[];
+  sc.comments.push({userId:myId,userName:myName,text,ts:Date.now()});
+  // v51: KEIN automatischer Feed-Eintrag mehr — Kommentar bleibt am Fang, blockiert nicht den Chat
+  await _saveGroups();
+  if(input)input.value='';
+  // Frischen Expand mit aktualisierter Liste anzeigen, ohne Feed neu zu rendern
+  const expand=document.getElementById('comment-expand-'+catchId);
+  if(expand)expand.remove();
+  _grpComment(gId,catchId);
+  // Counter-Badge im Card-Footer aktualisieren
+  const commentBtn=document.querySelector(`.catch-card-act[onclick*="_grpComment('${gId}','${catchId}'"]`);
+  if(commentBtn)commentBtn.innerHTML=`<span class="cc-ico">💬</span> ${sc.comments.length||''}`;
 }
 
 function _grpCopySetup(bait,note){
@@ -11646,7 +11758,10 @@ function _grpCopySetup(bait,note){
   }
 }
 
-// ── Group Insights / Dashboard ──
+// ── Group Insights / Dashboard (v51 Insights 2.0) ──
+//   1. Köder-Wissenschaft: Größe + Farbe × Fischart, mit Erfolgsquote
+//   2. Wetter-Einfluss:    Fänge nach Druckzone (steigend / stabil / fallend)
+//   3. Zeitfenster:        24h-Histogramm der Beißzeiten
 function _rndrGroupInsights(){
   const g=_groups.find(x=>x.id===_activeGroupId);
   if(!g)return;
@@ -11656,18 +11771,12 @@ function _rndrGroupInsights(){
   const week=catches.filter(c=>c.date&&(now-new Date(c.date).getTime())<7*86400000);
 
   // Trend analysis
-  const baitMap={},colorMap={},fishMap={},weatherMap={};
+  const baitMap={},fishMap={};
   catches.forEach(c=>{
-    if(c.bait){baitMap[c.bait]=(baitMap[c.bait]||0)+1;}
-    if(c.baitNote){
-      const parts=c.baitNote.split(/[\s,]+/);
-      parts.forEach(p=>{if(p.length>2)colorMap[p]=(colorMap[p]||0)+1;});
-    }
+    if(c.bait)baitMap[c.bait]=(baitMap[c.bait]||0)+1;
     if(c.type)fishMap[c.type]=(fishMap[c.type]||0)+1;
   });
-
   const topBaits=Object.entries(baitMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const topColors=Object.entries(colorMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const topFish=Object.entries(fishMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
 
   // Leaderboard
@@ -11680,12 +11789,16 @@ function _rndrGroupInsights(){
   });
   const leaderboard=Object.entries(userStats).sort((a,b)=>b[1].count-a[1].count);
 
+  // ── v51 Insights 2.0: drei wissenschaftliche Module ──
+  const baitScience  = _insightsBaitScience(catches);
+  const pressureCorr = _insightsPressureInfluence(catches);
+  const biteTimes    = _insightsBiteTimes(catches);
+
   let html=`
     <div class="dash-section">
       <div class="dash-section-title">📊 Trends der letzten 7 Tage</div>
       <div class="dash-trend-chips">
         ${topBaits.map(([b,c])=>`<div class="dash-trend-chip hot">🎣 ${_esc(b)} (${c}x)</div>`).join('')}
-        ${topColors.map(([c,n])=>`<div class="dash-trend-chip warm">🎨 ${_esc(c)} (${n}x)</div>`).join('')}
         ${week.length?`<div class="dash-trend-chip cool">📈 ${week.length} Fänge diese Woche</div>`:''}
       </div>
     </div>
@@ -11709,11 +11822,22 @@ function _rndrGroupInsights(){
       </div>
     </div>
 
+    <!-- v51: Köder-Wissenschaft (Size+Color × Fish) -->
     <div class="dash-section">
-      <div class="dash-section-title">🔬 Wissenschaftlicher Ansatz</div>
-      <div style="font-size:12px;color:var(--text-mid);line-height:1.7;">
-        ${_genScientificInsights(catches)}
-      </div>
+      <div class="dash-section-title">🔬 Köder-Wissenschaft</div>
+      ${baitScience}
+    </div>
+
+    <!-- v51: Wetter-Einfluss (Pressure-Trend × Catch-Rate) -->
+    <div class="dash-section">
+      <div class="dash-section-title">🌤 Wetter-Einfluss · Luftdruck-Trend</div>
+      ${pressureCorr}
+    </div>
+
+    <!-- v51: Zeitfenster (24h Bite-Times Histogramm) -->
+    <div class="dash-section">
+      <div class="dash-section-title">⏰ Aktive Beißzeiten · 24h-Profil</div>
+      ${biteTimes}
     </div>
 
     <div class="dash-section">
@@ -11725,24 +11849,154 @@ function _rndrGroupInsights(){
   el.innerHTML=html;
 }
 
-function _genScientificInsights(catches){
-  if(!catches.length)return'Noch nicht genug Daten für Analysen. Teilt mehr Fänge!';
-  const lines=[];
-  const baits={};catches.forEach(c=>{if(c.baitNote){
-    const size=c.baitNote.match(/(\d+)\s*cm/i);
-    if(size)baits[size[1]]=(baits[size[1]]||0)+1;
-  }});
-  const topSize=Object.entries(baits).sort((a,b)=>b[1]-a[1])[0];
-  if(topSize)lines.push(`💡 <strong>Ködergröße ${topSize[0]}cm</strong> dominiert (${Math.round(topSize[1]/catches.length*100)}% der Fänge).`);
+// ───────────────────────────────────────────────────────────
+// v51 Insights 2.0 — Drei wissenschaftliche Auswertungen
+// ───────────────────────────────────────────────────────────
 
-  const uvMentions=catches.filter(c=>(c.baitNote||'').toLowerCase().includes('uv')).length;
-  if(uvMentions)lines.push(`🟣 <strong>UV-aktive Köder</strong> in ${Math.round(uvMentions/catches.length*100)}% der Fänge verwendet.`);
+// (1) Köder-Wissenschaft: Erfolg von Ködergrößen/-farben × Fischart
+//   Liest c.bait, c.baitNote, c.baitColor, c.baitSize, c.type, c.length.
+//   Aggregiert pro Fisch: Top-Größe, Top-Farbe, Top-Köder, Durchschnittslänge.
+function _insightsBaitScience(catches){
+  if(!catches.length)return _insightsEmpty('Teilt mehr Fänge, um Köder-Muster zu erkennen.');
+  const _kColors=['weiß','schwarz','silber','gold','grün','blau','rot','gelb','braun','rosa','pink','orange','natur','motoroil','firetiger','barsch','perch','uv','kupfer','glow','klar','smoke'];
+  // Pro Fischart: bait-, color-, size-Counter
+  const perFish={};
+  catches.forEach(c=>{
+    if(!c.type)return;
+    const fish=c.type;
+    perFish[fish]=perFish[fish]||{count:0,totalLen:0,baits:{},colors:{},sizes:{}};
+    perFish[fish].count++;
+    perFish[fish].totalLen+=c.length||0;
+    if(c.bait)perFish[fish].baits[c.bait]=(perFish[fish].baits[c.bait]||0)+1;
+    // Farbe (explizit aus baitColor ODER best-effort aus baitNote)
+    const colorRaw=(c.baitColor||'').toLowerCase().trim();
+    const tokens=(c.baitNote||'').toLowerCase().split(/[\s,/-]+/);
+    const colorHit=colorRaw||tokens.find(t=>_kColors.includes(t))||'';
+    if(colorHit)perFish[fish].colors[colorHit]=(perFish[fish].colors[colorHit]||0)+1;
+    // Größe (explizit aus baitSize ODER aus baitNote regex "12cm" / "12 cm")
+    let sizeHit=c.baitSize?String(c.baitSize):'';
+    if(!sizeHit){
+      const m=(c.baitNote||'').match(/(\d{1,2})\s*cm/i);
+      if(m)sizeHit=m[1]+'cm';
+    }
+    if(sizeHit)perFish[fish].sizes[sizeHit]=(perFish[fish].sizes[sizeHit]||0)+1;
+  });
+  const fishes=Object.entries(perFish).sort((a,b)=>b[1].count-a[1].count).slice(0,5);
+  if(!fishes.length)return _insightsEmpty('Noch keine Fänge mit Fischart-Info.');
+  const rows=fishes.map(([fish,d])=>{
+    const topBait =Object.entries(d.baits ).sort((a,b)=>b[1]-a[1])[0];
+    const topColor=Object.entries(d.colors).sort((a,b)=>b[1]-a[1])[0];
+    const topSize =Object.entries(d.sizes ).sort((a,b)=>b[1]-a[1])[0];
+    const avgLen=d.count?Math.round(d.totalLen/d.count):0;
+    return `<div class="bs-row">
+      <div class="bs-fish">${fIco(fish)} <strong>${_esc(fish)}</strong> <span class="bs-cnt">${d.count}× · ⌀${avgLen}cm</span></div>
+      <div class="bs-grid">
+        <div class="bs-cell"><div class="bs-cell-lbl">Top-Köder</div><div class="bs-cell-val">${topBait?'🎣 '+_esc(topBait[0])+' <small>('+topBait[1]+')</small>':'<span class="bs-na">–</span>'}</div></div>
+        <div class="bs-cell"><div class="bs-cell-lbl">Top-Größe</div><div class="bs-cell-val">${topSize?'📏 '+_esc(topSize[0])+' <small>('+topSize[1]+')</small>':'<span class="bs-na">–</span>'}</div></div>
+        <div class="bs-cell"><div class="bs-cell-lbl">Top-Farbe</div><div class="bs-cell-val">${topColor?'🎨 '+_esc(topColor[0])+' <small>('+topColor[1]+')</small>':'<span class="bs-na">–</span>'}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="insights-bs">${rows}</div>`;
+}
 
-  const avgLen=catches.reduce((a,c)=>a+(c.length||0),0)/catches.length;
-  lines.push(`📏 <strong>Durchschnittslänge:</strong> ${Math.round(avgLen)}cm über alle Zielfische.`);
+// (2) Wetter-Einfluss: Fangquote vs. Luftdruck-Trend
+//   Klassifiziert Catches anhand sc.pressure in {fallend, stabil, steigend}.
+//   Trend = Vergleich zur Wochen-Median-Druckzone (oder Klimazonen-Schwellen).
+//   Da pro-Catch keine Trend-Information vorhanden ist, nutzen wir Druck-Zonen relativ
+//   zum Druckmedian aller Catches: low (<med-3hPa) | mid (med±3) | high (>med+3).
+function _insightsPressureInfluence(catches){
+  const wxCatches=catches.filter(c=>c.pressure!=null&&!isNaN(c.pressure));
+  if(wxCatches.length<3)return _insightsEmpty('Noch nicht genug Wetterdaten — sobald mehr Fänge mit Druck-Info geteilt werden, erscheint hier eine Auswertung.');
+  const pressures=wxCatches.map(c=>+c.pressure).sort((a,b)=>a-b);
+  const med=pressures[Math.floor(pressures.length/2)];
+  const buckets={low:[],mid:[],high:[]};
+  wxCatches.forEach(c=>{
+    const p=+c.pressure;
+    if(p<med-3)buckets.low.push(c);
+    else if(p>med+3)buckets.high.push(c);
+    else buckets.mid.push(c);
+  });
+  const total=wxCatches.length;
+  const rows=[
+    {key:'low' ,lbl:'Fallender Druck' ,sub:'Tief / unter Median',ico:'⬇️',color:'#3498db',data:buckets.low },
+    {key:'mid' ,lbl:'Stabiler Druck'  ,sub:'Median ±3 hPa',      ico:'➡️',color:'#95a5a6',data:buckets.mid },
+    {key:'high',lbl:'Steigender Druck',sub:'Hoch / über Median', ico:'⬆️',color:'#e67e22',data:buckets.high}
+  ];
+  // beste Zone identifizieren (höchste Erfolgsquote)
+  const best=rows.slice().sort((a,b)=>b.data.length-a.data.length)[0];
+  const html=`
+    <div class="insights-pr-summary">
+      <div style="font-size:12px;color:var(--text-mid);">Median-Druck der Gruppe: <strong>${Math.round(med)} hPa</strong></div>
+      <div style="font-size:11px;color:var(--text-light);margin-top:2px;">${total} Fänge mit Wetterdaten ausgewertet</div>
+    </div>
+    <div class="insights-pr-bars">
+      ${rows.map(r=>{
+        const pct=total?Math.round(r.data.length/total*100):0;
+        const avgLen=r.data.length?Math.round(r.data.reduce((s,c)=>s+(c.length||0),0)/r.data.length):0;
+        return `<div class="insights-pr-bar">
+          <div class="insights-pr-bar-head">
+            <span style="font-size:14px;">${r.ico}</span>
+            <span style="font-weight:600;">${r.lbl}</span>
+            <span class="insights-pr-bar-val">${r.data.length} (${pct}%)</span>
+          </div>
+          <div class="insights-pr-bar-track"><div class="insights-pr-bar-fill" style="width:${pct}%;background:${r.color};"></div></div>
+          <div class="insights-pr-bar-sub">${r.sub} · ⌀${avgLen}cm</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="insights-pr-takeaway">💡 <strong>Erkenntnis:</strong> ${best.data.length>0?best.lbl.toLowerCase()+' liefert mit '+best.data.length+' Fängen die meisten Bisse in dieser Gruppe.':'Noch keine signifikante Druck-Korrelation.'}</div>
+  `;
+  return html;
+}
 
-  if(!lines.length)lines.push('Teilt mehr Fänge für tiefere Analysen!');
-  return lines.join('<br>');
+// (3) Zeitfenster: 24h Bite-Time Histogramm (aggregiert nach Stunde des Tages)
+function _insightsBiteTimes(catches){
+  const timed=catches.filter(c=>c.time&&/^\d{1,2}:\d{2}/.test(c.time));
+  if(timed.length<2)return _insightsEmpty('Sobald mehr Fänge mit Uhrzeit geteilt werden, erscheint hier das 24h-Profil.');
+  const hours=new Array(24).fill(0);
+  timed.forEach(c=>{
+    const h=parseInt(c.time.split(':')[0],10);
+    if(!isNaN(h)&&h>=0&&h<24)hours[h]++;
+  });
+  const max=Math.max(...hours)||1;
+  const peakIdx=hours.indexOf(max);
+  const peakRange=`${String(peakIdx).padStart(2,'0')}:00–${String((peakIdx+1)%24).padStart(2,'0')}:00`;
+  // Tageszonen-Klassifikation für Lesbarkeit
+  const periods=[
+    {label:'Morgen',from:5,to:10,emoji:'🌅'},
+    {label:'Mittag',from:10,to:15,emoji:'☀️'},
+    {label:'Abend',from:17,to:21,emoji:'🌇'},
+    {label:'Nacht',from:21,to:5,emoji:'🌙'},
+  ];
+  const periodCounts=periods.map(p=>{
+    let cnt=0;
+    if(p.from<p.to){for(let h=p.from;h<p.to;h++)cnt+=hours[h];}
+    else{for(let h=p.from;h<24;h++)cnt+=hours[h];for(let h=0;h<p.to;h++)cnt+=hours[h];}
+    return{...p,cnt};
+  });
+  const topPeriod=periodCounts.slice().sort((a,b)=>b.cnt-a.cnt)[0];
+  const bars=hours.map((c,h)=>{
+    const pct=Math.round(c/max*100);
+    const isPeak=h===peakIdx&&c>0;
+    return `<div class="bt-col" title="${String(h).padStart(2,'0')}:00 — ${c} Fang${c===1?'':'e'}">
+      <div class="bt-fill" style="height:${c?Math.max(pct,6):0}%;background:${isPeak?'var(--green-deep)':'var(--green-mid)'};opacity:${c?1:0.15};"></div>
+    </div>`;
+  }).join('');
+  const labels=`<div class="bt-labels"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></div>`;
+  return `
+    <div class="insights-bt">
+      <div class="bt-chart">${bars}</div>
+      ${labels}
+      <div class="bt-summary">
+        <div><span class="bt-pill">🎯 Peak: ${peakRange}</span></div>
+        <div class="bt-periods">${periodCounts.map(p=>`<div class="bt-period${p===topPeriod?' top':''}"><span>${p.emoji}</span><span>${p.label}</span><strong>${p.cnt}</strong></div>`).join('')}</div>
+      </div>
+    </div>`;
+}
+
+function _insightsEmpty(msg){
+  return `<div style="padding:14px;background:var(--cream);border-radius:10px;font-size:12px;color:var(--text-light);text-align:center;line-height:1.6;">${msg}</div>`;
 }
 
 function _exportGroupData(gId){
@@ -11933,7 +12187,7 @@ async function _grpLeave(gId){
   if(typeof _rndrGroupList==='function')_rndrGroupList();
 }
 
-// ── AP4: Catch Detail Overlay ──
+// ── v51: Catch Detail Overlay (Wetter + Lightbox-Foto + Smart-Map) ──
 function _openCatchDetail(gId,catchId){
   const g=_groups.find(x=>x.id===gId);
   if(!g)return;
@@ -11943,25 +12197,43 @@ function _openCatchDetail(gId,catchId){
   const color=_userColor(sc.userId);
   openFs('catch-detail');
 
+  // Smart-Map: GPS-Quelle bestimmen
+  const mapInfo=_resolveCatchLocation(sc);
+
   let html='';
-  // Photo placeholder (no photo storage in shared catches yet)
-  html+=`<div style="background:linear-gradient(135deg,var(--green-deep),#1a3522);padding:60px 20px 30px;text-align:center;">
-    <div style="font-size:64px;margin-bottom:8px;">${fIco(sc.type)}</div>
-    <div style="font-size:24px;font-weight:700;color:#fff;font-family:var(--fs);">${_esc(sc.type)}</div>
-    <div style="font-size:14px;color:rgba(255,255,255,.7);margin-top:4px;">${sc.length}cm${sc.weight?' · '+sc.weight+'kg':''}</div>
-  </div>`;
+  // ── Hero: entweder echtes Foto (klickbar / Lightbox) oder Gradient-Fallback ──
+  if(sc.photoKey){
+    html+=`<div id="cd-photo-wrap" style="position:relative;width:100%;background:#1a1d1a;aspect-ratio:4/3;cursor:pointer;overflow:hidden;" onclick="_openCatchPhotoLb('${sc.photoKey}')">
+      <img id="cd-photo" src="" alt="Fangfoto" style="width:100%;height:100%;object-fit:cover;display:none;" onload="this.style.display='block'">
+      <div id="cd-photo-fallback" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--green-deep),#1a3522);color:#fff;">
+        <div style="font-size:64px;">${fIco(sc.type)}</div>
+        <div style="font-size:11px;opacity:.6;margin-top:6px;">Foto wird geladen…</div>
+      </div>
+      <div style="position:absolute;left:16px;right:16px;bottom:14px;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.6);">
+        <div style="font-size:24px;font-weight:700;font-family:var(--fs);">${_esc(sc.type)}</div>
+        <div style="font-size:14px;opacity:.92;">${sc.length}cm${sc.weight?' · '+sc.weight+'kg':''}</div>
+      </div>
+      <div style="position:absolute;top:14px;left:14px;background:rgba(0,0,0,.4);color:#fff;font-size:11px;padding:5px 10px;border-radius:14px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">🔍 Tippen für Vollbild</div>
+    </div>`;
+  }else{
+    html+=`<div style="background:linear-gradient(135deg,var(--green-deep),#1a3522);padding:60px 20px 30px;text-align:center;">
+      <div style="font-size:64px;margin-bottom:8px;">${fIco(sc.type)}</div>
+      <div style="font-size:24px;font-weight:700;color:#fff;font-family:var(--fs);">${_esc(sc.type)}</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.7);margin-top:4px;">${sc.length}cm${sc.weight?' · '+sc.weight+'kg':''}</div>
+    </div>`;
+  }
 
   // Angler info
   html+=`<div style="padding:16px;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-      <div class="catch-card-avatar" style="background:${color};width:36px;height:36px;font-size:16px;">${member.name.charAt(0)}</div>
+      <div class="catch-card-avatar" style="background:${color};width:36px;height:36px;font-size:16px;">${(member.name||'?').charAt(0)}</div>
       <div>
-        <div style="font-weight:700;font-size:14px;color:var(--text-dark);">${_esc(member.name)}</div>
-        <div style="font-size:11px;color:var(--text-light);">${sc.date||''} · ${sc.time||''}</div>
+        <div style="font-weight:700;font-size:14px;color:var(--text-dark);">${_esc(member.name||'?')}</div>
+        <div style="font-size:11px;color:var(--text-light);">${sc.date||''}${sc.time?' · '+sc.time:''}</div>
       </div>
     </div>`;
 
-  // Session info cards
+  // Gewässer + Spot
   html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
     <div style="background:#fff;padding:12px;border-radius:var(--rs);box-shadow:var(--sh-sm);">
       <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;">Gewässer</div>
@@ -11973,7 +12245,7 @@ function _openCatchDetail(gId,catchId){
     </div>
   </div>`;
 
-  // Catch data
+  // Fangdaten
   html+=`<div style="background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);margin-bottom:16px;">
     <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Fangdaten</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
@@ -11985,11 +12257,46 @@ function _openCatchDetail(gId,catchId){
     ${sc.baitNote?`<div style="margin-top:8px;padding:8px 12px;background:var(--green-mist);border-radius:8px;font-size:12px;color:var(--green-deep);">${_esc(sc.baitNote)}</div>`:''}
   </div>`;
 
-  // Mini-map (if GPS available)
-  if(sc.shareGps&&sc.lat&&sc.lon){
+  // ── v51 NEW: Wetter-Block (Druck, Wind, Temp, optional Mond) ──
+  const hasWx=(sc.pressure!=null||sc.windSpeed!=null||sc.temp!=null||sc.weather);
+  if(hasWx){
+    const cells=[];
+    if(sc.temp!=null)cells.push(`<div style="text-align:center;flex:1;"><div style="font-size:22px;">🌡️</div><div style="font-size:16px;font-weight:700;color:var(--text-dark);">${Math.round(sc.temp)}°C</div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.4px;">Temp</div></div>`);
+    if(sc.pressure!=null)cells.push(`<div style="text-align:center;flex:1;"><div style="font-size:22px;">📊</div><div style="font-size:16px;font-weight:700;color:var(--text-dark);">${Math.round(sc.pressure)}</div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.4px;">hPa Druck</div></div>`);
+    if(sc.windSpeed!=null){
+      const dir=sc.windDir!=null?_compassDir(sc.windDir):'';
+      cells.push(`<div style="text-align:center;flex:1;"><div style="font-size:22px;">💨</div><div style="font-size:16px;font-weight:700;color:var(--text-dark);">${Math.round(sc.windSpeed)} <span style="font-size:11px;font-weight:500;">km/h</span></div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.4px;">Wind ${dir}</div></div>`);
+    }
+    const subline=[
+      sc.weather?`<span>${_esc(sc.weather)}</span>`:'',
+      sc.humidity!=null?`<span>💧 ${Math.round(sc.humidity)}%</span>`:'',
+      sc.clouds!=null?`<span>☁️ ${Math.round(sc.clouds)}%</span>`:'',
+      sc.precip!=null&&sc.precip>0?`<span>🌧 ${sc.precip} mm</span>`:'',
+      sc.moonPhase?`<span>🌙 ${_esc(sc.moonPhase)}${sc.moonIllum!=null?' · '+Math.round(sc.moonIllum*100)+'%':''}</span>`:''
+    ].filter(Boolean).join(' · ');
     html+=`<div style="background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);margin-bottom:16px;">
-      <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">📍 Fangspot</div>
+      <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">🌤 Wetter beim Fang</div>
+      <div style="display:flex;gap:8px;align-items:flex-end;">${cells.join('')}</div>
+      ${subline?`<div style="margin-top:10px;padding:8px 10px;background:var(--cream);border-radius:8px;font-size:11px;color:var(--text-mid);display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">${subline}</div>`:''}
+    </div>`;
+  }
+
+  // ── v51 NEW: Smart-Map (GPS exakt | Approx. via spotMap | None) ──
+  if(mapInfo.lat!=null&&mapInfo.lon!=null){
+    const labelEmoji=mapInfo.kind==='exact'?'📍':'📌';
+    const labelTxt=mapInfo.kind==='exact'?'Fangspot':(mapInfo.kind==='spot'?'Spot-Approximation':'Gewässer-Approximation');
+    const subText=mapInfo.kind==='exact'?'GPS vom Angler geteilt':(mapInfo.kind==='spot'?`Geschätzt aus „${_esc(sc.water||'')} · ${_esc(sc.spot||'')}“`:`Geschätzt aus „${_esc(sc.water||'')}“`);
+    html+=`<div style="background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;">${labelEmoji} ${labelTxt}</div>
+        ${mapInfo.kind!=='exact'?'<div style="font-size:9px;color:var(--text-light);background:var(--cream);padding:3px 7px;border-radius:6px;">≈ Smart-Map</div>':''}
+      </div>
       <div id="catch-detail-map" style="width:100%;height:200px;border-radius:8px;overflow:hidden;isolation:isolate;"></div>
+      <div style="font-size:10px;color:var(--text-light);margin-top:6px;text-align:center;">${subText}</div>
+    </div>`;
+  }else if(sc.water||sc.spot){
+    html+=`<div style="background:var(--cream);padding:14px;border-radius:var(--rs);margin-bottom:16px;text-align:center;border:1px dashed var(--cream-dark);">
+      <div style="font-size:11px;color:var(--text-light);">📍 Kein Standort verfügbar — weder GPS noch Spot-Match in Bibliothek</div>
     </div>`;
   }
 
@@ -12002,12 +12309,12 @@ function _openCatchDetail(gId,catchId){
       <span style="font-size:13px;">💬 ${comments.length} Kommentar${comments.length!==1?'e':''}</span>
     </div>
     ${comments.map(cm=>{
-      const cmMember=g.members?.find(m=>m.id===cm.userId)||{name:'?'};
+      const cmMember=g.members?.find(m=>m.id===cm.userId)||{name:cm.userName||'?'};
       const cmColor=_userColor(cm.userId);
       const cmTime=new Date(cm.ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
       return`<div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--cream-dark);">
-        <div class="catch-card-avatar" style="background:${cmColor};width:24px;height:24px;font-size:11px;">${cmMember.name.charAt(0)}</div>
-        <div style="flex:1;"><strong style="font-size:11px;color:${cmColor};">${_esc(cmMember.name)}</strong> <span style="font-size:10px;color:var(--text-light);">${cmTime}</span><div style="font-size:12px;margin-top:2px;">${_esc(cm.text)}</div></div>
+        <div class="catch-card-avatar" style="background:${cmColor};width:24px;height:24px;font-size:11px;">${(cmMember.name||'?').charAt(0)}</div>
+        <div style="flex:1;"><strong style="font-size:11px;color:${cmColor};">${_esc(cmMember.name||'?')}</strong> <span style="font-size:10px;color:var(--text-light);">${cmTime}</span><div style="font-size:12px;margin-top:2px;">${_esc(cm.text)}</div></div>
       </div>`;
     }).join('')}
   </div>`;
@@ -12016,18 +12323,82 @@ function _openCatchDetail(gId,catchId){
 
   document.getElementById('catch-detail-content').innerHTML=html;
 
-  // Render mini-map after DOM update
-  if(sc.shareGps&&sc.lat&&sc.lon){
+  // Foto async aus IDB nachladen
+  if(sc.photoKey){
+    setTimeout(async()=>{
+      try{
+        const ph=await getPhoto(sc.photoKey);
+        if(!ph)return;
+        const img=document.getElementById('cd-photo');
+        const fb=document.getElementById('cd-photo-fallback');
+        if(img){img.src=ph;img.onload=()=>{img.style.display='block';if(fb)fb.style.display='none';};}
+      }catch(e){console.warn('Catch-Photo Load:',e);}
+    },50);
+  }
+
+  // Smart-Map rendern
+  if(mapInfo.lat!=null&&mapInfo.lon!=null){
     requestAnimationFrame(()=>{
       const mapEl=document.getElementById('catch-detail-map');
       if(!mapEl||typeof L==='undefined')return;
-      const m=L.map(mapEl,{zoomControl:false,attributionControl:false}).setView([sc.lat,sc.lon],13);
+      const zoom=mapInfo.kind==='exact'?14:(mapInfo.kind==='spot'?13:11);
+      const m=L.map(mapEl,{zoomControl:false,attributionControl:false}).setView([mapInfo.lat,mapInfo.lon],zoom);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
-      const icon=L.divIcon({html:`<div style="width:32px;height:32px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:15px;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);">${fIco(sc.type)}</div>`,className:'',iconSize:[32,32],iconAnchor:[16,16]});
-      L.marker([sc.lat,sc.lon],{icon}).addTo(m);
+      const opacity=mapInfo.kind==='exact'?1:0.85;
+      const icon=L.divIcon({html:`<div style="width:34px;height:34px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);opacity:${opacity};">${fIco(sc.type)}</div>`,className:'',iconSize:[34,34],iconAnchor:[17,17]});
+      L.marker([mapInfo.lat,mapInfo.lon],{icon}).addTo(m);
+      // Bei Approximation: Unsicherheits-Kreis (Radius je nach Quelle)
+      if(mapInfo.kind!=='exact'){
+        const radius=mapInfo.kind==='spot'?400:1500;
+        L.circle([mapInfo.lat,mapInfo.lon],{radius,color:color,fillColor:color,fillOpacity:0.10,weight:1,dashArray:'4,4'}).addTo(m);
+      }
       setTimeout(()=>m.invalidateSize(),200);
     });
   }
+}
+
+// v51: Smart-Map Resolver — bestimmt beste verfügbare Position für einen Shared-Catch.
+// Reihenfolge:
+//   1. exakte GPS-Daten (User hat GPS geteilt)
+//   2. Spot-Approx aus profile.spotMap[water+spot]
+//   3. Gewässer-Approx aus profile.spotMap[water]
+//   4. nichts
+function _resolveCatchLocation(sc){
+  if(sc.shareGps&&sc.lat&&sc.lon){
+    return{lat:parseFloat(sc.lat),lon:parseFloat(sc.lon),kind:'exact'};
+  }
+  // Approximation aus eigener spotMap (Reverse-Lookup Gewässer+Spot → GPS)
+  if(typeof _lookupSpotGps==='function'){
+    const hit=_lookupSpotGps(sc.water||'',sc.spot||'');
+    if(hit&&hit.lat&&hit.lon){
+      const exactSpot=sc.spot&&_lookupSpotGps(sc.water,sc.spot);
+      return{lat:parseFloat(hit.lat),lon:parseFloat(hit.lon),kind:exactSpot?'spot':'water'};
+    }
+  }
+  return{lat:null,lon:null,kind:'none'};
+}
+
+// v51: Lightbox für Catch-Detail-Foto (lazy: lädt aus IDB falls nicht im DOM-img)
+async function _openCatchPhotoLb(photoKey){
+  if(!photoKey)return;
+  let src=null;
+  const img=document.getElementById('cd-photo');
+  if(img&&img.src&&img.src.length>40&&!img.src.endsWith('/'))src=img.src;
+  if(!src){try{src=await getPhoto(photoKey);}catch(e){}}
+  if(!src){showToast('⚠️','Foto nicht gefunden');return;}
+  const lb=document.createElement('div');
+  lb.className='photo-lightbox';
+  lb.innerHTML=`<button class="photo-lightbox-close" onclick="this.parentElement.remove()">✕</button><img src="${src}" alt="Fangfoto">`;
+  // Klick auf Hintergrund schließt
+  lb.addEventListener('click',e=>{if(e.target===lb)lb.remove();});
+  document.body.appendChild(lb);
+}
+
+// v51: Hilfsfunktion — Wind-Grad → Kompass-Kürzel
+function _compassDir(deg){
+  if(deg==null||isNaN(deg))return'';
+  const dirs=['N','NO','O','SO','S','SW','W','NW'];
+  return dirs[Math.round(((deg%360)/45))%8];
 }
 
 // ── AP4: Chat helper functions ──
@@ -12121,11 +12492,25 @@ async function _shareToGroup(gId,sessId){
     const shared={
       id:_newId(),userId:myId,userName:myName,
       type:c.type,length:c.length,weight:c.weight,
-      bait:c.bait,baitNote:c.baitNote,
+      bait:c.bait,baitNote:c.baitNote,baitColor:c.baitColor,baitSize:c.baitSize,
       water:sess.water,spot:sess.spot,
       date:sess.date,time:c.time||sess.start,
       shareGps,
       lat:shareGps?sess.lat:null,lon:shareGps?sess.lon:null,
+      // v51: Wetter-Daten mitschicken — sonst kann Catch-Detail-Overlay & Insights 2.0
+      // (Wetter-Einfluss / Pressure-Trend) nicht ausgewertet werden.
+      pressure:sess.pressure??null,
+      windSpeed:sess.windSpeed??null,
+      windDir:sess.windDir??null,
+      temp:sess.temp??null,
+      humidity:sess.humidity??null,
+      clouds:sess.clouds??null,
+      precip:sess.precip??null,
+      weather:sess.weather||null,
+      moonPhase:sess.moonPhase||null,
+      moonIllum:sess.moonIllum??null,
+      // v51: Foto mitschicken (Lightbox-Effekt im Catch-Detail-Overlay)
+      photoKey:c.photoKey||null,
       likes:[],comments:[]
     };
     if(!g.sharedCatches)g.sharedCatches=[];
