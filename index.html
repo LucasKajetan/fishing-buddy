@@ -48,6 +48,39 @@
 :root{
   --header-h: auto;   /* wird per JS gesetzt */
   --footer-h: 56px;   /* btabs Höhe */
+  /* AP2: Nav-Clearance = btabs-Höhe + bottom-Offset + safe-area + Puffer.
+     Wird von ALLEN scrollbaren Containern unten als padding-bottom genutzt,
+     damit kein Content hinter der schwebenden Bottom-Nav verschwindet. */
+  --nav-clearance: calc(var(--footer-h) + 24px + env(safe-area-inset-bottom, 0px) + 40px);
+}
+
+/* AP3: Grüner Boot-Loader (verhindert Login-Flash beim App-Start) */
+#boot-loader{
+  position:fixed;inset:0;z-index:99999;
+  background:var(--green-deep);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:24px;
+  transition:opacity .3s ease;
+  opacity:1;visibility:visible;
+}
+#boot-loader.gone{opacity:0;visibility:hidden;pointer-events:none;}
+#boot-loader .bl-spinner{
+  width:60px;height:60px;
+  border:4px solid rgba(255,255,255,.20);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:blSpin 1s linear infinite;
+}
+#boot-loader .bl-logo{
+  font-family:var(--fs);font-size:26px;font-weight:600;color:#fff;letter-spacing:.4px;
+}
+#boot-loader .bl-sub{
+  font-size:12px;color:rgba(255,255,255,.60);letter-spacing:.5px;
+}
+@keyframes blSpin{to{transform:rotate(360deg);}}
+:root{
+  /* placeholder so we can keep the closing brace structure */
+  --boot-loader-marker:1;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bot: env(safe-area-inset-bottom, 0px);
 }
@@ -155,10 +188,11 @@ body{
 .page{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
 .page.on{display:flex;}
 
-/* SCROLL-BEREICH – AP1: globaler Navi-Cutoff-Fix · nichts wird mehr durch Bottom-Nav verdeckt */
-.sc{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:16px 16px calc(120px + env(safe-area-inset-bottom, 0px));scrollbar-width:none;}
+/* SCROLL-BEREICH – AP2: globaler Navi-Cutoff-Fix · nutzt --nav-clearance damit
+   nichts mehr durch die schwebende Bottom-Nav verdeckt wird */
+.sc{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:16px 16px var(--nav-clearance);scrollbar-width:none;}
 .sc::-webkit-scrollbar{display:none;}
-/* Spezialfall Map-Page: Full-Height ohne padding-bottom */
+/* Spezialfall Map-Page: Full-Height ohne padding-bottom (Map ist immer full-bleed) */
 #page-map .sc{padding:0!important;}
 
 /* FULLSCREEN OVERLAYS – AP2: anti-wobble fix */
@@ -209,7 +243,7 @@ position:relative;}
 .fsov > div:not(.fshdr):not(.fbar)::-webkit-scrollbar{display:none;}
 .fsov-scroll{
   flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
-  overscroll-behavior:contain;padding:16px 16px 110px;scrollbar-width:none;
+  overscroll-behavior:contain;padding:16px 16px var(--nav-clearance);scrollbar-width:none;
 }
 .fsov-scroll::-webkit-scrollbar{display:none;}
 
@@ -411,12 +445,13 @@ position:relative;}
 .fc-day-dot{width:6px;height:6px;border-radius:50%;background:rgba(74,124,89,.2);transition:all .2s;}
 .fc-day-dot.on{background:var(--green-mid);width:16px;border-radius:3px;}
 
-/* Scrollbereich – Header + Body zusammen (AP3: smooth scroll) */
+/* Scrollbereich – Header + Body zusammen (AP2: Nav-Clearance, AP3: smooth scroll) */
 .fc-detail-scroll{
   flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
   overscroll-behavior-y:contain;scrollbar-width:none;
   scroll-behavior:smooth;
   background:#f5f7f5;
+  padding-bottom:var(--nav-clearance);
 }
 .fc-detail-scroll::-webkit-scrollbar{display:none;}
 
@@ -1480,13 +1515,18 @@ input[type=file]{display:none;}
 .live-hdr{background:linear-gradient(135deg,#cc0000,#991111);padding:20px;color:#fff;flex-shrink:0;}
 .live-timer{font-size:48px;font-weight:200;font-family:var(--fa);letter-spacing:-1px;text-align:center;margin:8px 0;}
 .live-coords{font-size:11px;opacity:.7;text-align:center;}
-.live-body{flex:1;overflow-y:auto;padding:16px 16px 110px;}
+.live-body{flex:1;overflow-y:auto;padding:16px 16px var(--nav-clearance);-webkit-overflow-scrolling:touch;}
 .live-catches-list{display:flex;flex-direction:column;gap:8px;}
-.live-catch-card{background:#fff;border-radius:var(--rs);padding:12px 14px;box-shadow:var(--sh-sm);display:flex;align-items:center;gap:12px;}
-.live-catch-ico{font-size:28px;}
-.live-catch-info{flex:1;}
+.live-catch-card{background:#fff;border-radius:var(--rs);padding:12px 14px;box-shadow:var(--sh-sm);display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.live-catch-ico{font-size:28px;flex-shrink:0;}
+.live-catch-info{flex:1;min-width:0;}
 .live-catch-name{font-weight:600;font-size:14px;color:var(--text-dark);}
 .live-catch-meta{font-size:11px;color:var(--text-light);}
+/* AP1: Edit/Delete-Aktionen pro Live-Catch */
+.live-catch-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.live-catch-act-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--cream-dark);background:var(--cream);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;color:var(--text-mid);transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.live-catch-act-btn:hover{background:var(--green-mist);border-color:var(--green-pale);}
+.live-catch-act-btn:active{transform:scale(.92);}
 .live-quick-btn{position:sticky;bottom:16px;width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);}
 
 /* ═══ VOICE BUTTON ═══ */
@@ -1760,10 +1800,15 @@ input[type=file]{display:none;}
 .grp-subnav-btn.on{background:var(--green-deep);color:#fff;box-shadow:0 2px 8px rgba(45,74,53,.25);}
 .grp-subnav-btn:active{transform:scale(.92);}
 /* Content-Bereich bekommt Platz für die Subnav */
-#fs-group-detail .fsov-scroll{padding-bottom:100px!important;}
+/* AP2: Gruppen-Detail Default = Subnav-Höhe.
+   Im Feed-Tab kommt zusätzlich die Chat-Bar oben drauf — extra Platz wenn .has-chat */
+#fs-group-detail .fsov-scroll{padding-bottom:calc(var(--nav-clearance) + 8px)!important;}
+#fs-group-detail.has-chat .fsov-scroll{padding-bottom:calc(var(--nav-clearance) + 64px)!important;}
 
 /* ── AP4: WhatsApp-style Chat Input ── */
-.grp-chat-wa{flex:0 0 auto!important;overflow:visible!important;display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--cream);border-top:1px solid var(--cream-dark);}
+/* AP2: Chat-Bar schwebt direkt über der Subnav, niemals dahinter.
+   bottom = Subnav-Position (16px+safe) + Subnav-Höhe (~56px) + 8px Abstand */
+.grp-chat-wa{position:absolute;left:8px;right:8px;bottom:calc(max(16px,env(safe-area-inset-bottom,16px)) + 64px);z-index:135;flex:0 0 auto!important;overflow:visible!important;display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--cream);border:1px solid rgba(200,221,208,.60);border-radius:24px;box-shadow:0 6px 20px rgba(45,74,53,.18);}
 .grp-chat-wa-btn{width:32px;height:32px;border:none;border-radius:50%;background:transparent;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-mid);-webkit-tap-highlight-color:transparent;}
 .grp-chat-wa-btn:active{background:var(--cream-dark);}
 .grp-chat-wa-input{flex:1;padding:9px 14px;border:1.5px solid var(--green-pale);border-radius:24px;font-size:13px;font-family:var(--fa);outline:none;background:#fff;min-width:0;}
@@ -1794,10 +1839,16 @@ input[type=file]{display:none;}
 </style>
 </head>
 <body>
+<!-- AP3: Boot-Loader (sofort sichtbar, blockiert Login-Flash) -->
+<div id="boot-loader" aria-hidden="true">
+  <div class="bl-logo">🎣 Fishing Buddy</div>
+  <div class="bl-spinner"></div>
+  <div class="bl-sub">Daten werden geladen…</div>
+</div>
 <div class="phone" id="frame">
 
 <!-- ═══ LOGIN / AUTH OVERLAY ═══ -->
-<div class="login-ov" id="login-ov">
+<div class="login-ov hidden" id="login-ov">
   <div style="text-align:center;margin-bottom:24px;">
     <div style="font-size:48px;margin-bottom:8px;">🎣</div>
     <div style="font-family:var(--fs);font-size:26px;font-weight:600;color:#fff;">Fishing Buddy</div>
@@ -1819,6 +1870,8 @@ input[type=file]{display:none;}
       </div>
       <button type="submit" class="lbtn lbtn-p" id="auth-submit">Registrieren</button>
       <button type="button" class="lbtn lbtn-s" id="auth-skip" onclick="skipAuth()">Ohne Account fortfahren →</button>
+      <!-- AP3: Passwort vergessen Link -->
+      <button type="button" id="auth-forgot" onclick="handlePasswordReset()" style="display:block;margin:10px auto 0;background:none;border:none;color:rgba(255,255,255,.7);font-size:12px;font-family:var(--fa);cursor:pointer;text-decoration:underline;">Passwort vergessen?</button>
       <div class="lerr" id="auth-err"></div>
     </form>
   </div>
@@ -2020,7 +2073,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v47 · Supabase · Leaflet · PWA</div>
+    <div class="burg-ver">Fishing Buddy v48 · Supabase · Leaflet · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -2526,8 +2579,8 @@ input[type=file]{display:none;}
       </div>
       <button class="map-hdr-btn" onclick="openSpotGpsLink()">📌 Spot</button>
     </div>
-    <!-- Floating Spot markieren – above nav, not covering it -->
-    <button onclick="_floatingSpotMark()" style="position:absolute;bottom:110px;left:50%;transform:translateX(-50%);z-index:400;padding:12px 24px;background:var(--green-deep);color:#fff;border:none;border-radius:24px;font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(45,74,53,.4);display:flex;align-items:center;gap:8px;">📌 Spot markieren</button>
+    <!-- Floating Spot markieren – AP2: ID + State-Logik (nur sichtbar bei Private-Layer + keine Overlays darüber) -->
+    <button id="spot-mark-fab" onclick="_floatingSpotMark()" style="position:absolute;bottom:calc(var(--footer-h) + max(24px, env(safe-area-inset-bottom, 24px)) + 64px);left:50%;transform:translateX(-50%);z-index:50;padding:12px 24px;background:var(--green-deep);color:#fff;border:none;border-radius:24px;font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(45,74,53,.4);display:flex;align-items:center;gap:8px;">📌 Spot markieren</button>
   </div>
 </div>
 
@@ -2919,6 +2972,38 @@ async function handleAuth(e){
   }
 }
 
+// AP3: Passwort vergessen — triggert Supabase Reset-Mail
+async function handlePasswordReset(){
+  const errEl=document.getElementById('auth-err');
+  const emailEl=document.getElementById('auth-email');
+  const email=(emailEl?.value||'').trim();
+  errEl.textContent='';
+  if(!email||!email.includes('@')){
+    errEl.style.color='var(--red)';
+    errEl.textContent='Bitte zuerst deine E-Mail oben eintragen.';
+    emailEl?.focus();
+    return;
+  }
+  if(!_sb){
+    errEl.style.color='var(--red)';
+    errEl.textContent='Keine Verbindung zum Server.';
+    return;
+  }
+  errEl.style.color='var(--text-mid)';
+  errEl.textContent='Sende Reset-Mail…';
+  try{
+    const{error}=await _sb.auth.resetPasswordForEmail(email,{
+      redirectTo:window.location.origin+window.location.pathname
+    });
+    if(error)throw error;
+    errEl.style.color='var(--green-mid)';
+    errEl.textContent='✓ Reset-Mail an '+email+' gesendet. Prüfe dein Postfach.';
+  }catch(e){
+    errEl.style.color='var(--red)';
+    errEl.textContent=e.message||'Fehler beim Senden der Reset-Mail.';
+  }
+}
+
 // Ohne Account fortfahren (AP1: → Onboarding falls kein Profil)
 function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
@@ -3002,29 +3087,133 @@ async function syncFromCloud(opts={}){
   }catch(e){console.warn('Cloud-Load Fehler:',e);}
 }
 
-// Cloud-Sync: Profil zu Supabase hochladen
+// AP3: Komplettes Profil-Daten-Bundle (Profile + Favs + Groups + Photos + SpotMap)
+// in einem einzigen Cloud-Record. So gehen beim Relogin garantiert ALLE
+// Daten mit (Mitgliedsnummer, verknüpfte Spots, Dictionary-Chips, Fotos).
+function _buildProfileBundle(){
+  const photos={};
+  // Fotos aus localStorage einsammeln (max ~5MB pro User um Cloud-Limits zu respektieren)
+  try{
+    let totalSize=0;
+    const MAX=5*1024*1024;
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(!k||!k.startsWith('fb_photo_'))continue;
+      const v=localStorage.getItem(k)||'';
+      if(totalSize+v.length>MAX)break;
+      photos[k.slice(9)]=v;
+      totalSize+=v.length;
+    }
+  }catch(e){}
+  return{
+    profile:profile||null,
+    favs:favs||null,
+    groups:typeof _groups!=='undefined'?_groups:null,
+    spotMap:profile?.spotMap||null,
+    spotBaits:profile?.spotBaits||null,
+    docs:profile?.docs||null,
+    photos,
+    schemaVersion:48,
+    updatedAt:Date.now()
+  };
+}
+
+// Cloud-Sync: KOMPLETTES Daten-Bundle zu Supabase hochladen
+// AP3: Profil + Favs + Groups + Photos + SpotMap + Mitgliedsnummer/Docs alles in einem Record.
 async function syncProfileToCloud(){
   if(!_sb||!_sbUser||_authMode!=='online'||!profile)return;
   try{
-    await _sb.from('profiles').upsert({user_id:_sbUser.id,data:profile},{onConflict:'user_id'}).select();
+    const bundle=_buildProfileBundle();
+    await _sb.from('profiles').upsert({user_id:_sbUser.id,data:bundle},{onConflict:'user_id'}).select();
   }catch(e){console.warn('Profil-Cloud-Sync Fehler:',e);}
 }
 
-// Cloud-Sync: Profil von Supabase laden
-// Flags: {authoritative:true} = Cloud überschreibt lokales Profil komplett
+// Cloud-Sync: KOMPLETTES Bundle von Supabase laden und alle Stores wiederherstellen
+// Flags: {authoritative:true} = Cloud überschreibt lokal komplett (Login / Device-Switch)
 async function syncProfileFromCloud(opts={}){
   if(!_sb||!_sbUser||_authMode!=='online')return;
   const authoritative=opts.authoritative===true;
   try{
     const{data,error}=await _sb.from('profiles').select('*').eq('user_id',_sbUser.id).maybeSingle();
     if(error)throw error;
-    if(data?.data){
+    if(!data?.data)return;
+    const bundle=data.data;
+    // Erkennen ob neues Bundle-Format (schemaVersion>=48) oder Legacy-Profil
+    const isBundle=bundle&&typeof bundle==='object'&&('schemaVersion' in bundle||'profile' in bundle&&'favs' in bundle);
+
+    if(isBundle){
+      // ── PROFIL ──
       if(authoritative||!profile){
-        // AP1: Cloud ist Source of Truth → komplettes Profil übernehmen
-        profile=data.data;
+        profile=bundle.profile||{};
       } else {
-        // Inkrementell-Merge: Cloud-Felder füllen nur leere lokale Felder
-        const cp=data.data;
+        const cp=bundle.profile||{};
+        for(const k of Object.keys(cp)){
+          if(!profile[k]&&cp[k]) profile[k]=cp[k];
+          if(Array.isArray(cp[k])&&cp[k].length&&(!profile[k]||!profile[k].length)) profile[k]=cp[k];
+        }
+      }
+      // SpotMap / SpotBaits / Docs ins Profil mergen (Cloud gewinnt bei authoritative)
+      if(bundle.spotMap){
+        if(authoritative)profile.spotMap=bundle.spotMap;
+        else profile.spotMap={...(bundle.spotMap||{}),...(profile.spotMap||{})};
+      }
+      if(bundle.spotBaits){
+        if(authoritative)profile.spotBaits=bundle.spotBaits;
+        else profile.spotBaits={...(bundle.spotBaits||{}),...(profile.spotBaits||{})};
+      }
+      if(bundle.docs){
+        profile.docs=profile.docs||{};
+        Object.keys(bundle.docs).forEach(k=>{if(authoritative||!profile.docs[k])profile.docs[k]=bundle.docs[k];});
+      }
+      await saveProfile();
+      // ── FAVS / DICTIONARY-CHIPS ──
+      if(bundle.favs){
+        if(authoritative||!favs||!Object.keys(favs||{}).length){
+          favs=bundle.favs;
+        } else {
+          // Merge: Cloud-Listen mit lokalen vereinen, Counter addieren
+          ['waters','spots','fish','bait'].forEach(k=>{
+            if(Array.isArray(bundle.favs[k]))favs[k]=[...new Set([...(favs[k]||[]),...bundle.favs[k]])];
+          });
+          if(bundle.favs.baitKeywords){
+            favs.baitKeywords=favs.baitKeywords||{};
+            Object.keys(bundle.favs.baitKeywords).forEach(b=>{
+              favs.baitKeywords[b]=favs.baitKeywords[b]||{};
+              Object.keys(bundle.favs.baitKeywords[b]).forEach(kw=>{
+                favs.baitKeywords[b][kw]=(favs.baitKeywords[b][kw]||0)+(bundle.favs.baitKeywords[b][kw]||0);
+              });
+            });
+          }
+        }
+        await saveFavs();
+      }
+      // ── GROUPS ──
+      if(bundle.groups&&Array.isArray(bundle.groups)){
+        if(authoritative||!_groups||!_groups.length){
+          _groups=bundle.groups;
+        } else {
+          // Merge by ID
+          const localById=Object.fromEntries((_groups||[]).map(g=>[g.id,g]));
+          bundle.groups.forEach(cg=>{if(!localById[cg.id])_groups.push(cg);});
+        }
+        await _saveGroups();
+      }
+      // ── PHOTOS ──
+      if(bundle.photos&&typeof bundle.photos==='object'){
+        Object.keys(bundle.photos).forEach(pk=>{
+          const lsKey='fb_photo_'+pk;
+          if(authoritative||!localStorage.getItem(lsKey)){
+            try{localStorage.setItem(lsKey,bundle.photos[pk]);}catch(e){/* quota */}
+          }
+        });
+      }
+      applyProf();
+    } else {
+      // Legacy-Path: alter Record ist nur das Profil-Objekt
+      if(authoritative||!profile){
+        profile=bundle;
+      } else {
+        const cp=bundle;
         for(const k of Object.keys(cp)){
           if(!profile[k]&&cp[k]) profile[k]=cp[k];
           if(Array.isArray(cp[k])&&cp[k].length&&(!profile[k]||!profile[k].length)) profile[k]=cp[k];
@@ -3119,7 +3308,7 @@ async function loadFcCache(){
   }catch(e){}
 }
 async function saveProfile(){await idbP('profile','profile',profile);_autoPushCloud();}
-async function saveFavs(){await idbP('favs','favs',favs);}
+async function saveFavs(){await idbP('favs','favs',favs);_autoPushCloud();}
 
 // ═══════════════════════════════════════════════════════════
 // AP2: SPOT AUTO-LEARN · Gewässer+Spot-Kombo ↔ GPS
@@ -4516,18 +4705,55 @@ function startSel(v){
   document.getElementById('start-chips').style.display='none';
 }
 
-// ── FISCH-CHIPS (AP3: Kontext + globalDict) ─────────────────
+// ── FISCH-CHIPS (AP1: strikt context-aware nach Water/Spot) ─────────────
+// Liefert Map {fishType: count} aller Fänge an exakt diesem Gewässer (+ Spot)
+function _fishesAtLocation(water,spot){
+  const counts={};
+  if(!water)return counts;
+  const w=water.trim().toLowerCase();
+  const sp=(spot||'').trim().toLowerCase();
+  (sessions||[]).forEach(s=>{
+    if(!s||!s.water)return;
+    const sw=String(s.water).trim().toLowerCase();
+    if(sw!==w)return;
+    // Wenn ein Spot angegeben wurde → muss exakt matchen.
+    // Wenn kein Spot angegeben → alle Sessions an diesem Wasser zählen.
+    if(sp){
+      const ss=String(s.spot||'').trim().toLowerCase();
+      if(ss!==sp)return;
+    }
+    (s.catches||[]).forEach(c=>{
+      if(c&&c.type){
+        counts[c.type]=(counts[c.type]||0)+1;
+      }
+    });
+  });
+  return counts;
+}
+
 function rndrFChips(id,fv){
   const el=document.getElementById('fc-'+id);if(!el)return;
-  const ctx=ctxIdx();
   const water=document.getElementById('s-water')?.value?.trim()||'';
+  const spot=document.getElementById('s-spot')?.value?.trim()||'';
   let chips=[],isCtx=false;
-  // 1. Kontext: häufigste Fischarten an diesem Gewässer
-  if(water&&ctx.wF[water]&&Object.keys(ctx.wF[water]).length){
-    chips=topN(ctx.wF[water],5);isCtx=true;
+
+  // AP1: Wenn Gewässer (und ggf. Spot) gesetzt → AUSSCHLIESSLICH dort gefangene Fische.
+  // Kein globaler Fallback, damit nicht alle je gefangenen Fische als Vorschlag erscheinen.
+  if(water){
+    const locMap=_fishesAtLocation(water,spot);
+    const locKeys=Object.keys(locMap);
+    if(locKeys.length){
+      chips=locKeys.sort((a,b)=>locMap[b]-locMap[a]).slice(0,8);
+      isCtx=true;
+    } else {
+      // Kein Match an dieser Location → leerer Chip-Bereich (kein Globalfallback!)
+      chips=[];
+    }
+  } else {
+    // Kein Gewässer eingegeben → globales Dict als Vorschlag erlaubt
+    chips=dictTop('fish','',5);
   }
-  // 2. Fallback: globales Dict
-  if(!chips.length)chips=dictTop('fish','',5);
+
   chips=[...new Set(chips)];
   if(fv){const q=fv.toLowerCase();chips=chips.filter(f=>f.toLowerCase().includes(q));}
   if(!chips.length){el.style.display='none';return;}
@@ -4540,14 +4766,10 @@ function rndrFChips(id,fv){
 
 // ── KÖDER-CHIPS (Top 5, Fischart-Kontext > globale Favs) ───
 // AP2: Köder-Chips erst nach Länge-Eingabe anzeigen
+// AP1: Gate gelockert — globale Top-Köder-Chips sind IMMER sichtbar,
+// auch wenn noch keine Länge eingetragen wurde. So bekommt der Nutzer
+// stets Vorschläge aus seinem persönlichen "Gehirn".
 function _gatedBChips(id){
-  const lenEl=document.getElementById('fl-'+id);
-  const len=parseFloat(lenEl?.value);
-  if(!len||isNaN(len)||len<=0){
-    const bc=document.getElementById('bc-'+id);
-    if(bc)bc.style.display='none';
-    return;
-  }
   rndrBChips(id,document.getElementById('fb-'+id)?.value||'');
 }
 function rndrBChips(id,fv){
@@ -4760,17 +4982,39 @@ function _lastCatchTaken(){
   }
   return false;
 }
+// AP1: Letzten Köder-Color/Size abrufen — für Memory innerhalb der Session
+function _lastCatchCol(){
+  for(let i=catchCount;i>=1;i--){
+    const v=document.getElementById('fbcol-'+i)?.value?.trim();
+    if(v)return v;
+  }
+  return '';
+}
+function _lastCatchSize(){
+  for(let i=catchCount;i>=1;i--){
+    const v=document.getElementById('fbsz-'+i)?.value?.trim();
+    if(v)return v;
+  }
+  return '';
+}
 
 function addCatch(){
   catchCount++;const id=catchCount;
   // AP2-Task3: Fangzeit = Mittelwert(Start,End) oder Start+30min, nie Systemzeit
   const t=_smartCatchTime();
 
-  // Memory: Fang #2+ bekommt Fischart/Köder des zuletzt ausgefüllten Fangs (Fix 7)
-  const presetFish=id>1?_lastCatchFish():'';
-  const presetBait=id>1?_lastCatchBait():'';
+  // AP1: Carryover über saveSess hinweg.
+  // Bei Fang #1 nach erfolgreichem Save: Werte aus _catchCarryover als Preset (Fang-Serie).
+  // Bei Fang #2+: Werte aus dem zuletzt ausgefüllten Fang derselben Session.
+  const carry=(id===1&&window._catchCarryover)?window._catchCarryover:null;
+  const presetFish=carry?carry.fish||'':(id>1?_lastCatchFish():'');
+  const presetBait=carry?carry.bait||'':(id>1?_lastCatchBait():'');
+  const presetCol =carry?carry.baitColor||'':(id>1?_lastCatchCol():'');
+  const presetSz  =carry?carry.baitSize||'':(id>1?_lastCatchSize():'');
   // AP4: C&R-Memory – letzter Toggle-State übernehmen
-  const presetTaken=id>1?_lastCatchTaken():false;
+  const presetTaken=carry?!!carry.taken:(id>1?_lastCatchTaken():false);
+  // Carryover ist eine "One-Shot"-Quelle — nach dem Lesen für Fang #1 verbrauchen
+  if(carry){window._catchCarryover=null;}
 
   // Notiz-Chips: nur gelernte Keywords – initial leer
   const learnedKws=presetBait&&favs.baitKeywords?.[presetBait]?topN(favs.baitKeywords[presetBait],4):[];
@@ -4795,8 +5039,8 @@ function addCatch(){
       <div class="ig">
         <label class="il" for="ft-${id}">Fischart</label>
         <input type="text" list="fdl-${id}" class="if" id="ft-${id}" placeholder="${_inputMode==='fried'?'z.B. Rotauge':'z.B. Zander'}"
-          value="${presetFish}"
-          onfocus="rndrFChips(${id},this.value)" oninput="rndrFChips(${id},this.value);chkMMF(${id})" onblur="dHide('fc-${id}')" autocomplete="off">
+          value="${presetFish}" data-prev-fish="${presetFish}"
+          onfocus="rndrFChips(${id},this.value)" oninput="rndrFChips(${id},this.value);chkMMF(${id})" onchange="_maybeClearBaitFields(${id},this.value)" onblur="dHide('fc-${id}')" autocomplete="off">
         <datalist id="fdl-${id}">${FISH.map(f=>`<option value="${f}">`).join('')}</datalist>
         <div class="crow" id="fc-${id}" style="display:none;" role="listbox"></div>
       </div>
@@ -4837,12 +5081,14 @@ function addCatch(){
         <div class="ig">
           <label class="il" for="fbsz-${id}">Größe</label>
           <input type="text" class="if" id="fbsz-${id}" placeholder="12cm" autocomplete="off"
+            value="${presetSz}"
             onfocus="_rndrSzChips(${id})" onblur="dHide('szc-${id}')">
           <div class="crow" id="szc-${id}" style="display:none;" role="listbox"></div>
         </div>
         <div class="ig">
           <label class="il" for="fbcol-${id}">Farbe</label>
           <input type="text" class="if" id="fbcol-${id}" placeholder="Motoroil" autocomplete="off"
+            value="${presetCol}"
             onfocus="_rndrColChips(${id})" onblur="dHide('colc-${id}')">
           <div class="crow" id="colc-${id}" style="display:none;" role="listbox"></div>
         </div>
@@ -4995,11 +5241,39 @@ function favFishSel(id,v){
   _focusLength(id);
 }
 function fSel(id,v){
-  document.getElementById('ft-'+id).value=v;
+  const ftEl=document.getElementById('ft-'+id);
+  if(!ftEl)return;
+  // AP1: Vor dem Setzen prüfen — bei Fischart-Wechsel Köder-/Farb-/Größen-Felder leeren
+  _maybeClearBaitFields(id,v);
+  ftEl.value=v;
+  ftEl.dataset.prevFish=v;
   document.getElementById('fc-'+id).style.display='none';
   chkMMF(id);
   // AP2-Fix: Köder-Chips NICHT bei Fischart-Auswahl triggern – erst nach Länge
   _focusLength(id);
+}
+
+// AP1: Wenn der Nutzer die Fischart wechselt, kontextspezifische Felder leeren.
+// Wird sowohl von `fSel` (Chip-Klick) als auch von `onchange` des Inputs aufgerufen.
+function _maybeClearBaitFields(id,newFish){
+  const ftEl=document.getElementById('ft-'+id);
+  if(!ftEl)return;
+  const prev=(ftEl.dataset.prevFish||'').trim();
+  const next=(newFish||'').trim();
+  // Memorize neuen Wert IMMER für nächsten Vergleich
+  ftEl.dataset.prevFish=next;
+  if(!prev){return;}            // kein vorheriger Wert → kein Clear nötig
+  if(prev.toLowerCase()===next.toLowerCase())return; // kein Wechsel
+  // Köder/Farbe/Größe leeren — neuer Fisch hat eigene Setup-Logik
+  ['fb-','fbcol-','fbsz-','fn-'].forEach(prefix=>{
+    const el=document.getElementById(prefix+id);
+    if(el)el.value='';
+  });
+  // Köder-Chips ggf. neu rendern
+  const bc=document.getElementById('bc-'+id);
+  if(bc)bc.style.display='none';
+  // Note-Chip-Cache zurücksetzen
+  if(typeof _usedNoteChips==='object'&&_usedNoteChips[id])_usedNoteChips[id]=new Set();
 }
 
 function favBaitSel(id,v){
@@ -5289,6 +5563,19 @@ async function saveSess(){
     sessions.unshift(sess);
     // AP2: Spot-GPS lernen wenn manuell gesetzt
     if(gpsCoords&&sess.water)_learnSpotGps(sess.water,sess.spot,gpsCoords.lat,gpsCoords.lon);
+    // AP1: Carryover für nächste Session setzen — letzter Fang als Memory
+    if(catches&&catches.length){
+      const last=catches[catches.length-1];
+      window._catchCarryover={
+        fish:last.type||'',
+        bait:last.bait||'',
+        baitColor:last.baitColor||'',
+        baitSize:last.baitSize||'',
+        taken:!!last.taken
+      };
+    } else {
+      window._catchCarryover=null;
+    }
     await saveOneSess(sess);
     // AP3: Session in globales Chip-Wörterbuch indexieren
     try{_indexSessionToDict(sess);}catch(e){}
@@ -5572,6 +5859,8 @@ function showPage(p){
   if(p==='stats')rndrStats();
   if(p==='forecast')rndrForecast();
   if(p==='map')initMap();
+  // AP2: Spot-markieren-FAB nach jedem Page-Switch neu evaluieren
+  if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();
   if(p==='new'){
     const n=new Date();
     const dateEl=document.getElementById('s-date');
@@ -5624,8 +5913,8 @@ function showBurgSec(sec){
 }
 
 // FULLSCREEN OVERLAYS
-function openFs(n){document.getElementById('fs-'+n)?.classList.add('on');}
-function closeFs(n){document.getElementById('fs-'+n)?.classList.remove('on');}
+function openFs(n){document.getElementById('fs-'+n)?.classList.add('on');if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();}
+function closeFs(n){document.getElementById('fs-'+n)?.classList.remove('on');if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();}
 
 
 // ═══════════════════════════════════════════════════════════
@@ -9576,23 +9865,52 @@ function _renderLiveCatches(){
   const el=document.getElementById('live-catches-list');
   if(!el||!_liveSession)return;
   if(!_liveSession.catches.length){
-    el.innerHTML='<div style="text-align:center;padding:24px;color:var(--text-light);font-size:12px;">Noch keine Fänge – nutze den Button unten</div>';
+    el.innerHTML='<div style="text-align:center;padding:24px;color:rgba(255,255,255,.6);font-size:12px;">Noch keine Fänge – nutze den Button unten</div>';
     return;
   }
   // Deduplizierte Zusammenfassung (Chips) oben
   const fishCounts={};
   _liveSession.catches.forEach(c=>{fishCounts[c.type]=(fishCounts[c.type]||0)+1;});
-  const chips=Object.entries(fishCounts).map(([f,n])=>`<span style="display:inline-block;padding:3px 10px;background:var(--green-mist);border-radius:12px;font-size:11px;font-weight:600;color:var(--green-deep);margin:2px;">${fIco(f)} ${f}${n>1?' ×'+n:''}</span>`).join('');
-  // Einzelne Fänge
+  const chips=Object.entries(fishCounts).map(([f,n])=>`<span style="display:inline-block;padding:3px 10px;background:rgba(255,255,255,.15);border-radius:12px;font-size:11px;font-weight:600;color:#fff;margin:2px;">${fIco(f)} ${f}${n>1?' ×'+n:''}</span>`).join('');
+  // AP1: Einzelne Fänge mit Edit/Delete-Aktionen rechts
   const cards=_liveSession.catches.map((c,i)=>`
     <div class="live-catch-card">
       <div class="live-catch-ico">${fIco(c.type)}</div>
       <div class="live-catch-info">
-        <div class="live-catch-name">${c.type}${c.length?' · '+c.length+'cm':''}</div>
-        <div class="live-catch-meta">${c.time}${c.bait?' · '+c.bait:''}</div>
+        <div class="live-catch-name">${_esc?_esc(c.type):c.type}${c.length?' · '+c.length+'cm':''}</div>
+        <div class="live-catch-meta">${c.time||''}${c.bait?' · '+(_esc?_esc(c.bait):c.bait):''}</div>
+      </div>
+      <div class="live-catch-actions">
+        <button class="live-catch-act-btn" onclick="_editLiveCatch(${i})" title="Bearbeiten" aria-label="Fang bearbeiten">✏️</button>
+        <button class="live-catch-act-btn" onclick="_deleteLiveCatch(${i})" title="Löschen" aria-label="Fang löschen">🗑️</button>
       </div>
     </div>`).join('');
   el.innerHTML=`<div style="margin-bottom:8px;">${chips}</div>${cards}`;
+}
+
+// AP1: Live-Catch bearbeiten — öffnet Live-Catch-Overlay mit prefilled Werten
+let _editingLiveCatchIdx=null;
+function _editLiveCatch(idx){
+  if(!_liveSession||!_liveSession.catches||!_liveSession.catches[idx])return;
+  _editingLiveCatchIdx=idx;
+  // Overlay öffnen — openLiveCatchOv liest _editingLiveCatchIdx und füllt entsprechend
+  openLiveCatchOv();
+  showToast('✏️','Fang bearbeiten');
+}
+
+// AP1: Live-Catch löschen mit Confirm
+async function _deleteLiveCatch(idx){
+  if(!_liveSession||!_liveSession.catches||!_liveSession.catches[idx])return;
+  const c=_liveSession.catches[idx];
+  const lbl=`${c.type||'Fang'}${c.length?' · '+c.length+'cm':''}`;
+  const ok=await showConf('🗑️','Fang löschen?',`Soll "${lbl}" aus der Live-Session entfernt werden?`,'Ja, löschen','danger');
+  if(!ok)return;
+  // Foto aus localStorage entfernen falls vorhanden
+  if(c.photoKey){try{localStorage.removeItem('fb_photo_'+c.photoKey);}catch(e){}}
+  _liveSession.catches.splice(idx,1);
+  try{localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));}catch(e){}
+  _renderLiveCatches();
+  showToast('🗑️','Fang gelöscht');
 }
 
 async function endLiveSession(){
@@ -9729,27 +10047,67 @@ function openLiveCatchOv(){
   document.getElementById('lc-bait-col').value='';
   // Raubfisch: Gewicht ausblenden
   document.getElementById('lc-wt-wrap').style.display=isRaub?'none':'';
-  // Köder aus vorherigem Fang vorausfüllen
-  const prevCatch=_liveSession.catches[_liveSession.catches.length-1];
-  document.getElementById('lc-bait').value=prevCatch?.bait||'';
-  if(prevCatch?.baitLen)document.getElementById('lc-bait-len').value=prevCatch.baitLen;
-  if(prevCatch?.baitColor)document.getElementById('lc-bait-col').value=prevCatch.baitColor;
-  // Foto reset
-  document.getElementById('lc-pp').style.display='none';
-  document.getElementById('lc-pp').src='';
-  document.getElementById('lc-pa').style.display='';
-  _lcPhotoData=null;
-  // Uhrzeit-Hint aktualisieren
-  const now=new Date();
-  const hh=String(now.getHours()).padStart(2,'0');
-  const mm=String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('lc-time-hint').textContent=`⏱️ Uhrzeit: ${hh}:${mm} (automatisch)`;
+
+  // AP1: Edit-Mode — wenn ein Live-Catch bearbeitet wird, alle Felder aus diesem Fang füllen
+  const editing=(_editingLiveCatchIdx!==null&&_liveSession.catches[_editingLiveCatchIdx])
+    ?_liveSession.catches[_editingLiveCatchIdx]:null;
+  if(editing){
+    document.getElementById('lc-fish').value=editing.type||'';
+    if(editing.length)document.getElementById('lc-len').value=editing.length;
+    if(editing.weight)document.getElementById('lc-wt').value=editing.weight;
+    if(noteEl&&editing.note)noteEl.value=editing.note;
+    document.getElementById('lc-bait').value=editing.bait||'';
+    if(editing.baitLen)document.getElementById('lc-bait-len').value=editing.baitLen;
+    if(editing.baitColor)document.getElementById('lc-bait-col').value=editing.baitColor;
+    if(editing.photoKey){
+      try{
+        const ph=localStorage.getItem('fb_photo_'+editing.photoKey);
+        if(ph){
+          _lcPhotoData=ph;
+          const pp=document.getElementById('lc-pp');pp.src=ph;pp.style.display='block';
+          document.getElementById('lc-pa').style.display='none';
+        }
+      }catch(e){}
+    } else {
+      document.getElementById('lc-pp').style.display='none';
+      document.getElementById('lc-pp').src='';
+      document.getElementById('lc-pa').style.display='';
+      _lcPhotoData=null;
+    }
+    // CR-Flag (taken=false → C&R aktiv)
+    const crEl=document.getElementById('lc-cr');
+    if(crEl)crEl.checked=!editing.taken;
+    document.getElementById('lc-time-hint').textContent=`✏️ Bearbeite Fang · Original-Zeit: ${editing.time||'--'}`;
+  } else {
+    // Normaler Add-Mode: Köder aus vorherigem Fang vorausfüllen
+    const prevCatch=_liveSession.catches[_liveSession.catches.length-1];
+    document.getElementById('lc-bait').value=prevCatch?.bait||'';
+    if(prevCatch?.baitLen)document.getElementById('lc-bait-len').value=prevCatch.baitLen;
+    if(prevCatch?.baitColor)document.getElementById('lc-bait-col').value=prevCatch.baitColor;
+    // Foto reset
+    document.getElementById('lc-pp').style.display='none';
+    document.getElementById('lc-pp').src='';
+    document.getElementById('lc-pa').style.display='';
+    _lcPhotoData=null;
+    // Uhrzeit-Hint aktualisieren
+    const now=new Date();
+    const hh=String(now.getHours()).padStart(2,'0');
+    const mm=String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('lc-time-hint').textContent=`⏱️ Uhrzeit: ${hh}:${mm} (automatisch)`;
+  }
+
   // Overlay öffnen
   document.getElementById('fs-live-catch')?.classList.add('on');
+  // AP2: Spot-FAB ausblenden während Live-Catch-Overlay offen
+  if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();
 }
 
 function closeLiveCatch(){
   document.getElementById('fs-live-catch')?.classList.remove('on');
+  // AP1: Edit-Mode beim Abbrechen zurücksetzen
+  _editingLiveCatchIdx=null;
+  // AP2: Spot-FAB ggf. wieder einblenden
+  if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();
 }
 
 function _whisperPlaceholder(){
@@ -9836,13 +10194,32 @@ function saveLiveCatch(){
 
   // v45: C&R toggle
   const isCR=document.getElementById('lc-cr')?.checked||false;
-  const c={type:fish,length:len,weight:wt,note,time,taken:!isCR,bait,baitLen,baitColor,baitNote:'',score:fScore(fish,len),photoKey,inputMode:_inputMode,lat:catchLat,lon:catchLon,_lat:catchLat?parseFloat(catchLat):null,_lon:catchLon?parseFloat(catchLon):null};
-  _liveSession.catches.push(c);
-  localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
+
+  // AP1: Edit-Mode — bestehenden Fang ersetzen statt neuen pushen
+  const editingIdx=_editingLiveCatchIdx;
+  const editingOrig=(editingIdx!==null&&_liveSession.catches[editingIdx])?_liveSession.catches[editingIdx]:null;
+
+  // Foto-Handling im Edit-Mode: alten Foto-Key NICHT verlieren wenn kein neues Foto gewählt
+  if(editingOrig&&!_lcPhotoData&&editingOrig.photoKey){
+    photoKey=editingOrig.photoKey;
+  }
+  // Im Edit-Mode Original-Zeit beibehalten
+  const finalTime=editingOrig?(editingOrig.time||time):time;
+
+  const c={type:fish,length:len,weight:wt,note,time:finalTime,taken:!isCR,bait,baitLen,baitColor,baitNote:'',score:fScore(fish,len),photoKey,inputMode:_inputMode,lat:catchLat,lon:catchLon,_lat:catchLat?parseFloat(catchLat):null,_lon:catchLon?parseFloat(catchLon):null};
+
+  if(editingIdx!==null&&_liveSession.catches[editingIdx]){
+    _liveSession.catches[editingIdx]=c;
+  } else {
+    _liveSession.catches.push(c);
+  }
+  _editingLiveCatchIdx=null;
+
+  try{localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));}catch(e){}
   _renderLiveCatches();
 
   closeLiveCatch();
-  showToast('🐟',`${fish}${len?' · '+len+'cm':''} hinzugefügt!`);
+  showToast(editingOrig?'✅':'🐟',`${fish}${len?' · '+len+'cm':''} ${editingOrig?'aktualisiert':'hinzugefügt'}!`);
   // AP3: Alle Eingaben ins globale Chip-Wörterbuch
   dictAdd('fish',fish);
   if(bait)dictAdd('bait',bait);
@@ -10324,7 +10701,7 @@ function _userColor(uid){
 }
 
 // ── IDB for Groups ──
-async function _saveGroups(){await idbP('profile','_groups',{value:JSON.stringify(_groups)});}
+async function _saveGroups(){await idbP('profile','_groups',{value:JSON.stringify(_groups)});if(typeof _autoPushCloud==='function')_autoPushCloud();}
 async function _loadGroups(){
   try{
     const r=await idbG('profile','_groups');
@@ -10403,21 +10780,79 @@ function _rndrGroupDiscover(){
   </div>`;
 }
 
+// AP3: Discover-Liste — Klick öffnet PREVIEW (nicht direkter Beitritt)
 function _getDemoPublicGroups(){
   const demos=[
-    {name:'Hechtjäger Norddeutschland',icon:'🐟',members:24,region:'Niedersachsen',type:'public'},
-    {name:'Karpfen-Crew NRW',icon:'🎣',members:18,region:'NRW',type:'public'},
-    {name:'Zanderfreunde Elbe',icon:'🐋',members:31,region:'Hamburg/Elbe',type:'public'},
-    {name:'Ostsee Meerforellen',icon:'🦈',members:12,region:'Schleswig-Holstein',type:'public'}
+    {name:'Hechtjäger Norddeutschland',icon:'🐟',members:24,region:'Niedersachsen',desc:'Spinnfischen auf Hecht in Norddeutschland. Wir teilen Spots, Köder-Setups und Fänge.',type:'public'},
+    {name:'Karpfen-Crew NRW',icon:'🎣',members:18,region:'NRW',desc:'Karpfenangeln in Nordrhein-Westfalen. Fokus auf Boilies, Method-Feeder und Stalking.',type:'public'},
+    {name:'Zanderfreunde Elbe',icon:'🐋',members:31,region:'Hamburg/Elbe',desc:'Zander an der Elbe und Nebenflüssen. Vertikalfischen, Drop-Shot, Jiggen.',type:'public'},
+    {name:'Ostsee Meerforellen',icon:'🦈',members:12,region:'Schleswig-Holstein',desc:'Brandungsangeln & Spinnfischen auf Mefo an der Ostseeküste.',type:'public'}
   ];
-  return demos.map(d=>`<div class="grp-item" onclick="_quickJoinPublic('${_esc(d.name)}','${d.icon}')">
-    <div class="grp-item-ico" style="background:var(--blue);">${d.icon}</div>
-    <div class="grp-item-info">
-      <div class="grp-item-name">${d.name}</div>
-      <div class="grp-item-sub">${d.members} Mitglieder · ${d.region}</div>
+  return demos.map((d,i)=>{
+    const id='demo_'+i;
+    // Demo-Daten in Cache hinterlegen für Preview-Lookup
+    window._discoverDemos=window._discoverDemos||{};
+    window._discoverDemos[id]=d;
+    return `<div class="grp-item" onclick="_grpPreview('${id}')">
+      <div class="grp-item-ico" style="background:var(--blue);">${d.icon}</div>
+      <div class="grp-item-info">
+        <div class="grp-item-name">${d.name}</div>
+        <div class="grp-item-sub">${d.members} Mitglieder · ${d.region}</div>
+      </div>
+      <div style="font-size:11px;color:var(--text-light);font-weight:600;">Ansehen ›</div>
+    </div>`;
+  }).join('');
+}
+
+// AP3: Gruppe öffentlich vorschauen (vor Beitritt)
+function _grpPreview(demoId){
+  const d=window._discoverDemos?.[demoId];
+  if(!d){showToast('⚠️','Gruppe nicht gefunden');return;}
+  // Re-Use des bestehenden group-detail Overlay, aber im Preview-Modus
+  openFs('group-detail');
+  document.getElementById('grp-detail-title').textContent=`${d.icon} ${d.name}`;
+  document.getElementById('grp-detail-meta').textContent=`${d.members} Mitglieder · 🌍 Öffentlich · ${d.region}`;
+  // Subnav verstecken im Preview-Modus
+  const subnav=document.getElementById('grp-subnav');
+  if(subnav)subnav.style.display='none';
+  const chatBar=document.getElementById('grp-chat-bar');
+  if(chatBar)chatBar.style.display='none';
+  // Preview-Inhalt rendern
+  const el=document.getElementById('grp-detail-content');
+  el.classList.remove('map-mode');
+  el.innerHTML=`
+    <div style="padding:20px 16px 16px;text-align:center;">
+      <div style="font-size:64px;line-height:1;margin-bottom:14px;">${d.icon}</div>
+      <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:var(--text-dark);margin-bottom:6px;">${_esc(d.name)}</div>
+      <div style="font-size:12px;color:var(--text-light);margin-bottom:16px;">📍 ${_esc(d.region)} · 👥 ${d.members} Mitglieder · 🌍 Öffentlich</div>
+      <div style="background:var(--green-mist);border:1px solid var(--green-pale);border-radius:var(--rs);padding:14px 16px;text-align:left;font-size:13px;line-height:1.55;color:var(--text-dark);">
+        ${_esc(d.desc||'Eine offene Angel-Community.')}
+      </div>
     </div>
-    <div style="font-size:11px;color:var(--green-mid);font-weight:700;">Beitreten</div>
-  </div>`).join('');
+    <div style="padding:0 16px 16px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin:18px 0 10px;">Was du erwarten kannst</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:var(--rs);padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">💬</span><span>Tägliche Diskussionen, Spot- und Setup-Tipps</span></div>
+        <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:var(--rs);padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">🐟</span><span>Geteilte Fänge mit Köder, Wetter und Daten</span></div>
+        <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:var(--rs);padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">🗺️</span><span>Anonyme Spot-Karte (nur bei Freigabe)</span></div>
+        <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:var(--rs);padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">📊</span><span>Insights & Köder-Statistiken der Crew</span></div>
+      </div>
+    </div>
+    <div style="padding:0 16px 24px;">
+      <button onclick="_grpJoinFromPreview('${demoId}')" style="width:100%;padding:16px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);">✓ Dieser Gruppe beitreten</button>
+      <button onclick="closeFs('group-detail')" style="width:100%;margin-top:8px;padding:12px;background:transparent;color:var(--text-light);border:none;font-size:13px;font-family:var(--fa);cursor:pointer;">Abbrechen</button>
+    </div>`;
+}
+
+// AP3: Beitritt aus dem Preview heraus
+async function _grpJoinFromPreview(demoId){
+  const d=window._discoverDemos?.[demoId];
+  if(!d){showToast('⚠️','Gruppe nicht gefunden');return;}
+  // Subnav wiederherstellen für die normale Detail-Ansicht
+  const subnav=document.getElementById('grp-subnav');
+  if(subnav)subnav.style.display='';
+  closeFs('group-detail');
+  await _quickJoinPublic(d.name,d.icon);
 }
 
 function _filterDiscoverGroups(q){}
@@ -10577,6 +11012,9 @@ function _openGroupDetail(gId){
   openFs('group-detail');
   document.getElementById('grp-detail-title').textContent=`${g.icon} ${g.name}`;
   document.getElementById('grp-detail-meta').textContent=`${g.members?.length||0} Mitglieder · ${g.type==='private'?'🔒 Privat':g.type==='elite'?'⭐ Elite':'🌍 Öffentlich'}`;
+  // AP3: Subnav für normale Mitglied-Ansicht zwingend wieder einblenden (Preview hatte sie versteckt)
+  const subnav=document.getElementById('grp-subnav');
+  if(subnav)subnav.style.display='';
   _grpDetailTab('feed');
 }
 
@@ -10592,6 +11030,10 @@ function _grpDetailTab(tab){
   // AP2: Map-Mode Klasse toggeln für Full-Size Map
   const contentEl=document.getElementById('grp-detail-content');
   if(contentEl)contentEl.classList.toggle('map-mode',tab==='map');
+
+  // AP2: has-chat Klasse für extra padding wenn Chat-Bar sichtbar
+  const grpDetail=document.getElementById('fs-group-detail');
+  if(grpDetail)grpDetail.classList.toggle('has-chat',tab==='feed');
 
   if(tab==='feed')_rndrGroupFeed();
   else if(tab==='insights')_rndrGroupInsights();
@@ -11040,17 +11482,53 @@ function _rndrGroupMembers(){
     ${(g.members||[]).map(m=>`<div class="grp-item" style="margin-bottom:6px;">
       <div class="catch-card-avatar" style="background:${_userColor(m.id)};">${m.name.charAt(0)}</div>
       <div class="grp-item-info">
-        <div class="grp-item-name">${_esc(m.name)}</div>
+        <div class="grp-item-name">${_esc(m.name)}${m.id===myId?' (Du)':''}</div>
         <div class="grp-item-sub">${m.role==='admin'?'👑 Admin':'Mitglied'} · seit ${new Date(m.joinedAt).toLocaleDateString('de-DE')}</div>
       </div>
       ${m.isBeta?'<div style="font-size:10px;background:var(--purple);color:var(--purple-t);padding:2px 8px;border-radius:10px;">Beta</div>':''}
     </div>`).join('')}
+    <!-- AP3: Austreten-Button (nicht für letzten Admin) -->
+    <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--cream-dark);">
+      <button onclick="_grpLeave('${g.id}')" style="width:100%;padding:14px;background:var(--rose);color:var(--rose-t);border:1.5px solid var(--rose-b);border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">🚪 Gruppe verlassen</button>
+      <div style="font-size:10px;color:var(--text-light);text-align:center;margin-top:6px;">Du wirst aus der Mitgliederliste entfernt. Geteilte Fänge bleiben anonymisiert in der Gruppen-Statistik.</div>
+    </div>
   </div>`;
   el.innerHTML=html;
 }
 
 function _copyInvite(code){
   navigator.clipboard?.writeText(code).then(()=>showToast('📋',`Code ${code} kopiert!`));
+}
+
+// AP3: Gruppe verlassen
+async function _grpLeave(gId){
+  const g=_groups.find(x=>x.id===gId);
+  if(!g){showToast('⚠️','Gruppe nicht gefunden');return;}
+  const myId=_sbUser?.id||'me';
+  const isLastAdmin=(g.members||[]).filter(m=>m.role==='admin').length<=1&&g.members?.find(m=>m.id===myId)?.role==='admin';
+  const isOnlyMember=(g.members||[]).length<=1;
+  let warn='Möchtest du die Gruppe wirklich verlassen?';
+  if(isOnlyMember)warn='Du bist das einzige Mitglied. Wenn du verlässt, wird die Gruppe gelöscht.';
+  else if(isLastAdmin)warn='Du bist der letzte Admin! Bitte ernenne zuerst einen anderen Admin oder die Gruppe wird verwaist.';
+
+  const ok=await showConf('🚪','Gruppe verlassen?',warn,'Ja, verlassen','danger');
+  if(!ok)return;
+
+  if(isOnlyMember){
+    // Gruppe komplett entfernen
+    _groups=_groups.filter(x=>x.id!==gId);
+  } else {
+    // Aus Mitgliederliste entfernen
+    g.members=(g.members||[]).filter(m=>m.id!==myId);
+    g.feed=g.feed||[];
+    const myName=profile?.name||profile?.vorname||'Angler';
+    g.feed.push({type:'system',text:`${myName} hat die Gruppe verlassen.`,ts:Date.now(),userId:myId});
+  }
+  await _saveGroups();
+  closeFs('group-detail');
+  showToast('🚪','Gruppe verlassen');
+  // Gruppen-Hub refreshen falls offen
+  if(typeof _rndrGroupList==='function')_rndrGroupList();
 }
 
 // ── AP4: Catch Detail Overlay ──
@@ -11264,6 +11742,24 @@ function _setMapLayer(layer){
   document.getElementById('ml-private').classList.toggle('on',layer==='private');
   document.getElementById('ml-group').classList.toggle('on',layer==='group');
   _updateMapMarkers();
+  // AP2: Spot-markieren-Button nur in Private-Layer, niemals in Group-Layer
+  _updateSpotMarkVisibility();
+}
+
+// AP2: Sichtbarkeit des Spot-markieren-FAB zentral steuern
+// Sichtbar nur wenn:
+//   - Karten-Page aktiv
+//   - Layer === 'private'
+//   - Kein Overlay (Live-Catch, Sess-Map etc.) darüber offen
+function _updateSpotMarkVisibility(){
+  const fab=document.getElementById('spot-mark-fab');
+  if(!fab)return;
+  const onMapPage=document.getElementById('page-map')?.classList.contains('on');
+  const isPrivate=_mapLayer==='private';
+  // Overlays die den FAB visuell verdecken sollen → FAB verstecken
+  const blockingOv=['fs-live-catch','fs-sess-map','fs-spot-gps','fs-detail-map','fs-map-filter','fs-group-detail']
+    .some(id=>document.getElementById(id)?.classList.contains('on'));
+  fab.style.display=(onMapPage&&isPrivate&&!blockingOv)?'flex':'none';
 }
 
 // ── Phänologie (Phenological Calendar) ──
@@ -12023,6 +12519,14 @@ function _grpMapFilterChange(key,val){
   showToast('🔍','Filter: '+key+' = '+val);
 }
 
+// AP3: Boot-Loader sicher ausblenden (mit Safety-Timer falls boot hängt)
+function _hideBootLoader(){
+  const el=document.getElementById('boot-loader');
+  if(el)el.classList.add('gone');
+}
+// Failsafe: Loader nach 8s zwangsweise ausblenden
+setTimeout(_hideBootLoader,8000);
+
 (async function boot(){
   // Supabase initialisieren
   sbInit();
@@ -12079,18 +12583,21 @@ function _grpMapFilterChange(key,val){
   // Live-Session wiederherstellen (nach App-Neustart)
   _resumeLiveSession();
 
-  // ── AP1: Auth-Flow — Login VOR Onboarding ──────────────────────
+  // ── AP3: Auth-Flow mit Boot-Loader — kein Login-Flash mehr ─────────
+  // Loader bleibt sichtbar bis wir wissen ob User eingeloggt ist UND Cloud-Sync fertig
   const hasAuth=await _checkAuthSession();
 
   if(hasAuth&&profile){
-    // Fall 1: Eingeloggt + lokales Profil → authoritative Cloud-Sync, dann Fangbuch
+    // Fall 1: Eingeloggt + lokales Profil → authoritative Cloud-Sync VOR App-Anzeige
     document.getElementById('onboarding').classList.add('hidden');
     document.getElementById('login-ov')?.classList.add('hidden');
     applyProf();
     showPage('fangbuch');
+    // AP3: Cloud-Sync abwarten BEVOR Loader ausgeblendet wird → keine Daten-Lücke
+    try{await syncFromCloud({authoritative:true});}catch(e){console.warn('Boot-Sync:',e);}
+    rndrFangbuch();
+    _hideBootLoader();
     setTimeout(reqNotif,3000);
-    // AP1: Beim App-Start mit bestehender Auth: Cloud ist Source of Truth
-    setTimeout(()=>syncFromCloud({authoritative:true}).then(()=>rndrFangbuch()),800);
   } else if(hasAuth&&!profile){
     // Fall 2: Eingeloggt aber kein Profil → authoritative Cloud-Sync, dann Fangbuch
     document.getElementById('login-ov')?.classList.add('hidden');
@@ -12098,14 +12605,16 @@ function _grpMapFilterChange(key,val){
     await syncFromCloud({authoritative:true});
     showPage('fangbuch');
     rndrFangbuch();
+    _hideBootLoader();
   } else if(!hasAuth&&profile){
     // Fall 3: Offline + lokales Profil → Fangbuch, Login dezent anbieten
     document.getElementById('onboarding').classList.add('hidden');
     applyProf();
     showPage('fangbuch');
+    _hideBootLoader();
     setTimeout(reqNotif,3000);
   } else {
-    // Fall 4: Weder Auth noch Profil → Login-Overlay zeigen
+    // Fall 4: Weder Auth noch Profil → Login-Overlay zeigen (jetzt erst!)
     if(!localStorage.getItem('fb_skip_auth')){
       document.getElementById('login-ov')?.classList.remove('hidden');
     } else {
@@ -12114,6 +12623,7 @@ function _grpMapFilterChange(key,val){
       document.getElementById('ob-btn').disabled=true;
       setTimeout(()=>document.getElementById('ob-name')?.focus(),400);
     }
+    _hideBootLoader();
   }
 
   // Auto-Weather-Sync: im Hintergrund, blockiert nicht
