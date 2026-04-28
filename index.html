@@ -2109,7 +2109,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v49 · Supabase · Leaflet · PWA</div>
+    <div class="burg-ver">Fishing Buddy v50 · Supabase · Leaflet · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -2278,7 +2278,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v49</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v50</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
@@ -2904,13 +2904,55 @@ if(typeof Chart!=='undefined'){
 }
 
 // ═══════════════════════════════════════════════════════════
-// SUPABASE CLIENT (v40)
+// SUPABASE CLIENT (v50)
 // ═══════════════════════════════════════════════════════════
 const SB_URL='https://diiggjftcpoagsnxsaez.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpaWdnamZ0Y3BvYWdzbnhzYWV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNzE4NjQsImV4cCI6MjA5MTY0Nzg2NH0.XaBkQcjEl300NIZ3XIfcgEgWVwkfQTqInfECfvUGG6s';
 let _sb=null;
 let _sbUser=null;
 let _authMode='offline'; // 'online' | 'offline'
+
+// v50: localStorage-Schlüssel (Mirror der IDB-Daten, damit nach Cloud-Hydrate
+// alle Daten an drei Orten konsistent stehen: globals + IDB + localStorage)
+const LS_SESSIONS='fb_sessions_v50';
+const LS_PROFILE='fb_profile_v50';
+const LS_FAVS='fb_favs_v50';
+const LS_GROUPS='fb_groups_v50';
+
+// v50: Sicherer localStorage-Setter (handhabt QuotaExceeded ohne Crash).
+function _lsSet(key,obj){
+  try{
+    const s=typeof obj==='string'?obj:JSON.stringify(obj);
+    localStorage.setItem(key,s);
+    return true;
+  }catch(e){
+    console.warn('localStorage quota:',key,e?.message);
+    return false;
+  }
+}
+function _lsRemove(key){try{localStorage.removeItem(key);}catch(e){}}
+
+// v50: Force-Push aller lokalen Daten in die Cloud — synchron, mit Timeout-Fallback.
+// Wird vom Logout-Flow und nach Backup-Import aufgerufen. Cancelt Auto-Push-Debounce.
+async function _forcePushAll(timeoutMs=12000){
+  if(!_sb||!_sbUser||_authMode!=='online')return false;
+  if(_autoPushTimer){clearTimeout(_autoPushTimer);_autoPushTimer=null;}
+  return Promise.race([
+    Promise.all([syncToCloud(),syncProfileToCloud()]).then(()=>true).catch(e=>{console.warn('forcePush:',e);return false;}),
+    new Promise(res=>setTimeout(()=>res(false),timeoutMs))
+  ]);
+}
+
+// v50: Komplette UI-Neuzeichnung nach Cloud-Hydrate. Idempotent.
+// Reihenfolge wichtig: Dictionary VOR Fangbuch, Profil VOR Map.
+function _renderAll(){
+  try{if(typeof _rebuildGlobalDict==='function')_rebuildGlobalDict();}catch(e){console.warn('rndr dict:',e);}
+  try{if(profile&&typeof applyProf==='function')applyProf();}catch(e){console.warn('rndr prof:',e);}
+  try{if(typeof seedWaters==='function')seedWaters();}catch(e){}
+  try{if(typeof updBurgStor==='function')updBurgStor();}catch(e){}
+  try{if(typeof rndrFangbuch==='function')rndrFangbuch();}catch(e){console.warn('rndr fb:',e);}
+  try{if(typeof rndrCalendar==='function'&&_fbView==='cal')rndrCalendar();}catch(e){}
+}
 
 function sbInit(){
   if(typeof supabase!=='undefined'&&supabase.createClient){
@@ -2920,7 +2962,7 @@ function sbInit(){
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v49`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v50`;
       } else {
         _sbUser=null;
       }
@@ -2936,7 +2978,7 @@ async function _checkAuthSession(){
     if(data?.session?.user){
       _sbUser=data.session.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v49`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v50`;
       return true;
     }
   }catch(e){console.warn('Auth-Check Fehler:',e);}
@@ -2974,18 +3016,23 @@ async function handleAuth(e){
 
     if(isLogin){
       // ── LOGIN: Cloud-Daten laden → direkt zum Fangbuch ──
+      // v50-Fix: Reihenfolge ist KRITISCH:
+      //   1. _sbUser + _authMode setzen (sonst lehnt syncFromCloud ab)
+      //   2. Header zeigen, aber Login-Overlay NOCH NICHT verstecken (kein leerer Flash)
+      //   3. Cloud-Daten authoritativ laden → sessions/profile/favs/_groups + LS-Mirror
+      //   4. _renderAll() (in syncFromCloud bereits enthalten) malt Fangbuch + Profil neu
+      //   5. ERST jetzt Login-Overlay weg + auf Fangbuch wechseln
       _sbUser=result.data.user;
       _authMode='online';
-      document.getElementById('login-ov')?.classList.add('hidden');
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v49`;
-      // AP1: Cloud-Sync mit authoritative-Flag — Cloud = Single Source of Truth bei Login
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v50`;
+      // Cloud = Single Source of Truth bei Login. _renderAll() läuft am Ende.
       await syncFromCloud({authoritative:true});
-      // Profil anwenden und Fangbuch rendern
-      if(profile){
-        applyProf();
-      }
+      // Sicherheits-Re-Render falls syncFromCloud früh ausstieg (z.B. offline mid-flight)
+      if(profile)applyProf();
       showPage('fangbuch');
       rndrFangbuch();
+      // Jetzt erst Login-Overlay weg — User sieht nicht zuerst leeres Fangbuch
+      document.getElementById('login-ov')?.classList.add('hidden');
     }else{
       // ── REGISTER: Bestätigungsmail oder direkt Onboarding ──
       if(!result.data?.user?.confirmed_at&&result.data?.user?.identities?.length===0){
@@ -3000,7 +3047,7 @@ async function handleAuth(e){
         _sbUser=result.data.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v49`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v50`;
         // Onboarding starten
         document.getElementById('onboarding').classList.remove('hidden');
         document.getElementById('ob-btn').disabled=true;
@@ -3053,7 +3100,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v49';
+  document.getElementById('hdr-sub').textContent='Offline · v50';
   if(!profile){
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('ob-btn').disabled=true;
@@ -3062,56 +3109,80 @@ function skipAuth(){
 }
 
 // Cloud-Sync: Sessions zu Supabase hochladen
+// v50: Batch-Upsert (nicht mehr 1-Request-pro-Session). spot-Spalte existiert nun.
 async function syncToCloud(){
   if(!_sb||!_sbUser||_authMode!=='online')return;
+  if(!sessions||!sessions.length)return;
   try{
-    for(const s of sessions){
-      const row={
-        user_id:_sbUser.id,
-        session_id:String(s.id),
-        date:s.date||null,
-        water:s.water||null,
-        spot:s.spot||null,
-        metadata:s
-      };
-      await _sb.from('sessions').upsert(row,{onConflict:'user_id,session_id'}).select();
+    const rows=sessions.map(s=>({
+      user_id:_sbUser.id,
+      session_id:String(s.id),
+      date:s.date||null,
+      water:s.water||null,
+      spot:s.spot||null,
+      metadata:s
+    }));
+    // Chunk-weise upserten damit grosse Bibliotheken nicht in Request-Size-Limits laufen
+    const CHUNK=50;
+    for(let i=0;i<rows.length;i+=CHUNK){
+      const chunk=rows.slice(i,i+CHUNK);
+      const{error}=await _sb.from('sessions').upsert(chunk,{onConflict:'user_id,session_id'});
+      if(error)throw error;
     }
-  }catch(e){console.warn('Cloud-Sync Fehler:',e);}
+    // Mirror nach localStorage (Crash-Recovery falls IDB blockiert ist)
+    _lsSet(LS_SESSIONS,sessions);
+  }catch(e){console.warn('Cloud-Sync Fehler:',e);throw e;}
 }
 
-// Cloud-Sync: Sessions von Supabase laden (AP1: Cloud = Single Source of Truth bei Login)
+// Cloud-Sync: Sessions von Supabase laden (Cloud = Single Source of Truth bei Login)
 // Flags: {authoritative:true} = Cloud überschreibt lokale Daten (bei Login / Device-Switch)
+//        {silent:true}        = keine Toasts (z.B. wenn Aufruf vom Boot kommt)
+// v50-Fix: Sessions werden NACH Hydrate sowohl in IDB als auch localStorage gemirrort,
+// die Globals (sessions[]) werden direkt zugewiesen, und _renderAll() wird zwingend
+// aufgerufen, sodass das Fangbuch (und die Map/Profil) sofort die Cloud-Daten zeigt.
 async function syncFromCloud(opts={}){
-  if(!_sb||!_sbUser||_authMode!=='online')return;
+  if(!_sb||!_sbUser||_authMode!=='online')return false;
   const authoritative=opts.authoritative===true;
+  const silent=opts.silent===true;
   try{
-    // Profil aus Cloud laden (authoritative = Cloud gewinnt komplett)
-    await syncProfileFromCloud({authoritative});
-    // Sessions laden
+    // 1. Profil-Bundle (Profile, Favs, Groups, SpotMap, Photos, Docs) zuerst —
+    //    Sessions referenzieren Spot-/Wetter-Maps, die im Profil-Bundle liegen.
+    await syncProfileFromCloud({authoritative,silent});
+
+    // 2. Sessions
     const{data,error}=await _sb.from('sessions').select('*').eq('user_id',_sbUser.id);
     if(error)throw error;
+
     if(!data?.length){
-      // Authoritative + leere Cloud → lokale Daten als initial Push nach Cloud schicken
-      if(authoritative&&sessions.length){setTimeout(()=>syncToCloud(),500);}
-      return;
+      // Cloud leer → bei authoritative Login mit lokalen Daten initial-Push starten
+      if(authoritative&&sessions.length){
+        // Mirror in localStorage damit lokaler State nicht durch idbC/Reload verloren geht
+        _lsSet(LS_SESSIONS,sessions);
+        setTimeout(()=>{syncToCloud().catch(e=>console.warn('initial push:',e));},500);
+      }
+      _renderAll();
+      return true;
     }
+
     if(authoritative){
-      // AP1: Cloud ist Source of Truth. Lokale IDB leeren und Cloud-Daten voll übernehmen.
+      // Cloud ist Source of Truth. Lokale IDB-Sessions wegwerfen, Cloud-Daten voll übernehmen.
       await idbC('sessions');
-      sessions=[];
-      let cloudCount=0;
+      const fresh=[];
       for(const row of data){
         if(!row.metadata)continue;
         const sess=row.metadata;
         sess.id=row.session_id;
-        sessions.push(sess);
+        fresh.push(sess);
         await idbP('sessions',String(sess.id),sess);
-        cloudCount++;
       }
-      sessions.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-      showToast('☁️',`${cloudCount} Session${cloudCount!==1?'s':''} aus der Cloud synchronisiert`);
+      fresh.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+      // KRITISCH: Globale Variable direkt zuweisen, damit alle Renderer sie sofort sehen
+      sessions=fresh;
+      // KRITISCH: localStorage-Mirror (zweite Persistenz-Schicht, überlebt IDB-Wipe)
+      _lsSet(LS_SESSIONS,sessions);
+      if(!silent)showToast('☁️',`${fresh.length} Session${fresh.length!==1?'s':''} aus der Cloud synchronisiert`);
     }else{
-      // Inkrementell: nur neue Sessions aus Cloud in lokale IDB holen
+      // Inkrementell: nur neue Cloud-Sessions in lokale Liste übernehmen
       const localIds=new Set(sessions.map(s=>String(s.id)));
       let newCount=0;
       for(const row of data){
@@ -3125,10 +3196,21 @@ async function syncFromCloud(opts={}){
       }
       if(newCount>0){
         sessions.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-        showToast('☁️',`${newCount} Session${newCount>1?'s':''} aus der Cloud geladen`);
+        _lsSet(LS_SESSIONS,sessions);
+        if(!silent)showToast('☁️',`${newCount} Session${newCount>1?'s':''} aus der Cloud geladen`);
       }
     }
-  }catch(e){console.warn('Cloud-Load Fehler:',e);}
+
+    // 3. KRITISCH: UI explizit neu zeichnen — sonst hängt das DOM auf altem State
+    _renderAll();
+    return true;
+  }catch(e){
+    console.warn('Cloud-Load Fehler:',e);
+    if(!silent)showToast('⚠️','Cloud-Sync fehlgeschlagen — nutze lokale Daten');
+    // Selbst bei Fehler: lokale Daten rendern, damit das Fangbuch nicht leer bleibt
+    _renderAll();
+    return false;
+  }
 }
 
 // AP3: Komplettes Profil-Daten-Bundle (Profile + Favs + Groups + Photos + SpotMap)
@@ -3157,33 +3239,50 @@ function _buildProfileBundle(){
     spotBaits:profile?.spotBaits||null,
     docs:profile?.docs||null,
     photos,
-    schemaVersion:49,
+    schemaVersion:50,
     updatedAt:Date.now()
   };
 }
 
 // Cloud-Sync: KOMPLETTES Daten-Bundle zu Supabase hochladen
-// AP3: Profil + Favs + Groups + Photos + SpotMap + Mitgliedsnummer/Docs alles in einem Record.
+// v50: Profil + Favs + Groups + Photos + SpotMap + Mitgliedsnummer/Docs alles in einem Record.
+// Wirft Fehler bei Failure — Caller (Logout/Import) entscheidet was zu tun ist.
 async function syncProfileToCloud(){
   if(!_sb||!_sbUser||_authMode!=='online'||!profile)return;
   try{
     const bundle=_buildProfileBundle();
-    await _sb.from('profiles').upsert({user_id:_sbUser.id,data:bundle},{onConflict:'user_id'}).select();
-  }catch(e){console.warn('Profil-Cloud-Sync Fehler:',e);}
+    const{error}=await _sb.from('profiles').upsert(
+      {user_id:_sbUser.id,data:bundle,updated_at:new Date().toISOString()},
+      {onConflict:'user_id'}
+    );
+    if(error)throw error;
+    // Mirror nach localStorage (Crash-Recovery)
+    _lsSet(LS_PROFILE,profile);
+    _lsSet(LS_FAVS,favs);
+    if(typeof _groups!=='undefined')_lsSet(LS_GROUPS,_groups);
+  }catch(e){console.warn('Profil-Cloud-Sync Fehler:',e);throw e;}
 }
 
 // Cloud-Sync: KOMPLETTES Bundle von Supabase laden und alle Stores wiederherstellen
 // Flags: {authoritative:true} = Cloud überschreibt lokal komplett (Login / Device-Switch)
+//        {silent:true}        = keine Toasts (z.B. wenn Aufruf vom Boot kommt)
+// v50-Fix: Nach Hydrate werden ALLE Daten in localStorage gemirrort (zweite Persistenz-
+// Schicht), die Globals (profile, favs, _groups) werden direkt zugewiesen, und
+// applyProf() läuft damit das DOM die Cloud-Daten sofort anzeigt.
 async function syncProfileFromCloud(opts={}){
-  if(!_sb||!_sbUser||_authMode!=='online')return;
+  if(!_sb||!_sbUser||_authMode!=='online')return false;
   const authoritative=opts.authoritative===true;
   try{
     const{data,error}=await _sb.from('profiles').select('*').eq('user_id',_sbUser.id).maybeSingle();
     if(error)throw error;
-    if(!data?.data)return;
+    if(!data?.data){
+      // Cloud leer → bei authoritative + lokalem Profil initial-Push
+      if(authoritative&&profile){setTimeout(()=>{syncProfileToCloud().catch(e=>console.warn('initial profile push:',e));},500);}
+      return true;
+    }
     const bundle=data.data;
-    // Erkennen ob neues Bundle-Format (schemaVersion>=48) oder Legacy-Profil
-    const isBundle=bundle&&typeof bundle==='object'&&('schemaVersion' in bundle||'profile' in bundle&&'favs' in bundle);
+    // Bundle-Format (schemaVersion>=48) oder Legacy-Profil-only erkennen
+    const isBundle=bundle&&typeof bundle==='object'&&('schemaVersion' in bundle||('profile' in bundle&&'favs' in bundle));
 
     if(isBundle){
       // ── PROFIL ──
@@ -3266,27 +3365,42 @@ async function syncProfileFromCloud(opts={}){
       await saveProfile();
       applyProf();
     }
-  }catch(e){console.warn('Profil-Cloud-Load Fehler:',e);}
+    // v50-Fix: localStorage-Mirror nach erfolgreichem Hydrate.
+    // So überleben profile/favs/groups einen IDB-Wipe oder Browser-Cache-Reset.
+    try{
+      if(profile)_lsSet(LS_PROFILE,profile);
+      if(favs)_lsSet(LS_FAVS,favs);
+      if(typeof _groups!=='undefined'&&_groups)_lsSet(LS_GROUPS,_groups);
+    }catch(e){console.warn('LS mirror profile:',e);}
+    return true;
+  }catch(e){console.warn('Profil-Cloud-Load Fehler:',e);return false;}
 }
 
 // Supabase Logout
+// v50-Fix: VORHER zwingender Force-Push aller lokalen Daten in die Cloud (mit Timeout-
+// Fallback). Kein Datenverlust beim Relogin auf einem anderen Gerät. Nach signOut
+// werden die localStorage-Mirrors gelöscht, damit ein anderer User der den Browser
+// teilt nicht plötzlich fremde Daten sieht.
 async function sbLogout(){
   if(!_sb)return;
-  // AP8: VORHER alles in die Cloud pushen — kein Datenverlust beim Relogin!
   if(_sbUser&&_authMode==='online'){
     try{
       showToast('☁️','Sichere Daten in der Cloud…');
-      await Promise.race([
-        Promise.all([syncToCloud(),syncProfileToCloud()]),
-        new Promise((_,rj)=>setTimeout(()=>rj(new Error('timeout')),12000))
-      ]);
+      const ok=await _forcePushAll(12000);
+      if(ok)showToast('✅','Cloud-Sync abgeschlossen');
+      else showToast('⚠️','Sync-Timeout — Daten bleiben lokal');
     }catch(e){console.warn('Pre-Logout-Push:',e);}
   }
-  await _sb.auth.signOut();
+  try{await _sb.auth.signOut();}catch(e){console.warn('signOut:',e);}
   _sbUser=null;
   _authMode='offline';
+  // localStorage-Mirrors entfernen (Geräte-Sharing-Schutz)
+  _lsRemove(LS_SESSIONS);
+  _lsRemove(LS_PROFILE);
+  _lsRemove(LS_FAVS);
+  _lsRemove(LS_GROUPS);
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v49';
+  document.getElementById('hdr-sub').textContent='Offline · v50';
   showToast('👋','Abgemeldet');
 }
 
@@ -3314,7 +3428,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='fb-v8';const A=['https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='fb-v9-50';const A=['https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -3335,8 +3449,19 @@ function _newId(){
   });
 }
 
-async function saveSessions(){for(const s of sessions)await idbP('sessions',String(s.id),s);_autoPushCloud();}
-async function saveOneSess(s){await idbP('sessions',String(s.id),s);_autoPushCloud();}
+// v50: jede lokale Schreibung wird sofort in IDB UND localStorage gemirrort,
+// und triggert _autoPushCloud (debounced Cloud-Sync). Bei Cloud-Failure bleiben
+// die Daten in IDB+LS — kein Verlust.
+async function saveSessions(){
+  for(const s of sessions)await idbP('sessions',String(s.id),s);
+  _lsSet(LS_SESSIONS,sessions);
+  _autoPushCloud();
+}
+async function saveOneSess(s){
+  await idbP('sessions',String(s.id),s);
+  _lsSet(LS_SESSIONS,sessions);
+  _autoPushCloud();
+}
 // AP1: Auto-Push nach Writes (debounced, nur online)
 let _autoPushTimer=null;
 function _autoPushCloud(){
@@ -3361,8 +3486,16 @@ async function loadFcCache(){
     if(h?.value)_fcHourlyData=JSON.parse(h.value);
   }catch(e){}
 }
-async function saveProfile(){await idbP('profile','profile',profile);_autoPushCloud();}
-async function saveFavs(){await idbP('favs','favs',favs);_autoPushCloud();}
+async function saveProfile(){
+  await idbP('profile','profile',profile);
+  if(profile)_lsSet(LS_PROFILE,profile);
+  _autoPushCloud();
+}
+async function saveFavs(){
+  await idbP('favs','favs',favs);
+  if(favs)_lsSet(LS_FAVS,favs);
+  _autoPushCloud();
+}
 
 // ═══════════════════════════════════════════════════════════
 // AP2: SPOT AUTO-LEARN · Gewässer+Spot-Kombo ↔ GPS
@@ -4201,7 +4334,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v49`:`PLZ ${profile.plz||'–'} · v49`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v50`:`PLZ ${profile.plz||'–'} · v50`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -9636,15 +9769,19 @@ async function handleImp(e){const file=e.target.files[0];if(!file)return;const r
     await saveFavs();
   }
   await saveSessions();applyProf();rndrFangbuch();
+  // v50: localStorage-Mirror direkt nach Import (vor evtl. Cloud-Push), damit
+  // selbst bei Cloud-Failure die importierten Daten nicht verloren gehen können.
+  _lsSet(LS_SESSIONS,sessions);
+  if(profile)_lsSet(LS_PROFILE,profile);
+  if(favs)_lsSet(LS_FAVS,favs);
   showToast('✅',`${newSessions.length} neue Sessions importiert · ${data.sessions.length-newSessions.length} Duplikate übersprungen`);
-  // AP8: Forcierter Cloud-Push direkt nach Import — Daten dürfen NICHT lokal hängen bleiben
+  // v50: Zwingender Force-Push aller Daten in die Cloud nach Import.
+  // _forcePushAll() cancelt parallele Auto-Push-Debounces und nutzt Timeout-Fallback.
   if(_sb&&_sbUser&&_authMode==='online'){
-    try{
-      showToast('☁️','Synchronisiere Backup mit Cloud…');
-      await syncToCloud();
-      await syncProfileToCloud();
-      showToast('✅','Backup in Cloud gesichert');
-    }catch(err){console.warn('Cloud-Push nach Import:',err);showToast('⚠️','Cloud-Sync fehlgeschlagen — Daten lokal');}
+    showToast('☁️','Synchronisiere Backup mit Cloud…');
+    const ok=await _forcePushAll(15000);
+    if(ok)showToast('✅','Backup in Cloud gesichert');
+    else showToast('⚠️','Cloud-Sync fehlgeschlagen — Daten lokal & in localStorage');
   }
   e.target.value='';
   // Auto-Sync: Wetter für importierte Sessions nachladen (mit Ladebalken)
@@ -10883,11 +11020,21 @@ function _userColor(uid){
 }
 
 // ── IDB for Groups ──
-async function _saveGroups(){await idbP('profile','_groups',{value:JSON.stringify(_groups)});if(typeof _autoPushCloud==='function')_autoPushCloud();}
+async function _saveGroups(){
+  await idbP('profile','_groups',{value:JSON.stringify(_groups)});
+  // v50: localStorage-Mirror parallel zur IDB
+  try{_lsSet(LS_GROUPS,_groups);}catch(e){}
+  if(typeof _autoPushCloud==='function')_autoPushCloud();
+}
 async function _loadGroups(){
   try{
     const r=await idbG('profile','_groups');
     if(r?.value)_groups=JSON.parse(r.value);
+    else{
+      // v50: LS-Fallback wenn IDB leer (z.B. nach Cache-Wipe)
+      const ls=localStorage.getItem(LS_GROUPS);
+      if(ls){_groups=JSON.parse(ls)||[];}
+    }
   }catch(e){}
 }
 
@@ -12796,25 +12943,39 @@ setTimeout(_hideBootLoader,8000);
   document.getElementById('s-end').value=Math.min(n.getHours()+3,23).toString().padStart(2,'0')+':00';
   updMoon();
 
-  // Load from IndexedDB, fallback v8/v7 migration
+  // Load from IndexedDB, fallback v50 LS-Mirror, fallback v8/v7 migration.
+  // v50: Wenn IDB leer ist (z.B. nach Browser-Cache-Clear), holen wir aus dem
+  // localStorage-Mirror, der bei jedem Cloud-Sync mitgeschrieben wird.
   try{
     const allS=await idbGA('sessions');
     if(allS.length){sessions=allS.sort((a,b)=>(b.date||'').localeCompare(a.date||''));}
     else{
-      const ls=localStorage.getItem('fb_sessions_v8')||localStorage.getItem('fb_sessions_v7');
-      if(ls){try{sessions=JSON.parse(ls);await saveSessions();}catch(e){}}
+      const ls50=localStorage.getItem(LS_SESSIONS);
+      if(ls50){try{sessions=JSON.parse(ls50)||[];await saveSessions();}catch(e){}}
+      else{
+        const ls=localStorage.getItem('fb_sessions_v8')||localStorage.getItem('fb_sessions_v7');
+        if(ls){try{sessions=JSON.parse(ls);await saveSessions();}catch(e){}}
+      }
     }
     const pr=await idbG('profile','profile');
     if(pr){const{key,...p}=pr;profile=p;}
     else{
-      const lp=localStorage.getItem('fb_profile_v8')||localStorage.getItem('fb_profile_v7');
-      if(lp){try{profile=JSON.parse(lp);await saveProfile();}catch(e){}}
+      const lp50=localStorage.getItem(LS_PROFILE);
+      if(lp50){try{profile=JSON.parse(lp50);await saveProfile();}catch(e){}}
+      else{
+        const lp=localStorage.getItem('fb_profile_v8')||localStorage.getItem('fb_profile_v7');
+        if(lp){try{profile=JSON.parse(lp);await saveProfile();}catch(e){}}
+      }
     }
     const fv=await idbG('favs','favs');
     if(fv){const{key,...f}=fv;favs=f;}
     else{
-      const lf=localStorage.getItem('fb_favs_v8')||localStorage.getItem('fb_favs_v7');
-      if(lf){try{favs=JSON.parse(lf);await saveFavs();}catch(e){}}
+      const lf50=localStorage.getItem(LS_FAVS);
+      if(lf50){try{favs=JSON.parse(lf50);await saveFavs();}catch(e){}}
+      else{
+        const lf=localStorage.getItem('fb_favs_v8')||localStorage.getItem('fb_favs_v7');
+        if(lf){try{favs=JSON.parse(lf);await saveFavs();}catch(e){}}
+      }
     }
     // AP3: Globales Chip-Wörterbuch aus favs + sessions aufbauen
     try{_rebuildGlobalDict();}catch(e){console.warn('dict rebuild:',e);}
