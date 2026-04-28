@@ -507,6 +507,8 @@ position:relative;}
 /* AP3: Multi-Chart Tagesansicht – schlanke Sparklines */
 .fc-chart-wrap.cw-lg{height:128px;max-height:128px;}
 .fc-chart-wrap.cw-xl{height:220px;max-height:220px;}
+/* v52 AP4: Env-Charts gestreckt — maximale verfügbare Höhe für 14-Tage-Übersicht */
+.fc-chart-wrap.cw-xxl{height:300px;max-height:300px;}
 .fc-chart-wrap canvas{display:block;width:100%!important;height:100%!important;}
 
 /* AP2: Edge-to-Edge Charts – Chart-Wraps brechen aus Sec-Padding aus */
@@ -599,12 +601,25 @@ position:relative;}
 }
 .tide-hero-flow-lbl.err{color:var(--red);}
 
-/* Datums-Strip */
+/* v52 AP3: Datums-Strip mit Kalender-Button daneben (infinite scroll) */
+.tide-strip-row{
+  display:flex;align-items:center;gap:6px;padding:0 8px 4px;
+}
+.tide-strip-row .tide-cal-btn{
+  flex:0 0 auto;width:36px;height:36px;border:1.5px solid var(--green-pale);
+  background:#fff;color:var(--green-deep);border-radius:10px;cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;
+  transition:transform .12s,background .15s;
+}
+.tide-strip-row .tide-cal-btn:active{transform:scale(.94);background:var(--green-mist);}
+.tide-strip-row input[type="date"]{
+  position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;
+}
 .tide-strip{
   display:flex;gap:4px;overflow-x:auto;
   scrollbar-width:none;-webkit-overflow-scrolling:touch;
   scroll-snap-type:x mandatory;scroll-padding:0 12px;
-  padding:2px 12px 6px;
+  padding:2px 8px 6px;flex:1;
 }
 .tide-strip::-webkit-scrollbar{display:none;}
 .tide-strip-day{
@@ -1556,6 +1571,53 @@ input[type=file]{display:none;}
 /* ═══ LEAFLET MAP TAB ═══ */
 #page-map .sc{padding:0;overflow:hidden;}
 #map-container{width:100%;height:100%;position:absolute;inset:0;z-index:1;}
+
+/* v52 AP2: In-Place Spot-Markier-Modus
+   Toolbar oben unter der Header-Bar (Wasser/Spot-Picker + Cancel)
+   Confirm-Bar unten anstelle der Bottom-Nav */
+.spot-mark-toolbar{
+  position:absolute;left:8px;right:8px;
+  top:calc(max(8px,env(safe-area-inset-top,0px)) + 48px);
+  z-index:60;display:none;flex-direction:column;gap:6px;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-radius:14px;padding:10px 12px;box-shadow:0 6px 24px rgba(45,74,53,.18);
+  border:1px solid rgba(200,221,208,.6);
+}
+.spot-mark-toolbar.on{display:flex;}
+.spot-mark-toolbar .smt-row{display:flex;gap:6px;align-items:center;}
+.spot-mark-toolbar .smt-lbl{font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;width:64px;}
+.spot-mark-toolbar select,.spot-mark-toolbar input[type="text"]{
+  flex:1;min-width:0;padding:7px 10px;border:1px solid var(--cream-dark);border-radius:8px;
+  font-size:12px;font-family:var(--fa);background:#fff;outline:none;
+}
+.spot-mark-toolbar select:focus,.spot-mark-toolbar input[type="text"]:focus{border-color:var(--green-mid);}
+.spot-mark-toolbar .smt-hint{font-size:10.5px;color:var(--text-mid);text-align:center;padding:4px 0 2px;line-height:1.4;}
+.spot-mark-toolbar .smt-cancel{
+  position:absolute;top:6px;right:6px;width:24px;height:24px;border:none;background:rgba(0,0,0,.06);
+  border-radius:50%;font-size:13px;color:var(--text-mid);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* v52 AP2: Confirm-Bar unten — ersetzt die Bottom-Nav während des Markier-Modus */
+.spot-confirm-bar{
+  position:absolute;
+  bottom:max(24px,env(safe-area-inset-bottom,24px));
+  left:12.5%;right:12.5%;width:75%;
+  z-index:140;display:none;
+}
+.spot-confirm-bar.on{display:block;}
+.spot-confirm-bar button{
+  width:100%;padding:14px 18px;border:none;border-radius:30px;
+  background:var(--green-deep);color:#fff;font-size:14px;font-weight:700;font-family:var(--fa);
+  cursor:pointer;box-shadow:0 10px 30px rgba(45,74,53,.35);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .12s,opacity .15s;
+}
+.spot-confirm-bar button:disabled{opacity:.5;cursor:not-allowed;background:var(--text-light);}
+.spot-confirm-bar button:active{transform:scale(.98);}
+
+/* v52 AP2: Bottom-Nav verstecken wenn Markier-Modus aktiv */
+.phone.spot-marking .btabs{display:none;}
 /* AP2: Map-Header ohne Farbverlauf, Toggle integriert */
 .map-hdr-bar{position:absolute;top:max(8px,env(safe-area-inset-top,0px));left:8px;right:8px;z-index:10;padding:0;
   display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:none;}
@@ -1596,13 +1658,47 @@ input[type=file]{display:none;}
 /* AP4: End-Overlay in Header-Grün (exakt var(--green-deep) #2D4A35) */
 .ls-end-ov{position:absolute;inset:0;z-index:131;background:var(--green-deep);display:none;align-items:center;justify-content:center;font-family:var(--fa);}
 .ls-end-ov.on{display:flex;}
-.ls-end-card{background:var(--cream);width:88%;border-radius:var(--rl);padding:24px 20px;box-shadow:var(--sh-lg);text-align:center;}
-.ls-end-card h3{font-family:var(--fs);font-size:18px;color:var(--green-deep);margin:0 0 12px;}
-.ls-end-card .le-sub{font-size:13px;color:var(--text-light);margin-bottom:16px;}
-.ls-end-btn{width:100%;padding:13px;border:none;border-radius:var(--rs);font-family:var(--fa);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px;transition:all .15s;}
+.ls-end-card{background:var(--cream);width:92%;max-width:380px;max-height:85dvh;border-radius:var(--rl);padding:20px;box-shadow:var(--sh-lg);text-align:left;display:flex;flex-direction:column;overflow:hidden;}
+.ls-end-card h3{font-family:var(--fs);font-size:18px;color:var(--green-deep);margin:0 0 6px;text-align:center;}
+.ls-end-card .le-sub{font-size:13px;color:var(--text-light);margin-bottom:12px;text-align:center;}
+.ls-end-card .le-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px;}
+.ls-end-card .le-actions{flex-shrink:0;padding-top:10px;border-top:1px solid var(--cream-dark);margin-top:10px;}
+.ls-end-btn{width:100%;padding:13px;border:none;border-radius:var(--rs);font-family:var(--fa);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:6px;transition:all .15s;}
 .ls-end-btn.primary{background:var(--green-deep);color:#fff;}
 .ls-end-btn.warn{background:#cc0000;color:#fff;}
 .ls-end-btn.ghost{background:transparent;color:var(--text-mid);border:1.5px solid var(--border);}
+
+/* v52 AP1: Session-Recap-Sektion im End-Overlay */
+.le-recap{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;}
+.le-recap-cell{background:#fff;border-radius:10px;padding:8px 10px;text-align:center;}
+.le-recap-cell .lbl{font-size:9px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700;}
+.le-recap-cell .val{font-size:14px;color:var(--text-dark);font-weight:700;margin-top:2px;}
+
+/* v52 AP1: Share-Section im End-Overlay + Edit-Session */
+.share-section{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px;border:1px solid var(--cream-dark);}
+.share-toggle-row{display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.share-toggle-row .ico{font-size:22px;flex-shrink:0;}
+.share-toggle-row .body{flex:1;min-width:0;}
+.share-toggle-row .ttl{font-size:13px;font-weight:700;color:var(--text-dark);}
+.share-toggle-row .sub{font-size:11px;color:var(--text-light);margin-top:1px;}
+.share-toggle-sw{flex:0 0 auto;width:46px;height:26px;border-radius:13px;background:var(--cream-dark);position:relative;transition:background .2s;border:none;cursor:pointer;}
+.share-toggle-sw.on{background:var(--green-mid);}
+.share-toggle-sw::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s;}
+.share-toggle-sw.on::after{transform:translateX(20px);}
+.share-group-list{margin-top:10px;display:none;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.share-section.expanded .share-group-list{display:flex;}
+.share-grp-pick{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--cream);border:1.5px solid var(--cream-dark);border-radius:10px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.share-grp-pick.on{background:var(--green-mist);border-color:var(--green-mid);}
+.share-grp-pick .ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:var(--cream-dark);}
+.share-grp-pick.on .ico{background:var(--green-pale);}
+.share-grp-pick .nm{flex:1;font-size:12px;font-weight:600;color:var(--text-dark);}
+.share-grp-pick .chk{width:18px;height:18px;border-radius:50%;border:2px solid var(--cream-dark);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;}
+.share-grp-pick.on .chk{background:var(--green-mid);border-color:var(--green-mid);color:#fff;}
+.share-loc-banner{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:11px;line-height:1.45;display:flex;gap:6px;align-items:flex-start;}
+.share-loc-banner.exact{background:rgba(46,162,119,.10);color:var(--green-deep);}
+.share-loc-banner.spot,.share-loc-banner.water{background:rgba(180,140,60,.10);color:#a07020;}
+.share-loc-banner.none{background:rgba(120,120,120,.10);color:var(--text-mid);}
+.share-loc-banner .ico{flex-shrink:0;}
 
 /* ═══ USER AVATAR (Header) ═══ */
 .hdr-avatar{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;margin-left:6px;cursor:pointer;}
@@ -1773,9 +1869,13 @@ input[type=file]{display:none;}
 .fc-chart-touch{touch-action:none;-ms-touch-action:none;}
 
 /* Magic Header – replaces tooltips */
-.chart-magic-hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;margin-bottom:6px;background:var(--green-mist);border-radius:8px;font-size:12px;font-weight:600;color:var(--green-deep);}
+.chart-magic-hdr{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;margin-bottom:6px;background:var(--green-mist);border-radius:8px;font-size:12px;font-weight:600;color:var(--green-deep);}
 .chart-magic-hdr .cmh-val{font-weight:700;font-size:13px;}
 .chart-magic-hdr .cmh-lbl{font-size:10px;color:var(--text-light);margin-bottom:1px;}
+/* v52 AP4: Pfeile links/rechts oben in der Chart-Kachel zum Blättern (±14 Tage) */
+.chart-magic-hdr .cmh-nav{flex:0 0 auto;width:30px;height:30px;border:none;background:rgba(45,74,53,.12);color:var(--green-deep);border-radius:50%;font-size:18px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:transform .12s,background .15s;}
+.chart-magic-hdr .cmh-nav:active{transform:scale(.92);background:rgba(45,74,53,.20);}
+.chart-magic-hdr .cmh-nav:disabled{opacity:.3;cursor:not-allowed;}
 
 /* Crosshair line */
 .chart-crosshair{position:absolute;top:0;bottom:0;width:1.5px;background:var(--red);pointer-events:none;z-index:5;display:none;}
@@ -2186,7 +2286,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v51 · Supabase · Leaflet · PWA</div>
+    <div class="burg-ver">Fishing Buddy v52 · Supabase · Leaflet · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -2355,7 +2455,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v51</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v52</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
@@ -2486,6 +2586,11 @@ input[type=file]{display:none;}
       <div class="slbl">Fänge</div>
       <div id="catches-con"></div>
       <button class="addcatch" onclick="addCatch()"><div class="aplus">+</div>Fang hinzufügen</button>
+    </div>
+    <!-- v52 AP1: Gruppen-Teilen-Section (nur in Edit-Mode sichtbar) -->
+    <div id="edit-share-wrap" style="display:none;margin-top:14px;">
+      <div class="slbl">Mit Gruppe teilen</div>
+      <div id="edit-share-host"></div>
     </div>
     <button class="btn" onclick="saveSess()">Session speichern ✓</button>
   </div>
@@ -2678,7 +2783,7 @@ input[type=file]{display:none;}
   <div class="sc"><div id="fc-con"></div></div>
 </div>
 
-<!-- PAGE: KARTE – AP2: Clean Header, Toggle oben, kein X, kein Farbverlauf -->
+<!-- PAGE: KARTE – v52 AP2: In-Place Spot-Markieren (Top-Right Button + Inline-Toolbar + Confirm-Bar) -->
 <div class="page" id="page-map">
   <div class="sc" style="padding:0;position:relative;overflow:hidden;">
     <div id="map-container"></div>
@@ -2690,10 +2795,26 @@ input[type=file]{display:none;}
           <button class="map-layer-btn" id="ml-group" onclick="_setMapLayer('group')">👥 Gruppe</button>
         </div>
       </div>
-      <button class="map-hdr-btn" onclick="openSpotGpsLink()">📌 Spot</button>
+      <!-- v52 AP2: Top-Right "Spot markieren" startet In-Place-Modus -->
+      <button class="map-hdr-btn" id="btn-spot-mark" onclick="_enterSpotMarkMode()">📌 Spot markieren</button>
     </div>
-    <!-- Floating Spot markieren – AP2: ID + State-Logik (nur sichtbar bei Private-Layer + keine Overlays darüber) -->
-    <button id="spot-mark-fab" onclick="_floatingSpotMark()" style="position:absolute;bottom:calc(var(--footer-h) + max(24px, env(safe-area-inset-bottom, 24px)) + 64px);left:50%;transform:translateX(-50%);z-index:50;padding:12px 24px;background:var(--green-deep);color:#fff;border:none;border-radius:24px;font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(45,74,53,.4);display:flex;align-items:center;gap:8px;">📌 Spot markieren</button>
+    <!-- v52 AP2: Inline-Toolbar oben — Wasser/Spot-Picker, erscheint im Markier-Modus -->
+    <div class="spot-mark-toolbar" id="spot-mark-toolbar">
+      <button class="smt-cancel" onclick="_exitSpotMarkMode()" aria-label="Abbrechen">✕</button>
+      <div class="smt-row">
+        <span class="smt-lbl">Gewässer</span>
+        <select id="smt-water" onchange="_smtOnWaterChange()"><option value="">– wählen –</option></select>
+      </div>
+      <div class="smt-row">
+        <span class="smt-lbl">Spot</span>
+        <input type="text" id="smt-spot" placeholder="z.B. Steg Nord (optional)" autocomplete="off">
+      </div>
+      <div class="smt-hint" id="smt-hint">Tippe auf die Karte, um den Spot zu markieren.</div>
+    </div>
+    <!-- v52 AP2: Confirm-Bar unten — nimmt Bottom-Nav-Position ein -->
+    <div class="spot-confirm-bar" id="spot-confirm-bar">
+      <button id="btn-spot-confirm" onclick="_confirmSpotMark()" disabled>✓ Spot bestätigen</button>
+    </div>
   </div>
 </div>
 
@@ -2981,7 +3102,7 @@ if(typeof Chart!=='undefined'){
 }
 
 // ═══════════════════════════════════════════════════════════
-// SUPABASE CLIENT (v51)
+// SUPABASE CLIENT (v52)
 // ═══════════════════════════════════════════════════════════
 const SB_URL='https://diiggjftcpoagsnxsaez.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpaWdnamZ0Y3BvYWdzbnhzYWV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNzE4NjQsImV4cCI6MjA5MTY0Nzg2NH0.XaBkQcjEl300NIZ3XIfcgEgWVwkfQTqInfECfvUGG6s';
@@ -3039,7 +3160,7 @@ function sbInit(){
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v51`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v52`;
       } else {
         _sbUser=null;
       }
@@ -3055,7 +3176,7 @@ async function _checkAuthSession(){
     if(data?.session?.user){
       _sbUser=data.session.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v51`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v52`;
       return true;
     }
   }catch(e){console.warn('Auth-Check Fehler:',e);}
@@ -3101,7 +3222,7 @@ async function handleAuth(e){
       //   5. ERST jetzt Login-Overlay weg + auf Fangbuch wechseln
       _sbUser=result.data.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v51`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v52`;
       // Cloud = Single Source of Truth bei Login. _renderAll() läuft am Ende.
       await syncFromCloud({authoritative:true});
       // Sicherheits-Re-Render falls syncFromCloud früh ausstieg (z.B. offline mid-flight)
@@ -3124,7 +3245,7 @@ async function handleAuth(e){
         _sbUser=result.data.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v51`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v52`;
         // Onboarding starten
         document.getElementById('onboarding').classList.remove('hidden');
         document.getElementById('ob-btn').disabled=true;
@@ -3177,7 +3298,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v51';
+  document.getElementById('hdr-sub').textContent='Offline · v52';
   if(!profile){
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('ob-btn').disabled=true;
@@ -3316,7 +3437,7 @@ function _buildProfileBundle(){
     spotBaits:profile?.spotBaits||null,
     docs:profile?.docs||null,
     photos,
-    schemaVersion:51,
+    schemaVersion:52,
     updatedAt:Date.now()
   };
 }
@@ -3477,7 +3598,7 @@ async function sbLogout(){
   _lsRemove(LS_FAVS);
   _lsRemove(LS_GROUPS);
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v51';
+  document.getElementById('hdr-sub').textContent='Offline · v52';
   showToast('👋','Abgemeldet');
 }
 
@@ -3505,7 +3626,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='fb-v9-51';const A=['https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='fb-v9-52';const A=['https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -4411,7 +4532,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v51`:`PLZ ${profile.plz||'–'} · v51`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v52`:`PLZ ${profile.plz||'–'} · v52`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -5855,6 +5976,19 @@ async function saveSess(){
       _editPendingId=null;
     }
 
+    // v52 AP1: Wenn der User in der Edit-Ansicht den Share-Toggle aktiviert hat
+    // → an alle ausgewählten Gruppen teilen (auch für historische Sessions).
+    if(_endShareState.enabled&&_endShareState.groupIds.length){
+      try{
+        const newGroupIds=_endShareState.groupIds.filter(gid=>!(sess.sharedToGroups||[]).includes(gid));
+        if(newGroupIds.length){
+          await _shareSessionToGroups(sess,newGroupIds);
+          showToast('👥',`Session in ${newGroupIds.length} Gruppe${newGroupIds.length>1?'n':''} geteilt`);
+        }
+      }catch(e){console.warn('Share nach Edit-Save:',e);}
+    }
+    _endShareState={enabled:false,groupIds:[]};
+
     // Bei Edit: kein Walkout, kein Overlay – einfach Toast + zurück ins Fangbuch
     if(wasEditing){
       showToast('✅','Session aktualisiert ✓');
@@ -5888,6 +6022,10 @@ function resetForm(){
   // AP3: Edit-Save-FAB ausblenden
   const fab=document.getElementById('edit-save-fab');
   if(fab)fab.classList.remove('on');
+  // v52 AP1: Share-Section nur in Edit-Mode → bei Reset ausblenden
+  const shareWrap=document.getElementById('edit-share-wrap');
+  if(shareWrap){shareWrap.style.display='none';const h=document.getElementById('edit-share-host');if(h)h.innerHTML='';}
+  _endShareState={enabled:false,groupIds:[]};
   // Seitentitel zurücksetzen
   const titleEl=document.getElementById('new-page-title');
   if(titleEl)titleEl.textContent='Fang melden';
@@ -6792,10 +6930,134 @@ function _closeSessMap(){
 // AP3: Spot-GPS-Verknüpfung – Karte nimmt max. Platz
 let _spotGpsMap=null;
 
-// AP3: Floating "Spot markieren" Button auf der Karte
-function _floatingSpotMark(){
-  openSpotGpsLink();
+// ─────────────────────────────────────────────────────────
+// v52 AP2: In-Place Spot-Markier-Modus auf der Hauptkarte
+// ─────────────────────────────────────────────────────────
+// State: Mode aktiv? + ausgewählter Wasser/Spot + temporärer Marker + temp coords
+let _spotMarkActive=false;
+let _spotMarkTempMarker=null;
+let _spotMarkTempLatLng=null;
+let _spotMarkOrigClickHandler=null;
+
+function _enterSpotMarkMode(){
+  if(_spotMarkActive)return;
+  if(typeof _leafletMap==='undefined'||!_leafletMap){
+    showToast('⚠️','Karte noch nicht geladen');
+    return;
+  }
+  _spotMarkActive=true;
+  // Bottom-Nav verstecken (über phone-Klasse), Confirm-Bar einblenden, Toolbar einblenden
+  document.querySelector('.phone')?.classList.add('spot-marking');
+  document.getElementById('spot-mark-toolbar')?.classList.add('on');
+  document.getElementById('spot-confirm-bar')?.classList.add('on');
+  // Wasser-Dropdown aus den bestehenden Sessions befüllen
+  _smtPopulateWaters();
+  // Karte: Click-Handler installieren (temp marker setzen)
+  _leafletMap.on('click',_spotMarkClickHandler);
+  // Karten-Cursor visuell ändern
+  const c=document.getElementById('map-container');if(c)c.style.cursor='crosshair';
+  showToast('📌','Wähle Gewässer & tippe auf die Karte');
 }
+
+function _exitSpotMarkMode(){
+  _spotMarkActive=false;
+  document.querySelector('.phone')?.classList.remove('spot-marking');
+  document.getElementById('spot-mark-toolbar')?.classList.remove('on');
+  document.getElementById('spot-confirm-bar')?.classList.remove('on');
+  if(_leafletMap)_leafletMap.off('click',_spotMarkClickHandler);
+  if(_spotMarkTempMarker&&_leafletMap){
+    try{_leafletMap.removeLayer(_spotMarkTempMarker);}catch(e){}
+  }
+  _spotMarkTempMarker=null;
+  _spotMarkTempLatLng=null;
+  const c=document.getElementById('map-container');if(c)c.style.cursor='';
+  // UI-Reset
+  const water=document.getElementById('smt-water');if(water)water.value='';
+  const spot=document.getElementById('smt-spot');if(spot)spot.value='';
+  const btn=document.getElementById('btn-spot-confirm');if(btn)btn.disabled=true;
+}
+
+function _smtPopulateWaters(){
+  const sel=document.getElementById('smt-water');
+  if(!sel)return;
+  const waters=[...new Set((sessions||[]).map(s=>s.water).filter(Boolean))].sort();
+  sel.innerHTML='<option value="">– Gewässer wählen –</option>'+
+    waters.map(w=>{
+      const hasGps=sessions.some(s=>s.water===w&&s.lat&&s.lon);
+      return `<option value="${_esc(w)}">${_esc(w)}${hasGps?' 📍':''}</option>`;
+    }).join('')+
+    '<option value="__new__">+ Neues Gewässer eingeben…</option>';
+}
+
+function _smtOnWaterChange(){
+  const sel=document.getElementById('smt-water');
+  if(sel.value==='__new__'){
+    const name=prompt('Name des neuen Gewässers:');
+    if(name&&name.trim()){
+      const opt=document.createElement('option');
+      opt.value=name.trim();opt.textContent=name.trim();opt.selected=true;
+      sel.insertBefore(opt,sel.querySelector('option[value="__new__"]'));
+    }else{sel.value='';}
+  }
+  _smtUpdateConfirmState();
+}
+
+function _spotMarkClickHandler(e){
+  if(!_spotMarkActive||!_leafletMap)return;
+  _spotMarkTempLatLng=e.latlng;
+  if(_spotMarkTempMarker){
+    try{_leafletMap.removeLayer(_spotMarkTempMarker);}catch(_){}
+  }
+  // Temp-Marker (orange, gestrichelt)
+  const icon=L.divIcon({
+    html:`<div style="width:28px;height:28px;border-radius:50%;background:#e67e22;border:3px dashed #fff;box-shadow:0 2px 10px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;">📌</div>`,
+    className:'',iconSize:[28,28],iconAnchor:[14,14]
+  });
+  _spotMarkTempMarker=L.marker(e.latlng,{icon}).addTo(_leafletMap);
+  // Hint aktualisieren
+  const hint=document.getElementById('smt-hint');
+  if(hint){
+    hint.textContent=`📍 ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)} — Bestätigen oder erneut tippen`;
+  }
+  _smtUpdateConfirmState();
+}
+
+function _smtUpdateConfirmState(){
+  const water=document.getElementById('smt-water')?.value?.trim();
+  const hasCoords=!!_spotMarkTempLatLng;
+  const btn=document.getElementById('btn-spot-confirm');
+  if(!btn)return;
+  btn.disabled=!(water&&hasCoords);
+  if(!water&&hasCoords){
+    const hint=document.getElementById('smt-hint');
+    if(hint)hint.textContent='Bitte zuerst ein Gewässer wählen.';
+  }
+}
+
+async function _confirmSpotMark(){
+  const water=document.getElementById('smt-water')?.value?.trim();
+  const spot=(document.getElementById('smt-spot')?.value||'').trim();
+  if(!water||!_spotMarkTempLatLng){showToast('⚠️','Bitte Gewässer wählen und auf die Karte tippen');return;}
+  const lat=String(_spotMarkTempLatLng.lat.toFixed(6));
+  const lon=String(_spotMarkTempLatLng.lng.toFixed(6));
+  // Spot in Bibliothek lernen
+  if(typeof _learnSpotGps==='function')_learnSpotGps(water,spot,lat,lon);
+  // Bestehende Sessions mit gleichem Gewässer+Spot, die noch keine GPS haben → ergänzen
+  let updated=0;
+  for(const s of sessions){
+    if(s.water===water&&(spot===''||s.spot===spot)&&!(s.lat&&s.lon)){
+      s.lat=lat;s.lon=lon;
+      try{await saveOneSess(s);updated++;}catch(e){}
+    }
+  }
+  showToast('✅',`Spot „${water}${spot?' · '+spot:''}" markiert${updated?' · '+updated+' Session'+(updated>1?'s':'')+' aktualisiert':''}`);
+  _exitSpotMarkMode();
+  // Karte refreshen damit der neue Marker erscheint
+  if(typeof _updateMapMarkers==='function')_updateMapMarkers();
+}
+
+// Legacy-Funktion bleibt für bestehende Aufrufer (Burger-Menü "Karte" → Spot-GPS-Verknüpfung Overlay)
+function _floatingSpotMark(){_enterSpotMarkMode();}
 
 function openSpotGpsLink(){
   const sel=document.getElementById('spot-gps-sel');
@@ -7409,6 +7671,29 @@ async function editSess(id){
   if(saveBtn)saveBtn.textContent='Änderungen speichern ✓';
   // AP1: Rotes X-Icon im Header
   _setHdrEditX();
+
+  // v52 AP1: Share-Section in der Edit-Ansicht rendern.
+  // Reuse derselben Komponente wie im End-Overlay → konsistente UX.
+  try{
+    const wrap=document.getElementById('edit-share-wrap');
+    const host=document.getElementById('edit-share-host');
+    if(wrap&&host){
+      const loc=_resolveSessLocation({
+        water:s.water,spot:s.spot,lat:s.lat,lon:s.lon
+      });
+      const preselected=Array.isArray(s.sharedToGroups)?s.sharedToGroups.slice():[];
+      _endShareState={enabled:preselected.length>0,groupIds:preselected};
+      host.innerHTML=_renderShareSection({
+        context:'edit',
+        locInfo:loc,
+        hasCatches:(s.catches||[]).length>0,
+        preselectedGroupIds:preselected,
+        preselectedEnabled:preselected.length>0
+      });
+      wrap.style.display='block';
+    }
+  }catch(e){console.warn('Edit-Share-Section:',e);}
+
   // AP1: Overlay Scroll-Position ganz oben
   requestAnimationFrame(()=>{
     const sc=document.querySelector('#page-new .sc');
@@ -8577,112 +8862,55 @@ function _tideBiteScore({hwNw,sun,nowDate,flow,isToday}){
   return{score:Math.max(1,Math.min(3,score)),reasons};
 }
 
-async function _renderTideCal(river,startDate){
-  _tideRiver=river;
+// ─────────────────────────────────────────────────────────
+// v52 AP3 + AP4: ZEITSERIEN-ADAPTER (Tide + Env)
+// ─────────────────────────────────────────────────────────
+// Cache-First-Architektur: lokal IDB → externe API → später Backend
+// fetchTideSeries(river, dateKey) → {values:[97], gridLabels:[97], source}
+// fetchEnvSeries(type, startISO, endISO, coords) → {labels, values, source}
+// Beide Adapter sind so gebaut, dass später eine zentrale Backend-API
+// vorgeschaltet werden kann (siehe Cache-Layer + source-Tag).
 
-  // PEGELONLINE Stationen (verifizierte UUIDs)
+const _envCache={}; // key="type|start|end|lat|lon" → {data, ts}
+const _ENV_CACHE_TTL=30*60*1000; // 30min
+
+async function fetchTideSeries(river,dateKey){
+  // Adapter-Schicht: heute → PEGELONLINE + Astro-Hybrid
+  // später → Supabase-Backend (gleiches Interface, neue Quelle)
+  return _fetchTideSeriesPegelonline(river,dateKey);
+}
+
+async function fetchEnvSeries({type,start,end,lat,lon}){
+  const key=`${type}|${start}|${end}|${lat}|${lon}`;
+  const cached=_envCache[key];
+  if(cached&&Date.now()-cached.ts<_ENV_CACHE_TTL)return cached.data;
+  const data=await _fetchEnvSeriesOpenMeteo({type,start,end,lat,lon});
+  _envCache[key]={data,ts:Date.now()};
+  return data;
+}
+
+// Heutige Implementierung (PEGELONLINE+Astro-Hybrid). Später ersetzbar durch Backend-Call.
+async function _fetchTideSeriesPegelonline(river,startDate){
   const STATIONS={
     weser:{uuid:'c1f059dd-5063-468a-9dfa-0360fe0b030d',label:'Weser',display:'Weser · Oslebshausen'},
     elbe: {uuid:'d488c5cc-4de9-4631-8ce1-0db0e700b546',label:'Elbe', display:'Elbe · Hamburg St. Pauli'},
     ems:  {uuid:'edfdf747-be92-462f-87ed-53d228a33172',label:'Ems',  display:'Ems · Emden'}
   };
   const st=STATIONS[river]||STATIONS.weser;
-
   const today=new Date();today.setHours(0,0,0,0);
   const todayStr=_localDateStr(today);
   const selDate=new Date(startDate+'T12:00:00');selDate.setHours(0,0,0,0);
   const dayDiff=Math.round((selDate.getTime()-today.getTime())/86400000);
   const isBshRange=dayDiff>=-1&&dayDiff<=1;
   const isToday=startDate===todayStr;
-
-  // AP-Tide: Apple-Style Cockpit Header
-  const DOW_S=['So','Mo','Di','Mi','Do','Fr','Sa'];
-  const MON_S=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-
-  // 14-Tage Strip (−1 … +12)
-  const stripDays=[];
-  for(let off=-1;off<=12;off++){
-    const d=new Date(today);d.setDate(d.getDate()+off);
-    stripDays.push({date:_localDateStr(d),dObj:new Date(d),off});
-  }
-  const stripHtml=stripDays.map(sd=>{
-    const active=sd.date===startDate;
-    const lbl=sd.off===0?'Heu':sd.off===-1?'Ges':sd.off===1?'Mor':DOW_S[sd.dObj.getDay()];
-    return`<button class="tide-strip-day${active?' on':''}" data-date="${sd.date}"
-      onclick="_renderTideCal('${river}','${sd.date}')">
-      <span class="tide-strip-dow">${lbl}</span>
-      <span class="tide-strip-num">${sd.dObj.getDate()}.</span>
-    </button>`;
-  }).join('');
-
-  // River-Segment-Buttons mit Untertiteln
-  const riverSubs={weser:'Oslebshausen',elbe:'St. Pauli',ems:'Emden'};
-  const riverSeg=Object.entries(STATIONS).map(([rv,s])=>`
-    <button class="tide-river-seg-btn${rv===river?' on':''}"
-      onclick="_renderTideCal('${rv}','${startDate}')">
-      ${s.label}<span class="sub">${riverSubs[rv]||''}</span>
-    </button>`).join('');
-
-  // Initiales Hero-Placeholder (wird nach Datenload befüllt)
-  const cockpitHtml=`
-    <div class="tide-cockpit">
-      <div class="tide-river-seg">${riverSeg}</div>
-      <div class="tide-hero" id="tide-hero-slot">
-        <div class="tide-hero-main">
-          <div class="tide-hero-kicker">Lade Tide…</div>
-          <div class="tide-hero-big">–:–</div>
-          <div class="tide-hero-sub">${st.display}</div>
-        </div>
-        <div class="tide-hero-flow" id="tide-flow-slot">
-          <div class="tide-hero-flow-val">–<span class="tide-hero-flow-unit">m³/s</span></div>
-          <div class="tide-hero-flow-lbl">Abfluss</div>
-        </div>
-      </div>
-      <div class="tide-strip" id="tide-strip-slot">${stripHtml}</div>
-    </div>`;
-
-  const bodyEl=document.getElementById('fs-tide-body');
-  bodyEl.innerHTML=cockpitHtml+`<div style="text-align:center;padding:24px;color:var(--text-light);">🔄 Lade Tidendaten…</div>`;
-
-  // Aktiven Strip-Tag in die Mitte scrollen
-  requestAnimationFrame(()=>{
-    const strip=document.getElementById('tide-strip-slot');
-    const active=strip?.querySelector('.tide-strip-day.on');
-    if(strip&&active){
-      const offL=active.offsetLeft-strip.clientWidth/2+active.offsetWidth/2;
-      strip.scrollTo({left:Math.max(0,offL),behavior:'smooth'});
-    }
-  });
-
-  // Abfluss parallel laden (non-blocking, UI erscheint sofort)
-  _fetchPegelonlineFlow(river).then(f=>{
-    const slot=document.getElementById('tide-flow-slot');
-    if(!slot)return;
-    if(f&&f.q!=null){
-      slot.innerHTML=`
-        <div class="tide-hero-flow-val">${Math.round(f.q)}<span class="tide-hero-flow-unit">m³/s</span></div>
-        <div class="tide-hero-flow-lbl">Abfluss · ${f.station}</div>`;
-    }else{
-      slot.innerHTML=`
-        <div class="tide-hero-flow-val" style="color:var(--text-light);">–</div>
-        <div class="tide-hero-flow-lbl err">Abfluss offline</div>`;
-    }
-  });
-
-  // Festes 15-Min-Raster: 00:00 – 24:00 (97 Datenpunkte)
   const GRID_LABELS=[];
-  for(let m=0;m<=24*60;m+=15){
-    GRID_LABELS.push(String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'));
-  }
-
-  let dataSource='PEGELONLINE WSV';
-  try{
-    // AP-Tide: 24h-Hybrid — Astro-Basis für volle 24h, PEGELONLINE-Messwerte
-    // überschreiben vorhandene Slots. So entsteht KEINE Lücke nach "jetzt".
-    let values;
-    const astroBase=GRID_LABELS.map((_,i)=>_predictTideHarmonic(river,startDate,i*15));
-    let liveCount=0;
-    if(isBshRange){
+  for(let m=0;m<=24*60;m+=15)GRID_LABELS.push(String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'));
+  const astroBase=GRID_LABELS.map((_,i)=>_predictTideHarmonic(river,startDate,i*15));
+  let values=astroBase.slice();
+  let liveCount=0;
+  let source='astro';
+  if(isBshRange){
+    try{
       const cached=_tideCache[river];
       if(!cached||Date.now()-cached.ts>15*60*1000){
         const directUrl=`https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/${st.uuid}/W/measurements.json?start=P2D`;
@@ -8693,8 +8921,6 @@ async function _renderTideCal(river,startDate){
         if(!resp.ok)throw new Error(`PEGELONLINE HTTP ${resp.status}`);
         _tideCache[river]={data:await resp.json(),ts:Date.now()};
       }
-      // Astro-Array ist schon voll — Messwerte nur überlagern, wo vorhanden
-      values=astroBase.slice();
       _tideCache[river].data.forEach(p=>{
         if((p.timestamp||'').slice(0,10)!==startDate)return;
         const hhmm=(p.timestamp||'').slice(11,16);
@@ -8702,352 +8928,265 @@ async function _renderTideCal(river,startDate){
         const slot=Math.round((hh*60+mm)/15);
         if(slot>=0&&slot<97&&p.value!=null){values[slot]=Math.round(p.value);liveCount++;}
       });
-      if(liveCount>0){
-        dataSource=isToday?'Live-Messung + Prognose':'PEGELONLINE Live-Messung';
-      }else{
-        dataSource='Astronomische Prognose (keine Live-Werte)';
-      }
-    }else{
-      dataSource='Astronomische Prognose (harmonisch)';
-      values=astroBase;
-    }
+      source=liveCount>0?(isToday?'live+forecast':'live'):'astro';
+    }catch(e){source='astro';}
+  }
+  return{values,gridLabels:GRID_LABELS,source,liveCount,station:st,isToday};
+}
 
-    const validVals=values.filter(v=>v!=null);
-    if(!validVals.length)throw new Error('Keine Tidendaten für diesen Tag');
-    const vMin=Math.min(...validVals)-30;
-    const vMax=Math.max(...validVals)+30;
+async function _fetchEnvSeriesOpenMeteo({type,start,end,lat,lon}){
+  // type: 'temp' | 'wind' | 'rain' | 'pressure'
+  // Wenn Bereich komplett vergangen → archive-api, sonst forecast-api
+  const today=_localDateStr(new Date());
+  const useArchive=end<=today;
+  const baseUrl=useArchive
+    ?`https://archive-api.open-meteo.com/v1/archive`
+    :`https://api.open-meteo.com/v1/forecast`;
+  const dailyParams={
+    temp:'weathercode,temperature_2m_max,temperature_2m_min',
+    wind:'windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant',
+    rain:'precipitation_sum,precipitation_probability_max',
+    pressure:'surface_pressure_mean'
+  }[type]||'temperature_2m_max';
+  let url;
+  if(useArchive){
+    url=`${baseUrl}?latitude=${lat}&longitude=${lon}&start_date=${start}&end_date=${end}&daily=${dailyParams}&timezone=Europe%2FBerlin`;
+  }else{
+    // Forecast-API kann max. 16d in die Zukunft + ~80d in die Vergangenheit
+    url=`${baseUrl}?latitude=${lat}&longitude=${lon}&start_date=${start}&end_date=${end}&daily=${dailyParams}&timezone=auto`;
+  }
+  const resp=await fetch(url);
+  if(!resp.ok)throw new Error(`OpenMeteo HTTP ${resp.status}`);
+  const data=await resp.json();
+  return{daily:data.daily,source:useArchive?'archive':'forecast'};
+}
 
-    // HW/NW berechnen: Rolling-Window Peak-Erkennung (±1.5h Fenster)
-    const hwNw=[];
-    const HW_W=6; // ±6 Punkte = ±1.5 Stunden
-    for(let i=0;i<values.length;i++){
-      if(values[i]==null)continue;
-      let isMax=true,isMin=true,cntBefore=0,cntAfter=0;
-      for(let j=Math.max(0,i-HW_W);j<=Math.min(values.length-1,i+HW_W);j++){
-        if(j===i||values[j]==null)continue;
-        if(j<i)cntBefore++;else cntAfter++;
-        if(values[j]>values[i])isMax=false;
-        if(values[j]<values[i])isMin=false;
-      }
-      if(cntBefore<2||cntAfter<2)continue;
-      if(isMax)hwNw.push({event:'HW',label:GRID_LABELS[i],value:values[i]});
-      if(isMin)hwNw.push({event:'NW',label:GRID_LABELS[i],value:values[i]});
-    }
-    // Duplikate entfernen (bester Wert pro 2h-Fenster)
-    const filteredHwNw=[];
-    hwNw.forEach(e=>{
-      const eMin=parseInt(e.label.slice(0,2))*60+parseInt(e.label.slice(3,5));
-      const dupe=filteredHwNw.find(f=>{
-        const fMin=parseInt(f.label.slice(0,2))*60+parseInt(f.label.slice(3,5));
-        return f.event===e.event&&Math.abs(eMin-fMin)<120;
-      });
-      if(!dupe)filteredHwNw.push(e);
-      else if((e.event==='HW'&&e.value>dupe.value)||(e.event==='NW'&&e.value<dupe.value)){
-        filteredHwNw[filteredHwNw.indexOf(dupe)]=e;
-      }
-    });
+const STRIP_WINDOW_DAYS=21;
+async function _renderTideCal(river,startDate){
+  _tideRiver=river;
+  const STATIONS={
+    weser:{label:'Weser',display:'Weser · Oslebshausen'},
+    elbe: {label:'Elbe', display:'Elbe · Hamburg St. Pauli'},
+    ems:  {label:'Ems',  display:'Ems · Emden'}
+  };
+  const st=STATIONS[river]||STATIONS.weser;
+  const today=new Date();today.setHours(0,0,0,0);
+  const todayStr=_localDateStr(today);
 
-    // AP-Tide: HW/NW als 2-Spalten-Grid, Wert groß ohne "cm"-Suffix
-    const hwNwHtml=filteredHwNw.length?`
-      <div class="tide-hwnw-grid">
-        ${filteredHwNw.map(e=>{
-          const isHW=e.event==='HW';
-          return`<div class="tide-hwnw-chip" style="background:${isHW?'rgba(192,64,64,.10)':'rgba(42,122,176,.10)'};border:1px solid ${isHW?'rgba(192,64,64,.18)':'rgba(42,122,176,.18)'};">
-            <span style="font-weight:700;color:${isHW?'#c04040':'#2a7ab0'};">${isHW?'▲ HW':'▼ NW'}</span>
-            <span class="tide-hwnw-time">${e.label}</span>
-            <span class="tide-hwnw-val">${e.value!=null?e.value:'–'}</span>
-          </div>`;
-        }).join('')}
-      </div>`:'';
+  // River-Segment (oben, behalten)
+  const riverSubs={weser:'Oslebshausen',elbe:'St. Pauli',ems:'Emden'};
+  const riverSeg=Object.entries(STATIONS).map(([rv,s])=>`
+    <button class="tide-river-seg-btn${rv===river?' on':''}"
+      onclick="_renderTideCal('${rv}','${startDate}')">
+      ${s.label}<span class="sub">${riverSubs[rv]||''}</span>
+    </button>`).join('');
 
-    // AP-Tide: Hero-Info nachrüsten (nächstes Ereignis oder Status)
-    const sunTimes=_sunTimesForDate(startDate);
-    const heroSlot=document.getElementById('tide-hero-slot');
-    if(heroSlot){
-      let kicker='Nächstes Ereignis',big='–',sub=st.display,arrow='';
-      if(filteredHwNw.length){
-        let nextEv=null;
-        if(isToday){
-          const nowMin=new Date().getHours()*60+new Date().getMinutes();
-          nextEv=filteredHwNw.find(e=>{
-            const[h,m]=e.label.split(':').map(Number);
-            return h*60+m>nowMin;
-          })||filteredHwNw[0];
-        } else {
-          nextEv=filteredHwNw[0];
-        }
-        if(nextEv){
-          const isHW=nextEv.event==='HW';
-          kicker=isToday?`Nächstes ${isHW?'Hochwasser':'Niedrigwasser'}`:`Erstes ${isHW?'Hochwasser':'Niedrigwasser'}`;
-          arrow=isHW?'<span class="arrow">▲</span>':'<span class="arrow dir-dn">▼</span>';
-          big=nextEv.label;
-          sub=`${st.display} · ${nextEv.value} cm`;
-        }
-      }
-      heroSlot.querySelector('.tide-hero-main').innerHTML=`
-        <div class="tide-hero-kicker">${kicker}</div>
-        <div class="tide-hero-big">${arrow}<span>${big}</span></div>
-        <div class="tide-hero-sub">${sub}</div>`;
-    }
+  // Tage-Strip (initial ±STRIP_WINDOW_DAYS um startDate, infinite scroll lazy-extends)
+  const stripHtml=_renderTideStripHtml(river,startDate,STRIP_WINDOW_DAYS);
 
-    // AP-Tide: Beißindex
-    const bite=_tideBiteScore({
-      hwNw:filteredHwNw,sun:sunTimes,nowDate:new Date(),
-      flow:_tideFlowCache[river]?.q,isToday
-    });
-    const fishIco='<span class="tide-bite-fish">🐟</span>';
-    const fishIcoAct='<span class="tide-bite-fish active">🐟</span>';
-    const biteLabel=bite.score>=3?'Top-Beißzeit':bite.score===2?'Gute Beißzeit':'Mäßig';
-    const biteSub=bite.reasons.length?bite.reasons.join(' · '):'Keine starken Beißsignale';
-    const biteHtml=`
-      <div class="tide-bite">
-        <div class="tide-bite-icons">
-          ${bite.score>=1?fishIcoAct:fishIco}
-          ${bite.score>=2?fishIcoAct:fishIco}
-          ${bite.score>=3?fishIcoAct:fishIco}
-        </div>
-        <div class="tide-bite-info">
-          <div class="tide-bite-title">${biteLabel}</div>
-          <div class="tide-bite-sub">${biteSub}</div>
-        </div>
-      </div>`;
+  // Cockpit (NUR River-Seg + Strip-Row mit Kalender-Button — KEIN Hero-Block)
+  const cockpitHtml=`
+    <div class="tide-cockpit">
+      <div class="tide-river-seg">${riverSeg}</div>
+      <div class="tide-strip-row">
+        <button class="tide-cal-btn" onclick="document.getElementById('tide-date-pick').showPicker?.()||document.getElementById('tide-date-pick').click()" aria-label="Datum wählen">📅</button>
+        <input type="date" id="tide-date-pick" value="${startDate}" onchange="_renderTideCal('${river}',this.value)">
+        <div class="tide-strip" id="tide-strip-slot">${stripHtml}</div>
+      </div>
+    </div>`;
 
-    // Datenquellen-Badge
-    const srcBadge=liveCount>0
-      ?'<span style="display:inline-block;background:rgba(42,140,186,.12);color:#2a7ab0;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-left:6px;">Live-Messung</span>'
-      :'<span style="display:inline-block;background:rgba(180,140,60,.12);color:#a08030;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;margin-left:6px;">Astronomische Prognose</span>';
+  const bodyEl=document.getElementById('fs-tide-body');
+  bodyEl.innerHTML=cockpitHtml+`<div style="text-align:center;padding:30px;color:var(--text-light);font-size:12px;">🔄 Lade Tidendaten…</div>`;
+  _tideStripScrollIntoView(startDate);
+  _tideStripBindInfiniteScroll(river);
 
-    bodyEl.innerHTML=cockpitHtml+biteHtml+`
-      <div style="margin-top:4px;">
-        <div class="fc-sec">
-          <div class="fc-sec-title">🌊 ${st.display} · ${startDate} ${srcBadge}</div>
-          ${hwNwHtml}
-          <div id="hover-tide" class="fc-hover-info"></div>
-          <div style="margin-top:8px;">
-            <canvas id="tide-main-chart" style="width:100%;height:320px;display:block;"></canvas>
-          </div>
-          <div style="font-size:10px;color:var(--text-light);margin-top:8px;text-align:center;">
-            Wasserstand cm · ${dataSource} · 15-Min-Intervall
-          </div>
-        </div>
-      </div>`;
-
-    // Hero + Strip aus Cockpit nach innerHTML-Rebuild neu mounten (bodyEl wurde komplett neu gesetzt)
-    // Wir haben cockpitHtml oben erneut eingefügt → Hero-Slot neu befüllen
-    const heroSlot2=document.getElementById('tide-hero-slot');
-    if(heroSlot2&&filteredHwNw.length){
-      let nextEv=null;
-      if(isToday){
-        const nowMin=new Date().getHours()*60+new Date().getMinutes();
-        nextEv=filteredHwNw.find(e=>{
-          const[h,m]=e.label.split(':').map(Number);
-          return h*60+m>nowMin;
-        })||filteredHwNw[0];
-      } else nextEv=filteredHwNw[0];
-      if(nextEv){
-        const isHW=nextEv.event==='HW';
-        const kicker=isToday?`Nächstes ${isHW?'Hochwasser':'Niedrigwasser'}`:`Erstes ${isHW?'Hochwasser':'Niedrigwasser'}`;
-        const arrow=isHW?'<span class="arrow">▲</span>':'<span class="arrow dir-dn">▼</span>';
-        heroSlot2.querySelector('.tide-hero-main').innerHTML=`
-          <div class="tide-hero-kicker">${kicker}</div>
-          <div class="tide-hero-big">${arrow}<span>${nextEv.label}</span></div>
-          <div class="tide-hero-sub">${st.display} · ${nextEv.value} cm</div>`;
-      }
-    }
-    // Flow-Slot erneut befüllen (Cache hat ggf. schon Daten)
-    const flowCached=_tideFlowCache[river];
-    const flowSlot2=document.getElementById('tide-flow-slot');
-    if(flowSlot2){
-      if(flowCached&&flowCached.q!=null){
-        flowSlot2.innerHTML=`
-          <div class="tide-hero-flow-val">${Math.round(flowCached.q)}<span class="tide-hero-flow-unit">m³/s</span></div>
-          <div class="tide-hero-flow-lbl">Abfluss · ${flowCached.station}</div>`;
-      } else if(flowCached){
-        flowSlot2.innerHTML=`
-          <div class="tide-hero-flow-val" style="color:var(--text-light);">–</div>
-          <div class="tide-hero-flow-lbl err">Abfluss offline</div>`;
-      }
-    }
-    // Aktiven Strip-Tag in Mitte scrollen (nach Rebuild)
-    requestAnimationFrame(()=>{
-      const strip=document.getElementById('tide-strip-slot');
-      const active=strip?.querySelector('.tide-strip-day.on');
-      if(strip&&active){
-        const offL=active.offsetLeft-strip.clientWidth/2+active.offsetWidth/2;
-        strip.scrollTo({left:Math.max(0,offL),behavior:'auto'});
-      }
-    });
-
-    requestAnimationFrame(()=>{
-      const c=document.getElementById('tide-main-chart');
-      if(!c||typeof Chart==='undefined')return;
-      const cW=c.parentElement.getBoundingClientRect().width||360;
-      c.width=cW;c.height=320;
-      c.style.width=cW+'px';c.style.height='320px';
-
-      // HW/NW-Annotationen direkt im Chart
-      const hwAnnotPlugin={id:'hwAnnot',afterDatasetsDraw(chart){
-        const ctx=chart.ctx;
-        filteredHwNw.forEach(e=>{
-          const idx=GRID_LABELS.indexOf(e.label);
-          if(idx<0||e.value==null)return;
-          const x=chart.scales.x.getPixelForValue(idx);
-          const y=chart.scales.y.getPixelForValue(e.value);
-          const isHW=e.event==='HW';
-          ctx.save();
-          ctx.fillStyle=isHW?'#c04040':'#2a7ab0';
-          ctx.font='bold 9px system-ui';
-          ctx.textAlign='center';
-          ctx.fillText(`${isHW?'HW':'NW'} ${e.value}`,x,isHW?y-10:y+18);
-          ctx.beginPath();
-          ctx.arc(x,y,4,0,Math.PI*2);
-          ctx.fill();
-          ctx.restore();
-        });
-      }};
-
-      // Hover-Info
-      const hoverPlugin={id:'tideHover',afterDatasetsDraw(chart){
-        const active=chart.tooltip?.dataPoints;
-        const el=document.getElementById('hover-tide');if(!el)return;
-        if(active?.length){
-          el.textContent=`${active[0].label} Uhr · ${active[0].parsed.y} cm`;
-          el.style.opacity='1';
-        } else el.style.opacity='0';
-      }};
-
-      // AP3: Session-Highlight Plugin — Zeitfenster einer Angel-Session farbig markieren
-      const sessHighlightPlugin={id:'sessHighlight',beforeDatasetsDraw(chart){
-        const h=window._tideSessHighlight;
-        if(!h||!h.start)return;
-        const[sh,sm]=h.start.split(':').map(Number);
-        const[eh,em]=(h.end||h.start).split(':').map(Number);
-        const startIdx=(sh*60+sm)/15;
-        const endIdx=(eh*60+em)/15||startIdx+0.1;
-        const scaleX=chart.scales.x;
-        const scaleY=chart.scales.y;
-        const x1=scaleX.getPixelForValue(startIdx);
-        const x2=scaleX.getPixelForValue(endIdx);
-        const ctx=chart.ctx;
-        ctx.save();
-        ctx.fillStyle=h.color;
-        ctx.fillRect(Math.min(x1,x2),scaleY.top,Math.abs(x2-x1),scaleY.bottom-scaleY.top);
-        ctx.fillStyle='rgba(10,30,20,.85)';
-        ctx.font='bold 10px system-ui';
-        ctx.textAlign='center';
-        ctx.fillText(h.label,(x1+x2)/2,scaleY.top+12);
-        ctx.restore();
-      }};
-
-      // Jetzt-Indikator: vertikale rote Linie (nur heute)
-      const nowLinePlugin={id:'nowLine',afterDraw(chart){
-        if(!isToday)return;
-        const now=new Date();
-        const nowMin=now.getHours()*60+now.getMinutes();
-        const nowIdx=nowMin/15;
-        const scale=chart.scales.x;
-        const x=scale.getPixelForValue(nowIdx);
-        if(x<scale.left||x>scale.right)return;
-        const ctx=chart.ctx;
-        ctx.save();
-        ctx.strokeStyle='#cc0000';
-        ctx.lineWidth=2;
-        ctx.setLineDash([6,3]);
-        ctx.beginPath();
-        ctx.moveTo(x,chart.scales.y.top);
-        ctx.lineTo(x,chart.scales.y.bottom);
-        ctx.stroke();
-        ctx.fillStyle='#cc0000';
-        ctx.font='bold 10px system-ui';
-        ctx.textAlign='center';
-        ctx.fillText('Jetzt',x,chart.scales.y.top-4);
-        ctx.restore();
-      }};
-
-      // AP-Tide: Sonnenauf- & untergang-Marker + Dämmerungs-Schattierung
-      const sunPlugin={id:'sunMarkers',beforeDatasetsDraw(chart){
-        if(!sunTimes)return;
-        const scaleX=chart.scales.x,scaleY=chart.scales.y;
-        const ctx=chart.ctx;
-        const mkIdx=(d)=>(d.getHours()*60+d.getMinutes())/15;
-        const srIdx=mkIdx(sunTimes.sunrise);
-        const ssIdx=mkIdx(sunTimes.sunset);
-        // Nacht-Schattierung (vor Sunrise + nach Sunset)
-        ctx.save();
-        ctx.fillStyle='rgba(30,40,80,.04)';
-        const xL=scaleX.left, xR=scaleX.right;
-        const xSR=scaleX.getPixelForValue(srIdx);
-        const xSS=scaleX.getPixelForValue(ssIdx);
-        if(xSR>xL)ctx.fillRect(xL,scaleY.top,xSR-xL,scaleY.bottom-scaleY.top);
-        if(xSS<xR)ctx.fillRect(xSS,scaleY.top,xR-xSS,scaleY.bottom-scaleY.top);
-        // Dämmerungs-Streifen ±30min um SR/SS
-        ctx.fillStyle='rgba(255,180,80,.12)';
-        [srIdx,ssIdx].forEach(idx=>{
-          const a=scaleX.getPixelForValue(Math.max(0,idx-2));
-          const b=scaleX.getPixelForValue(Math.min(96,idx+2));
-          ctx.fillRect(a,scaleY.top,b-a,scaleY.bottom-scaleY.top);
-        });
-        // Sonnen-Icons auf X-Achse
-        ctx.font='14px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
-        ctx.fillText('🌅',xSR,scaleY.bottom+14);
-        ctx.fillText('🌇',xSS,scaleY.bottom+14);
-        ctx.font='bold 9px system-ui';ctx.fillStyle='#a08030';
-        const fmt=d=>String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-        ctx.fillText(fmt(sunTimes.sunrise),xSR,scaleY.bottom+26);
-        ctx.fillText(fmt(sunTimes.sunset),xSS,scaleY.bottom+26);
-        ctx.restore();
-      }};
-
-      // AP-Tide: Ein einziges Dataset (volle 24h, Hybrid-Quelle)
-      const datasets=[];
-      const lineColor=liveCount>0?'#2a8cba':'#b08c3c';
-      datasets.push({label:liveCount>0?'Wasserstand':'Vorhersage',data:values,borderColor:lineColor,backgroundColor:liveCount>0?'rgba(42,140,186,.18)':'rgba(176,140,60,.12)',fill:true,tension:.4,pointRadius:0,pointHoverRadius:4,pointBackgroundColor:lineColor,borderWidth:2.5,borderDash:(liveCount===0)?[6,3]:[],spanGaps:true});
-
-      new Chart(c,{
-        type:'line',
-        data:{labels:GRID_LABELS,datasets},
-        plugins:[sunPlugin,sessHighlightPlugin,hoverPlugin,hwAnnotPlugin,nowLinePlugin],
-        options:{
-          responsive:false,maintainAspectRatio:false,
-          layout:{padding:{bottom:28}},
-          plugins:{
-            legend:{display:datasets.length>1,labels:{boxWidth:10,font:{size:10}}},
-            tooltip:{mode:'index',intersect:false,
-              callbacks:{label:c2=>`${c2.dataset.label}: ${c2.parsed.y} cm`},
-              backgroundColor:'rgba(40,60,50,.88)',titleColor:'#fff',bodyColor:'rgba(255,255,255,.85)'}
-          },
-          scales:{
-            // AP-Tide: X-Achse strikt 0..96 (= 00:00 bis 24:00 Uhr)
-            x:{min:0,max:96,
-              ticks:{color:'#6a7a6f',font:{size:9},maxRotation:0,
-              autoSkip:false,
-              callback:function(val,idx){
-                // Nur volle Stunden alle 2h: 00:00, 02:00, ..., 24:00
-                if(idx%8===0)return GRID_LABELS[idx];
-                return '';
-              }},
-              grid:{color:'rgba(0,0,0,.05)'}},
-            y:{min:vMin,max:vMax,
-              ticks:{color:'#6a7a6f',font:{size:10},callback:v=>v+' cm'},
-              grid:{color:'rgba(0,0,0,.06)'}}
-          }
-        }
-      });
-    });
-
+  // Daten laden via Adapter
+  let tide;
+  try{
+    tide=await fetchTideSeries(river,startDate);
   }catch(e){
-    bodyEl.innerHTML=navHtml+`
-      <div class="fc-sec" style="margin-top:12px;text-align:center;color:var(--text-light);padding:24px;">
+    bodyEl.innerHTML=cockpitHtml+`
+      <div style="text-align:center;padding:40px;color:var(--text-light);">
         <div style="font-size:28px;margin-bottom:8px;">🌊</div>
-        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Tidendaten nicht verfügbar</div>
-        <div style="font-size:11px;opacity:.7;">${dataSource} · ${st.display}</div>
-        <div style="font-size:10px;margin-top:8px;opacity:.5;">${e.message||'Verbindung prüfen'}</div>
+        <div style="font-size:13px;font-weight:600;">Tidendaten nicht verfügbar</div>
+        <div style="font-size:10px;margin-top:6px;opacity:.7;">${e.message||'Verbindung prüfen'}</div>
       </div>`;
+    return;
+  }
+
+  const{values,gridLabels,liveCount,isToday}=tide;
+  const validVals=values.filter(v=>v!=null);
+  if(!validVals.length){
+    bodyEl.innerHTML=cockpitHtml+`<div style="text-align:center;padding:30px;color:var(--text-light);">Keine Tidendaten für diesen Tag.</div>`;
+    return;
+  }
+  const vMin=Math.min(...validVals)-30;
+  const vMax=Math.max(...validVals)+30;
+
+  // Edge-to-Edge Chart-Container — KEIN linkes/rechtes Padding, kein Top-Balken,
+  // KEIN HW/NW-Grid, KEIN Hover-Element, KEINE Datenquellen-Zeile.
+  bodyEl.innerHTML=cockpitHtml+`
+    <div class="tide-chart-wrap" style="position:relative;width:100%;margin:0;padding:0;">
+      <canvas id="tide-main-chart" style="display:block;width:100%;height:calc(100dvh - 220px);min-height:340px;"></canvas>
+    </div>`;
+  _tideStripScrollIntoView(startDate);
+  _tideStripBindInfiniteScroll(river);
+
+  requestAnimationFrame(()=>{
+    const c=document.getElementById('tide-main-chart');
+    if(!c||typeof Chart==='undefined')return;
+    const cW=c.parentElement.getBoundingClientRect().width||360;
+    const cH=c.getBoundingClientRect().height||340;
+    c.width=cW;c.height=cH;
+    c.style.width=cW+'px';c.style.height=cH+'px';
+
+    // Nur "Jetzt"-Plugin behalten (rote vertikale Linie + Label)
+    const nowLinePlugin={id:'nowLine',afterDraw(chart){
+      if(!isToday)return;
+      const now=new Date();
+      const nowMin=now.getHours()*60+now.getMinutes();
+      const nowIdx=nowMin/15;
+      const scale=chart.scales.x;
+      const x=scale.getPixelForValue(nowIdx);
+      if(x<scale.left||x>scale.right)return;
+      const ctx=chart.ctx;
+      ctx.save();
+      ctx.strokeStyle='#cc0000';ctx.lineWidth=2;ctx.setLineDash([6,3]);
+      ctx.beginPath();ctx.moveTo(x,chart.scales.y.top);ctx.lineTo(x,chart.scales.y.bottom);ctx.stroke();
+      ctx.fillStyle='#cc0000';ctx.font='bold 10px system-ui';ctx.textAlign='center';
+      ctx.fillText('Jetzt',x,chart.scales.y.top-4);
+      ctx.restore();
+    }};
+
+    const lineColor=liveCount>0?'#2a8cba':'#b08c3c';
+    new Chart(c,{
+      type:'line',
+      data:{labels:gridLabels,datasets:[{
+        label:liveCount>0?'Wasserstand':'Vorhersage',
+        data:values,borderColor:lineColor,
+        backgroundColor:liveCount>0?'rgba(42,140,186,.18)':'rgba(176,140,60,.12)',
+        fill:true,tension:.4,pointRadius:0,pointHoverRadius:0,
+        borderWidth:2.5,borderDash:(liveCount===0)?[6,3]:[],spanGaps:true
+      }]},
+      plugins:[nowLinePlugin],
+      options:{
+        responsive:false,maintainAspectRatio:false,
+        layout:{padding:0},
+        plugins:{legend:{display:false},tooltip:{enabled:false}},
+        scales:{
+          x:{min:0,max:96,
+            ticks:{color:'#6a7a6f',font:{size:9},maxRotation:0,autoSkip:false,
+              callback:function(val,idx){return idx%8===0?gridLabels[idx]:'';}},
+            grid:{color:'rgba(0,0,0,.05)'}},
+          y:{min:vMin,max:vMax,
+            // v52 AP3: nackte Zahlen — Y-Achsen-Beschriftung komplett ausgeblendet
+            ticks:{display:false},
+            grid:{color:'rgba(0,0,0,.06)'}}
+        }
+      }
+    });
+  });
+}
+
+// v52 AP3: Strip-HTML rendern (rolling window um startDate)
+function _renderTideStripHtml(river,startDate,halfWindow){
+  const DOW_S=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const today=new Date();today.setHours(0,0,0,0);
+  const todayStr=_localDateStr(today);
+  const center=new Date(startDate+'T12:00:00');center.setHours(0,0,0,0);
+  const days=[];
+  for(let off=-halfWindow;off<=halfWindow;off++){
+    const d=new Date(center);d.setDate(d.getDate()+off);
+    days.push({date:_localDateStr(d),dObj:new Date(d),isToday:_localDateStr(d)===todayStr});
+  }
+  return days.map(sd=>{
+    const active=sd.date===startDate;
+    const lbl=sd.isToday?'Heu':DOW_S[sd.dObj.getDay()];
+    return `<button class="tide-strip-day${active?' on':''}" data-date="${sd.date}"
+      onclick="_renderTideCal('${river}','${sd.date}')">
+      <span class="tide-strip-dow">${lbl}</span>
+      <span class="tide-strip-num">${sd.dObj.getDate()}.</span>
+    </button>`;
+  }).join('');
+}
+
+// Aktiven Strip-Tag mittig in den View scrollen
+function _tideStripScrollIntoView(targetDate){
+  requestAnimationFrame(()=>{
+    const strip=document.getElementById('tide-strip-slot');
+    if(!strip)return;
+    const active=strip.querySelector(`.tide-strip-day[data-date="${targetDate}"]`)
+                 ||strip.querySelector('.tide-strip-day.on');
+    if(active){
+      const offL=active.offsetLeft-strip.clientWidth/2+active.offsetWidth/2;
+      strip.scrollTo({left:Math.max(0,offL),behavior:'auto'});
+    }
+  });
+}
+
+// v52 AP3: Infinite-Scroll-Erweiterung links/rechts (lazy load weiterer Tage)
+let _tideStripExtendBusy=false;
+function _tideStripBindInfiniteScroll(river){
+  const strip=document.getElementById('tide-strip-slot');
+  if(!strip||strip._infiniteBound)return;
+  strip._infiniteBound=true;
+  strip.addEventListener('scroll',()=>{
+    if(_tideStripExtendBusy)return;
+    const left=strip.scrollLeft;
+    const right=strip.scrollWidth-strip.clientWidth-left;
+    if(left<60){
+      _tideStripExtendBusy=true;
+      _tideStripExtend(river,'left');
+      setTimeout(()=>{_tideStripExtendBusy=false;},120);
+    } else if(right<60){
+      _tideStripExtendBusy=true;
+      _tideStripExtend(river,'right');
+      setTimeout(()=>{_tideStripExtendBusy=false;},120);
+    }
+  },{passive:true});
+}
+
+function _tideStripExtend(river,dir){
+  const strip=document.getElementById('tide-strip-slot');
+  if(!strip)return;
+  const days=Array.from(strip.querySelectorAll('.tide-strip-day'));
+  if(!days.length)return;
+  const DOW_S=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const today=new Date();today.setHours(0,0,0,0);
+  const todayStr=_localDateStr(today);
+  const ADD=14;
+  const html=[];
+  if(dir==='left'){
+    const first=new Date(days[0].dataset.date+'T12:00:00');first.setHours(0,0,0,0);
+    for(let i=ADD;i>=1;i--){
+      const d=new Date(first);d.setDate(d.getDate()-i);
+      const dt=_localDateStr(d);
+      const lbl=dt===todayStr?'Heu':DOW_S[d.getDay()];
+      html.push(`<button class="tide-strip-day" data-date="${dt}" onclick="_renderTideCal('${river}','${dt}')"><span class="tide-strip-dow">${lbl}</span><span class="tide-strip-num">${d.getDate()}.</span></button>`);
+    }
+    const prevSL=strip.scrollLeft;
+    const prevSW=strip.scrollWidth;
+    strip.insertAdjacentHTML('afterbegin',html.join(''));
+    strip.scrollLeft=prevSL+(strip.scrollWidth-prevSW);
+  } else {
+    const last=new Date(days[days.length-1].dataset.date+'T12:00:00');last.setHours(0,0,0,0);
+    for(let i=1;i<=ADD;i++){
+      const d=new Date(last);d.setDate(d.getDate()+i);
+      const dt=_localDateStr(d);
+      const lbl=dt===todayStr?'Heu':DOW_S[d.getDay()];
+      html.push(`<button class="tide-strip-day" data-date="${dt}" onclick="_renderTideCal('${river}','${dt}')"><span class="tide-strip-dow">${lbl}</span><span class="tide-strip-num">${d.getDate()}.</span></button>`);
+    }
+    strip.insertAdjacentHTML('beforeend',html.join(''));
   }
 }
 
 // ── Einzel-Kachel Wetter-Overlays (14-Tage Tages-Graph + Tabelle) ──────
-async function openWxChart(type){
+// v52 AP4: Window-Navigation via _envWin[type].anchorOffset
+//   offset===0 → nutze Live-Forecast-Cache (_fcData)
+//   offset!=0  → lade über fetchEnvSeries-Adapter (archive- oder forecast-API,
+//                Cache-First). Adapter ist so gebaut, dass später ein Backend-API
+//                eingehängt werden kann ohne den Aufrufer anzufassen.
+async function openWxChart(type,opts={}){
   if(!_fcData||!_fcData.daily){showToast('⚠️','Vorhersage noch nicht geladen',true);return;}
 
   // v45: pressure chart support
@@ -9073,7 +9212,40 @@ async function openWxChart(type){
   const bodyEl=document.getElementById(bodyId);
   if(!bodyEl)return;
 
-  const d=_fcData.daily;
+  // v52 AP4: Window-Anchor bestimmen + Daten via Adapter laden bei Offset
+  const anchorOff=_envWin[type]?.anchorOffset||0;
+  let d;
+  if(anchorOff===0){
+    d=_fcData.daily;
+  } else if(_plzCoords){
+    bodyEl.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);font-size:12px;">🔄 Lade Wetterdaten…</div>';
+    const today=new Date();today.setHours(0,0,0,0);
+    const anchor=new Date(today);anchor.setDate(today.getDate()+anchorOff);
+    const startD=new Date(anchor);startD.setDate(anchor.getDate()-13);
+    try{
+      const res=await fetchEnvSeries({
+        type,
+        start:_localDateStr(startD),
+        end:_localDateStr(anchor),
+        lat:_plzCoords.lat,lon:_plzCoords.lon
+      });
+      d=res.daily;
+      // Daten-Format ist je nach Quelle leicht unterschiedlich → angleichen
+      // (forecast-API & archive-API liefern beide d.time + die jeweiligen Felder)
+    }catch(e){
+      showToast('⚠️','Wetterdaten konnten nicht geladen werden');
+      _envWin[type].anchorOffset=anchorOff-(anchorOff>0?14:-14); // rollback
+      bodyEl.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">Daten nicht verfügbar.</div>';
+      return;
+    }
+  } else {
+    showToast('⚠️','Bitte zuerst PLZ einstellen');
+    return;
+  }
+  if(!d||!d.time||!d.time.length){
+    bodyEl.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">Keine Daten in diesem Zeitraum.</div>';
+    return;
+  }
   const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
   const labels=d.time.map((t,i)=>{
     const dt=new Date(t+'T12:00:00');
@@ -9104,7 +9276,7 @@ async function openWxChart(type){
       ${_chartMagicHeader('wind',' km/h',winds.filter(v=>v!=null))}
       <div class="fc-sec" style="margin:0 0 12px;padding:4px 8px 8px;">
         <div class="fc-sec-title" style="margin:6px 0 4px;">💨 Wind + Böen · 14 Tage</div>
-        <div class="fc-chart-wrap cw-xl"><canvas id="wx-wind-chart"></canvas></div>
+        <div class="fc-chart-wrap cw-xxl"><canvas id="wx-wind-chart"></canvas></div>
       </div>
       <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
         <div class="wx14-hdr" data-cols="4"><div class="wx14-date">Tag</div><div class="wx14-val">km/h</div><div class="wx14-val">Böen</div><div class="wx14-val">Richt.</div></div>
@@ -9117,7 +9289,8 @@ async function openWxChart(type){
       if(gusts.some(v=>v!=null))datasets.push({label:'Böen',data:gusts,borderColor:'#a0c4f0',backgroundColor:'rgba(0,0,0,0)',fill:false,tension:.35,pointRadius:2,borderWidth:1.5,borderDash:[4,4]});
       const ch=new Chart(c,{type:'line',data:{labels,datasets},plugins:[_wx14CrosshairPlugin],options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:gusts.some(v=>v!=null),labels:{boxWidth:12,font:{size:10}}},tooltip:{enabled:false}},
-        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:0,title:{display:true,text:'km/h',font:{size:9},color:TICK},ticks:{color:TICK,font:{size:8}},grid:{color:GRID}}}}});
+        // v52 AP4: Y-Achse ohne km/h-Bezeichnung — nur nackte Zahlen
+        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:0,ticks:{color:TICK,font:{size:9},callback:v=>Math.round(v)},grid:{color:GRID}}}}});
       ch._magicId='wind';ch._magicUnit=' km/h';ch._magicDefault=winds.filter(v=>v!=null)[0]||0;
     });
 
@@ -9138,7 +9311,7 @@ async function openWxChart(type){
       ${_chartMagicHeader('rain',' mm',precip.filter(v=>v!=null))}
       <div class="fc-sec" style="margin:0 0 12px;">
         <div class="fc-sec-title">🌧 Niederschlag · 14 Tage</div>
-        <div class="fc-chart-wrap"><canvas id="wx-rain-chart"></canvas></div>
+        <div class="fc-chart-wrap cw-xxl"><canvas id="wx-rain-chart"></canvas></div>
       </div>
       <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
         <div class="wx14-hdr" data-cols="3"><div class="wx14-date">Tag</div><div class="wx14-val">Wahrsch.</div><div class="wx14-val">Menge</div></div>
@@ -9165,10 +9338,11 @@ async function openWxChart(type){
             legend:{display:true,position:'top',labels:{boxWidth:10,font:{size:10},padding:6}},
             tooltip:{enabled:false}
           },
+          // v52 AP4: Y-Achsen ohne %/mm-Bezeichnung — nur nackte Zahlen
           scales:{
             x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},
-            yPct:{position:'left',min:0,max:100,ticks:{color:TICK,font:{size:10},callback:v=>v+' %'},grid:{color:GRID}},
-            yMm:{position:'right',min:0,ticks:{color:TICK,font:{size:10},callback:v=>v+' mm'},grid:{display:false}}
+            yPct:{position:'left',min:0,max:100,ticks:{color:TICK,font:{size:10},callback:v=>Math.round(v)},grid:{color:GRID}},
+            yMm:{position:'right',min:0,ticks:{color:TICK,font:{size:10},callback:v=>Math.round(v*10)/10},grid:{display:false}}
           }}});
       ch._magicId='rain';ch._magicUnit=' mm';ch._magicDefault=precip.filter(v=>v!=null)[0]||0;
     });
@@ -9193,7 +9367,7 @@ async function openWxChart(type){
       ${_chartMagicHeader('temp','°',tmax.filter(v=>v!=null))}
       <div class="fc-sec" style="margin:0 0 12px;">
         <div class="fc-sec-title">🌡 Temperatur · 14 Tage</div>
-        <div class="fc-chart-wrap"><canvas id="wx-temp-chart"></canvas></div>
+        <div class="fc-chart-wrap cw-xxl"><canvas id="wx-temp-chart"></canvas></div>
       </div>
       <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
         <div class="wx14-hdr" data-cols="4"><div class="wx14-date">Tag</div><div class="wx14-val"></div><div class="wx14-val">Min</div><div class="wx14-val">Max</div></div>
@@ -9209,7 +9383,8 @@ async function openWxChart(type){
         {label:'Min',data:tmin,borderColor:'#6a9ec0',backgroundColor:'rgba(106,158,192,.1)',fill:true,tension:.35,pointRadius:2,borderWidth:1.5}
       ]},plugins:[_wx14CrosshairPlugin],options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:true,labels:{boxWidth:12,font:{size:10}}},tooltip:{enabled:false}},
-        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:10},stepSize:5,callback:v=>Math.round(v)+'°'},grid:{color:GRID}}}}});
+        // v52 AP4: Y-Achse ohne °-Bezeichnung — nur nackte Zahlen
+        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:10},stepSize:5,callback:v=>Math.round(v)},grid:{color:GRID}}}}});
       ch._magicId='temp';ch._magicUnit='°';ch._magicDefault=tmax.filter(v=>v!=null)[0]||0;
     });
   }
@@ -9233,7 +9408,7 @@ async function openWxChart(type){
       ${_chartMagicHeader('pres','hPa',pres.filter(v=>v!=null))}
       <div class="fc-sec" style="margin:0 0 12px;">
         <div class="fc-sec-title">🔵 Luftdruck · 14 Tage</div>
-        <div class="fc-chart-wrap cw-xl"><canvas id="wx-pres-chart"></canvas></div>
+        <div class="fc-chart-wrap cw-xxl"><canvas id="wx-pres-chart"></canvas></div>
       </div>
       <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
         <div class="wx14-hdr" data-cols="3"><div class="wx14-date">Tag</div><div class="wx14-val">hPa</div><div class="wx14-val">Tendenz</div></div>
@@ -9249,7 +9424,8 @@ async function openWxChart(type){
         {label:'hPa',data:pres,borderColor:'#5c6bc0',backgroundColor:'rgba(92,107,192,.12)',fill:true,tension:.4,pointRadius:3,pointHoverRadius:6,borderWidth:2.5}
       ]},plugins:[_wx14CrosshairPlugin],options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:false},tooltip:{enabled:false}},
-        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:presMin,max:presMax,ticks:{color:TICK,font:{size:10},callback:v=>v+' hPa'},grid:{color:GRID}}}}});
+        // v52 AP4: Y-Achse ohne hPa-Bezeichnung — nur nackte Zahlen
+        scales:{x:{ticks:{color:TICK,font:{size:9},maxRotation:45},grid:{color:GRID}},y:{min:presMin,max:presMax,ticks:{color:TICK,font:{size:10},callback:v=>Math.round(v)},grid:{color:GRID}}}}});
       ch._magicId='pres';ch._magicUnit=' hPa';ch._magicDefault=validPres[0]||1013;
     });
   }
@@ -9521,7 +9697,7 @@ function openDailyWeather(dateStr){
       ]},plugins:DW_PLUGINS,options:{responsive:true,maintainAspectRatio:false,
         layout:{padding:{left:10,right:10,top:4,bottom:0}},
         plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c2=>`${c2.parsed.y}°C`}}},
-        scales:{x:xFor('dw-temp-chart'),y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:9},stepSize:2,callback:v=>Math.round(v)+'°'},grid:{color:GRID,drawBorder:false}}}}});
+        scales:{x:xFor('dw-temp-chart'),y:{min:vMin,max:vMax,ticks:{color:TICK,font:{size:9},stepSize:2,callback:v=>Math.round(v)},grid:{color:GRID,drawBorder:false}}}}});
       ch1._isToday=isToday;
       ch1._infoId='dw-temp-hover';ch1._infoUnit='°C';
       _dwCharts.push(ch1);
@@ -9567,7 +9743,7 @@ function openDailyWeather(dateStr){
       ]},plugins:DW_PLUGINS,options:{responsive:true,maintainAspectRatio:false,
         layout:{padding:{left:10,right:10,top:4,bottom:0}},
         plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c5=>`${c5.parsed.y} hPa`}}},
-        scales:{x:xFor('dw-pres-chart'),y:{min:pMin,max:pMax,ticks:{color:TICK,font:{size:9},callback:v=>v+' hPa'},grid:{color:GRID,drawBorder:false}}}}});
+        scales:{x:xFor('dw-pres-chart'),y:{min:pMin,max:pMax,ticks:{color:TICK,font:{size:9},callback:v=>Math.round(v)},grid:{color:GRID,drawBorder:false}}}}});
       ch4._isToday=isToday;
       ch4._infoId='dw-pres-hover';ch4._infoUnit=' hPa';
       _dwCharts.push(ch4);
@@ -10080,38 +10256,221 @@ function pauseLiveSession(){
   }
 }
 
-// ── End Flow mit Schneider-Check ──
+// ─────────────────────────────────────────────────────────
+// v52 AP1: End-Session Overlay mit Recap + Gruppen-Share-Toggle
+// ─────────────────────────────────────────────────────────
+
+// State für die zu teilende Session (während das Overlay offen ist)
+let _endShareState={enabled:false,groupIds:[]};
+
 function confirmEndLive(){
   if(!_liveSession)return;
-  const card=document.getElementById('ls-end-card');
   const hasCatches=_liveSession.catches.length>0;
-
-  if(hasCatches){
-    // Hat Fänge → direkt Bestätigungsmaske
-    card.innerHTML=`
-      <h3>🔴 Session beenden</h3>
-      <div class="le-sub">${_liveSession.catches.length} Fang${_liveSession.catches.length>1?'e':''} · ${document.getElementById('live-timer')?.textContent||'--:--:--'}</div>
-      <button class="ls-end-btn primary" onclick="_finalizeLive(false)">✅ Speichern & Beenden</button>
-      <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>`;
-  } else {
-    // Keine Fänge → Schneider-Frage
+  if(!hasCatches){
+    // Schneider-Vorfrage zuerst
+    const card=document.getElementById('ls-end-card');
     card.innerHTML=`
       <h3>🤔 Schneider?</h3>
       <div class="le-sub">Du hast noch keinen Fang eingetragen.</div>
-      <button class="ls-end-btn primary" onclick="_showEndOptions()">Ja, Schneider</button>
-      <button class="ls-end-btn ghost" onclick="closeLiveEndOv();openLiveCatchOv()">Nein, Fang eintragen</button>`;
+      <div class="le-actions">
+        <button class="ls-end-btn primary" onclick="_renderEndSessionFinal(true)">Ja, Schneider</button>
+        <button class="ls-end-btn ghost" onclick="closeLiveEndOv();openLiveCatchOv()">Nein, Fang eintragen</button>
+        <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>
+      </div>`;
+    document.getElementById('ls-end-ov').classList.add('on');
+    return;
   }
-  document.getElementById('ls-end-ov').classList.add('on');
+  // Direkt Recap+Share zeigen (kein Schneider-Fall)
+  _renderEndSessionFinal(false);
 }
 
-function _showEndOptions(){
+// Rendert das große End-Overlay mit Recap + Share-Section
+function _renderEndSessionFinal(isSkunked){
+  if(!_liveSession)return;
+  // Share-State zurücksetzen (frische Modal-Öffnung)
+  _endShareState={enabled:false,groupIds:[]};
+
+  const timer=document.getElementById('live-timer')?.textContent||'--:--:--';
+  const catches=_liveSession.catches||[];
+  const water=_liveSession.water||'–';
+  const spot=_liveSession.spot||'';
+
+  // Vorab-Bewertung: welche Standort-Stufe hat die Session?
+  const previewLoc=_resolveSessLocation({
+    water,spot,
+    lat:_liveSession.gpsTrack?.[0]?.lat||null,
+    lon:_liveSession.gpsTrack?.[0]?.lon||null
+  });
+
+  const hasCatches=catches.length>0;
+  const recap=`
+    <div class="le-recap">
+      <div class="le-recap-cell"><div class="lbl">Dauer</div><div class="val">${timer}</div></div>
+      <div class="le-recap-cell"><div class="lbl">Fänge</div><div class="val">${catches.length}${isSkunked?' (Schneider)':''}</div></div>
+      <div class="le-recap-cell" style="grid-column:span 2;"><div class="lbl">Gewässer</div><div class="val">${_esc(water)}${spot?' · '+_esc(spot):''}</div></div>
+    </div>`;
+
+  const shareSection=_renderShareSection({
+    context:'live',
+    locInfo:previewLoc,
+    hasCatches
+  });
+
   const card=document.getElementById('ls-end-card');
   card.innerHTML=`
-    <h3>📝 Session abschließen</h3>
-    <div class="le-sub">Schneider-Session</div>
-    <button class="ls-end-btn primary" onclick="closeLiveEndOv();openLiveCatchOv()">🐟 Weitere Infos eingeben</button>
-    <button class="ls-end-btn warn" onclick="_finalizeLive(true)">⏹ Abschließen</button>
-    <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>`;
+    <h3>${hasCatches?'🎣 Session abschließen':'⏹ Session beenden'}</h3>
+    <div class="le-sub">${hasCatches?'Bitte bestätige die Session':'Schneider-Session — wirklich abschließen?'}</div>
+    <div class="le-body">
+      ${recap}
+      ${shareSection}
+    </div>
+    <div class="le-actions">
+      <button class="ls-end-btn primary" onclick="_finalizeLive(${isSkunked})">✅ Speichern & Beenden</button>
+      <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>
+    </div>`;
+  document.getElementById('ls-end-ov').classList.add('on');
+  _initShareSectionListeners();
+}
+
+// v52 AP1: zentral verfügbarer Renderer für die Share-Section
+// Wird im End-Overlay UND in der Edit-Session-Ansicht verwendet.
+//
+// opts.context:  'live'  | 'edit'      (nur Cosmetics)
+// opts.locInfo:  {kind: 'exact'|'spot'|'water'|'none', lat, lon}
+// opts.hasCatches: bool                (Toggle bei 0 Fängen ausgegraut)
+// opts.preselectedGroupIds: Array<string>  (für Edit-Session: bestehende Selektion)
+// opts.preselectedEnabled:  bool       (für Edit-Session: bestehender Toggle-Zustand)
+function _renderShareSection(opts){
+  const groups=Array.isArray(_groups)?_groups:[];
+  if(opts.preselectedEnabled){
+    _endShareState.enabled=true;
+    _endShareState.groupIds=Array.isArray(opts.preselectedGroupIds)?opts.preselectedGroupIds.slice():[];
+  }
+  if(!groups.length){
+    return `<div class="share-section"><div class="share-toggle-row" style="cursor:default;opacity:.6;">
+      <div class="ico">👥</div>
+      <div class="body">
+        <div class="ttl">In Gruppe teilen</div>
+        <div class="sub">Du bist noch in keiner Gruppe — erstelle oder tritt zuerst einer Gruppe bei.</div>
+      </div>
+    </div></div>`;
+  }
+
+  const banner=_shareLocationBanner(opts.locInfo);
+  const startEnabled=!!opts.preselectedEnabled;
+  const expanded=startEnabled?' expanded':'';
+  const swOn=startEnabled?' on':'';
+
+  let groupListHtml;
+  if(groups.length===1){
+    // Auto-select (Single-Group-Fast-Path)
+    if(startEnabled&&!_endShareState.groupIds.length)_endShareState.groupIds=[groups[0].id];
+    groupListHtml=`<div class="share-group-list" style="display:flex;">
+      <div class="share-grp-pick on" data-gid="${groups[0].id}" onclick="_endToggleGroupPick('${groups[0].id}')">
+        <div class="ico">${groups[0].iconText||'🎣'}</div>
+        <div class="nm">${_esc(groups[0].name||'Gruppe')}</div>
+        <div class="chk">✓</div>
+      </div>
+    </div>`;
+  }else{
+    groupListHtml=`<div class="share-group-list">
+      ${groups.map(g=>{
+        const sel=_endShareState.groupIds.includes(g.id);
+        return `<div class="share-grp-pick${sel?' on':''}" data-gid="${g.id}" onclick="_endToggleGroupPick('${g.id}')">
+          <div class="ico">${g.iconText||'🎣'}</div>
+          <div class="nm">${_esc(g.name||'Gruppe')}</div>
+          <div class="chk">${sel?'✓':''}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  const dimNoCatch=opts.context==='live'&&opts.hasCatches===false?
+    '<div style="font-size:10.5px;color:var(--text-light);margin-top:4px;">Schneider-Session wird trotzdem geteilt — keine Fänge in der Gruppe sichtbar.</div>':'';
+
+  return `<div class="share-section${expanded}" id="share-section">
+    <div class="share-toggle-row" onclick="_endToggleShare()">
+      <div class="ico">👥</div>
+      <div class="body">
+        <div class="ttl">In Gruppe teilen</div>
+        <div class="sub">${groups.length===1?'1 Gruppe verfügbar':groups.length+' Gruppen — wähle eine oder mehrere'}</div>
+      </div>
+      <button class="share-toggle-sw${swOn}" id="share-toggle-sw" type="button"></button>
+    </div>
+    ${groupListHtml}
+    ${banner}
+    ${dimNoCatch}
+  </div>`;
+}
+
+function _shareLocationBanner(locInfo){
+  if(!locInfo)return'';
+  const k=locInfo.kind;
+  if(k==='exact')return `<div class="share-loc-banner exact"><span class="ico">📍</span><span>GPS exakt verfügbar — Smart-Map zeigt den Fangspot präzise.</span></div>`;
+  if(k==='spot')return `<div class="share-loc-banner spot"><span class="ico">📌</span><span>Spot-Approximation aus deiner Spot-Bibliothek — Smart-Map zeigt grobe Position (≈400 m).</span></div>`;
+  if(k==='water')return `<div class="share-loc-banner water"><span class="ico">🗺️</span><span>Nur Gewässer-Approximation — Smart-Map zeigt Region (≈1.5 km).</span></div>`;
+  return `<div class="share-loc-banner none"><span class="ico">📍</span><span>Keine Position verfügbar — Smart-Map wird leer angezeigt.</span></div>`;
+}
+
+function _initShareSectionListeners(){
+  // Listener-Setup-Stub — alle Aktionen sind onclick-attribuiert
+}
+
+function _endToggleShare(){
+  _endShareState.enabled=!_endShareState.enabled;
+  const sec=document.getElementById('share-section');
+  const sw=document.getElementById('share-toggle-sw');
+  if(!sec||!sw)return;
+  sec.classList.toggle('expanded',_endShareState.enabled);
+  sw.classList.toggle('on',_endShareState.enabled);
+  // Bei Single-Group: automatisch ankreuzen wenn aktiviert
+  if(_endShareState.enabled&&_groups.length===1)_endShareState.groupIds=[_groups[0].id];
+  if(!_endShareState.enabled)_endShareState.groupIds=[];
+}
+
+function _endToggleGroupPick(gId){
+  if(!_endShareState.enabled){
+    _endShareState.enabled=true;
+    document.getElementById('share-section')?.classList.add('expanded');
+    document.getElementById('share-toggle-sw')?.classList.add('on');
+  }
+  const idx=_endShareState.groupIds.indexOf(gId);
+  if(idx>=0)_endShareState.groupIds.splice(idx,1);
+  else _endShareState.groupIds.push(gId);
+  // DOM only
+  const row=document.querySelector(`.share-grp-pick[data-gid="${gId}"]`);
+  if(row){
+    const on=_endShareState.groupIds.includes(gId);
+    row.classList.toggle('on',on);
+    const chk=row.querySelector('.chk');
+    if(chk)chk.textContent=on?'✓':'';
+  }
+  // Wenn alle abgewählt sind: Toggle ausschalten
+  if(!_endShareState.groupIds.length){
+    _endShareState.enabled=false;
+    document.getElementById('share-section')?.classList.remove('expanded');
+    document.getElementById('share-toggle-sw')?.classList.remove('on');
+  }
+}
+
+// v52 AP1: GPS-Pragmatismus — beste verfügbare Position auflösen.
+// Reihenfolge: explizite GPS → Spot-Approx → Gewässer-Approx → none
+function _resolveSessLocation({water,spot,lat,lon}){
+  if(lat&&lon){
+    const flat=parseFloat(lat),flon=parseFloat(lon);
+    if(!isNaN(flat)&&!isNaN(flon))return{kind:'exact',lat:flat,lon:flon};
+  }
+  if(typeof _lookupSpotGps==='function'){
+    if(water&&spot){
+      const hit=_lookupSpotGps(water,spot);
+      if(hit&&hit.lat&&hit.lon)return{kind:'spot',lat:parseFloat(hit.lat),lon:parseFloat(hit.lon)};
+    }
+    if(water){
+      const hit=_lookupSpotGps(water,'');
+      if(hit&&hit.lat&&hit.lon)return{kind:'water',lat:parseFloat(hit.lat),lon:parseFloat(hit.lon)};
+    }
+  }
+  return{kind:'none',lat:null,lon:null};
 }
 
 function closeLiveEndOv(){
@@ -10285,6 +10644,16 @@ async function _finalizeLive(isSkunked){
   await saveOneSess(sess);
   if(_authMode==='online')syncToCloud().catch(()=>{});
 
+  // v52 AP1: Wenn der Nutzer im End-Overlay den Share-Toggle aktiviert hat,
+  // direkt nach dem Speichern in alle ausgewählten Gruppen teilen.
+  if(_endShareState.enabled&&_endShareState.groupIds.length){
+    try{
+      await _shareSessionToGroups(sess,_endShareState.groupIds);
+      showToast('👥',`Session in ${_endShareState.groupIds.length} Gruppe${_endShareState.groupIds.length>1?'n':''} geteilt`);
+    }catch(e){console.warn('Share nach Live-End:',e);}
+  }
+  _endShareState={enabled:false,groupIds:[]};
+
   // Cleanup
   _liveSession=null;
   localStorage.removeItem('fb_live_session');
@@ -10298,6 +10667,70 @@ async function _finalizeLive(isSkunked){
   // v45: Fitness-App-Style Summary statt einfachem Toast
   _showLsSummary(sess);
   showPage('fangbuch');
+}
+
+// v52 AP1: Multi-Group-Share-Helper — nutzt GPS-Pragmatismus und propagiert Wetter/Foto.
+// Wird von _finalizeLive (End-Overlay) UND von saveSess (Edit-Session) genutzt.
+async function _shareSessionToGroups(sess,groupIds){
+  if(!Array.isArray(groupIds)||!groupIds.length)return 0;
+  const myName=profile?.name||profile?.vorname||'Angler';
+  const myId=_sbUser?.id||'me';
+  const loc=_resolveSessLocation({water:sess.water,spot:sess.spot,lat:sess.lat,lon:sess.lon});
+  const shareLat=loc.lat,shareLon=loc.lon;
+  const shareGps=loc.kind!=='none';
+
+  let totalShared=0;
+  for(const gId of groupIds){
+    const g=_groups.find(x=>x.id===gId);
+    if(!g)continue;
+    if(!g.sharedCatches)g.sharedCatches=[];
+    if(!g.feed)g.feed=[];
+
+    // Schneider-Sessions trotzdem als Feed-Eintrag teilen (ohne sharedCatches-Eintrag)
+    if(!sess.catches?.length||sess.skunked){
+      g.feed.push({
+        type:'system',
+        text:`${myName} hat eine Schneider-Session am ${sess.water||'Wasser'} geteilt.`,
+        ts:Date.now(),userId:myId
+      });
+      totalShared++;
+      continue;
+    }
+
+    sess.catches.forEach(c=>{
+      const shared={
+        id:_newId(),userId:myId,userName:myName,
+        type:c.type,length:c.length,weight:c.weight,
+        bait:c.bait,baitNote:c.baitNote,baitColor:c.baitColor,baitSize:c.baitSize,
+        water:sess.water,spot:sess.spot,
+        date:sess.date,time:c.time||sess.start,
+        // v52 AP1: shareGps reflektiert die tatsächlich verfügbare Auflösung
+        shareGps,
+        lat:shareLat,lon:shareLon,
+        locKind:loc.kind, // 'exact' | 'spot' | 'water' | 'none'
+        // Wetter mitschicken
+        pressure:sess.pressure??null,windSpeed:sess.windSpeed??null,windDir:sess.windDir??null,
+        temp:sess.temp??null,humidity:sess.humidity??null,clouds:sess.clouds??null,precip:sess.precip??null,
+        weather:sess.weather||null,moonPhase:sess.moonPhase||null,moonIllum:sess.moonIllum??null,
+        // Foto mitschicken
+        photoKey:c.photoKey||null,
+        likes:[],comments:[]
+      };
+      g.sharedCatches.push(shared);
+      g.feed.push({
+        type:'catch',
+        text:`Hat einen ${c.length||'?'}cm ${c.type||'Fisch'} geteilt!`,
+        ts:Date.now(),userId:myId,catchData:shared
+      });
+      totalShared++;
+    });
+    // sess speichert die geteilte-Markierung pro Gruppe (für späteres "schon geteilt"-UI)
+    sess.sharedToGroups=sess.sharedToGroups||[];
+    if(!sess.sharedToGroups.includes(gId))sess.sharedToGroups.push(gId);
+  }
+  await _saveGroups();
+  await saveOneSess(sess);
+  return totalShared;
 }
 
 function _resumeLiveSession(){
@@ -13091,31 +13524,58 @@ function _initChartScrollLock(){
   });
 }
 
-// ── Magic Header for Charts (dynamic update on hover) ──
+// ─────────────────────────────────────────────────────────
+// v52 AP4: Env-Chart Window-State (anchorDate + span) für Pfeil-Navigation
+// ─────────────────────────────────────────────────────────
+// Pro Chart-Typ („wind"|"temp"|"rain"|"pressure") merken wir uns den aktuellen
+// 14-Tages-Anker. Pfeile bewegen den Anker ±14 Tage und triggern openWxChart neu.
+const _envWin={
+  wind:{anchorOffset:0},
+  temp:{anchorOffset:0},
+  rain:{anchorOffset:0},
+  pressure:{anchorOffset:0}
+};
+function _envChartShift(type,deltaDays){
+  const w=_envWin[type]||(_envWin[type]={anchorOffset:0});
+  w.anchorOffset+=deltaDays;
+  // Re-Render des Charts mit neuem Window
+  if(typeof openWxChart==='function')openWxChart(type,{rerender:true});
+}
+
+// ── Magic Header for Charts (dynamic update on hover, with nav arrows) ──
+// v52 AP4: Pfeile links/rechts blättern 14 Tage durch die History/Forecast.
 function _chartMagicHeader(chartId,label,values){
   if(!values||!values.length)return '';
   const cur=values[values.length>12?12:0];
   const mn=Math.min(...values.filter(v=>v!=null));
   const mx=Math.max(...values.filter(v=>v!=null));
+  // chartId-Mapping zum Window-Type
+  const typeMap={wind:'wind',temp:'temp',rain:'rain',pres:'pressure'};
+  const type=typeMap[chartId]||'temp';
+  const offset=_envWin[type]?.anchorOffset||0;
+  const offsetLabel=offset===0?'Heute':(offset<0?Math.abs(offset)+'d zurück':'+'+offset+'d');
   return `<div class="chart-magic-hdr" id="cmh-${chartId}">
+    <button class="cmh-nav cmh-nav-prev" onclick="_envChartShift('${type}',-14)" aria-label="14 Tage zurück">‹</button>
     <div><div class="cmh-lbl" id="cmh-lbl-${chartId}">Aktuell</div><div class="cmh-val" id="cmh-cur-${chartId}">${Math.round(cur)}${label}</div></div>
     <div><div class="cmh-lbl">Min</div><div class="cmh-val">${Math.round(mn)}${label}</div></div>
     <div><div class="cmh-lbl">Max</div><div class="cmh-val">${Math.round(mx)}${label}</div></div>
+    <div style="text-align:center;font-size:9px;color:var(--text-light);font-weight:600;letter-spacing:.4px;text-transform:uppercase;align-self:center;">${offsetLabel}</div>
+    <button class="cmh-nav cmh-nav-next" onclick="_envChartShift('${type}',14)" aria-label="14 Tage vor">›</button>
   </div>`;
 }
 
-// ── 14-Day Chart Crosshair + Magic Header Update Plugin ──
+// ── 14-Day Chart Crosshair (vertikale rote Linie) + Magic Header Update Plugin ──
+// v52 AP4: ZUSÄTZLICH zum Magic-Header-Sync wird jetzt eine echte rote Linie
+// gezeichnet, exakt an der Hover-/Touch-Position.
 const _wx14CrosshairPlugin={
   id:'wx14Crosshair',
-  // AP4: Beim Chart-Init touchend/cancel/mouseleave-Listener binden,
-  // damit Tooltip & Cursor-Linie nach Loslassen sauber verschwinden
   afterInit(chart){
     if(!chart.canvas||chart._wx14TouchBound)return;
     const reset=()=>{
       try{
+        chart._crosshairX=null;
         chart.setActiveElements([]);
         if(chart.tooltip)chart.tooltip.setActiveElements([],{x:0,y:0});
-        // Magic-Header zurück auf Default
         if(chart._magicId){
           const curEl=document.getElementById('cmh-cur-'+chart._magicId);
           const lblEl=document.getElementById('cmh-lbl-'+chart._magicId);
@@ -13129,31 +13589,50 @@ const _wx14CrosshairPlugin={
     chart.canvas.addEventListener('touchcancel',reset,{passive:true});
     chart.canvas.addEventListener('mouseleave',reset);
     chart._wx14TouchBound=true;
-    // Scroll-Lock auf Chart-Container nachziehen
     if(typeof _initChartScrollLock==='function')_initChartScrollLock();
   },
-  // AP5: Crosshair-Linie wird jetzt global gezeichnet – hier nur Magic Header Update
   afterEvent(chart,args){
-    if(!chart._magicId||args.replay)return;
+    if(args.replay)return;
     const evt=args.event;
-    if((evt.type==='mousemove'||evt.type==='click')&&args.inChartArea){
+    if((evt.type==='mousemove'||evt.type==='click'||evt.type==='touchmove'||evt.type==='touchstart')&&args.inChartArea){
       const els=chart.getElementsAtEventForMode(evt,'index',{intersect:false},true);
       if(els.length){
         const idx=els[0].index;
-        const val=chart.data.datasets[0]?.data?.[idx];
-        const lbl=chart.data.labels?.[idx]||'';
-        const curEl=document.getElementById('cmh-cur-'+chart._magicId);
-        const lblEl=document.getElementById('cmh-lbl-'+chart._magicId);
-        if(curEl&&val!=null)curEl.textContent=Math.round(val)+(chart._magicUnit||'');
-        if(lblEl)lblEl.textContent=lbl;
+        // Crosshair-X-Position für afterDraw merken
+        chart._crosshairX=chart.scales.x.getPixelForValue(idx);
+        chart._crosshairIdx=idx;
+        if(chart._magicId){
+          const val=chart.data.datasets[0]?.data?.[idx];
+          const lbl=chart.data.labels?.[idx]||'';
+          const curEl=document.getElementById('cmh-cur-'+chart._magicId);
+          const lblEl=document.getElementById('cmh-lbl-'+chart._magicId);
+          if(curEl&&val!=null)curEl.textContent=Math.round(val)+(chart._magicUnit||'');
+          if(lblEl)lblEl.textContent=lbl;
+        }
       }
     }else if(evt.type==='mouseout'||!args.inChartArea){
-      // Reset to default
+      chart._crosshairX=null;
       const curEl=document.getElementById('cmh-cur-'+chart._magicId);
       const lblEl=document.getElementById('cmh-lbl-'+chart._magicId);
       if(curEl&&chart._magicDefault!=null)curEl.textContent=Math.round(chart._magicDefault)+(chart._magicUnit||'');
       if(lblEl)lblEl.textContent='Aktuell';
     }
+  },
+  afterDraw(chart){
+    // v52 AP4: Echte rote vertikale Linie an der aktuellen Hover/Touch-Position
+    const x=chart._crosshairX;
+    if(x==null)return;
+    const ctx=chart.ctx;
+    const yT=chart.scales.y.top, yB=chart.scales.y.bottom;
+    ctx.save();
+    ctx.strokeStyle='#cc0000';
+    ctx.lineWidth=2;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(x,yT);
+    ctx.lineTo(x,yB);
+    ctx.stroke();
+    ctx.restore();
   }
 };
 
