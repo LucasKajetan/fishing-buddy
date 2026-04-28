@@ -1793,6 +1793,38 @@ input[type=file]{display:none;}
 .hlive-btn.active{background:#cc0000!important;animation:livePulse 1.5s infinite;}
 
 /* ── AP4: Group Sub-Nav (fixed bottom bar inside overlay) ── */
+/* AP9.1: Schwebender "Gruppe beitreten"-Button im Preview-Modus.
+   Sitzt über der Subnav, mit eigener Schicht und Schatten. */
+.preview-join-fab{
+  position:absolute;
+  bottom:calc(max(16px,env(safe-area-inset-bottom,16px)) + 70px);
+  left:8%;right:8%;width:84%;
+  display:none;align-items:center;justify-content:center;gap:8px;
+  padding:14px 18px;
+  background:var(--green-deep);
+  color:#fff;
+  border:none;border-radius:28px;
+  font-family:var(--fa);font-size:15px;font-weight:700;
+  box-shadow:0 10px 30px rgba(45,74,53,.35);
+  z-index:140;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .1s;
+}
+.preview-join-fab:active{transform:scale(.97);}
+.preview-join-fab:hover{background:#1f3a26;}
+
+/* AP9.1: Restriktions-Hinweis im Preview-Modus */
+.preview-restriction-banner{
+  background:var(--yellow);
+  border:1px solid var(--yellow-b);
+  color:var(--yellow-t);
+  padding:8px 12px;border-radius:8px;
+  font-size:11px;font-weight:600;
+  text-align:center;
+  margin:8px 16px;
+}
+
 /* AP2: Gruppen-Subnav als schwebende Pille, wie die Hauptnavigation */
 .grp-subnav{position:absolute;bottom:max(16px,env(safe-area-inset-bottom,16px));left:8%;right:8%;width:84%;display:flex;gap:2px;padding:6px 8px;background:rgba(248,245,239,.90);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(200,221,208,.60);border-radius:28px;box-shadow:0 10px 30px rgba(45,74,53,.18);z-index:130;}
 .grp-subnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px 5px;border:none;border-radius:20px;background:transparent;font-size:10px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--text-light);transition:all .15s;-webkit-tap-highlight-color:transparent;}
@@ -1824,8 +1856,12 @@ input[type=file]{display:none;}
 
 /* ── AP4: Map full height ── */
 /* AP2: Gruppen-Karte im vollen Content-Raum */
-.grp-map-full{width:100%;height:100%;min-height:100%;overflow:hidden;position:absolute;inset:0;}
-.grp-map-wrap{position:absolute;inset:0;}
+/* AP9.2: Karten-Container füllt komplette Content-Fläche, ohne Layout-Shift */
+.grp-map-full{width:100%;height:100%;min-height:100%;overflow:hidden;position:absolute;inset:0;background:#e6e9ec;}
+.grp-map-wrap{position:absolute;inset:0;height:100%;}
+/* Sicherheits-Override: im Map-Mode hat #grp-detail-content keine Höhenprobleme */
+#fs-group-detail .fsov-scroll{position:relative;}
+#grp-detail-scroll{height:100%;}
 .grp-map-fab{position:absolute;top:10px;right:10px;z-index:1000;padding:8px 14px;background:rgba(255,255,255,.95);border-radius:20px;border:1px solid var(--cream-dark);font-size:12px;font-weight:600;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
 .grp-map-fab:active{transform:scale(.95);}
 .grp-map-filter-dd{position:absolute;top:50px;right:10px;z-index:1001;background:#fff;border-radius:var(--rs);box-shadow:var(--sh-lg);padding:12px;min-width:220px;display:none;}
@@ -2073,7 +2109,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v48 · Supabase · Leaflet · PWA</div>
+    <div class="burg-ver">Fishing Buddy v49 · Supabase · Leaflet · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -2242,7 +2278,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v48</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v49</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
@@ -2596,7 +2632,8 @@ input[type=file]{display:none;}
     <div class="ig" style="margin-bottom:10px;">
       <label class="il" for="lc-fish">Fischart</label>
       <input type="text" list="lc-fdl" class="if" id="lc-fish" placeholder="z.B. Zander" autocomplete="off"
-        onfocus="rndrLcFishChips(this.value)" oninput="rndrLcFishChips(this.value)" onblur="setTimeout(()=>dHide('lc-fc'),150)">
+        data-prev-fish=""
+        onfocus="rndrLcFishChips(this.value)" oninput="rndrLcFishChips(this.value)" onchange="_lcMaybeClearBait(this.value)" onblur="setTimeout(()=>dHide('lc-fc'),150)">
       <datalist id="lc-fdl"></datalist>
       <div class="crow" id="lc-fc" style="display:none;" role="listbox"></div>
     </div>
@@ -2612,18 +2649,25 @@ input[type=file]{display:none;}
       </div>
     </div>
 
+    <!-- AP8: Köder/Farbe/Größe mit Chip-Vorschlägen aus globalem Gehirn -->
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
       <div class="ig">
         <label class="il" for="lc-bait">Köder</label>
-        <input type="text" class="if" id="lc-bait" placeholder="Gummifisch" autocomplete="off">
+        <input type="text" class="if" id="lc-bait" placeholder="Gummifisch" autocomplete="off"
+          onfocus="_rndrLcBaitChips()" oninput="_rndrLcBaitChips(this.value)" onblur="setTimeout(()=>dHide('lc-bait-chips'),150)">
+        <div class="crow" id="lc-bait-chips" style="display:none;" role="listbox"></div>
       </div>
       <div class="ig">
         <label class="il" for="lc-bait-col">Farbe</label>
-        <input type="text" class="if" id="lc-bait-col" placeholder="Motoroil" autocomplete="off">
+        <input type="text" class="if" id="lc-bait-col" placeholder="Motoroil" autocomplete="off"
+          onfocus="_rndrLcColChips()" oninput="_rndrLcColChips(this.value)" onblur="setTimeout(()=>dHide('lc-col-chips'),150)">
+        <div class="crow" id="lc-col-chips" style="display:none;" role="listbox"></div>
       </div>
       <div class="ig">
         <label class="il" for="lc-bait-len">Größe</label>
-        <input type="text" class="if" id="lc-bait-len" placeholder="12cm" autocomplete="off">
+        <input type="text" class="if" id="lc-bait-len" placeholder="12cm" autocomplete="off"
+          onfocus="_rndrLcSzChips()" oninput="_rndrLcSzChips(this.value)" onblur="setTimeout(()=>dHide('lc-sz-chips'),150)">
+        <div class="crow" id="lc-sz-chips" style="display:none;" role="listbox"></div>
       </div>
     </div>
 
@@ -2876,7 +2920,7 @@ function sbInit(){
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v48`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v49`;
       } else {
         _sbUser=null;
       }
@@ -2892,7 +2936,7 @@ async function _checkAuthSession(){
     if(data?.session?.user){
       _sbUser=data.session.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v48`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v49`;
       return true;
     }
   }catch(e){console.warn('Auth-Check Fehler:',e);}
@@ -2933,7 +2977,7 @@ async function handleAuth(e){
       _sbUser=result.data.user;
       _authMode='online';
       document.getElementById('login-ov')?.classList.add('hidden');
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v48`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v49`;
       // AP1: Cloud-Sync mit authoritative-Flag — Cloud = Single Source of Truth bei Login
       await syncFromCloud({authoritative:true});
       // Profil anwenden und Fangbuch rendern
@@ -2956,7 +3000,7 @@ async function handleAuth(e){
         _sbUser=result.data.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v48`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v49`;
         // Onboarding starten
         document.getElementById('onboarding').classList.remove('hidden');
         document.getElementById('ob-btn').disabled=true;
@@ -3009,7 +3053,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v48';
+  document.getElementById('hdr-sub').textContent='Offline · v49';
   if(!profile){
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('ob-btn').disabled=true;
@@ -3113,7 +3157,7 @@ function _buildProfileBundle(){
     spotBaits:profile?.spotBaits||null,
     docs:profile?.docs||null,
     photos,
-    schemaVersion:48,
+    schemaVersion:49,
     updatedAt:Date.now()
   };
 }
@@ -3228,11 +3272,21 @@ async function syncProfileFromCloud(opts={}){
 // Supabase Logout
 async function sbLogout(){
   if(!_sb)return;
+  // AP8: VORHER alles in die Cloud pushen — kein Datenverlust beim Relogin!
+  if(_sbUser&&_authMode==='online'){
+    try{
+      showToast('☁️','Sichere Daten in der Cloud…');
+      await Promise.race([
+        Promise.all([syncToCloud(),syncProfileToCloud()]),
+        new Promise((_,rj)=>setTimeout(()=>rj(new Error('timeout')),12000))
+      ]);
+    }catch(e){console.warn('Pre-Logout-Push:',e);}
+  }
   await _sb.auth.signOut();
   _sbUser=null;
   _authMode='offline';
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v48';
+  document.getElementById('hdr-sub').textContent='Offline · v49';
   showToast('👋','Abgemeldet');
 }
 
@@ -4147,7 +4201,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v48`:`PLZ ${profile.plz||'–'} · v48`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v49`:`PLZ ${profile.plz||'–'} · v49`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -5914,7 +5968,21 @@ function showBurgSec(sec){
 
 // FULLSCREEN OVERLAYS
 function openFs(n){document.getElementById('fs-'+n)?.classList.add('on');if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();}
-function closeFs(n){document.getElementById('fs-'+n)?.classList.remove('on');if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();}
+function closeFs(n){
+  document.getElementById('fs-'+n)?.classList.remove('on');
+  // AP9.1: Beim Schließen der Gruppen-Detailansicht Preview-Eintrag aufräumen
+  if(n==='group-detail'){
+    if(typeof _previewGroupId!=='undefined'&&_previewGroupId){
+      _groups=(_groups||[]).filter(g=>!g._isPreview);
+      _previewGroupId=null;
+    }
+    if(typeof _hidePreviewJoinFab==='function')_hidePreviewJoinFab();
+    // Subnav wieder einblenden falls vorher versteckt
+    const subnav=document.getElementById('grp-subnav');
+    if(subnav)subnav.style.display='';
+  }
+  if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();
+}
 
 
 // ═══════════════════════════════════════════════════════════
@@ -9569,6 +9637,15 @@ async function handleImp(e){const file=e.target.files[0];if(!file)return;const r
   }
   await saveSessions();applyProf();rndrFangbuch();
   showToast('✅',`${newSessions.length} neue Sessions importiert · ${data.sessions.length-newSessions.length} Duplikate übersprungen`);
+  // AP8: Forcierter Cloud-Push direkt nach Import — Daten dürfen NICHT lokal hängen bleiben
+  if(_sb&&_sbUser&&_authMode==='online'){
+    try{
+      showToast('☁️','Synchronisiere Backup mit Cloud…');
+      await syncToCloud();
+      await syncProfileToCloud();
+      showToast('✅','Backup in Cloud gesichert');
+    }catch(err){console.warn('Cloud-Push nach Import:',err);showToast('⚠️','Cloud-Sync fehlgeschlagen — Daten lokal');}
+  }
   e.target.value='';
   // Auto-Sync: Wetter für importierte Sessions nachladen (mit Ladebalken)
   setTimeout(async()=>{
@@ -10039,6 +10116,9 @@ function openLiveCatchOv(){
   if(dl)dl.innerHTML=FISH.map(f=>`<option value="${f}">`).join('');
   // Felder zurücksetzen
   document.getElementById('lc-fish').value='';
+  // AP8: prev-fish-Memory zurücksetzen für Context-Clear-Trigger
+  const lcFishEl=document.getElementById('lc-fish');
+  if(lcFishEl)lcFishEl.dataset.prevFish='';
   document.getElementById('lc-len').value='';
   document.getElementById('lc-wt').value='';
   const noteEl=document.getElementById('lc-note');
@@ -10053,6 +10133,8 @@ function openLiveCatchOv(){
     ?_liveSession.catches[_editingLiveCatchIdx]:null;
   if(editing){
     document.getElementById('lc-fish').value=editing.type||'';
+    // AP8: prev-fish auf Edit-Wert → Clear nur bei echtem Wechsel
+    if(lcFishEl)lcFishEl.dataset.prevFish=editing.type||'';
     if(editing.length)document.getElementById('lc-len').value=editing.length;
     if(editing.weight)document.getElementById('lc-wt').value=editing.weight;
     if(noteEl&&editing.note)noteEl.value=editing.note;
@@ -10079,8 +10161,13 @@ function openLiveCatchOv(){
     if(crEl)crEl.checked=!editing.taken;
     document.getElementById('lc-time-hint').textContent=`✏️ Bearbeite Fang · Original-Zeit: ${editing.time||'--'}`;
   } else {
-    // Normaler Add-Mode: Köder aus vorherigem Fang vorausfüllen
+    // Normaler Add-Mode: Fischart + Köder aus vorherigem Fang vorausfüllen (Carryover)
     const prevCatch=_liveSession.catches[_liveSession.catches.length-1];
+    if(prevCatch?.type){
+      document.getElementById('lc-fish').value=prevCatch.type;
+      // AP8: prev-fish merken — wenn User wechselt, wird Köder/Farbe/Größe geleert
+      if(lcFishEl)lcFishEl.dataset.prevFish=prevCatch.type;
+    }
     document.getElementById('lc-bait').value=prevCatch?.bait||'';
     if(prevCatch?.baitLen)document.getElementById('lc-bait-len').value=prevCatch.baitLen;
     if(prevCatch?.baitColor)document.getElementById('lc-bait-col').value=prevCatch.baitColor;
@@ -10114,6 +10201,101 @@ function _whisperPlaceholder(){
   showToast('🎙️','Whisper-Spracherkennung wird in einem zukünftigen Update verfügbar sein.');
 }
 
+// AP8: Live-Session — Bei Fischart-Wechsel Köder/Farbe/Größe leeren
+function _lcMaybeClearBait(newFish){
+  const ft=document.getElementById('lc-fish');
+  if(!ft)return;
+  const prev=(ft.dataset.prevFish||'').trim();
+  const next=(newFish||'').trim();
+  ft.dataset.prevFish=next;
+  if(!prev||prev.toLowerCase()===next.toLowerCase())return;
+  ['lc-bait','lc-bait-col','lc-bait-len'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.value='';
+  });
+  // Chips ggf. neu einblenden mit globalen Top-Chips
+  const baitEl=document.getElementById('lc-bait');
+  if(baitEl&&baitEl===document.activeElement)_rndrLcBaitChips('');
+}
+
+// AP8: Live-Session — Top-Chips für Köder, Farbe, Größe
+// Quelle: globales Dict + bisherige Sessions (bait+color+size lernen)
+function _rndrLcBaitChips(fv){
+  const el=document.getElementById('lc-bait-chips');if(!el)return;
+  const q=(fv||'').toLowerCase();
+  let chips=dictTop('bait','',6);
+  // Fallback aus sessions wenn dict leer
+  if(!chips.length){
+    const map={};
+    (sessions||[]).forEach(s=>(s.catches||[]).forEach(c=>{if(c.bait)map[c.bait]=(map[c.bait]||0)+1;}));
+    chips=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6).map(e=>e[0]);
+  }
+  chips=[...new Set(chips)];
+  if(q)chips=chips.filter(b=>b.toLowerCase().includes(q));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(b=>{
+    const s=b.replace(/'/g,"\\'");
+    return `<button class="chip cc" onmousedown="document.getElementById('lc-bait').value='${s}';dHide('lc-bait-chips');_rndrLcColChips('');_rndrLcSzChips('');">🪝 ${b}</button>`;
+  }).join('');
+}
+function _rndrLcColChips(fv){
+  const el=document.getElementById('lc-col-chips');if(!el)return;
+  const q=(fv||'').toLowerCase();
+  const curBait=document.getElementById('lc-bait')?.value?.trim()||'';
+  // Lernen aus Sessions: häufigste Farben — gefiltert auf aktuellen Köder wenn vorhanden
+  const map={};
+  (sessions||[]).forEach(s=>(s.catches||[]).forEach(c=>{
+    if(!c.baitColor)return;
+    if(curBait&&c.bait!==curBait)return;
+    map[c.baitColor]=(map[c.baitColor]||0)+1;
+  }));
+  let chips=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6).map(e=>e[0]);
+  if(!chips.length){
+    // Globaler Fallback ohne Bait-Filter
+    const m2={};
+    (sessions||[]).forEach(s=>(s.catches||[]).forEach(c=>{if(c.baitColor)m2[c.baitColor]=(m2[c.baitColor]||0)+1;}));
+    chips=Object.entries(m2).sort((a,b)=>b[1]-a[1]).slice(0,6).map(e=>e[0]);
+  }
+  chips=[...new Set(chips)];
+  if(q)chips=chips.filter(c=>c.toLowerCase().includes(q));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(c=>{
+    const s=c.replace(/'/g,"\\'");
+    return `<button class="chip cc" onmousedown="document.getElementById('lc-bait-col').value='${s}';dHide('lc-col-chips');">🎨 ${c}</button>`;
+  }).join('');
+}
+function _rndrLcSzChips(fv){
+  const el=document.getElementById('lc-sz-chips');if(!el)return;
+  const q=(fv||'').toLowerCase();
+  const curBait=document.getElementById('lc-bait')?.value?.trim()||'';
+  const map={};
+  (sessions||[]).forEach(s=>(s.catches||[]).forEach(c=>{
+    const sz=c.baitSize||(c.baitLen?(c.baitLen+'cm'):'');
+    if(!sz)return;
+    if(curBait&&c.bait!==curBait)return;
+    map[sz]=(map[sz]||0)+1;
+  }));
+  let chips=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6).map(e=>e[0]);
+  if(!chips.length){
+    const m2={};
+    (sessions||[]).forEach(s=>(s.catches||[]).forEach(c=>{
+      const sz=c.baitSize||(c.baitLen?(c.baitLen+'cm'):'');
+      if(sz)m2[sz]=(m2[sz]||0)+1;
+    }));
+    chips=Object.entries(m2).sort((a,b)=>b[1]-a[1]).slice(0,6).map(e=>e[0]);
+  }
+  chips=[...new Set(chips)];
+  if(q)chips=chips.filter(c=>c.toLowerCase().includes(q));
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(c=>{
+    const s=c.replace(/'/g,"\\'");
+    return `<button class="chip cc" onmousedown="document.getElementById('lc-bait-len').value='${s}';dHide('lc-sz-chips');">📏 ${c}</button>`;
+  }).join('');
+}
+
 // AP3: Live Session – Fisch-Chips aus globalDict (Multi-Word safe)
 function rndrLcFishChips(val){
   const con=document.getElementById('lc-fc');
@@ -10128,7 +10310,7 @@ function rndrLcFishChips(val){
   con.style.display='flex';
   con.innerHTML=list.map(f=>{
     const s=f.replace(/'/g,"\\'");
-    return`<button class="fav-btn" ${_chipAttr('fish',f)} onmousedown="document.getElementById('lc-fish').value='${s}';dHide('lc-fc')">${f}</button>`;
+    return`<button class="fav-btn" ${_chipAttr('fish',f)} onmousedown="_lcMaybeClearBait('${s}');document.getElementById('lc-fish').value='${s}';dHide('lc-fc');_rndrLcBaitChips('');">${f}</button>`;
   }).join('');
 }
 
@@ -10805,53 +10987,80 @@ function _getDemoPublicGroups(){
 }
 
 // AP3: Gruppe öffentlich vorschauen (vor Beitritt)
+// AP9.1: Reale Preview — User sieht echte Gruppen-Ansicht (Feed/Insights/Mitglieder/Karte)
+// mit Restriktionen: Feed limitiert auf 10, Karte ohne Spots, schwebender Beitreten-Button.
+let _previewGroupId=null;
 function _grpPreview(demoId){
   const d=window._discoverDemos?.[demoId];
   if(!d){showToast('⚠️','Gruppe nicht gefunden');return;}
-  // Re-Use des bestehenden group-detail Overlay, aber im Preview-Modus
+  // Demo-Mitglieder + Demo-Feed + Demo-Catches generieren (User selbst NICHT als Mitglied)
+  const demoMembers=[
+    {id:'u1',name:'Max F.',role:'admin',joinedAt:new Date(Date.now()-30*86400000).toISOString()},
+    {id:'u2',name:'Lisa K.',role:'member',joinedAt:new Date(Date.now()-20*86400000).toISOString()},
+    {id:'u3',name:'Tom H.',role:'member',joinedAt:new Date(Date.now()-10*86400000).toISOString()}
+  ];
+  const previewGroup={
+    id:'preview_'+demoId,
+    name:d.name,desc:d.desc||'',region:d.region||'',type:'public',icon:d.icon||'🎣',
+    inviteCode:'',
+    createdAt:new Date(Date.now()-30*86400000).toISOString(),createdBy:'u1',
+    members:demoMembers,
+    feed:_genDemoFeed(demoMembers),
+    sharedCatches:_genDemoSharedCatches(demoMembers),
+    _unread:0,
+    _isPreview:true,
+    _previewMeta:{members:d.members||demoMembers.length}
+  };
+  // Temporär in _groups Array einfügen (damit alle Render-Funktionen funktionieren)
+  // Vorhandene Preview-Einträge entfernen
+  _groups=(_groups||[]).filter(g=>!g._isPreview);
+  _groups.push(previewGroup);
+  _activeGroupId=previewGroup.id;
+  _previewGroupId=previewGroup.id;
+  // Echte Gruppen-Ansicht öffnen
   openFs('group-detail');
-  document.getElementById('grp-detail-title').textContent=`${d.icon} ${d.name}`;
-  document.getElementById('grp-detail-meta').textContent=`${d.members} Mitglieder · 🌍 Öffentlich · ${d.region}`;
-  // Subnav verstecken im Preview-Modus
+  document.getElementById('grp-detail-title').textContent=`${previewGroup.icon} ${previewGroup.name}`;
+  document.getElementById('grp-detail-meta').textContent=`${previewGroup._previewMeta.members} Mitglieder · 🌍 Öffentlich · ${_esc(previewGroup.region)}`;
+  // Subnav SICHTBAR — echte Tabs
   const subnav=document.getElementById('grp-subnav');
-  if(subnav)subnav.style.display='none';
+  if(subnav)subnav.style.display='';
+  // Chat-Bar im Feed-Modus normalerweise sichtbar — hier ABER ausgeblendet (read-only)
   const chatBar=document.getElementById('grp-chat-bar');
   if(chatBar)chatBar.style.display='none';
-  // Preview-Inhalt rendern
-  const el=document.getElementById('grp-detail-content');
-  el.classList.remove('map-mode');
-  el.innerHTML=`
-    <div style="padding:20px 16px 16px;text-align:center;">
-      <div style="font-size:64px;line-height:1;margin-bottom:14px;">${d.icon}</div>
-      <div style="font-family:var(--fs);font-size:22px;font-weight:700;color:var(--text-dark);margin-bottom:6px;">${_esc(d.name)}</div>
-      <div style="font-size:12px;color:var(--text-light);margin-bottom:16px;">📍 ${_esc(d.region)} · 👥 ${d.members} Mitglieder · 🌍 Öffentlich</div>
-      <div style="background:var(--green-mist);border:1px solid var(--green-pale);border-radius:var(--rs);padding:14px 16px;text-align:left;font-size:13px;line-height:1.55;color:var(--text-dark);">
-        ${_esc(d.desc||'Eine offene Angel-Community.')}
-      </div>
-    </div>
-    <div style="padding:0 16px 16px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin:18px 0 10px;">Was du erwarten kannst</div>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:var(--rs);padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">💬</span><span>Tägliche Diskussionen, Spot- und Setup-Tipps</span></div>
-        <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:var(--rs);padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">🐟</span><span>Geteilte Fänge mit Köder, Wetter und Daten</span></div>
-        <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:var(--rs);padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">🗺️</span><span>Anonyme Spot-Karte (nur bei Freigabe)</span></div>
-        <div style="background:#fff;border:1px solid var(--cream-dark);border-radius:var(--rs);padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:center;"><span style="font-size:18px;">📊</span><span>Insights & Köder-Statistiken der Crew</span></div>
-      </div>
-    </div>
-    <div style="padding:0 16px 24px;">
-      <button onclick="_grpJoinFromPreview('${demoId}')" style="width:100%;padding:16px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);">✓ Dieser Gruppe beitreten</button>
-      <button onclick="closeFs('group-detail')" style="width:100%;margin-top:8px;padding:12px;background:transparent;color:var(--text-light);border:none;font-size:13px;font-family:var(--fa);cursor:pointer;">Abbrechen</button>
-    </div>`;
+  // Schwebenden Beitreten-Button anzeigen
+  _showPreviewJoinFab(demoId);
+  // Feed als Default-Tab
+  _grpDetailTab('feed');
 }
 
-// AP3: Beitritt aus dem Preview heraus
+// AP9.1: Schwebender grüner "Gruppe beitreten"-Button (über der Subnav)
+function _showPreviewJoinFab(demoId){
+  let fab=document.getElementById('preview-join-fab');
+  if(!fab){
+    fab=document.createElement('button');
+    fab.id='preview-join-fab';
+    fab.className='preview-join-fab';
+    document.getElementById('fs-group-detail')?.appendChild(fab);
+  }
+  fab.textContent='✓ Gruppe beitreten';
+  fab.onclick=()=>_grpJoinFromPreview(demoId);
+  fab.style.display='flex';
+}
+function _hidePreviewJoinFab(){
+  const fab=document.getElementById('preview-join-fab');
+  if(fab)fab.style.display='none';
+}
+
+// AP9.1: Echter Beitritt aus der Preview-Ansicht
 async function _grpJoinFromPreview(demoId){
   const d=window._discoverDemos?.[demoId];
   if(!d){showToast('⚠️','Gruppe nicht gefunden');return;}
-  // Subnav wiederherstellen für die normale Detail-Ansicht
-  const subnav=document.getElementById('grp-subnav');
-  if(subnav)subnav.style.display='';
+  // Preview-Eintrag aus _groups entfernen, Overlay schließen
+  _groups=(_groups||[]).filter(g=>!g._isPreview);
+  _previewGroupId=null;
+  _hidePreviewJoinFab();
   closeFs('group-detail');
+  // Echter Beitritt
   await _quickJoinPublic(d.name,d.icon);
 }
 
@@ -11004,11 +11213,17 @@ function _genDemoSharedCatches(members){
 
 // ── Group Detail / Feed ──
 function _openGroupDetail(gId){
+  // AP9.1: Wenn vorher Preview lief, vorher cleanen
+  if(typeof _previewGroupId!=='undefined'&&_previewGroupId&&_previewGroupId!==gId){
+    _groups=(_groups||[]).filter(g=>!g._isPreview);
+    _previewGroupId=null;
+  }
+  if(typeof _hidePreviewJoinFab==='function')_hidePreviewJoinFab();
   _activeGroupId=gId;
   const g=_groups.find(x=>x.id===gId);
   if(!g)return;
   g._unread=0;
-  _saveGroups();
+  if(!g._isPreview)_saveGroups();
   openFs('group-detail');
   document.getElementById('grp-detail-title').textContent=`${g.icon} ${g.name}`;
   document.getElementById('grp-detail-meta').textContent=`${g.members?.length||0} Mitglieder · ${g.type==='private'?'🔒 Privat':g.type==='elite'?'⭐ Elite':'🌍 Öffentlich'}`;
@@ -11023,9 +11238,14 @@ function _grpDetailTab(tab){
   document.querySelectorAll('#grp-subnav .grp-subnav-btn').forEach(b=>{
     b.classList.toggle('on',b.getAttribute('data-tab')===tab);
   });
-  // Show chat bar only in feed tab
+
+  // AP9.1: Im Preview-Modus Chat-Bar IMMER aus (read-only)
+  const g=_groups.find(x=>x.id===_activeGroupId);
+  const isPreview=!!(g&&g._isPreview);
+
+  // Show chat bar only in feed tab — und nicht im Preview
   const chatBar=document.getElementById('grp-chat-bar');
-  if(chatBar)chatBar.style.display=(tab==='feed')?'flex':'none';
+  if(chatBar)chatBar.style.display=(tab==='feed'&&!isPreview)?'flex':'none';
 
   // AP2: Map-Mode Klasse toggeln für Full-Size Map
   const contentEl=document.getElementById('grp-detail-content');
@@ -11033,11 +11253,14 @@ function _grpDetailTab(tab){
 
   // AP2: has-chat Klasse für extra padding wenn Chat-Bar sichtbar
   const grpDetail=document.getElementById('fs-group-detail');
-  if(grpDetail)grpDetail.classList.toggle('has-chat',tab==='feed');
+  if(grpDetail)grpDetail.classList.toggle('has-chat',tab==='feed'&&!isPreview);
 
   if(tab==='feed')_rndrGroupFeed();
   else if(tab==='insights')_rndrGroupInsights();
-  else if(tab==='map')_rndrGroupMap();
+  else if(tab==='map'){_rndrGroupMap();
+    // AP9.2: Bei Tab-Wechsel auf Map → invalidateSize damit Container-Höhe greift
+    [120,300,600].forEach(t=>setTimeout(()=>{if(_grpLeafletMap)_grpLeafletMap.invalidateSize();},t));
+  }
   else if(tab==='members')_rndrGroupMembers();
 }
 
@@ -11047,10 +11270,18 @@ function _rndrGroupFeed(){
   const el=document.getElementById('grp-detail-content');
   const myId=_sbUser?.id||g.members?.find(m=>m.role==='admin'&&m.name===(profile?.name||''))?.id||'me';
 
-  let html='<div class="feed-stream">';
+  // AP9.1: Im Preview-Modus Feed auf letzte 10 Nachrichten limitieren
+  const isPreview=!!g._isPreview;
+  const feedSrc=isPreview?(g.feed||[]).slice(-10):(g.feed||[]);
+
+  let html='';
+  if(isPreview){
+    html+=`<div class="preview-restriction-banner">👀 Vorschau · Letzte ${feedSrc.length} Nachrichten · Tritt bei, um voll teilzunehmen</div>`;
+  }
+  html+='<div class="feed-stream">';
   let lastDate='';
 
-  g.feed.forEach((item,idx)=>{
+  feedSrc.forEach((item,idx)=>{
     const d=new Date(item.ts);
     const dateStr=d.toLocaleDateString('de-DE',{day:'numeric',month:'short'});
     if(dateStr!==lastDate){
@@ -11388,13 +11619,15 @@ function _rndrGroupMap(){
   const g=_groups.find(x=>x.id===_activeGroupId);
   if(!g)return;
   const el=document.getElementById('grp-detail-content');
-  const catches=g.sharedCatches?.filter(c=>c.shareGps&&c.lat&&c.lon)||[];
+  // AP9.1: Im Preview-Modus KEINE Spots zeigen
+  const isPreview=!!g._isPreview;
+  const catches=isPreview?[]:(g.sharedCatches?.filter(c=>c.shareGps&&c.lat&&c.lon)||[]);
 
-  // AP4: Full-height map with floating filter FAB
+  // AP9.2: Map IMMER rendern (Container + Leaflet) — auch wenn keine Spots da sind.
+  // Vorher wurde bei catches.length===0 nur ein Text gerendert → Karte leer/abwesend.
   const allGrpFish=[...new Set(catches.map(c=>c.type).filter(Boolean))].sort();
   const allGrpMembers=[...new Set(catches.map(c=>c.userName).filter(Boolean))].sort();
-  el.innerHTML=catches.length?`<div class="grp-map-wrap" style="position:relative;">
-      <button class="grp-map-fab" onclick="document.getElementById('grp-map-dd').classList.toggle('on')">🔍 Filter</button>
+  const filterUI=isPreview?'':`<button class="grp-map-fab" onclick="document.getElementById('grp-map-dd').classList.toggle('on')">🔍 Filter</button>
       <div class="grp-map-filter-dd" id="grp-map-dd">
         <div class="gmf-row"><div class="gmf-lbl">Zeitraum</div>
           <select id="grp-map-f-date" onchange="_grpMapApplyFilter()"><option value="">Alle Zeiten</option><option value="7">Letzte 7 Tage</option><option value="30">Letzte 30 Tage</option><option value="90">Letzte 90 Tage</option></select></div>
@@ -11404,24 +11637,43 @@ function _rndrGroupMap(){
           <select id="grp-map-f-fish" onchange="_grpMapApplyFilter()"><option value="">Alle Fische</option>${allGrpFish.map(f=>`<option value="${f}">${fIco(f)} ${f}</option>`).join('')}</select></div>
         <div class="gmf-row"><div class="gmf-lbl">Mitglied</div>
           <select id="grp-map-f-member" onchange="_grpMapApplyFilter()"><option value="">Alle Mitglieder</option>${allGrpMembers.map(m=>`<option value="${_esc(m)}">${_esc(m)}</option>`).join('')}</select></div>
-      </div>
-      <div id="grp-map-container" class="grp-map-full"></div>
-      <div style="position:absolute;bottom:8px;left:8px;right:8px;font-size:10px;color:var(--text-light);text-align:center;padding:4px 10px;background:rgba(255,255,255,.85);border-radius:6px;backdrop-filter:blur(4px);z-index:500;pointer-events:none;">🛡️ GPS nur bei expliziter Freigabe</div>
-    </div>`
-    :'<div style="text-align:center;padding:40px;color:var(--text-light);font-size:13px;">📍 Noch keine GPS-Freigaben.<br>Mitglieder können beim Teilen GPS aktivieren.</div>';
+      </div>`;
+  const banner=isPreview
+    ?'<div style="position:absolute;bottom:8px;left:8px;right:8px;font-size:11px;color:var(--text-light);text-align:center;padding:6px 10px;background:rgba(255,255,255,.92);border-radius:8px;backdrop-filter:blur(4px);z-index:500;pointer-events:none;font-weight:600;">🔒 Spot-Karte nur für Mitglieder · Tritt bei, um die Spots zu sehen</div>'
+    :(catches.length?'<div style="position:absolute;bottom:8px;left:8px;right:8px;font-size:10px;color:var(--text-light);text-align:center;padding:4px 10px;background:rgba(255,255,255,.85);border-radius:6px;backdrop-filter:blur(4px);z-index:500;pointer-events:none;">🛡️ GPS nur bei expliziter Freigabe</div>'
+      :'<div style="position:absolute;bottom:8px;left:8px;right:8px;font-size:11px;color:var(--text-light);text-align:center;padding:6px 10px;background:rgba(255,255,255,.92);border-radius:8px;backdrop-filter:blur(4px);z-index:500;pointer-events:none;">📍 Noch keine GPS-Freigaben in dieser Gruppe</div>');
+
+  el.innerHTML=`<div class="grp-map-wrap" style="position:absolute;inset:0;">
+    ${filterUI}
+    <div id="grp-map-container" class="grp-map-full"></div>
+    ${banner}
+  </div>`;
 
   _grpMapRender(catches);
 }
 
 let _grpLeafletMap=null;
 function _grpMapRender(catches){
-  if(!catches.length)return;
+  // AP9.2: Map immer rendern (auch bei 0 Catches), damit Container nie leer ist.
+  catches=catches||[];
   requestAnimationFrame(()=>{
     const mapEl=document.getElementById('grp-map-container');
     if(!mapEl||typeof L==='undefined')return;
     if(_grpLeafletMap){_grpLeafletMap.remove();_grpLeafletMap=null;}
-    _grpLeafletMap=L.map(mapEl).setView([parseFloat(catches[0].lat),parseFloat(catches[0].lon)],10);
+    // Center: erster Catch falls vorhanden, sonst PLZ-Coords, sonst Mitte Deutschland
+    let centerLat=51.5,centerLon=10.0,zoom=6;
+    if(catches.length){
+      centerLat=parseFloat(catches[0].lat);centerLon=parseFloat(catches[0].lon);zoom=10;
+    } else if(_plzCoords){
+      centerLat=parseFloat(_plzCoords.lat);centerLon=parseFloat(_plzCoords.lon);zoom=10;
+    }
+    _grpLeafletMap=L.map(mapEl).setView([centerLat,centerLon],zoom);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(_grpLeafletMap);
+    if(!catches.length){
+      // AP9.2: Multi-shot invalidateSize — Leaflet braucht mehrere Ticks bis Container-Höhe stimmt
+      [80,200,400,800].forEach(t=>setTimeout(()=>_grpLeafletMap?.invalidateSize(),t));
+      return;
+    }
     const bounds=[];
     catches.forEach(c=>{
       const lat=parseFloat(c.lat),lon=parseFloat(c.lon);
@@ -11447,7 +11699,8 @@ function _grpMapRender(catches){
       bounds.push([lat,lon]);
     });
     if(bounds.length>1)_grpLeafletMap.fitBounds(bounds,{padding:[30,30],maxZoom:13});
-    setTimeout(()=>_grpLeafletMap.invalidateSize(),200);
+    // AP9.2: Multi-shot invalidateSize — Leaflet braucht mehrere Ticks bis Container-Höhe stimmt
+    [80,200,400,800].forEach(t=>setTimeout(()=>_grpLeafletMap?.invalidateSize(),t));
   });
 }
 
@@ -11472,9 +11725,11 @@ function _rndrGroupMembers(){
   if(!g)return;
   const el=document.getElementById('grp-detail-content');
   const myId=_sbUser?.id||'me';
-  const isAdmin=g.members?.find(m=>m.id===myId)?.role==='admin'||g.createdBy===myId;
+  const isPreview=!!g._isPreview;
+  const isAdmin=!isPreview&&(g.members?.find(m=>m.id===myId)?.role==='admin'||g.createdBy===myId);
 
   let html=`<div style="padding:16px;">
+    ${isPreview?'<div class="preview-restriction-banner">👀 Vorschau · Du bist noch kein Mitglied</div>':''}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
       <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);">${g.members?.length||0} Mitglieder</div>
       ${isAdmin?`<button onclick="_copyInvite('${g.inviteCode}')" style="padding:6px 12px;background:var(--green-mist);border:1px solid var(--green-pale);border-radius:20px;font-size:11px;font-weight:600;color:var(--green-mid);font-family:var(--fa);cursor:pointer;">🔗 Einladen: ${g.inviteCode}</button>`:''}
@@ -11482,16 +11737,16 @@ function _rndrGroupMembers(){
     ${(g.members||[]).map(m=>`<div class="grp-item" style="margin-bottom:6px;">
       <div class="catch-card-avatar" style="background:${_userColor(m.id)};">${m.name.charAt(0)}</div>
       <div class="grp-item-info">
-        <div class="grp-item-name">${_esc(m.name)}${m.id===myId?' (Du)':''}</div>
+        <div class="grp-item-name">${_esc(m.name)}${(!isPreview&&m.id===myId)?' (Du)':''}</div>
         <div class="grp-item-sub">${m.role==='admin'?'👑 Admin':'Mitglied'} · seit ${new Date(m.joinedAt).toLocaleDateString('de-DE')}</div>
       </div>
       ${m.isBeta?'<div style="font-size:10px;background:var(--purple);color:var(--purple-t);padding:2px 8px;border-radius:10px;">Beta</div>':''}
     </div>`).join('')}
-    <!-- AP3: Austreten-Button (nicht für letzten Admin) -->
+    ${isPreview?'':`<!-- AP3: Austreten-Button (nicht für letzten Admin) -->
     <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--cream-dark);">
       <button onclick="_grpLeave('${g.id}')" style="width:100%;padding:14px;background:var(--rose);color:var(--rose-t);border:1.5px solid var(--rose-b);border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">🚪 Gruppe verlassen</button>
       <div style="font-size:10px;color:var(--text-light);text-align:center;margin-top:6px;">Du wirst aus der Mitgliederliste entfernt. Geteilte Fänge bleiben anonymisiert in der Gruppen-Statistik.</div>
-    </div>
+    </div>`}
   </div>`;
   el.innerHTML=html;
 }
