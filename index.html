@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Fishing%20Buddy%22%2C%22short_name%22%3A%22Fishing%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23F8F5EF%22%2C%22theme_color%22%3A%22%232D4A35%22%7D">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232D4A35' rx='20'/><text y='72' x='50' font-size='60' text-anchor='middle'>🎣</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -33,6 +33,9 @@
   --r:16px;--rs:10px;
   --fa:'DM Sans',system-ui,sans-serif;
   --fs:'Playfair Display',Georgia,serif;
+  /* v55 Editorial Nature: Fraunces für Werte/Headlines, Inter für Text. */
+  --f-edit:'Fraunces','Playfair Display',Georgia,serif;
+  --f-edit-text:'Inter','DM Sans',system-ui,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
@@ -1729,7 +1732,8 @@ input[type=file]{display:none;}
 .grp-create-btn:hover{background:var(--green-pale);}
 
 /* ── Feed / Activity Stream ── */
-.feed-stream{display:flex;flex-direction:column;gap:12px;padding:0 16px 80px;}
+/* v54 AP3.2: Reduziertes seitliches Padding (16→8px) für mehr Content-Breite */
+.feed-stream{display:flex;flex-direction:column;gap:12px;padding:0 8px 80px;}
 .feed-date-sep{text-align:center;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);padding:8px 0;position:relative;}
 .feed-date-sep::before,.feed-date-sep::after{content:'';position:absolute;top:50%;width:28%;height:1px;background:var(--cream-dark);}
 .feed-date-sep::before{left:0;}.feed-date-sep::after{right:0;}
@@ -1763,10 +1767,20 @@ input[type=file]{display:none;}
 .feed-live-info strong{font-size:13px;}
 
 /* ── Chat Messages ── */
-.feed-msg{display:flex;gap:8px;align-items:flex-start;}
-.feed-msg-bubble{max-width:78%;padding:10px 14px;border-radius:16px 16px 16px 4px;background:#fff;box-shadow:var(--sh-sm);font-size:13px;color:var(--text-dark);line-height:1.5;}
-.feed-msg-name{font-size:10px;font-weight:700;color:var(--green-mid);margin-bottom:2px;}
-.feed-msg-time{font-size:9px;color:var(--text-light);margin-top:4px;text-align:right;}
+/* v54 AP2.3: Größere Chat-Schrift für bessere Lesbarkeit (13→15px) */
+.feed-msg{display:flex;gap:8px;align-items:flex-start;position:relative;touch-action:pan-y;}
+.feed-msg-bubble{max-width:78%;padding:11px 15px;border-radius:16px 16px 16px 4px;background:#fff;box-shadow:var(--sh-sm);font-size:15px;color:var(--text-dark);line-height:1.5;position:relative;transition:transform .15s cubic-bezier(.22,1,.36,1);will-change:transform;}
+.feed-msg-name{font-size:11px;font-weight:700;color:var(--green-mid);margin-bottom:3px;}
+.feed-msg-time{font-size:10px;color:var(--text-light);margin-top:4px;text-align:right;}
+/* v54 AP2.4: Reply-Quote im Inneren der Nachricht (zitierte Nachricht) */
+.feed-msg-quote{display:flex;gap:8px;padding:6px 10px;margin-bottom:6px;background:rgba(45,74,53,.06);border-left:3px solid var(--green-mid);border-radius:6px;font-size:12px;line-height:1.4;cursor:pointer;}
+.feed-msg-quote-body{flex:1;min-width:0;}
+.feed-msg-quote-name{font-weight:700;color:var(--green-mid);font-size:11px;}
+.feed-msg-quote-text{color:var(--text-mid);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+/* v54 AP2.4: Swipe-Indicator (erscheint links beim Wischen nach rechts) */
+.feed-msg-swipe-ico{position:absolute;left:-44px;top:50%;transform:translateY(-50%) scale(.6);opacity:0;width:32px;height:32px;border-radius:50%;background:var(--green-mid);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;pointer-events:none;transition:opacity .12s,transform .12s;}
+.feed-msg.swipe-active .feed-msg-swipe-ico{opacity:1;transform:translateY(-50%) scale(1);}
+.feed-msg.own .feed-msg-swipe-ico{left:auto;right:-44px;}
 .feed-input-bar{position:absolute;bottom:0;left:0;right:0;display:flex;gap:8px;padding:10px 14px;background:var(--cream);border-top:1px solid var(--cream-dark);z-index:10;}
 .feed-input{flex:1;padding:10px 14px;border:1.5px solid var(--green-pale);border-radius:24px;font-size:13px;font-family:var(--fa);outline:none;background:#fff;}
 .feed-input:focus{border-color:var(--green-mid);}
@@ -1783,7 +1797,8 @@ input[type=file]{display:none;}
 .share-gps-toggle{display:flex;align-items:center;gap:8px;padding:10px 14px;margin:10px 0;background:var(--yellow);border:1px solid var(--yellow-b);border-radius:var(--rs);font-size:12px;color:var(--yellow-t);}
 
 /* ── Group Dashboard / Insights ── */
-.dash-section{margin:0 16px 16px;background:#fff;border-radius:var(--rs);padding:14px;box-shadow:var(--sh-sm);}
+/* v54 AP3.2: Schmaler Margin (16→8px) für mehr Content-Breite, analog zu Feed/Members */
+.dash-section{margin:0 8px 16px;background:#fff;border-radius:var(--rs);padding:14px;box-shadow:var(--sh-sm);}
 .dash-section-title{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:10px;}
 .dash-trend-chips{display:flex;flex-wrap:wrap;gap:6px;}
 .dash-trend-chip{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;}
@@ -2010,6 +2025,9 @@ input[type=file]{display:none;}
 .grp-subnav{position:absolute;bottom:max(16px,env(safe-area-inset-bottom,16px));left:8%;right:8%;width:84%;display:flex;gap:2px;padding:6px 8px;background:rgba(248,245,239,.90);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(200,221,208,.60);border-radius:28px;box-shadow:0 10px 30px rgba(45,74,53,.18);z-index:130;}
 .grp-subnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px 5px;border:none;border-radius:20px;background:transparent;font-size:10px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--text-light);transition:all .15s;-webkit-tap-highlight-color:transparent;}
 .grp-subnav-btn .grp-sn-ico{font-size:16px;line-height:1;}
+/* v54 AP3.1: SVG-Icons in der Subnav, gleicher Stroke-Stil wie Hauptnavigation */
+.grp-subnav-btn .grp-sn-svg{width:20px;height:20px;color:currentColor;}
+.grp-subnav-btn.on .grp-sn-svg{transform:scale(1.06);transition:transform .15s;}
 .grp-subnav-btn.on{background:var(--green-deep);color:#fff;box-shadow:0 2px 8px rgba(45,74,53,.25);}
 .grp-subnav-btn:active{transform:scale(.92);}
 /* Content-Bereich bekommt Platz für die Subnav */
@@ -2021,13 +2039,102 @@ input[type=file]{display:none;}
 /* ── AP4: WhatsApp-style Chat Input ── */
 /* AP2: Chat-Bar schwebt direkt über der Subnav, niemals dahinter.
    bottom = Subnav-Position (16px+safe) + Subnav-Höhe (~56px) + 8px Abstand */
-.grp-chat-wa{position:absolute;left:8px;right:8px;bottom:calc(max(16px,env(safe-area-inset-bottom,16px)) + 64px);z-index:135;flex:0 0 auto!important;overflow:visible!important;display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--cream);border:1px solid rgba(200,221,208,.60);border-radius:24px;box-shadow:0 6px 20px rgba(45,74,53,.18);}
-.grp-chat-wa-btn{width:32px;height:32px;border:none;border-radius:50%;background:transparent;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-mid);-webkit-tap-highlight-color:transparent;}
+/* v54 AP2.1/2.2: WhatsApp-style Chat-Bar mit Auto-Resize-Textarea, Clear-Button und Reply-Banner */
+.grp-chat-wa{position:absolute;left:8px;right:8px;bottom:calc(max(16px,env(safe-area-inset-bottom,16px)) + 64px);z-index:135;flex:0 0 auto!important;overflow:visible!important;display:flex;flex-direction:column;gap:0;padding:8px 10px;background:var(--cream);border:1px solid rgba(200,221,208,.60);border-radius:22px;box-shadow:0 6px 20px rgba(45,74,53,.18);}
+.grp-chat-row{display:flex;align-items:flex-end;gap:6px;}
+.grp-chat-wa-btn{width:32px;height:32px;border:none;border-radius:50%;background:transparent;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-mid);-webkit-tap-highlight-color:transparent;margin-bottom:2px;}
 .grp-chat-wa-btn:active{background:var(--cream-dark);}
-.grp-chat-wa-input{flex:1;padding:9px 14px;border:1.5px solid var(--green-pale);border-radius:24px;font-size:13px;font-family:var(--fa);outline:none;background:#fff;min-width:0;}
+/* Wrapper mit Clear-Button rechts im Input */
+.grp-chat-input-wrap{flex:1;position:relative;display:flex;align-items:flex-end;min-width:0;}
+.grp-chat-wa-input{flex:1;padding:9px 36px 9px 14px;border:1.5px solid var(--green-pale);border-radius:18px;font-size:14px;font-family:var(--fa);outline:none;background:#fff;min-width:0;resize:none;line-height:1.4;max-height:120px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .grp-chat-wa-input:focus{border-color:var(--green-mid);}
-.grp-chat-wa-send{width:36px;height:36px;border-radius:50%;border:none;background:var(--green-deep);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .1s;}
+.grp-chat-clear-btn{position:absolute;right:8px;bottom:9px;width:22px;height:22px;border:none;border-radius:50%;background:var(--cream-dark);color:var(--text-mid);font-size:11px;cursor:pointer;display:none;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;}
+.grp-chat-clear-btn.on{display:flex;}
+.grp-chat-clear-btn:active{background:var(--text-light);color:#fff;}
+.grp-chat-wa-send{width:36px;height:36px;border-radius:50%;border:none;background:var(--green-deep);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .1s;margin-bottom:2px;}
 .grp-chat-wa-send:active{transform:scale(.9);}
+/* Reply-Banner */
+.grp-chat-reply{display:flex;align-items:center;gap:8px;padding:6px 10px 8px;margin:0 4px 6px;border-bottom:1px solid var(--cream-dark);}
+.grp-chat-reply-bar{width:3px;height:32px;background:var(--green-mid);border-radius:2px;flex-shrink:0;}
+.grp-chat-reply-body{flex:1;min-width:0;overflow:hidden;}
+.grp-chat-reply-name{font-size:11px;font-weight:700;color:var(--green-mid);}
+.grp-chat-reply-text{font-size:12px;color:var(--text-mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.grp-chat-reply-x{width:24px;height:24px;border:none;border-radius:50%;background:transparent;color:var(--text-light);font-size:12px;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.grp-chat-reply-x:active{background:var(--cream-dark);}
+
+/* v54 AP2.5: Comment-Input am Boden des Catch-Detail-Overlays */
+.cd-comment-bar{position:sticky;bottom:0;left:0;right:0;display:flex;gap:8px;align-items:flex-end;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:var(--cream);border-top:1px solid var(--cream-dark);box-shadow:0 -4px 12px rgba(45,74,53,.06);z-index:5;}
+.cd-comment-wrap{flex:1;position:relative;}
+.cd-comment-input{width:100%;padding:9px 36px 9px 14px;border:1.5px solid var(--green-pale);border-radius:18px;font-size:14px;font-family:var(--fa);outline:none;background:#fff;resize:none;line-height:1.4;max-height:100px;overflow-y:auto;}
+.cd-comment-input:focus{border-color:var(--green-mid);}
+.cd-comment-clear{position:absolute;right:8px;bottom:9px;width:22px;height:22px;border:none;border-radius:50%;background:var(--cream-dark);color:var(--text-mid);font-size:11px;cursor:pointer;display:none;align-items:center;justify-content:center;}
+.cd-comment-clear.on{display:flex;}
+.cd-comment-send{width:36px;height:36px;border-radius:50%;border:none;background:var(--green-deep);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cd-comment-send:active{transform:scale(.9);}
+#fs-catch-detail .fsov-scroll{padding-bottom:0;}
+
+/* v54 AP3.2: Reduziertes Padding für Insights/Members/Map-Tabs (analog zu .feed-stream) */
+.grp-tab-pad{padding:0 8px;}
+
+/* v54 AP3.3: Mitglieder-Profil Overlay */
+#fs-member-profile .fsov-scroll{padding:0;}
+.member-profile-hero{padding:32px 20px 24px;background:linear-gradient(135deg,var(--green-deep),#1a3522);text-align:center;color:#fff;}
+.member-profile-avatar{width:96px;height:96px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:42px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.member-profile-name{font-family:var(--fs);font-size:24px;font-weight:600;margin-bottom:4px;}
+.member-profile-role{display:inline-block;padding:3px 10px;background:rgba(255,255,255,.18);border-radius:12px;font-size:11px;font-weight:600;letter-spacing:.4px;}
+.member-profile-since{font-size:12px;color:rgba(255,255,255,.65);margin-top:8px;}
+.member-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px 12px;}
+.member-stat-card{background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);text-align:center;}
+.member-stat-card .ms-num{font-family:var(--fs);font-size:24px;font-weight:700;color:var(--green-deep);}
+.member-stat-card .ms-lbl{font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
+.member-stat-row{margin:0 12px 12px;background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);display:flex;align-items:center;gap:12px;}
+.member-stat-row .msr-emoji{font-size:28px;}
+.member-stat-row .msr-body{flex:1;}
+.member-stat-row .msr-lbl{font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;}
+.member-stat-row .msr-val{font-size:14px;font-weight:600;color:var(--text-dark);margin-top:2px;}
+.member-empty{text-align:center;padding:40px 20px;color:var(--text-light);font-size:13px;}
+
+/* v54 AP1.4: Beitrittsanfragen-Card im Mitglieder-Tab */
+.join-req-card{background:linear-gradient(135deg,var(--gold-l),#fff);border:1.5px solid var(--gold);border-radius:var(--rs);padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.join-req-card .jrc-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:700;background:var(--gold);}
+.join-req-card .jrc-body{flex:1;min-width:0;}
+.join-req-card .jrc-name{font-size:13px;font-weight:700;color:var(--text-dark);}
+.join-req-card .jrc-meta{font-size:10px;color:var(--text-light);}
+.join-req-card .jrc-actions{display:flex;gap:6px;}
+.join-req-card .jrc-btn{padding:7px 12px;border:none;border-radius:18px;font-size:11px;font-weight:700;font-family:var(--fa);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.join-req-card .jrc-btn.acc{background:var(--green-deep);color:#fff;}
+.join-req-card .jrc-btn.rej{background:transparent;color:var(--text-mid);border:1px solid var(--cream-dark);}
+
+/* v54: Pending-Status-Card (für eigene offene Beitrittsanfragen in Gruppen-Liste) */
+.pending-card{background:var(--gold-l);border:1.5px dashed var(--gold);border-radius:var(--rs);padding:14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.pending-card .pc-emoji{font-size:24px;}
+.pending-card .pc-body{flex:1;}
+.pending-card .pc-title{font-size:13px;font-weight:700;color:var(--gold-d);}
+.pending-card .pc-sub{font-size:11px;color:var(--text-mid);margin-top:2px;}
+
+/* v54: Foto-Preview oberhalb der Chat-Eingabe (vor dem Senden) */
+.grp-chat-photo-preview{display:flex;align-items:center;gap:10px;padding:8px 6px;margin-bottom:6px;border-bottom:1px solid var(--cream-dark);}
+.grp-chat-photo-preview img{width:48px;height:48px;border-radius:8px;object-fit:cover;}
+.grp-chat-photo-preview .gpp-name{flex:1;font-size:12px;color:var(--text-mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.grp-chat-photo-preview .gpp-x{width:24px;height:24px;border:none;border-radius:50%;background:transparent;color:var(--text-light);font-size:12px;cursor:pointer;}
+
+/* v54: Connection-Indicator (zeigt Realtime-Status an) */
+.grp-rt-indicator{position:absolute;top:8px;right:50px;font-size:9px;padding:2px 7px;border-radius:10px;background:rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-weight:600;letter-spacing:.4px;display:flex;align-items:center;gap:4px;z-index:6;}
+.grp-rt-indicator .rt-dot{width:6px;height:6px;border-radius:50%;background:#7BAE8A;}
+.grp-rt-indicator.disconnected .rt-dot{background:var(--rose-b);}
+.grp-rt-indicator.connecting .rt-dot{background:var(--gold);animation:rtPulse 1s ease-in-out infinite;}
+@keyframes rtPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* v54: Code-Input am Ende des Discover-Tabs */
+.discover-code-section{margin-top:24px;padding:16px;background:var(--green-mist);border:1.5px solid var(--green-pale);border-radius:var(--rs);}
+.discover-code-section .dcs-title{font-size:12px;font-weight:700;color:var(--green-deep);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.discover-code-section .dcs-row{display:flex;gap:8px;}
+.discover-code-section input{flex:1;padding:10px 14px;border:1.5px solid var(--green-pale);border-radius:10px;font-size:13px;font-family:var(--fa);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;text-align:center;background:#fff;outline:none;}
+.discover-code-section input:focus{border-color:var(--green-mid);}
+.discover-code-section button{padding:10px 18px;background:var(--green-deep);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;font-family:var(--fa);cursor:pointer;}
+.discover-code-section button:active{transform:scale(.96);}
+
+/* v54: "Du wirst aus der Mitgliederliste entfernt" Note hidden if AP1 deletes group locally */
 
 /* ── AP4: Own messages right-aligned ── */
 .feed-msg.own{flex-direction:row-reverse;}
@@ -2053,6 +2160,347 @@ input[type=file]{display:none;}
 .grp-map-filter-dd .gmf-row:last-child{margin-bottom:0;}
 .grp-map-filter-dd .gmf-lbl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-light);margin-bottom:4px;}
 .grp-map-filter-dd select,.grp-map-filter-dd input{width:100%;padding:7px 10px;border:1px solid var(--cream-dark);border-radius:8px;font-size:12px;font-family:var(--fa);background:#fff;}
+
+/* ═══════════════════════════════════════════════════════════════
+   v55 — VORHERSAGE-UPGRADE (Editorial Nature)
+   95% Weiß · 4% Waldgrün · 1% Gold
+   Fraunces für Werte · Inter für Text
+═══════════════════════════════════════════════════════════════ */
+
+/* AP2.1: Top-Kachel "14-Tage Vorhersage" mit scroll-snap-x */
+.fc-kachel.wide{padding:14px 0 6px;}
+.fc-kachel.wide .fc-kachel-head{padding:0 16px 6px;}
+.fc-kachel.wide .fc-kachel-title{font-family:var(--f-edit);font-weight:600;letter-spacing:-.01em;color:var(--text-dark);}
+.fc-kachel.wide .fc-kachel-sub{font-family:var(--f-edit-text);color:var(--text-light);}
+/* AP2.1: Smooth scroll-snap analog zur Tide */
+.fc-mini-days{
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scroll-padding-left:12px;
+  padding:4px 8px 8px;
+  gap:6px;
+}
+.fc-mini-day{
+  scroll-snap-align:start;
+  flex:0 0 auto;
+  min-width:54px;
+  border-radius:14px;
+  font-family:var(--f-edit-text);
+}
+.fc-mini-day .fc-mini-tmp{font-family:var(--f-edit);font-weight:600;font-size:13px;}
+
+/* AP2.2/2.3: 3-Spalten-Grid für Mond/Tide/Wind/Regen/Temp/Pressure */
+.fc-grid3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  padding:0 8px 8px;
+}
+.fc-square{
+  background:#fff;
+  border:1px solid rgba(45,74,53,.06);
+  border-radius:18px;
+  padding:14px 8px 12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:space-between;
+  text-align:center;
+  aspect-ratio:1/1;
+  cursor:pointer;
+  transition:transform .15s,box-shadow .2s;
+  -webkit-tap-highlight-color:transparent;
+  position:relative;
+  overflow:hidden;
+}
+.fc-square:active{transform:scale(.97);}
+.fc-square:hover{box-shadow:0 6px 16px rgba(45,74,53,.10);}
+.fc-square-ico{
+  font-size:22px;
+  line-height:1;
+  margin-bottom:4px;
+  opacity:.85;
+}
+.fc-square-val{
+  font-family:var(--f-edit);
+  font-size:26px;
+  font-weight:600;
+  letter-spacing:-.01em;
+  color:var(--text-dark);
+  line-height:1.1;
+  margin-top:2px;
+}
+.fc-square-val .unit{
+  font-size:13px;
+  font-weight:500;
+  color:var(--text-light);
+  margin-left:1px;
+}
+.fc-square-lbl{
+  font-family:var(--f-edit-text);
+  font-size:10px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--green-deep);
+  margin-top:2px;
+}
+.fc-square-sub{
+  font-family:var(--f-edit-text);
+  font-size:10px;
+  font-weight:400;
+  color:var(--text-light);
+  line-height:1.3;
+  margin-top:4px;
+  padding:0 2px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+/* Gold-Akzent für besondere Kachel (z.B. Mond bei Vollmond) */
+.fc-square.gold{background:linear-gradient(180deg,#fff 0%,#fdf8ec 100%);border-color:rgba(196,150,58,.25);}
+.fc-square.gold .fc-square-lbl{color:var(--gold-d);}
+
+/* AP1.1: Tide-Overlay — Top-Kachel zieht sich über volle Breite, kein L/R-Padding */
+#fs-tide-cal .fsov-scroll{padding:0!important;}
+#fs-tide-cal .fshdr{background:#fff;color:var(--text-dark);border-bottom:1px solid rgba(45,74,53,.08);}
+#fs-tide-cal .fshdr .fstitle{font-family:var(--f-edit);font-weight:600;color:var(--text-dark);}
+#fs-tide-cal .fshdr .fsmeta{color:var(--text-light);}
+#fs-tide-cal .xbtn{color:#000!important;}
+.tide-cockpit{
+  margin:0;
+  padding:14px 14px 12px;
+  background:#fff;
+  border-bottom:1px solid rgba(45,74,53,.06);
+  border-radius:0;
+}
+.tide-river-seg{font-family:var(--f-edit-text);}
+.tide-river-seg-btn{font-family:var(--f-edit-text);font-weight:600;}
+.tide-river-seg-btn .sub{font-family:var(--f-edit-text);}
+
+/* AP1.3: HW/NW-Chips als diagonaler Fluss (links oben → rechts unten) */
+.tide-events-flow{
+  background:#fff;
+  margin:8px 8px 0;
+  padding:14px 12px 12px;
+  border-radius:18px;
+  border:1px solid rgba(45,74,53,.06);
+  position:relative;
+}
+.tide-events-flow-title{
+  font-family:var(--f-edit-text);
+  font-size:10px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--text-light);
+  margin-bottom:10px;
+}
+.tide-events-diag{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.tide-event-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.tide-event-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 12px 7px 10px;
+  border-radius:18px;
+  font-family:var(--f-edit-text);
+  font-size:12px;
+  font-weight:600;
+  background:var(--green-mist);
+  color:var(--green-deep);
+  border:1px solid var(--green-pale);
+  white-space:nowrap;
+}
+.tide-event-chip.hw{background:#eaf2ed;border-color:#c8ddd0;color:#1a4a2a;}
+.tide-event-chip.nw{background:#e6f1fb;border-color:#bcd5ec;color:#0c447c;}
+.tide-event-chip .te-icon{font-size:13px;}
+.tide-event-chip .te-time{font-family:var(--f-edit);font-weight:700;}
+.tide-event-chip .te-h{font-size:10px;color:var(--text-light);font-weight:500;}
+/* Diagonale Versetzung über padding-left (1. Reihe links, 2. mehr rechts, ...) */
+.tide-event-row[data-step="0"]{padding-left:0;}
+.tide-event-row[data-step="1"]{padding-left:18%;}
+.tide-event-row[data-step="2"]{padding-left:36%;}
+.tide-event-row[data-step="3"]{padding-left:54%;}
+
+/* AP1.4: Tide-Chart in kompakter weißer Kachel (matched .fc-sec) */
+.tide-chart-tile{
+  background:#fff;
+  margin:10px 8px 0;
+  border-radius:18px;
+  border:1px solid rgba(45,74,53,.06);
+  padding:10px 10px 8px;
+}
+.tide-chart-tile-title{
+  font-family:var(--f-edit-text);
+  font-size:10px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--text-light);
+  margin-bottom:6px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.tide-chart-tile canvas{
+  display:block;
+  width:100%;
+  height:200px;
+}
+/* AP1.5: Hover-Readout unter dem Chart */
+.tide-cursor-readout{
+  margin:8px 8px 16px;
+  padding:10px 14px;
+  background:#fff;
+  border:1px solid rgba(45,74,53,.06);
+  border-radius:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-family:var(--f-edit-text);
+  font-size:12px;
+  color:var(--text-mid);
+  min-height:38px;
+}
+.tide-cursor-readout .label{font-weight:600;letter-spacing:.04em;color:var(--text-light);text-transform:uppercase;font-size:10px;}
+.tide-cursor-readout .val{font-family:var(--f-edit);font-weight:600;font-size:14px;color:var(--text-dark);}
+.tide-cursor-readout .now{color:#cc0000;font-weight:700;}
+
+/* Tide strip: scroll-snap analog zum Forecast */
+.tide-strip{scroll-snap-type:x mandatory;scroll-padding-left:8px;}
+.tide-strip-day{scroll-snap-align:start;font-family:var(--f-edit-text);}
+.tide-strip-day .tide-strip-num{font-family:var(--f-edit);font-weight:600;}
+
+/* AP3.1/3.2: Day-Detail Header — weiß, schwarzes Schließen-X, links Datum/Wetter, rechts Strip */
+#fs-daily-weather{background:#f7f5ef;}
+#fs-dw-hdr{
+  background:#fff;
+  color:var(--text-dark);
+  padding:0;
+  border-bottom:1px solid rgba(45,74,53,.08);
+}
+#fs-dw-hdr .xbtn{
+  color:#000!important;
+  background:rgba(0,0,0,.04);
+  border-radius:50%;
+  width:36px;height:36px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  font-weight:600;
+  z-index:5;
+}
+#fs-dw-hdr .xbtn:active{background:rgba(0,0,0,.10);}
+.dw-hdr-row{
+  display:flex;
+  gap:14px;
+  padding:14px 14px 8px;
+  align-items:flex-start;
+}
+.dw-hdr-left{
+  flex:0 0 auto;
+  min-width:120px;
+  max-width:46%;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  padding-right:12px;
+  border-right:1px solid rgba(45,74,53,.08);
+}
+.dw-hdr-date{
+  font-family:var(--f-edit);
+  font-size:14px;
+  font-weight:600;
+  color:var(--text-dark);
+  letter-spacing:-.005em;
+  line-height:1.2;
+}
+.dw-hdr-wx-row{
+  display:flex;
+  align-items:flex-end;
+  gap:6px;
+  margin-top:2px;
+}
+.dw-hdr-wx-ico{font-size:32px;line-height:1;}
+.dw-hdr-temps{
+  font-family:var(--f-edit);
+  font-size:18px;
+  font-weight:600;
+  color:var(--text-dark);
+  line-height:1;
+  letter-spacing:-.01em;
+}
+.dw-hdr-temps .tmin{color:var(--text-light);font-weight:500;margin-left:3px;}
+.dw-hdr-wind{
+  font-family:var(--f-edit-text);
+  font-size:11px;
+  color:var(--text-mid);
+  font-weight:600;
+}
+.dw-hdr-right{
+  flex:1;
+  min-width:0;
+  align-self:stretch;
+  display:flex;
+  align-items:center;
+}
+/* Strip rechts mit scroll-snap, am aktuellen Tag in der Mitte */
+.dw-hdr-right .dw-strip{
+  margin:0;
+  padding:0 38px 0 0;
+  scroll-snap-type:x mandatory;
+  background:transparent;
+  border:none;
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  display:flex;
+  gap:6px;
+}
+.dw-hdr-right .dw-strip::-webkit-scrollbar{display:none;}
+.dw-hdr-right .dw-strip-day{
+  scroll-snap-align:center;
+  flex:0 0 auto;
+  min-width:42px;
+  padding:6px 4px;
+  border-radius:10px;
+  font-family:var(--f-edit-text);
+  background:transparent;
+}
+.dw-hdr-right .dw-strip-day.on{background:var(--green-deep);}
+.dw-hdr-right .dw-strip-num{font-family:var(--f-edit);font-weight:600;}
+
+/* AP3.3: 14-Tage-Sprung Pfeile in jedem Wetter-Chart-Header (.cmh-nav existiert bereits) */
+.chart-magic-hdr{font-family:var(--f-edit-text);}
+.chart-magic-hdr .cmh-val{font-family:var(--f-edit);font-weight:600;}
+.chart-magic-hdr .cmh-nav{
+  width:32px;height:32px;
+  border-radius:50%;
+  border:1px solid rgba(45,74,53,.10);
+  background:#fff;
+  color:var(--green-deep);
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.chart-magic-hdr .cmh-nav:active{transform:scale(.92);}
+.chart-magic-hdr .cmh-nav:hover{background:var(--green-mist);}
+
+/* Editorial Nature applied to all forecast charts */
+.fc-sec .fc-sec-title{font-family:var(--f-edit-text);font-weight:700;color:var(--text-dark);}
+.fc-detail-date{font-family:var(--f-edit);font-weight:600;}
 </style>
 </head>
 <body>
@@ -2290,7 +2738,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v53 · Supabase · Leaflet · PWA</div>
+    <div class="burg-ver">Fishing Buddy v55 · Editorial Nature · Realtime · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -2459,7 +2907,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v53</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v55</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
@@ -2934,27 +3382,70 @@ input[type=file]{display:none;}
   <div class="fsov-scroll" id="grp-detail-scroll">
     <div id="grp-detail-content"></div>
   </div>
-  <!-- AP4: WhatsApp-style Chat Input -->
+  <!-- v54: Chat-Bar mit Auto-Resize-Textarea, Clear-Button, Reply-Banner und versteckter File-Input -->
   <div class="grp-chat-wa" id="grp-chat-bar" style="display:none;">
-    <button class="grp-chat-wa-btn" onclick="_grpAttachPhoto()" title="Foto">📷</button>
-    <button class="grp-chat-wa-btn" onclick="_grpShareLocation()" title="Standort">📍</button>
-    <input class="grp-chat-wa-input" id="grp-chat-input" placeholder="Nachricht schreiben…" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();_grpSendMsg();}">
-    <button class="grp-chat-wa-send" onclick="_grpSendMsg()" title="Senden">➤</button>
+    <!-- Reply-Banner (über der eigentlichen Eingabezeile) -->
+    <div class="grp-chat-reply" id="grp-chat-reply" style="display:none;">
+      <div class="grp-chat-reply-bar"></div>
+      <div class="grp-chat-reply-body">
+        <div class="grp-chat-reply-name" id="grp-chat-reply-name"></div>
+        <div class="grp-chat-reply-text" id="grp-chat-reply-text"></div>
+      </div>
+      <button class="grp-chat-reply-x" onclick="_grpClearReply()" title="Antwort abbrechen">✕</button>
+    </div>
+    <div class="grp-chat-row">
+      <button class="grp-chat-wa-btn" onclick="_grpAttachPhoto()" title="Foto">📷</button>
+      <button class="grp-chat-wa-btn" onclick="_grpShareLocation()" title="Standort">📍</button>
+      <input type="file" id="grp-chat-photo-input" accept="image/*" style="display:none;" onchange="_grpHandlePhotoSelect(event)">
+      <div class="grp-chat-input-wrap">
+        <textarea class="grp-chat-wa-input" id="grp-chat-input" rows="1" placeholder="Nachricht schreiben…" autocomplete="off" oninput="_grpAutoResize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();_grpSendMsg();}"></textarea>
+        <button class="grp-chat-clear-btn" id="grp-chat-clear" onclick="_grpClearInput()" title="Löschen">✕</button>
+      </div>
+      <button class="grp-chat-wa-send" onclick="_grpSendMsg()" title="Senden">➤</button>
+    </div>
   </div>
-  <!-- AP4: Group Sub-Nav (floating above main nav) -->
+  <!-- v54 AP3.1: Group Sub-Nav mit SVG-Outline-Icons (matching Bottom-Nav-Stil) -->
   <div class="grp-subnav" id="grp-subnav">
-    <button class="grp-subnav-btn on" data-tab="feed" onclick="_grpDetailTab('feed')"><span class="grp-sn-ico">💬</span>Feed</button>
-    <button class="grp-subnav-btn" data-tab="insights" onclick="_grpDetailTab('insights')"><span class="grp-sn-ico">📊</span>Insights</button>
-    <button class="grp-subnav-btn" data-tab="map" onclick="_grpDetailTab('map')"><span class="grp-sn-ico">🗺</span>Karte</button>
-    <button class="grp-subnav-btn" data-tab="members" onclick="_grpDetailTab('members')"><span class="grp-sn-ico">👥</span>Mitglieder</button>
+    <button class="grp-subnav-btn on" data-tab="feed" onclick="_grpDetailTab('feed')">
+      <svg class="grp-sn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Feed</span>
+    </button>
+    <button class="grp-subnav-btn" data-tab="insights" onclick="_grpDetailTab('insights')">
+      <svg class="grp-sn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
+      <span>Insights</span>
+    </button>
+    <button class="grp-subnav-btn" data-tab="map" onclick="_grpDetailTab('map')">
+      <svg class="grp-sn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      <span>Karte</span>
+    </button>
+    <button class="grp-subnav-btn" data-tab="members" onclick="_grpDetailTab('members')">
+      <svg class="grp-sn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Mitglieder</span>
+    </button>
   </div>
 </div>
 
-<!-- ═══ CATCH DETAIL OVERLAY (AP4) ═══ -->
+<!-- ═══ CATCH DETAIL OVERLAY (v54: jetzt mit Comment-Bar am Boden) ═══ -->
 <div class="fsov" id="fs-catch-detail" style="z-index:118;">
   <button class="xbtn" onclick="closeFs('catch-detail')" style="position:absolute;top:16px;right:16px;z-index:5;background:rgba(0,0,0,.4);color:#fff;border-radius:50%;width:36px;height:36px;">✕</button>
   <div class="fsov-scroll" id="catch-detail-scroll" style="padding:0;">
     <div id="catch-detail-content"></div>
+  </div>
+  <!-- v54 AP2.5: Sticky Comment-Bar am Boden -->
+  <div class="cd-comment-bar" id="cd-comment-bar" style="display:none;">
+    <div class="cd-comment-wrap">
+      <textarea class="cd-comment-input" id="cd-comment-input" rows="1" placeholder="Diese Session kommentieren…" oninput="_cdCommentResize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();_cdSendComment();}"></textarea>
+      <button class="cd-comment-clear" id="cd-comment-clear" onclick="_cdClearComment()">✕</button>
+    </div>
+    <button class="cd-comment-send" onclick="_cdSendComment()" title="Kommentar senden">➤</button>
+  </div>
+</div>
+
+<!-- ═══ v54 AP3.3: MEMBER PROFILE OVERLAY ═══ -->
+<div class="fsov" id="fs-member-profile" style="z-index:119;">
+  <button class="xbtn" onclick="closeFs('member-profile')" style="position:absolute;top:14px;right:14px;z-index:5;background:rgba(0,0,0,.4);color:#fff;border-radius:50%;width:36px;height:36px;">✕</button>
+  <div class="fsov-scroll" id="member-profile-scroll" style="padding:0;">
+    <div id="member-profile-content"></div>
   </div>
 </div>
 
@@ -3107,7 +3598,7 @@ if(typeof Chart!=='undefined'){
 }
 
 // ═══════════════════════════════════════════════════════════
-// SUPABASE CLIENT (v52)
+// SUPABASE CLIENT (v54: jetzt mit echten Group-Tabellen + Realtime + Storage)
 // ═══════════════════════════════════════════════════════════
 const SB_URL='https://diiggjftcpoagsnxsaez.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpaWdnamZ0Y3BvYWdzbnhzYWV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNzE4NjQsImV4cCI6MjA5MTY0Nzg2NH0.XaBkQcjEl300NIZ3XIfcgEgWVwkfQTqInfECfvUGG6s';
@@ -3165,7 +3656,7 @@ function sbInit(){
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v53`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v55`;
       } else {
         _sbUser=null;
       }
@@ -3181,7 +3672,7 @@ async function _checkAuthSession(){
     if(data?.session?.user){
       _sbUser=data.session.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v53`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v55`;
       return true;
     }
   }catch(e){console.warn('Auth-Check Fehler:',e);}
@@ -3227,7 +3718,7 @@ async function handleAuth(e){
       //   5. ERST jetzt Login-Overlay weg + auf Fangbuch wechseln
       _sbUser=result.data.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v53`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v55`;
       // Cloud = Single Source of Truth bei Login. _renderAll() läuft am Ende.
       await syncFromCloud({authoritative:true});
       // Sicherheits-Re-Render falls syncFromCloud früh ausstieg (z.B. offline mid-flight)
@@ -3250,7 +3741,7 @@ async function handleAuth(e){
         _sbUser=result.data.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v53`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v55`;
         // Onboarding starten
         document.getElementById('onboarding').classList.remove('hidden');
         document.getElementById('ob-btn').disabled=true;
@@ -3303,7 +3794,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v53';
+  document.getElementById('hdr-sub').textContent='Offline · v55';
   if(!profile){
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('ob-btn').disabled=true;
@@ -3437,12 +3928,12 @@ function _buildProfileBundle(){
   return{
     profile:profile||null,
     favs:favs||null,
-    groups:typeof _groups!=='undefined'?_groups:null,
+    // v54: Groups sind jetzt eigenständige Tabellen — NICHT mehr im Profil-Bundle
     spotMap:profile?.spotMap||null,
     spotBaits:profile?.spotBaits||null,
     docs:profile?.docs||null,
     photos,
-    schemaVersion:52,
+    schemaVersion:54,
     updatedAt:Date.now()
   };
 }
@@ -3533,17 +4024,10 @@ async function syncProfileFromCloud(opts={}){
         }
         await saveFavs();
       }
-      // ── GROUPS ──
-      if(bundle.groups&&Array.isArray(bundle.groups)){
-        if(authoritative||!_groups||!_groups.length){
-          _groups=bundle.groups;
-        } else {
-          // Merge by ID
-          const localById=Object.fromEntries((_groups||[]).map(g=>[g.id,g]));
-          bundle.groups.forEach(cg=>{if(!localById[cg.id])_groups.push(cg);});
-        }
-        await _saveGroups();
-      }
+      // v54: Groups werden nicht mehr aus dem Profil-Bundle hydriert.
+      // Sie liegen in eigenen Tabellen (groups, group_members, …) und werden
+      // beim Öffnen des Group-Hubs via _loadGroups() (RPC get_my_groups) gezogen.
+      // Legacy bundle.groups wird ignoriert — Migration findet ggf. one-shot statt.
       // ── PHOTOS ──
       if(bundle.photos&&typeof bundle.photos==='object'){
         Object.keys(bundle.photos).forEach(pk=>{
@@ -3603,7 +4087,7 @@ async function sbLogout(){
   _lsRemove(LS_FAVS);
   _lsRemove(LS_GROUPS);
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v53';
+  document.getElementById('hdr-sub').textContent='Offline · v55';
   showToast('👋','Abgemeldet');
 }
 
@@ -4537,7 +5021,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v53`:`PLZ ${profile.plz||'–'} · v53`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v55`:`PLZ ${profile.plz||'–'} · v55`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -6323,16 +6807,26 @@ function showBurgSec(sec){
 function openFs(n){document.getElementById('fs-'+n)?.classList.add('on');if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();}
 function closeFs(n){
   document.getElementById('fs-'+n)?.classList.remove('on');
-  // AP9.1: Beim Schließen der Gruppen-Detailansicht Preview-Eintrag aufräumen
   if(n==='group-detail'){
     if(typeof _previewGroupId!=='undefined'&&_previewGroupId){
       _groups=(_groups||[]).filter(g=>!g._isPreview);
       _previewGroupId=null;
     }
     if(typeof _hidePreviewJoinFab==='function')_hidePreviewJoinFab();
-    // Subnav wieder einblenden falls vorher versteckt
     const subnav=document.getElementById('grp-subnav');
     if(subnav)subnav.style.display='';
+    // v54: Realtime-Channel sauber abmelden
+    if(typeof _grpRTUnsubscribe==='function')_grpRTUnsubscribe();
+    _activeGroupId=null;
+    // Reply-Modus aufräumen
+    if(typeof _grpClearReply==='function')_grpClearReply();
+    if(typeof _grpClearPhotoPreview==='function')_grpClearPhotoPreview();
+  }
+  if(n==='catch-detail'){
+    // v54: Comment-Bar verstecken und _activeCatchDetailId zurücksetzen
+    const bar=document.getElementById('cd-comment-bar');
+    if(bar){bar.style.display='none';bar.dataset.gId='';bar.dataset.catchId='';}
+    if(typeof _activeCatchDetailId!=='undefined')_activeCatchDetailId=null;
   }
   if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();
 }
@@ -8698,83 +9192,97 @@ function _renderFcDashboard(){
   const avgWind=hourlyToday.length?Math.round(hourlyToday.filter(x=>x.wind!=null).reduce((a,x)=>a+x.wind,0)/Math.max(1,hourlyToday.filter(x=>x.wind!=null).length)):today.wind;
   const maxRain=hourlyToday.length?Math.max(...hourlyToday.map(x=>x.rain||0)):Math.round((today.precip||0)*10);
 
+  // v55: Druck-Tendenz heute → "fallend" / "steigend" / "stabil"
+  const presToday=today.pres||1013;
+  const presYesterday=days[1]?.pres||presToday;
+  const presDelta=presToday-presYesterday;
+  const presTrend=Math.abs(presDelta)<1?'Tendenz stabil':(presDelta>0?'Tendenz steigend ↑':'Tendenz fallend ↓');
+  const moonInfo=getMoon(today.date);
+  const isFullOrNew=moonInfo.illum>=95||moonInfo.illum<=5;
+
   el.innerHTML=`<div class="fc-dash">
-    <!-- Vorhersage-Kachel (breit) -->
+    <!-- AP2.1: Top-Kachel "14-Tage Vorhersage" mit scroll-snap -->
     <div class="fc-kachel wide">
       <div class="fc-kachel-head">
         <div>
-          <div class="fc-kachel-title">☀️ 14-Tage Vorhersage</div>
-          <div class="fc-kachel-sub">Tap für Details · Swipe zum Wechseln</div>
+          <div class="fc-kachel-title">14-Tage Vorhersage</div>
+          <div class="fc-kachel-sub">Tippe einen Tag für Details</div>
         </div>
-        <div style="font-size:13px;color:var(--text-light);">›</div>
+        <div style="font-size:13px;color:var(--text-light);padding-right:14px;">›</div>
       </div>
       <div class="fc-kachel-days">
         <div class="fc-mini-days">${miniDays}</div>
       </div>
     </div>
 
-    <!-- Mondkalender -->
-    <div class="fc-kachel" onclick="openMoonCal()">
-      <div class="fc-kachel-ico">🌙</div>
-      <div class="fc-kachel-info">
-        <div class="fc-kachel-title">Mondkalender</div>
-        <div class="fc-kachel-sub">${getMoon(today.date).name} · ${getMoon(today.date).illum}% beleuchtet</div>
+    <!-- AP2.2/2.3: 3-Spalten-Grid mit Quadrat-Kacheln -->
+    <div class="fc-grid3">
+      <!-- Mond -->
+      <div class="fc-square${isFullOrNew?' gold':''}" onclick="openMoonCal()">
+        <div class="fc-square-ico">${moonInfo.icon}</div>
+        <div class="fc-square-val">${moonInfo.illum}<span class="unit">%</span></div>
+        <div class="fc-square-lbl">Mond</div>
+        <div class="fc-square-sub">${moonInfo.name}</div>
       </div>
-      <div class="fc-kachel-arrow">›</div>
-    </div>
 
-    ${isTideRegion?`<!-- Tidenkalender -->
-    <div class="fc-kachel" onclick="openTideCal()">
-      <div class="fc-kachel-ico">🌊</div>
-      <div class="fc-kachel-info">
-        <div class="fc-kachel-title">Tidenkalender</div>
-        <div class="fc-kachel-sub">Weser · Elbe · Ems</div>
-      </div>
-      <div class="fc-kachel-arrow">›</div>
-    </div>`:''}
+      ${isTideRegion?`<!-- Tide -->
+      <div class="fc-square" onclick="openTideCal()">
+        <div class="fc-square-ico">🌊</div>
+        <div class="fc-square-val" style="font-size:20px;">Weser</div>
+        <div class="fc-square-lbl">Tide</div>
+        <div class="fc-square-sub">Weser · Elbe · Ems</div>
+      </div>`:`<!-- Sonne als Tide-Ersatz für Binnen-Regionen -->
+      <div class="fc-square" onclick="openMoonCal()">
+        <div class="fc-square-ico">☀️</div>
+        <div class="fc-square-val" style="font-size:18px;">${(_fcData?.daily?.sunrise?.[0]||'').slice(11,16)||'–'}</div>
+        <div class="fc-square-lbl">Sonnenaufgang</div>
+        <div class="fc-square-sub">Untergang ${(_fcData?.daily?.sunset?.[0]||'').slice(11,16)||'–'}</div>
+      </div>`}
 
-    <!-- Wind-Kachel -->
-    <div class="fc-kachel" onclick="openWxChart('wind')">
-      <div class="fc-kachel-ico">💨</div>
-      <div class="fc-kachel-info">
-        <div class="fc-kachel-title">Wind heute</div>
-        <div class="fc-kachel-sub">${windLabel(today.windDir)} · max ${Math.round(today.wind||0)} km/h</div>
+      <!-- Wind -->
+      <div class="fc-square" onclick="openWxChart('wind')">
+        <div class="fc-square-ico">💨</div>
+        <div class="fc-square-val">${Math.round(avgWind||0)}<span class="unit">km/h</span></div>
+        <div class="fc-square-lbl">Wind</div>
+        <div class="fc-square-sub">${windLabel(today.windDir)} · max ${Math.round(today.wind||0)}</div>
       </div>
-      <div class="fc-kachel-val">${Math.round(avgWind||0)}</div>
-    </div>
 
-    <!-- Regen-Kachel -->
-    <div class="fc-kachel" onclick="openWxChart('rain')">
-      <div class="fc-kachel-ico">🌧</div>
-      <div class="fc-kachel-info">
-        <div class="fc-kachel-title">Niederschlag</div>
-        <div class="fc-kachel-sub">Regenwahrscheinlichkeit heute</div>
+      <!-- Regen -->
+      <div class="fc-square" onclick="openWxChart('rain')">
+        <div class="fc-square-ico">🌧</div>
+        <div class="fc-square-val">${maxRain}<span class="unit">%</span></div>
+        <div class="fc-square-lbl">Regen</div>
+        <div class="fc-square-sub">${maxRain>=50?'Niederschlag wahrscheinlich':maxRain>=20?'Schauer möglich':'Trocken'}</div>
       </div>
-      <div class="fc-kachel-val" style="font-size:18px;">${maxRain}%</div>
-    </div>
 
-    <!-- Temp-Kachel -->
-    <div class="fc-kachel" onclick="openWxChart('temp')">
-      <div class="fc-kachel-ico">🌡</div>
-      <div class="fc-kachel-info">
-        <div class="fc-kachel-title">Temperatur</div>
-        <div class="fc-kachel-sub">${Math.round(today.tmin??0)}° – ${Math.round(today.tmax??0)}° heute</div>
+      <!-- Temperatur -->
+      <div class="fc-square" onclick="openWxChart('temp')">
+        <div class="fc-square-ico">🌡</div>
+        <div class="fc-square-val">${Math.round(today.tmax??0)}<span class="unit">°</span></div>
+        <div class="fc-square-lbl">Temp</div>
+        <div class="fc-square-sub">${Math.round(today.tmin??0)}° – ${Math.round(today.tmax??0)}° heute</div>
       </div>
-      <div class="fc-kachel-val">${Math.round(today.tmax??0)}°</div>
-    </div>
 
-    <!-- v45: Luftdruck-Kachel -->
-    <div class="fc-kachel" onclick="openWxChart('pressure')">
-      <div class="fc-kachel-ico">🔵</div>
-      <div class="fc-kachel-info">
-        <div class="fc-kachel-title">Luftdruck</div>
-        <div class="fc-kachel-sub">Drucktendenz heute</div>
+      <!-- Luftdruck -->
+      <div class="fc-square" onclick="openWxChart('pressure')">
+        <div class="fc-square-ico">🔵</div>
+        <div class="fc-square-val">${Math.round(presToday)}<span class="unit">hPa</span></div>
+        <div class="fc-square-lbl">Druck</div>
+        <div class="fc-square-sub">${presTrend}</div>
       </div>
-      <div class="fc-kachel-val" style="font-size:16px;">${Math.round(today.pres||1013)} hPa</div>
     </div>
   </div>
   ${_rndrKiExpert()}
   ${_rndrPhaenoCard()}`;
+
+  // AP2.1: Smooth-Scroll: heutigen Tag links anlegen
+  requestAnimationFrame(()=>{
+    const days=document.querySelector('.fc-mini-days');
+    const today=days?.querySelector('.fc-mini-day.today');
+    if(days&&today){
+      days.scrollTo({left:today.offsetLeft-12,behavior:'instant'});
+    }
+  });
 }
 
 // ── Mondkalender Overlay ────────────────────────────────────
@@ -9222,11 +9730,38 @@ async function _renderTideCal(river,startDate){
   const vMin=Math.min(...validVals)-30;
   const vMax=Math.max(...validVals)+30;
 
-  // Edge-to-Edge Chart-Container — KEIN linkes/rechtes Padding, kein Top-Balken,
-  // KEIN HW/NW-Grid, KEIN Hover-Element, KEINE Datenquellen-Zeile.
-  bodyEl.innerHTML=cockpitHtml+`
-    <div class="tide-chart-wrap" style="position:relative;width:100%;margin:0;padding:0;">
-      <canvas id="tide-main-chart" style="display:block;width:100%;height:calc(100dvh - 220px);min-height:340px;"></canvas>
+  // v55: HW/NW-Events finden (lokale Maxima/Minima)
+  const events=_findTideExtrema(values,gridLabels);
+
+  // v55 AP1.3: Diagonale HW/NW-Chip-Zeilen (alternierend HW/NW versetzt)
+  let chipsHtml='';
+  if(events.length){
+    chipsHtml=`<div class="tide-events-flow">
+      <div class="tide-events-flow-title">🌊 Hoch- & Niedrigwasser am ${new Date(startDate+'T12:00:00').toLocaleDateString('de-DE',{day:'numeric',month:'short'})}</div>
+      <div class="tide-events-diag">
+        ${events.slice(0,4).map((e,i)=>`<div class="tide-event-row" data-step="${i%4}">
+          <span class="tide-event-chip ${e.kind}">
+            <span class="te-icon">${e.kind==='hw'?'⬆':'⬇'}</span>
+            <span class="te-time">${e.time}</span>
+            <span class="te-h">${e.h>=0?'+':''}${Math.round(e.h)} cm</span>
+          </span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // v55 AP1.4: Kompakter Chart auf weißer Kachel + AP1.5: Cursor-Readout darunter
+  bodyEl.innerHTML=cockpitHtml+chipsHtml+`
+    <div class="tide-chart-tile">
+      <div class="tide-chart-tile-title">
+        <span>Verlauf · ${liveCount>0?'Live-Wasserstand':'Vorhersage'}</span>
+        <span style="font-family:var(--f-edit);color:var(--text-light);font-weight:500;">${st.label}</span>
+      </div>
+      <canvas id="tide-main-chart"></canvas>
+    </div>
+    <div class="tide-cursor-readout" id="tide-readout">
+      <span class="label">Berühre den Chart für Uhrzeit & Höhe</span>
+      <span class="val">—</span>
     </div>`;
   _tideStripScrollIntoView(startDate);
   _tideStripBindInfiniteScroll(river);
@@ -9234,8 +9769,9 @@ async function _renderTideCal(river,startDate){
   requestAnimationFrame(()=>{
     const c=document.getElementById('tide-main-chart');
     if(!c||typeof Chart==='undefined')return;
+    // v55 AP1.4: Kompakter Chart — feste Höhe (200px) statt full-screen
     const cW=c.parentElement.getBoundingClientRect().width||360;
-    const cH=c.getBoundingClientRect().height||340;
+    const cH=200;
     c.width=cW;c.height=cH;
     c.style.width=cW+'px';c.style.height=cH+'px';
 
@@ -9256,6 +9792,62 @@ async function _renderTideCal(river,startDate){
       ctx.fillText('Jetzt',x,chart.scales.y.top-4);
       ctx.restore();
     }};
+
+    // v55 AP1.5: Hover-Cursor + Readout-Update (rote Linie an Cursor-Position + Time/Height-Anzeige)
+    const tideCursorPlugin={
+      id:'tideCursor',
+      afterEvent(chart,args){
+        if(args.replay)return;
+        const evt=args.event;
+        const ro=document.getElementById('tide-readout');
+        if(!ro)return;
+        const lblEl=ro.querySelector('.label');
+        const valEl=ro.querySelector('.val');
+        if((evt.type==='mousemove'||evt.type==='click'||evt.type==='touchmove'||evt.type==='touchstart')&&args.inChartArea){
+          const els=chart.getElementsAtEventForMode(evt,'index',{intersect:false},true);
+          if(els.length){
+            const idx=els[0].index;
+            chart._cursorX=chart.scales.x.getPixelForValue(idx);
+            const time=gridLabels[idx]||'';
+            const v=values[idx];
+            if(lblEl)lblEl.textContent=time;
+            if(valEl)valEl.textContent=v!=null?Math.round(v)+' cm':'—';
+          }
+        } else if(evt.type==='mouseout'||!args.inChartArea){
+          chart._cursorX=null;
+          if(lblEl)lblEl.textContent='Berühre den Chart für Uhrzeit & Höhe';
+          if(valEl)valEl.textContent='—';
+        }
+      },
+      afterDraw(chart){
+        const x=chart._cursorX;
+        if(x==null)return;
+        const ctx=chart.ctx;
+        const yT=chart.scales.y.top, yB=chart.scales.y.bottom;
+        ctx.save();
+        ctx.strokeStyle='#cc0000';ctx.lineWidth=2;ctx.setLineDash([]);
+        ctx.beginPath();ctx.moveTo(x,yT);ctx.lineTo(x,yB);ctx.stroke();
+        ctx.restore();
+      },
+      afterInit(chart){
+        if(!chart.canvas||chart._tideCursorBound)return;
+        const reset=()=>{
+          chart._cursorX=null;
+          const ro=document.getElementById('tide-readout');
+          if(ro){
+            const lblEl=ro.querySelector('.label');
+            const valEl=ro.querySelector('.val');
+            if(lblEl)lblEl.textContent='Berühre den Chart für Uhrzeit & Höhe';
+            if(valEl)valEl.textContent='—';
+          }
+          chart.draw();
+        };
+        chart.canvas.addEventListener('touchend',reset,{passive:true});
+        chart.canvas.addEventListener('touchcancel',reset,{passive:true});
+        chart.canvas.addEventListener('mouseleave',reset);
+        chart._tideCursorBound=true;
+      }
+    };
 
     // v53: Bug8 — Angelzeit-Highlight & Fang-Striche im Tide-Chart
     const _hhmmToTideIdx=hhmm=>{
@@ -9313,7 +9905,7 @@ async function _renderTideCal(river,startDate){
         fill:true,tension:.4,pointRadius:0,pointHoverRadius:0,
         borderWidth:2.5,borderDash:(liveCount===0)?[6,3]:[],spanGaps:true
       }]},
-      plugins:[sessHighlightPlugin,nowLinePlugin,sessCatchPlugin],
+      plugins:[sessHighlightPlugin,nowLinePlugin,sessCatchPlugin,tideCursorPlugin],
       options:{
         responsive:false,maintainAspectRatio:false,
         layout:{padding:{top:18,bottom:0,left:0,right:0}}, // v53: Platz für 🐟-Symbole oben
@@ -9331,6 +9923,29 @@ async function _renderTideCal(river,startDate){
       }
     });
   });
+}
+
+// v55 AP1.3: Lokale Maxima/Minima im Tiden-Verlauf finden → HW/NW-Events
+function _findTideExtrema(values,labels){
+  const events=[];
+  if(!Array.isArray(values)||values.length<5)return events;
+  // Suche lokale Extrema (mind. 90min = 6 Indizes Abstand zum Vorgänger, abgleicht in Slope)
+  const MIN_GAP=8; // = 2h zwischen Events bei 15min-Auflösung
+  let lastIdx=-MIN_GAP*2;
+  for(let i=2;i<values.length-2;i++){
+    if(values[i]==null)continue;
+    const a=values[i-2],b=values[i-1],v=values[i],d=values[i+1],e=values[i+2];
+    if([a,b,v,d,e].some(x=>x==null))continue;
+    if(i-lastIdx<MIN_GAP)continue;
+    if(b<v&&v>d&&a<v&&v>e){
+      events.push({kind:'hw',time:labels[i]||'',h:v,idx:i});
+      lastIdx=i;
+    } else if(b>v&&v<d&&a>v&&v<e){
+      events.push({kind:'nw',time:labels[i]||'',h:v,idx:i});
+      lastIdx=i;
+    }
+  }
+  return events;
 }
 
 // v52 AP3: Strip-HTML rendern (rolling window um startDate)
@@ -9684,20 +10299,21 @@ let _dwCharts=[];
 let _dwSyncActive=-1;
 function _dwDestroy(){_dwCharts.forEach(c=>{try{c.destroy();}catch(e){}});_dwCharts=[];_dwSyncActive=-1;}
 
-// Crosshair-Linie + synchrone Hover-Events über alle Tages-Charts
+// v55: Crosshair-Linie + synchrone Hover-Events + roter Strich (#cc0000) in ALLEN Charts
 const _dwCrosshairPlugin={
   id:'dwCrosshair',
-  // AP5: Crosshair-Linie wird jetzt global gezeichnet – hier nur noch Sync-Events
   afterEvent(chart,args){
     if(args.replay)return;
     const evt=args.event;
-    if((evt.type==='mousemove'||evt.type==='click')&&args.inChartArea){
+    if((evt.type==='mousemove'||evt.type==='click'||evt.type==='touchmove'||evt.type==='touchstart')&&args.inChartArea){
       const els=chart.getElementsAtEventForMode(evt,'index',{intersect:false},true);
       if(els.length){
         const idx=els[0].index;
         if(_dwSyncActive===idx)return;
         _dwSyncActive=idx;
         _dwCharts.forEach(other=>{
+          // v55: Cursor-X auf jedem Chart speichern damit afterDraw die rote Linie zieht
+          other._cursorIdx=idx;
           if(other===chart)return;
           const ae=[];
           for(let d=0;d<other.data.datasets.length;d++)ae.push({datasetIndex:d,index:idx});
@@ -9710,12 +10326,31 @@ const _dwCrosshairPlugin={
       if(_dwSyncActive<0)return;
       _dwSyncActive=-1;
       _dwCharts.forEach(other=>{
+        other._cursorIdx=null;
         if(other===chart)return;
         other.setActiveElements([]);
         other.tooltip.setActiveElements([]);
         other.draw();
       });
     }
+  },
+  // v55 AP3.4: Roter Cursor-Strich (#cc0000) an aktueller Hover-Position
+  afterDraw(chart){
+    const idx=chart._cursorIdx;
+    if(idx==null)return;
+    const x=chart.scales.x.getPixelForValue(idx);
+    if(x<chart.scales.x.left||x>chart.scales.x.right)return;
+    const ctx=chart.ctx;
+    const yT=chart.scales.y.top, yB=chart.scales.y.bottom;
+    ctx.save();
+    ctx.strokeStyle='#cc0000';
+    ctx.lineWidth=2;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(x,yT);
+    ctx.lineTo(x,yB);
+    ctx.stroke();
+    ctx.restore();
   }
 };
 
@@ -9803,25 +10438,24 @@ function openDailyWeather(dateStr){
     </button>`;
   }).join('');
 
+  // v55 AP3.1/3.2: Header weiß, schwarzes X, Layout: links Datum+Wetter+Tmin/Tmax+Wind, rechts scrollbarer Strip
   document.getElementById('fs-dw-hdr').innerHTML=`
-    <button class="xbtn" onclick="_dwDestroy();closeFs('daily-weather')" style="position:absolute;top:10px;right:12px;z-index:3;">✕</button>
-    <div class="dw-hero">
-      <div class="dw-hero-date">${dateLabel}</div>
-      <div class="dw-hero-row">
-        <div class="dw-hero-ico">${wxIco(wc)}</div>
-        <div class="dw-hero-temp">
-          <span class="dw-hero-tmax">${tmax!=null?Math.round(tmax):'–'}°</span>
-          <span class="dw-hero-tmin">${tmin!=null?Math.round(tmin):'–'}°</span>
+    <button class="xbtn" onclick="_dwDestroy();closeFs('daily-weather')" style="position:absolute;top:10px;right:12px;z-index:5;">✕</button>
+    <div class="dw-hdr-row">
+      <div class="dw-hdr-left">
+        <div class="dw-hdr-date">${dateLabel}</div>
+        <div class="dw-hdr-wx-row">
+          <span class="dw-hdr-wx-ico">${wxIco(wc)}</span>
+          <span class="dw-hdr-temps">${tmax!=null?Math.round(tmax):'–'}°<span class="tmin"> / ${tmin!=null?Math.round(tmin):'–'}°</span></span>
         </div>
-        <div class="dw-hero-side">
-          <div class="dw-hero-wind">${wind!=null?Math.round(wind):'–'} <span class="dw-hero-unit">km/h</span></div>
-          <div class="dw-hero-wdir">${windLabel(windDir)||''}</div>
-        </div>
+        <div class="dw-hdr-wind">💨 ${wind!=null?Math.round(wind):'–'} km/h ${windLabel(windDir)||''}</div>
       </div>
-    </div>
-    <div class="dw-strip" id="dw-strip">${dateStrip}</div>`;
+      <div class="dw-hdr-right">
+        <div class="dw-strip" id="dw-strip">${dateStrip}</div>
+      </div>
+    </div>`;
 
-  // AP2: Aktiven Tag in die Mitte der Datums-Leiste scrollen
+  // AP3.2: Aktiven Tag in die Mitte des rechten Strips scrollen
   requestAnimationFrame(()=>{
     const strip=document.getElementById('dw-strip');
     const active=strip?.querySelector('.dw-strip-day.on');
@@ -10914,12 +11548,13 @@ async function _finalizeLive(isSkunked){
   showPage('fangbuch');
 }
 
-// v52 AP1: Multi-Group-Share-Helper — nutzt GPS-Pragmatismus und propagiert Wetter/Foto.
-// Wird von _finalizeLive (End-Overlay) UND von saveSess (Edit-Session) genutzt.
+// v54: Multi-Group-Share-Helper — schreibt jetzt in echte Supabase-Tabellen
+// (group_shared_catches + group_messages), Fotos werden via _grpUploadPhoto in Storage gehoben.
 async function _shareSessionToGroups(sess,groupIds){
   if(!Array.isArray(groupIds)||!groupIds.length)return 0;
+  if(!_sb||!_sbUser){showToast('⚠️','Cloud-Login nötig um zu teilen');return 0;}
   const myName=profile?.name||profile?.vorname||'Angler';
-  const myId=_sbUser?.id||'me';
+  const myId=_sbUser.id;
   const loc=_resolveSessLocation({water:sess.water,spot:sess.spot,lat:sess.lat,lon:sess.lon});
   const shareLat=loc.lat,shareLon=loc.lon;
   const shareGps=loc.kind!=='none';
@@ -10928,53 +11563,63 @@ async function _shareSessionToGroups(sess,groupIds){
   for(const gId of groupIds){
     const g=_groups.find(x=>x.id===gId);
     if(!g)continue;
-    if(!g.sharedCatches)g.sharedCatches=[];
-    if(!g.feed)g.feed=[];
 
-    // Schneider-Sessions trotzdem als Feed-Eintrag teilen (ohne sharedCatches-Eintrag)
+    // Schneider-Sessions als reiner System-Feed-Eintrag (ohne shared catch)
     if(!sess.catches?.length||sess.skunked){
-      g.feed.push({
-        type:'system',
-        text:`${myName} hat eine Schneider-Session am ${sess.water||'Wasser'} geteilt.`,
-        ts:Date.now(),userId:myId
-      });
-      totalShared++;
+      try{
+        await _sb.from('group_messages').insert({
+          group_id:gId,user_id:myId,type:'system',
+          text:`${myName} hat eine Schneider-Session am ${sess.water||'Wasser'} geteilt.`,
+          display_name:myName
+        });
+        totalShared++;
+      }catch(e){console.warn('share skunked:',e);}
       continue;
     }
 
-    sess.catches.forEach(c=>{
-      const shared={
-        id:_newId(),userId:myId,userName:myName,
+    for(const c of (sess.catches||[])){
+      // Foto hochladen falls vorhanden (lokales photoKey → public URL)
+      let photoUrl=null;
+      if(c.photoKey){
+        try{
+          const dataUrl=await getPhoto(c.photoKey);
+          if(dataUrl)photoUrl=await _grpUploadPhoto(gId,dataUrl,'catch_'+c.photoKey);
+        }catch(e){console.warn('photo upload:',e);}
+      }
+      const catchData={
         type:c.type,length:c.length,weight:c.weight,
         bait:c.bait,baitNote:c.baitNote,baitColor:c.baitColor,baitSize:c.baitSize,
         water:sess.water,spot:sess.spot,
         date:sess.date,time:c.time||sess.start,
-        // v52 AP1: shareGps reflektiert die tatsächlich verfügbare Auflösung
-        shareGps,
-        lat:shareLat,lon:shareLon,
-        locKind:loc.kind, // 'exact' | 'spot' | 'water' | 'none'
-        // Wetter mitschicken
+        shareGps,lat:shareLat,lon:shareLon,locKind:loc.kind,
         pressure:sess.pressure??null,windSpeed:sess.windSpeed??null,windDir:sess.windDir??null,
         temp:sess.temp??null,humidity:sess.humidity??null,clouds:sess.clouds??null,precip:sess.precip??null,
         weather:sess.weather||null,moonPhase:sess.moonPhase||null,moonIllum:sess.moonIllum??null,
-        // Foto mitschicken
-        photoKey:c.photoKey||null,
-        likes:[],comments:[]
+        photoUrl
       };
-      g.sharedCatches.push(shared);
-      g.feed.push({
-        type:'catch',
-        text:`Hat einen ${c.length||'?'}cm ${c.type||'Fisch'} geteilt!`,
-        ts:Date.now(),userId:myId,catchData:shared
-      });
-      totalShared++;
-    });
-    // sess speichert die geteilte-Markierung pro Gruppe (für späteres "schon geteilt"-UI)
+      try{
+        const{data:scRow,error:scErr}=await _sb.from('group_shared_catches').insert({
+          group_id:gId,user_id:myId,session_id:String(sess.id||''),
+          display_name:myName,catch_data:catchData,photo_url:photoUrl
+        }).select().single();
+        if(scErr)throw scErr;
+        // Feed-Message dazu (Catch-Card im Feed)
+        await _sb.from('group_messages').insert({
+          group_id:gId,user_id:myId,type:'catch',
+          text:`Hat einen ${c.length||'?'}cm ${c.type||'Fisch'} geteilt!`,
+          catch_data:{...catchData,sharedCatchId:scRow.id},
+          photo_url:photoUrl,display_name:myName
+        });
+        totalShared++;
+      }catch(e){console.warn('share catch:',e);}
+    }
+    // sess speichert die geteilt-Markierung pro Gruppe (lokales Mirror)
     sess.sharedToGroups=sess.sharedToGroups||[];
     if(!sess.sharedToGroups.includes(gId))sess.sharedToGroups.push(gId);
   }
-  await _saveGroups();
   await saveOneSess(sess);
+  // Lokale Sicht refreshen falls Detail-View offen ist
+  if(_activeGroupId&&groupIds.includes(_activeGroupId))_grpRefreshActive();
   return totalShared;
 }
 
@@ -11779,35 +12424,189 @@ function _userColor(uid){
   return _userColors[Math.abs(h)%_userColors.length];
 }
 
-// ── IDB for Groups ──
+// ══════════════════════════════════════════════════════════════
+// v54 GROUP MODULE — komplett auf Supabase-Tabellen umgestellt
+// (groups, group_members, group_messages, group_shared_catches,
+//  group_catch_likes, group_catch_comments, group_join_requests)
+// + Realtime-Subscriptions für live Chat/Catches/Likes/Members
+// + Storage-Bucket "group-media" für hochgeladene Fotos
+// ══════════════════════════════════════════════════════════════
+
+// ── Realtime Channel-Manager: ein aktiver Channel pro geöffneter Gruppe ──
+let _grpRTChannel=null;
+let _grpRTGroupId=null;
+let _grpRTStatus='disconnected'; // 'connected' | 'connecting' | 'disconnected'
+
+// Lokaler Cache: Gruppen-Liste + die aktuell geöffnete Gruppe (full-detail)
+// Im Gegensatz zu v53 KEIN Mirror in IDB/localStorage — Supabase ist Single Source of Truth.
+// _groups[] enthält jetzt das Kompositum {id, name, ..., members[], feed[], sharedCatches[], pendingRequests[]}.
 async function _saveGroups(){
-  await idbP('profile','_groups',{value:JSON.stringify(_groups)});
-  // v50: localStorage-Mirror parallel zur IDB
-  try{_lsSet(LS_GROUPS,_groups);}catch(e){}
-  if(typeof _autoPushCloud==='function')_autoPushCloud();
+  // Kein-Op: Gruppen werden nicht mehr lokal serialisiert. Direkte INSERT/UPDATE/DELETE
+  // gehen via Supabase. Bleibt nur als Stub für rückwärtskompatible Aufrufer.
+  return;
 }
+
+// Lädt nur die Gruppen-Stammdaten (id/name/role/member_count/last_activity) via RPC,
+// nicht die Detail-Daten (members/feed/catches). Detail wird beim Öffnen der Gruppe gefetched.
 async function _loadGroups(){
+  if(!_sb||!_sbUser){_groups=[];return;}
   try{
-    const r=await idbG('profile','_groups');
-    if(r?.value)_groups=JSON.parse(r.value);
-    else{
-      // v50: LS-Fallback wenn IDB leer (z.B. nach Cache-Wipe)
-      const ls=localStorage.getItem(LS_GROUPS);
-      if(ls){_groups=JSON.parse(ls)||[];}
+    const{data,error}=await _sb.rpc('get_my_groups');
+    if(error)throw error;
+    _groups=(data||[]).map(g=>({
+      id:g.id,name:g.name,desc:g.description,description:g.description,
+      region:g.region,type:g.type,icon:g.icon||'🎣',
+      inviteCode:g.invite_code,createdBy:g.created_by,createdAt:g.created_at,
+      _myRole:g.my_role,_memberCount:Number(g.member_count||0),
+      _pendingCount:Number(g.pending_request_count||0),
+      _lastActivityAt:g.last_activity_at,
+      // Detail-Daten werden lazy geladen
+      members:[],feed:[],sharedCatches:[],pendingRequests:[],
+      _detailLoaded:false,_unread:0
+    }));
+  }catch(e){
+    console.warn('_loadGroups:',e);
+    _groups=[];
+  }
+}
+
+// Lädt alle Detail-Daten für EINE Gruppe (members, messages, catches, comments)
+async function _loadGroupDetail(gId){
+  if(!_sb||!_sbUser)return null;
+  const g=_groups.find(x=>x.id===gId);
+  if(!g)return null;
+  try{
+    const[mRes,msgRes,catchRes,reqRes]=await Promise.all([
+      _sb.from('group_members').select('*').eq('group_id',gId).order('joined_at',{ascending:true}),
+      _sb.from('group_messages').select('*').eq('group_id',gId).order('created_at',{ascending:true}).limit(500),
+      _sb.from('group_shared_catches').select('*').eq('group_id',gId).order('created_at',{ascending:false}).limit(200),
+      // Beitrittsanfragen sieht nur der Admin (RLS sichert das)
+      g._myRole==='admin'
+        ? _sb.from('group_join_requests').select('*').eq('group_id',gId).eq('status','pending').order('requested_at',{ascending:true})
+        : Promise.resolve({data:[],error:null})
+    ]);
+    if(mRes.error)throw mRes.error;
+    if(msgRes.error)throw msgRes.error;
+    if(catchRes.error)throw catchRes.error;
+
+    // Likes + Comments für die Catches separat laden
+    const catchIds=(catchRes.data||[]).map(c=>c.id);
+    let likesByCatch={},commentsByCatch={};
+    if(catchIds.length){
+      const[lRes,cRes]=await Promise.all([
+        _sb.from('group_catch_likes').select('catch_id,user_id').in('catch_id',catchIds),
+        _sb.from('group_catch_comments').select('*').in('catch_id',catchIds).order('created_at',{ascending:true})
+      ]);
+      (lRes.data||[]).forEach(l=>{(likesByCatch[l.catch_id]=likesByCatch[l.catch_id]||[]).push(l.user_id);});
+      (cRes.data||[]).forEach(c=>{(commentsByCatch[c.catch_id]=commentsByCatch[c.catch_id]||[]).push(c);});
     }
-  }catch(e){}
+
+    // Members in App-Format mappen
+    g.members=(mRes.data||[]).map(m=>({
+      id:m.user_id,name:m.display_name||'Angler',
+      role:m.role,joinedAt:m.joined_at,
+      _memberRowId:m.id
+    }));
+    // Messages = "feed" in v53-Sprache. Mapping auf altes Format für minimale Render-Änderungen.
+    g.feed=(msgRes.data||[]).map(_grpMapMessageRow);
+    // SharedCatches in App-Format
+    g.sharedCatches=(catchRes.data||[]).map(sc=>{
+      const cd=sc.catch_data||{};
+      return{
+        id:sc.id,userId:sc.user_id,userName:sc.display_name||'Angler',
+        type:cd.type,length:cd.length,weight:cd.weight,
+        bait:cd.bait,baitNote:cd.baitNote,baitColor:cd.baitColor,baitSize:cd.baitSize,
+        water:cd.water,spot:cd.spot,date:cd.date,time:cd.time,
+        shareGps:cd.shareGps,lat:cd.lat,lon:cd.lon,locKind:cd.locKind,
+        pressure:cd.pressure,windSpeed:cd.windSpeed,windDir:cd.windDir,
+        temp:cd.temp,humidity:cd.humidity,clouds:cd.clouds,precip:cd.precip,
+        weather:cd.weather,moonPhase:cd.moonPhase,moonIllum:cd.moonIllum,
+        photoUrl:sc.photo_url||cd.photoUrl,
+        createdAt:sc.created_at,
+        likes:likesByCatch[sc.id]||[],
+        comments:(commentsByCatch[sc.id]||[]).map(cm=>({
+          id:cm.id,userId:cm.user_id,
+          userName:cm.display_name||'Angler',
+          text:cm.text,ts:new Date(cm.created_at).getTime()
+        }))
+      };
+    });
+    g.pendingRequests=(reqRes.data||[]).map(r=>({
+      id:r.id,userId:r.user_id,name:r.display_name||'Angler',
+      message:r.message,requestedAt:r.requested_at
+    }));
+    g._detailLoaded=true;
+    return g;
+  }catch(e){
+    console.warn('_loadGroupDetail:',e);
+    return g;
+  }
 }
 
-// ── Invite Code Generator ──
-function _genInviteCode(){
-  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code='';for(let i=0;i<8;i++)code+=chars[Math.floor(Math.random()*chars.length)];
-  return code.substring(0,4)+'-'+code.substring(4);
+// Mapt eine group_messages-Zeile aus der DB auf das v53-Feed-Format
+function _grpMapMessageRow(m){
+  return{
+    id:m.id,
+    type:m.type||'msg',
+    text:m.text,
+    photoUrl:m.photo_url,
+    catchData:m.catch_data,
+    replyTo:m.reply_to,
+    replyToText:m.reply_to_text,
+    replyToUserName:m.reply_to_user_name,
+    ts:new Date(m.created_at).getTime(),
+    userId:m.user_id,
+    _userName:m.display_name
+  };
 }
 
-// ── Group CRUD ──
-function _openGroupHub(){
+// Refresht die aktuell offene Gruppe (z.B. nach neuem Insert)
+async function _grpRefreshActive(){
+  if(!_activeGroupId)return;
+  await _loadGroupDetail(_activeGroupId);
+  // Aktiven Tab neu zeichnen
+  const activeBtn=document.querySelector('#grp-subnav .grp-subnav-btn.on');
+  const tab=activeBtn?.getAttribute('data-tab')||'feed';
+  if(tab==='feed')_rndrGroupFeed();
+  else if(tab==='members')_rndrGroupMembers();
+  else if(tab==='insights')_rndrGroupInsights();
+}
+
+// ── Storage Helper: lädt eine Daten-URL als Blob ins group-media-Bucket und gibt public URL zurück ──
+async function _grpUploadPhoto(gId,dataUrlOrBlob,filenameHint){
+  if(!_sb||!_sbUser)throw new Error('not authenticated');
+  let blob;
+  if(typeof dataUrlOrBlob==='string'){
+    // Daten-URL "data:image/jpeg;base64,..." → Blob
+    const m=dataUrlOrBlob.match(/^data:([^;]+);base64,(.+)$/);
+    if(!m)throw new Error('invalid data URL');
+    const mime=m[1];
+    const bin=atob(m[2]);
+    const arr=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+    blob=new Blob([arr],{type:mime});
+  } else {
+    blob=dataUrlOrBlob;
+  }
+  const ext=(blob.type.split('/')[1]||'jpg').replace('jpeg','jpg');
+  const safeHint=(filenameHint||'photo').replace(/[^a-z0-9_-]/gi,'').slice(0,40);
+  const path=`${gId}/${_sbUser.id}/${Date.now()}_${safeHint}.${ext}`;
+  const{error}=await _sb.storage.from('group-media').upload(path,blob,{
+    cacheControl:'3600',upsert:false,contentType:blob.type
+  });
+  if(error)throw error;
+  const{data:pub}=_sb.storage.from('group-media').getPublicUrl(path);
+  return pub.publicUrl;
+}
+
+// ── Group Hub: Liste + Discover-Tab ──
+async function _openGroupHub(){
   openFs('group-hub');
+  // Cloud-State ziehen — auch wenn vorher v53-Local-Blobs vorhanden waren, sind die jetzt irrelevant
+  if(_sb&&_sbUser){
+    document.getElementById('grp-hub-content').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);font-size:13px;">⏳ Gruppen laden…</div>';
+    await _loadGroups();
+  }
   _rndrGroupList();
 }
 
@@ -11821,16 +12620,27 @@ function _grpHubTab(tab){
 
 function _rndrGroupList(){
   const el=document.getElementById('grp-hub-content');
+  if(!_sb||!_sbUser){
+    document.getElementById('grp-hub-meta').textContent='Cloud-Login nötig';
+    el.innerHTML=`<div style="text-align:center;padding:40px 24px;">
+      <div style="font-size:48px;margin-bottom:16px;">☁️</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:8px;">Login erforderlich</div>
+      <p style="font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:20px;">Gruppen sind ein Multiplayer-Feature und benötigen ein Cloud-Konto.</p>
+      <button onclick="closeFs('group-hub');document.getElementById('login-ov').classList.remove('hidden')" style="padding:14px 24px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;">Jetzt einloggen</button>
+    </div>`;
+    return;
+  }
+
   document.getElementById('grp-hub-meta').textContent=_groups.length?`${_groups.length} Gruppe${_groups.length>1?'n':''}`:'Deine Angel-Crews';
 
   if(!_groups.length){
     el.innerHTML=`<div style="text-align:center;padding:40px 24px;">
       <div style="font-size:48px;margin-bottom:16px;">👥</div>
       <div style="font-size:16px;font-weight:600;margin-bottom:8px;">Noch keine Gruppen</div>
-      <p style="font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:20px;">Erstelle deine eigene Angel-Crew oder tritt einer bestehenden bei.</p>
+      <p style="font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:20px;">Erstelle deine eigene Angel-Crew oder tritt einer bestehenden bei. Du kannst beliebig vielen Gruppen angehören.</p>
       <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px;">
         <button onclick="openFs('group-create')" style="padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;">➕ Gruppe erstellen</button>
-        <button onclick="openFs('group-join')" style="padding:14px;background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;">🔗 Per Code beitreten</button>
+        <button onclick="_grpHubTab('discover')" style="padding:14px;background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;">🔍 Gruppen entdecken</button>
       </div>
     </div>`;
     return;
@@ -11838,16 +12648,16 @@ function _rndrGroupList(){
 
   let html='<div class="grp-list">';
   _groups.forEach(g=>{
-    const memberCount=g.members?.length||1;
-    const lastActivity=g.feed?.length?_relTime(g.feed[g.feed.length-1].ts):'Keine Aktivität';
-    const unread=g._unread||0;
+    const memberCount=g._memberCount||g.members?.length||1;
+    const lastActivity=g._lastActivityAt?_relTime(new Date(g._lastActivityAt).getTime()):'Keine Aktivität';
+    const pendingBadge=(g._myRole==='admin'&&g._pendingCount>0)?`<div class="grp-item-badge" style="background:var(--gold);">${g._pendingCount}</div>`:'';
     html+=`<div class="grp-item" onclick="_openGroupDetail('${g.id}')">
       <div class="grp-item-ico" style="background:${g.type==='elite'?'linear-gradient(135deg,#f6d365,#fda085)':g.type==='public'?'var(--blue)':'var(--green-mist)'};">${g.icon||'🎣'}</div>
       <div class="grp-item-info">
-        <div class="grp-item-name">${_esc(g.name)}</div>
+        <div class="grp-item-name">${_esc(g.name)}${g._myRole==='admin'?' <span style="font-size:9px;padding:1px 6px;background:var(--gold-l);color:var(--gold-d);border-radius:8px;font-weight:700;letter-spacing:.3px;">ADMIN</span>':''}</div>
         <div class="grp-item-sub">${memberCount} Mitglieder · ${lastActivity}</div>
       </div>
-      ${unread?`<div class="grp-item-badge">${unread}</div>`:''}
+      ${pendingBadge}
     </div>`;
   });
   html+=`<div class="grp-create-btn" onclick="openFs('group-create')">➕ Neue Gruppe erstellen</div>`;
@@ -11855,93 +12665,124 @@ function _rndrGroupList(){
   el.innerHTML=html;
 }
 
-function _rndrGroupDiscover(){
+// v54: Discover-Tab — sucht in der Datenbank via search_public_groups RPC und zeigt
+// am Ende ein Eingabefeld für Einladungscodes (AP1.3).
+let _discoverDebounce=null;
+async function _rndrGroupDiscover(){
   const el=document.getElementById('grp-hub-content');
-  const publicGroups=_groups.filter(g=>g.type==='public');
   el.innerHTML=`<div style="padding:16px;">
     <div class="ig" style="margin-bottom:14px;">
       <input type="text" class="if" id="grp-search" placeholder="🔍 Gruppen suchen…" oninput="_filterDiscoverGroups(this.value)" autocomplete="off">
     </div>
-    <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:10px;">Öffentliche Gruppen in deiner Region</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:10px;">Öffentliche Gruppen</div>
     <div id="discover-list" style="display:flex;flex-direction:column;gap:8px;">
-      ${_getDemoPublicGroups()}
+      <div style="text-align:center;padding:24px;color:var(--text-light);font-size:13px;">⏳ Gruppen werden geladen…</div>
+    </div>
+    <!-- v54 AP1.3: Einladungscode-Sektion am Ende des Discover-Tabs -->
+    <div class="discover-code-section">
+      <div class="dcs-title">🔗 Hast du einen Einladungscode?</div>
+      <div class="dcs-row">
+        <input type="text" id="discover-invite-code" placeholder="ABCD-1234" maxlength="9" autocomplete="off" onkeydown="if(event.key==='Enter')_grpJoinByDiscoverCode()">
+        <button onclick="_grpJoinByDiscoverCode()">Beitreten</button>
+      </div>
+      <div style="font-size:10px;color:var(--text-light);margin-top:8px;">Bei privaten Gruppen wird eine Beitritts-Anfrage gestellt. Der Admin entscheidet dann über die Aufnahme.</div>
     </div>
   </div>`;
+  await _filterDiscoverGroups('');
 }
 
-// AP3: Discover-Liste — Klick öffnet PREVIEW (nicht direkter Beitritt)
-function _getDemoPublicGroups(){
-  const demos=[
-    {name:'Hechtjäger Norddeutschland',icon:'🐟',members:24,region:'Niedersachsen',desc:'Spinnfischen auf Hecht in Norddeutschland. Wir teilen Spots, Köder-Setups und Fänge.',type:'public'},
-    {name:'Karpfen-Crew NRW',icon:'🎣',members:18,region:'NRW',desc:'Karpfenangeln in Nordrhein-Westfalen. Fokus auf Boilies, Method-Feeder und Stalking.',type:'public'},
-    {name:'Zanderfreunde Elbe',icon:'🐋',members:31,region:'Hamburg/Elbe',desc:'Zander an der Elbe und Nebenflüssen. Vertikalfischen, Drop-Shot, Jiggen.',type:'public'},
-    {name:'Ostsee Meerforellen',icon:'🦈',members:12,region:'Schleswig-Holstein',desc:'Brandungsangeln & Spinnfischen auf Mefo an der Ostseeküste.',type:'public'}
-  ];
-  return demos.map((d,i)=>{
-    const id='demo_'+i;
-    // Demo-Daten in Cache hinterlegen für Preview-Lookup
-    window._discoverDemos=window._discoverDemos||{};
-    window._discoverDemos[id]=d;
-    return `<div class="grp-item" onclick="_grpPreview('${id}')">
-      <div class="grp-item-ico" style="background:var(--blue);">${d.icon}</div>
-      <div class="grp-item-info">
-        <div class="grp-item-name">${d.name}</div>
-        <div class="grp-item-sub">${d.members} Mitglieder · ${d.region}</div>
-      </div>
-      <div style="font-size:11px;color:var(--text-light);font-weight:600;">Ansehen ›</div>
-    </div>`;
-  }).join('');
+// Sucht in den public groups via Supabase-RPC (debounced)
+async function _filterDiscoverGroups(q){
+  clearTimeout(_discoverDebounce);
+  _discoverDebounce=setTimeout(async()=>{
+    const list=document.getElementById('discover-list');
+    if(!list)return;
+    if(!_sb){list.innerHTML='<div style="padding:16px;color:var(--text-light);font-size:12px;text-align:center;">Cloud nicht verfügbar.</div>';return;}
+    try{
+      const{data,error}=await _sb.rpc('search_public_groups',{p_query:q||null,p_limit:30});
+      if(error)throw error;
+      if(!data||!data.length){
+        list.innerHTML='<div style="padding:24px;color:var(--text-light);font-size:13px;text-align:center;">Keine öffentlichen Gruppen gefunden.</div>';
+        return;
+      }
+      list.innerHTML=data.map(g=>{
+        const stateBadge=g.is_member?'<div style="font-size:10px;color:var(--green-mid);font-weight:700;background:var(--green-mist);padding:2px 8px;border-radius:8px;">✓ Mitglied</div>':(g.has_pending_request?'<div style="font-size:10px;color:var(--gold-d);font-weight:700;background:var(--gold-l);padding:2px 8px;border-radius:8px;">⏳ Anfrage offen</div>':'<div style="font-size:11px;color:var(--text-light);font-weight:600;">Ansehen ›</div>');
+        return `<div class="grp-item" onclick="_grpPreview('${g.id}')">
+          <div class="grp-item-ico" style="background:var(--blue);">${g.icon||'🎣'}</div>
+          <div class="grp-item-info">
+            <div class="grp-item-name">${_esc(g.name)}</div>
+            <div class="grp-item-sub">${g.member_count} Mitglieder${g.region?' · '+_esc(g.region):''}</div>
+          </div>
+          ${stateBadge}
+        </div>`;
+      }).join('');
+    }catch(e){
+      console.warn('discover search:',e);
+      list.innerHTML='<div style="padding:16px;color:var(--rose-t);font-size:12px;text-align:center;">Fehler beim Laden.</div>';
+    }
+  },220);
 }
 
-// AP3: Gruppe öffentlich vorschauen (vor Beitritt)
-// AP9.1: Reale Preview — User sieht echte Gruppen-Ansicht (Feed/Insights/Mitglieder/Karte)
-// mit Restriktionen: Feed limitiert auf 10, Karte ohne Spots, schwebender Beitreten-Button.
+// Convenience: behält die alte Funktions-Signatur für andere Aufrufer (kein Demo mehr)
+function _getDemoPublicGroups(){return '';}
+
+// v54 AP1.3: Beitritt per Code aus dem Discover-Tab (separates Eingabefeld unten)
+async function _grpJoinByDiscoverCode(){
+  const inp=document.getElementById('discover-invite-code');
+  const code=(inp?.value||'').trim().toUpperCase();
+  if(!code||code.length<4){showToast('⚠️','Bitte Code eingeben');return;}
+  await _grpJoinByCodeRaw(code);
+  if(inp)inp.value='';
+}
+
+// v54: Live-Preview einer Public-Gruppe (echte Daten via Supabase, read-only)
 let _previewGroupId=null;
-function _grpPreview(demoId){
-  const d=window._discoverDemos?.[demoId];
-  if(!d){showToast('⚠️','Gruppe nicht gefunden');return;}
-  // Demo-Mitglieder + Demo-Feed + Demo-Catches generieren (User selbst NICHT als Mitglied)
-  const demoMembers=[
-    {id:'u1',name:'Max F.',role:'admin',joinedAt:new Date(Date.now()-30*86400000).toISOString()},
-    {id:'u2',name:'Lisa K.',role:'member',joinedAt:new Date(Date.now()-20*86400000).toISOString()},
-    {id:'u3',name:'Tom H.',role:'member',joinedAt:new Date(Date.now()-10*86400000).toISOString()}
-  ];
-  const previewGroup={
-    id:'preview_'+demoId,
-    name:d.name,desc:d.desc||'',region:d.region||'',type:'public',icon:d.icon||'🎣',
-    inviteCode:'',
-    createdAt:new Date(Date.now()-30*86400000).toISOString(),createdBy:'u1',
-    members:demoMembers,
-    feed:_genDemoFeed(demoMembers),
-    sharedCatches:_genDemoSharedCatches(demoMembers),
-    _unread:0,
-    _isPreview:true,
-    _previewMeta:{members:d.members||demoMembers.length}
-  };
-  // Temporär in _groups Array einfügen (damit alle Render-Funktionen funktionieren)
-  // Vorhandene Preview-Einträge entfernen
-  _groups=(_groups||[]).filter(g=>!g._isPreview);
-  _groups.push(previewGroup);
-  _activeGroupId=previewGroup.id;
-  _previewGroupId=previewGroup.id;
-  // Echte Gruppen-Ansicht öffnen
-  openFs('group-detail');
-  document.getElementById('grp-detail-title').textContent=`${previewGroup.icon} ${previewGroup.name}`;
-  document.getElementById('grp-detail-meta').textContent=`${previewGroup._previewMeta.members} Mitglieder · 🌍 Öffentlich · ${_esc(previewGroup.region)}`;
-  // Subnav SICHTBAR — echte Tabs
-  const subnav=document.getElementById('grp-subnav');
-  if(subnav)subnav.style.display='';
-  // Chat-Bar im Feed-Modus normalerweise sichtbar — hier ABER ausgeblendet (read-only)
-  const chatBar=document.getElementById('grp-chat-bar');
-  if(chatBar)chatBar.style.display='none';
-  // Schwebenden Beitreten-Button anzeigen
-  _showPreviewJoinFab(demoId);
-  // Feed als Default-Tab
-  _grpDetailTab('feed');
+async function _grpPreview(realGroupId){
+  if(!_sb||!_sbUser){showToast('⚠️','Login nötig');return;}
+  // Wenn ich bereits Mitglied bin, einfach detail öffnen
+  const existingMine=_groups.find(g=>g.id===realGroupId);
+  if(existingMine){_openGroupDetail(realGroupId);return;}
+  // Preview-Daten via öffentliche Selects (RLS erlaubt es bei type='public')
+  try{
+    const[gRes,mRes,msgRes]=await Promise.all([
+      _sb.from('groups').select('*').eq('id',realGroupId).single(),
+      _sb.from('group_members').select('*').eq('group_id',realGroupId),
+      _sb.from('group_messages').select('*').eq('group_id',realGroupId).order('created_at',{ascending:false}).limit(10)
+    ]);
+    if(gRes.error)throw gRes.error;
+    const g=gRes.data;
+    const previewGroup={
+      id:'preview_'+g.id,_realId:g.id,
+      name:g.name,desc:g.description,description:g.description,
+      region:g.region,type:g.type,icon:g.icon||'🎣',inviteCode:'',
+      createdAt:g.created_at,createdBy:g.created_by,
+      members:(mRes.data||[]).map(m=>({id:m.user_id,name:m.display_name||'Angler',role:m.role,joinedAt:m.joined_at})),
+      feed:((msgRes.data||[]).reverse()).map(_grpMapMessageRow),
+      sharedCatches:[],
+      pendingRequests:[],
+      _unread:0,_isPreview:true,
+      _previewMeta:{members:(mRes.data||[]).length}
+    };
+    _groups=(_groups||[]).filter(g=>!g._isPreview);
+    _groups.push(previewGroup);
+    _activeGroupId=previewGroup.id;
+    _previewGroupId=previewGroup.id;
+    openFs('group-detail');
+    document.getElementById('grp-detail-title').textContent=`${previewGroup.icon} ${previewGroup.name}`;
+    document.getElementById('grp-detail-meta').textContent=`${previewGroup._previewMeta.members} Mitglieder · 🌍 Öffentlich${previewGroup.region?' · '+_esc(previewGroup.region):''}`;
+    const subnav=document.getElementById('grp-subnav');
+    if(subnav)subnav.style.display='';
+    const chatBar=document.getElementById('grp-chat-bar');
+    if(chatBar)chatBar.style.display='none';
+    _showPreviewJoinFab(g.id);
+    _grpDetailTab('feed');
+  }catch(e){
+    console.warn('grp preview:',e);
+    showToast('⚠️','Gruppe konnte nicht geladen werden');
+  }
 }
 
-// AP9.1: Schwebender grüner "Gruppe beitreten"-Button (über der Subnav)
-function _showPreviewJoinFab(demoId){
+function _showPreviewJoinFab(realId){
   let fab=document.getElementById('preview-join-fab');
   if(!fab){
     fab=document.createElement('button');
@@ -11950,7 +12791,7 @@ function _showPreviewJoinFab(demoId){
     document.getElementById('fs-group-detail')?.appendChild(fab);
   }
   fab.textContent='✓ Gruppe beitreten';
-  fab.onclick=()=>_grpJoinFromPreview(demoId);
+  fab.onclick=()=>_grpJoinFromPreview(realId);
   fab.style.display='flex';
 }
 function _hidePreviewJoinFab(){
@@ -11958,20 +12799,23 @@ function _hidePreviewJoinFab(){
   if(fab)fab.style.display='none';
 }
 
-// AP9.1: Echter Beitritt aus der Preview-Ansicht
-async function _grpJoinFromPreview(demoId){
-  const d=window._discoverDemos?.[demoId];
-  if(!d){showToast('⚠️','Gruppe nicht gefunden');return;}
-  // Preview-Eintrag aus _groups entfernen, Overlay schließen
-  _groups=(_groups||[]).filter(g=>!g._isPreview);
-  _previewGroupId=null;
-  _hidePreviewJoinFab();
-  closeFs('group-detail');
-  // Echter Beitritt
-  await _quickJoinPublic(d.name,d.icon);
+async function _grpJoinFromPreview(realId){
+  // Public groups: direkter Beitritt via Code/RPC. Wir nehmen den invite_code aus der DB
+  // und gehen über join_group_by_code (handelt sowohl public-direct als auch private-pending).
+  if(!_sb||!_sbUser){showToast('⚠️','Login nötig');return;}
+  try{
+    const{data:gRow,error}=await _sb.from('groups').select('invite_code,type,name').eq('id',realId).single();
+    if(error)throw error;
+    _groups=(_groups||[]).filter(g=>!g._isPreview);
+    _previewGroupId=null;
+    _hidePreviewJoinFab();
+    closeFs('group-detail');
+    await _grpJoinByCodeRaw(gRow.invite_code);
+  }catch(e){
+    console.warn('preview join:',e);
+    showToast('⚠️','Beitritt fehlgeschlagen');
+  }
 }
-
-function _filterDiscoverGroups(q){}
 
 function _gcSetType(type){
   _gcType=type;
@@ -11995,189 +12839,311 @@ function _gcIcon(ico){
   });
 }
 
+// v54: Gruppe erstellen via RPC create_group — atomar (group + admin-member + welcome message)
 async function _grpCreate(){
+  if(!_sb||!_sbUser){showToast('⚠️','Cloud-Login nötig');return;}
   const name=document.getElementById('gc-name').value.trim();
   if(!name){showToast('⚠️','Gruppenname fehlt');return;}
   const desc=document.getElementById('gc-desc').value.trim();
   const region=document.getElementById('gc-region').value.trim();
-  const myName=profile?.name||profile?.vorname||'Angler';
-  const myId=_sbUser?.id||_newId();
+  const myName=profile?.name||profile?.vorname||(_sbUser.email||'Angler').split('@')[0];
 
-  const group={
-    id:_newId(),
-    name,desc,region,
-    type:_gcType,
-    icon:_gcIcon_,
-    inviteCode:_genInviteCode(),
-    createdAt:new Date().toISOString(),
-    createdBy:myId,
-    members:[{id:myId,name:myName,role:'admin',joinedAt:new Date().toISOString(),isBeta:false}],
-    feed:[{type:'system',text:`${myName} hat die Gruppe "${name}" erstellt.`,ts:Date.now(),userId:myId}],
-    sharedCatches:[],
-    _unread:0
-  };
-  _groups.push(group);
-  await _saveGroups();
+  try{
+    const{data,error}=await _sb.rpc('create_group',{
+      p_name:name,p_description:desc||null,p_region:region||null,
+      p_type:_gcType||'private',p_icon:_gcIcon_||'🎣',p_display_name:myName
+    });
+    if(error)throw error;
+    if(!data?.ok){showToast('⚠️','Fehler: '+(data?.error||'unbekannt'));return;}
 
-  closeFs('group-create');
-  showToast('✅',`Gruppe "${name}" erstellt!`);
+    closeFs('group-create');
+    showToast('✅',`Gruppe "${name}" erstellt!`);
+    setTimeout(()=>showToast('🔗',`Einladungscode: ${data.invite_code}`),1500);
 
-  // Show invite code
-  setTimeout(()=>{
-    showToast('🔗',`Einladungscode: ${group.inviteCode}`);
-  },1500);
+    document.getElementById('gc-name').value='';
+    document.getElementById('gc-desc').value='';
+    document.getElementById('gc-region').value='';
 
-  document.getElementById('gc-name').value='';
-  document.getElementById('gc-desc').value='';
-  document.getElementById('gc-region').value='';
-  _rndrGroupList();
+    await _loadGroups();
+    _rndrGroupList();
+    // Direkt in die neue Gruppe rein
+    _openGroupDetail(data.group_id);
+  }catch(e){
+    console.warn('grpCreate:',e);
+    showToast('⚠️','Erstellen fehlgeschlagen');
+  }
 }
 
+// v54: Standalone-Beitritt aus dem Burger-Menü-Overlay (fs-group-join). Nutzt RPC.
 async function _grpJoinByCode(){
   const code=document.getElementById('gj-code').value.trim().toUpperCase();
   if(!code||code.length<4){showToast('⚠️','Bitte Code eingeben');return;}
-  const found=_groups.find(g=>g.inviteCode===code);
-  if(found){
-    showToast('ℹ️','Du bist bereits Mitglied dieser Gruppe');
+  const ok=await _grpJoinByCodeRaw(code);
+  if(ok){
     closeFs('group-join');
-    _openGroupDetail(found.id);
-    return;
+    document.getElementById('gj-code').value='';
   }
-  // Simulate joining - in production this would be a Supabase lookup
-  const myName=profile?.name||profile?.vorname||'Angler';
-  const myId=_sbUser?.id||_newId();
-  const group={
-    id:_newId(),
-    name:'Gruppe '+code,desc:'Per Einladungscode beigetreten',region:'',
-    type:'private',icon:'🎣',inviteCode:code,
-    createdAt:new Date(Date.now()-86400000).toISOString(),createdBy:'external',
-    members:[
-      {id:'demo-admin',name:'Gruppen-Admin',role:'admin',joinedAt:new Date(Date.now()-86400000).toISOString()},
-      {id:myId,name:myName,role:'member',joinedAt:new Date().toISOString()}
-    ],
-    feed:[
-      {type:'system',text:`${myName} ist der Gruppe beigetreten!`,ts:Date.now(),userId:myId}
-    ],
-    sharedCatches:[],_unread:0
-  };
-  _groups.push(group);
-  await _saveGroups();
-  closeFs('group-join');
-  showToast('✅','Gruppe beigetreten!');
-  document.getElementById('gj-code').value='';
-  _openGroupDetail(group.id);
 }
 
+// Gemeinsame Beitritts-Logik (von Discover-Code-Eingabe + Standalone-Overlay + Preview-Beitritt)
+async function _grpJoinByCodeRaw(code){
+  if(!_sb||!_sbUser){showToast('⚠️','Cloud-Login nötig');return false;}
+  const myName=profile?.name||profile?.vorname||(_sbUser.email||'Angler').split('@')[0];
+  try{
+    const{data,error}=await _sb.rpc('join_group_by_code',{
+      p_code:code,p_display_name:myName,p_message:null
+    });
+    if(error)throw error;
+    if(!data?.ok){
+      const msg=data?.error==='invalid_code'?'Ungültiger Code':'Beitritt fehlgeschlagen';
+      showToast('⚠️',msg);
+      return false;
+    }
+    if(data.status==='already_member'){
+      showToast('ℹ️','Du bist bereits Mitglied');
+      await _loadGroups();
+      _openGroupDetail(data.group_id);
+      return true;
+    }
+    if(data.status==='joined'){
+      showToast('✅',`Gruppe "${data.group_name}" beigetreten!`);
+      await _loadGroups();
+      _rndrGroupList();
+      _openGroupDetail(data.group_id);
+      return true;
+    }
+    if(data.status==='pending'){
+      showToast('⏳','Beitrittsanfrage gestellt — der Admin wurde benachrichtigt');
+      _rndrGroupList();
+      return true;
+    }
+  }catch(e){
+    console.warn('joinByCode:',e);
+    showToast('⚠️','Beitritt fehlgeschlagen');
+  }
+  return false;
+}
+
+// v54: Quick-Join für Public Groups (vom Preview-Button und Demo-Compat).
+// Geht jetzt zwingend über den Server.
 async function _quickJoinPublic(name,icon){
-  const myName=profile?.name||profile?.vorname||'Angler';
-  const myId=_sbUser?.id||_newId();
-  const existing=_groups.find(g=>g.name===name);
-  if(existing){showToast('ℹ️','Bereits Mitglied');_openGroupDetail(existing.id);return;}
-
-  const demoMembers=[
-    {id:'u1',name:'Max F.',role:'admin',joinedAt:new Date(Date.now()-30*86400000).toISOString()},
-    {id:'u2',name:'Lisa K.',role:'member',joinedAt:new Date(Date.now()-20*86400000).toISOString()},
-    {id:'u3',name:'Tom H.',role:'member',joinedAt:new Date(Date.now()-10*86400000).toISOString()},
-    {id:myId,name:myName,role:'member',joinedAt:new Date().toISOString()}
-  ];
-  const demoFeed=_genDemoFeed(demoMembers);
-  const demoCatches=_genDemoSharedCatches(demoMembers);
-
-  const group={
-    id:_newId(),name,desc:'Öffentliche Angelgruppe',region:'',type:'public',icon,
-    inviteCode:_genInviteCode(),
-    createdAt:new Date(Date.now()-30*86400000).toISOString(),createdBy:'u1',
-    members:demoMembers,feed:demoFeed,sharedCatches:demoCatches,_unread:3
-  };
-  _groups.push(group);
-  await _saveGroups();
-  showToast('✅',`"${name}" beigetreten!`);
-  _openGroupDetail(group.id);
+  // Wir kennen den invite_code nicht, also Suche per name
+  if(!_sb||!_sbUser){showToast('⚠️','Login nötig');return;}
+  try{
+    const{data,error}=await _sb.from('groups').select('invite_code').eq('name',name).eq('type','public').limit(1).maybeSingle();
+    if(error)throw error;
+    if(!data){showToast('⚠️','Gruppe nicht gefunden');return;}
+    await _grpJoinByCodeRaw(data.invite_code);
+  }catch(e){console.warn('quickJoin:',e);showToast('⚠️','Beitritt fehlgeschlagen');}
 }
 
-function _genDemoFeed(members){
-  const now=Date.now();
-  return [
-    {type:'system',text:`Gruppe erstellt`,ts:now-25*86400000,userId:'u1'},
-    {type:'catch',text:'Hat einen 72cm Hecht geteilt!',ts:now-3*86400000,userId:'u1',catchData:{type:'Hecht',length:72,bait:'Gummifisch',baitNote:'18cm Kopyto weiß',weight:3.2,water:'Dümmer See'}},
-    {type:'msg',text:'Mega Fisch! Welche Farbe war der Kopyto?',ts:now-3*86400000+3600000,userId:'u2'},
-    {type:'msg',text:'Weiß/Silber – die laufen gerade super bei dem trüben Wasser!',ts:now-3*86400000+7200000,userId:'u1'},
-    {type:'catch',text:'Hat einen 45cm Zander geteilt!',ts:now-2*86400000,userId:'u3',catchData:{type:'Zander',length:45,bait:'Gummifisch',baitNote:'12cm Nays Motoroil',water:'Elbe'}},
-    {type:'live',text:'Ist jetzt am Wasser!',ts:now-86400000,userId:'u2',water:'Steinhuder Meer'},
-    {type:'catch',text:'Hat einen 88cm Hecht geteilt!',ts:now-43200000,userId:'u2',catchData:{type:'Hecht',length:88,bait:'Wobbler',baitNote:'Jackall Squad Minnow',weight:5.1,water:'Steinhuder Meer'}},
-    {type:'msg',text:'Monster! PB?! 🏆',ts:now-40000000,userId:'u1'},
-    {type:'msg',text:'Ja, neuer PB! 💪 Der kam auf der Kante in 3m Tiefe.',ts:now-38000000,userId:'u2'}
-  ];
-}
+// v54: Demo-Generatoren werden nicht mehr benötigt — bleiben als no-op für rückwärtskompatible Aufrufer
+function _genDemoFeed(){return[];}
+function _genDemoSharedCatches(){return[];}
 
-function _genDemoSharedCatches(members){
-  return [
-    {id:_newId(),userId:'u1',userName:'Max F.',type:'Hecht',length:72,bait:'Gummifisch',baitNote:'18cm Kopyto weiß',weight:3.2,water:'Dümmer See',date:'2026-04-11',time:'07:30',shareGps:false,likes:['u2','u3'],comments:[{userId:'u2',text:'Mega!',ts:Date.now()-3*86400000}]},
-    {id:_newId(),userId:'u3',userName:'Tom H.',type:'Zander',length:45,bait:'Gummifisch',baitNote:'12cm Nays Motoroil',water:'Elbe',date:'2026-04-12',time:'19:15',shareGps:false,likes:['u1'],comments:[]},
-    {id:_newId(),userId:'u2',userName:'Lisa K.',type:'Hecht',length:88,bait:'Wobbler',baitNote:'Jackall Squad Minnow',weight:5.1,water:'Steinhuder Meer',date:'2026-04-13',time:'09:45',shareGps:true,lat:'52.4684',lon:'9.3290',likes:['u1','u3'],comments:[{userId:'u1',text:'Monster! PB?! 🏆',ts:Date.now()-40000000}]}
-  ];
-}
-
-// ── Group Detail / Feed ──
-function _openGroupDetail(gId){
-  // AP9.1: Wenn vorher Preview lief, vorher cleanen
-  if(typeof _previewGroupId!=='undefined'&&_previewGroupId&&_previewGroupId!==gId){
+// ── Group Detail Open ──
+async function _openGroupDetail(gId){
+  // Vorherige Preview cleanen
+  if(_previewGroupId&&_previewGroupId!==gId){
     _groups=(_groups||[]).filter(g=>!g._isPreview);
     _previewGroupId=null;
   }
-  if(typeof _hidePreviewJoinFab==='function')_hidePreviewJoinFab();
+  _hidePreviewJoinFab();
   _activeGroupId=gId;
-  const g=_groups.find(x=>x.id===gId);
-  if(!g)return;
+  let g=_groups.find(x=>x.id===gId);
+
+  // Falls die Gruppe nicht in der Liste ist (z.B. nach create_group direkt aufgerufen) → reload
+  if(!g){
+    await _loadGroups();
+    g=_groups.find(x=>x.id===gId);
+    if(!g)return;
+  }
   g._unread=0;
-  if(!g._isPreview)_saveGroups();
   openFs('group-detail');
-  document.getElementById('grp-detail-title').textContent=`${g.icon} ${g.name}`;
-  document.getElementById('grp-detail-meta').textContent=`${g.members?.length||0} Mitglieder · ${g.type==='private'?'🔒 Privat':g.type==='elite'?'⭐ Elite':'🌍 Öffentlich'}`;
-  // AP3: Subnav für normale Mitglied-Ansicht zwingend wieder einblenden (Preview hatte sie versteckt)
+  document.getElementById('grp-detail-title').textContent=`${g.icon||'🎣'} ${g.name}`;
+  const memberCount=g._memberCount||g.members?.length||0;
+  document.getElementById('grp-detail-meta').textContent=`${memberCount} Mitglieder · ${g.type==='private'?'🔒 Privat':g.type==='elite'?'⭐ Elite':'🌍 Öffentlich'}`;
   const subnav=document.getElementById('grp-subnav');
   if(subnav)subnav.style.display='';
+
+  // Detail-Daten ziehen wenn noch nicht geladen oder veraltet
+  if(!g._isPreview){
+    await _loadGroupDetail(gId);
+    // Realtime-Subscription für die Gruppe
+    _grpRTSubscribe(gId);
+  }
   _grpDetailTab('feed');
 }
 
+// ── Realtime: Live-Channel pro geöffneter Gruppe ──
+function _grpRTSubscribe(gId){
+  if(!_sb)return;
+  // Vorherige Channel sauber schließen
+  _grpRTUnsubscribe();
+  _grpRTGroupId=gId;
+  _grpRTStatus='connecting';
+  _grpRTUpdateIndicator();
+  const ch=_sb.channel('grp-'+gId,{config:{broadcast:{ack:false}}});
+
+  // group_messages: neue Chat-Nachrichten oder System-Events
+  ch.on('postgres_changes',{event:'INSERT',schema:'public',table:'group_messages',filter:'group_id=eq.'+gId},(p)=>{
+    const g=_groups.find(x=>x.id===gId);if(!g)return;
+    const row=_grpMapMessageRow(p.new);
+    if(!g.feed)g.feed=[];
+    if(!g.feed.find(f=>f.id===row.id))g.feed.push(row);
+    _maybeAppendFeedMessage(row);
+  });
+  ch.on('postgres_changes',{event:'DELETE',schema:'public',table:'group_messages',filter:'group_id=eq.'+gId},(p)=>{
+    const g=_groups.find(x=>x.id===gId);if(!g||!g.feed)return;
+    g.feed=g.feed.filter(m=>m.id!==p.old.id);
+    if(_isFeedTabActive())_rndrGroupFeed();
+  });
+
+  // group_shared_catches: neuer geteilter Fang
+  ch.on('postgres_changes',{event:'INSERT',schema:'public',table:'group_shared_catches',filter:'group_id=eq.'+gId},async()=>{
+    await _loadGroupDetail(gId);
+    if(_isFeedTabActive())_rndrGroupFeed();
+  });
+
+  // group_catch_likes: live like-Counter
+  ch.on('postgres_changes',{event:'*',schema:'public',table:'group_catch_likes'},async(p)=>{
+    const catchId=p.new?.catch_id||p.old?.catch_id;
+    if(!catchId)return;
+    const g=_groups.find(x=>x.id===gId);if(!g)return;
+    const sc=g.sharedCatches?.find(c=>c.id===catchId);
+    if(!sc)return;
+    sc.likes=sc.likes||[];
+    if(p.eventType==='INSERT')sc.likes=Array.from(new Set([...(sc.likes||[]),p.new.user_id]));
+    else if(p.eventType==='DELETE')sc.likes=(sc.likes||[]).filter(u=>u!==p.old.user_id);
+    _grpUpdateLikeBtn(catchId,sc);
+  });
+
+  // group_catch_comments: live Kommentare
+  ch.on('postgres_changes',{event:'INSERT',schema:'public',table:'group_catch_comments'},async(p)=>{
+    const g=_groups.find(x=>x.id===gId);if(!g)return;
+    const sc=g.sharedCatches?.find(c=>c.id===p.new.catch_id);
+    if(!sc)return;
+    sc.comments=sc.comments||[];
+    if(!sc.comments.find(c=>c.id===p.new.id)){
+      sc.comments.push({
+        id:p.new.id,userId:p.new.user_id,
+        userName:p.new.display_name||'Angler',
+        text:p.new.text,ts:new Date(p.new.created_at).getTime()
+      });
+    }
+    if(_activeCatchDetailId===p.new.catch_id)_cdRenderComments();
+  });
+
+  // group_members: Mitglieder kommen/gehen
+  ch.on('postgres_changes',{event:'*',schema:'public',table:'group_members',filter:'group_id=eq.'+gId},async()=>{
+    await _loadGroupDetail(gId);
+    if(_activeMemberTab())_rndrGroupMembers();
+    // Header-Meta aktualisieren
+    const g=_groups.find(x=>x.id===gId);
+    if(g)document.getElementById('grp-detail-meta').textContent=`${g.members?.length||0} Mitglieder · ${g.type==='private'?'🔒 Privat':g.type==='elite'?'⭐ Elite':'🌍 Öffentlich'}`;
+  });
+
+  // group_join_requests: Admin sieht neue Anfragen live
+  ch.on('postgres_changes',{event:'*',schema:'public',table:'group_join_requests',filter:'group_id=eq.'+gId},async()=>{
+    const g=_groups.find(x=>x.id===gId);
+    if(g&&g._myRole==='admin'){
+      await _loadGroupDetail(gId);
+      if(_activeMemberTab())_rndrGroupMembers();
+    }
+  });
+
+  ch.subscribe(status=>{
+    if(status==='SUBSCRIBED'){_grpRTStatus='connected';_grpRTUpdateIndicator();}
+    else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){_grpRTStatus='disconnected';_grpRTUpdateIndicator();}
+  });
+  _grpRTChannel=ch;
+}
+
+function _grpRTUnsubscribe(){
+  if(_grpRTChannel&&_sb){
+    try{_sb.removeChannel(_grpRTChannel);}catch(e){}
+  }
+  _grpRTChannel=null;_grpRTGroupId=null;
+  _grpRTStatus='disconnected';
+  _grpRTUpdateIndicator();
+}
+
+function _grpRTUpdateIndicator(){
+  let ind=document.getElementById('grp-rt-indicator');
+  const hdr=document.getElementById('grp-detail-hdr');
+  if(!hdr)return;
+  if(!ind){
+    ind=document.createElement('div');
+    ind.id='grp-rt-indicator';
+    ind.className='grp-rt-indicator';
+    ind.innerHTML='<span class="rt-dot"></span><span class="rt-lbl">…</span>';
+    hdr.appendChild(ind);
+  }
+  ind.classList.toggle('connecting',_grpRTStatus==='connecting');
+  ind.classList.toggle('disconnected',_grpRTStatus==='disconnected');
+  const lbl=ind.querySelector('.rt-lbl');
+  if(lbl)lbl.textContent=_grpRTStatus==='connected'?'LIVE':_grpRTStatus==='connecting'?'…':'OFF';
+}
+
+function _isFeedTabActive(){
+  const a=document.querySelector('#grp-subnav .grp-subnav-btn.on');
+  return a?.getAttribute('data-tab')==='feed';
+}
+function _activeMemberTab(){
+  const a=document.querySelector('#grp-subnav .grp-subnav-btn.on');
+  return a?.getAttribute('data-tab')==='members';
+}
+
+// Optimistisch eine neue Message anhängen ohne kompletten Re-Render
+function _maybeAppendFeedMessage(msg){
+  if(!_isFeedTabActive())return;
+  // Wenn Anhängen am Stream einfach möglich → DOM-append; sonst voller Re-Render
+  _rndrGroupFeed();
+}
+
+function _grpUpdateLikeBtn(catchId,sc){
+  const myId=_sbUser?.id||'me';
+  const btn=document.getElementById('like-btn-'+catchId);
+  if(!btn)return;
+  const liked=(sc.likes||[]).includes(myId);
+  btn.classList.toggle('liked',liked);
+  const ico=btn.querySelector('.cc-ico');if(ico)ico.textContent=liked?'❤️':'🤍';
+  const cnt=btn.querySelector('.like-cnt');if(cnt)cnt.textContent=(sc.likes?.length||'');
+}
+
+// ── Tab-Wechsel ──
 function _grpDetailTab(tab){
-  // AP4: Update subnav buttons
   document.querySelectorAll('#grp-subnav .grp-subnav-btn').forEach(b=>{
     b.classList.toggle('on',b.getAttribute('data-tab')===tab);
   });
-
-  // AP9.1: Im Preview-Modus Chat-Bar IMMER aus (read-only)
   const g=_groups.find(x=>x.id===_activeGroupId);
   const isPreview=!!(g&&g._isPreview);
 
-  // Show chat bar only in feed tab — und nicht im Preview
   const chatBar=document.getElementById('grp-chat-bar');
   if(chatBar)chatBar.style.display=(tab==='feed'&&!isPreview)?'flex':'none';
 
-  // AP2: Map-Mode Klasse toggeln für Full-Size Map
   const contentEl=document.getElementById('grp-detail-content');
   if(contentEl)contentEl.classList.toggle('map-mode',tab==='map');
 
-  // AP2: has-chat Klasse für extra padding wenn Chat-Bar sichtbar
   const grpDetail=document.getElementById('fs-group-detail');
   if(grpDetail)grpDetail.classList.toggle('has-chat',tab==='feed'&&!isPreview);
 
   if(tab==='feed')_rndrGroupFeed();
   else if(tab==='insights')_rndrGroupInsights();
   else if(tab==='map'){_rndrGroupMap();
-    // AP9.2: Bei Tab-Wechsel auf Map → invalidateSize damit Container-Höhe greift
     [120,300,600].forEach(t=>setTimeout(()=>{if(_grpLeafletMap)_grpLeafletMap.invalidateSize();},t));
   }
   else if(tab==='members')_rndrGroupMembers();
 }
 
+// v54: Feed-Renderer — nutzt jetzt sharedCatchId aus catch_data, photoUrl aus Storage,
+// rendert Reply-Quotes und stattet jede Message-Bubble mit Swipe-to-Reply Handlern aus.
 function _rndrGroupFeed(){
   const g=_groups.find(x=>x.id===_activeGroupId);
   if(!g)return;
   const el=document.getElementById('grp-detail-content');
-  const myId=_sbUser?.id||g.members?.find(m=>m.role==='admin'&&m.name===(profile?.name||''))?.id||'me';
+  const myId=_sbUser?.id||'me';
 
-  // AP9.1: Im Preview-Modus Feed auf letzte 10 Nachrichten limitieren
   const isPreview=!!g._isPreview;
   const feedSrc=isPreview?(g.feed||[]).slice(-10):(g.feed||[]);
 
@@ -12188,7 +13154,7 @@ function _rndrGroupFeed(){
   html+='<div class="feed-stream">';
   let lastDate='';
 
-  feedSrc.forEach((item,idx)=>{
+  feedSrc.forEach((item)=>{
     const d=new Date(item.ts);
     const dateStr=d.toLocaleDateString('de-DE',{day:'numeric',month:'short'});
     if(dateStr!==lastDate){
@@ -12196,69 +13162,42 @@ function _rndrGroupFeed(){
       lastDate=dateStr;
     }
 
-    const member=g.members.find(m=>m.id===item.userId)||{name:'Unbekannt'};
+    const member=g.members?.find(m=>m.id===item.userId)||{name:item._userName||'Unbekannt'};
+    const memberName=member.name||item._userName||'Unbekannt';
     const color=_userColor(item.userId);
     const timeStr=d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     const isOwn=item.userId===myId;
 
     if(item.type==='system'){
-      html+=`<div style="text-align:center;font-size:11px;color:var(--text-light);padding:4px;font-style:italic;">ℹ️ ${_esc(item.text)}</div>`;
+      html+=`<div style="text-align:center;font-size:11px;color:var(--text-light);padding:4px;font-style:italic;">ℹ️ ${_esc(item.text||'')}</div>`;
     }
     else if(item.type==='live'){
-      // AP2: Live-Tracking-Route als SVG-Mini-Map wenn vorhanden
-      let trackSvg='';
-      if(item.gpsTrack&&item.gpsTrack.length>=2){
-        const pts=item.gpsTrack;
-        const lats=pts.map(p=>p.lat||p[0]);
-        const lons=pts.map(p=>p.lon||p[1]);
-        const minLat=Math.min(...lats),maxLat=Math.max(...lats);
-        const minLon=Math.min(...lons),maxLon=Math.max(...lons);
-        const rLat=maxLat-minLat||1e-5,rLon=maxLon-minLon||1e-5;
-        const w=200,h=80,pad=6;
-        const poly=pts.map(p=>{
-          const la=p.lat||p[0],lo=p.lon||p[1];
-          const x=pad+((lo-minLon)/rLon)*(w-2*pad);
-          const y=pad+((maxLat-la)/rLat)*(h-2*pad); // invert Y
-          return `${x.toFixed(1)},${y.toFixed(1)}`;
-        }).join(' ');
-        const coordsJson=encodeURIComponent(JSON.stringify(pts));
-        trackSvg=`<div style="margin-top:8px;cursor:pointer;" onclick="event.stopPropagation();_openLiveTrackMap('${coordsJson}')">
-          <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:80px;background:#eef4ef;border-radius:8px;border:1px solid var(--green-pale);">
-            <polyline points="${poly}" fill="none" stroke="var(--green-deep)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-          </svg>
-          <div style="font-size:10px;color:var(--text-light);margin-top:4px;text-align:center;">🗺️ Tippen für volle Karte · ${pts.length} GPS-Punkte</div>
-        </div>`;
-      }
       html+=`<div class="feed-live-alert">
         <div class="feed-live-pulse"></div>
-        <div class="feed-live-info"><strong>${_esc(member.name)}</strong> ${item.gpsTrack?'war am Wasser':'ist jetzt am Wasser'}!${item.water?' · '+_esc(item.water):''}</div>
+        <div class="feed-live-info"><strong>${_esc(memberName)}</strong> ist jetzt am Wasser!${item.text?' · '+_esc(item.text):''}</div>
         <div style="font-size:10px;opacity:.6;">${timeStr}</div>
-        ${trackSvg}
       </div>`;
     }
     else if(item.type==='catch'&&item.catchData){
       const c=item.catchData;
-      const sc=g.sharedCatches?.find(sc=>sc.type===c.type&&sc.length===c.length&&sc.userId===item.userId);
-      const scId=sc?.id||'';
-      const liked=sc?.likes?.includes(myId);
+      const scId=c.sharedCatchId||c.id||'';
+      const sc=g.sharedCatches?.find(s=>s.id===scId);
+      const liked=(sc?.likes||[]).includes(myId);
       const likeCount=sc?.likes?.length||0;
       const commentCount=sc?.comments?.length||0;
-
-      // AP2: Foto in der Kachel rendern falls vorhanden
-      const hasPhoto=!!(sc?.photoKey||c.photoKey);
-      const photoKey=sc?.photoKey||c.photoKey;
-      const photoHtml=hasPhoto?`<div id="feed-photo-wrap-${scId}" style="position:relative;width:100%;background:var(--cream-dark);aspect-ratio:16/10;overflow:hidden;"><img id="feed-photo-${scId}" src="" alt="Fangfoto" style="width:100%;height:100%;object-fit:cover;display:none;" onload="this.style.display='block'"></div>`:'';
+      const photoUrl=sc?.photoUrl||c.photoUrl||item.photoUrl;
+      const photoHtml=photoUrl?`<div style="position:relative;width:100%;background:var(--cream-dark);aspect-ratio:16/10;overflow:hidden;"><img src="${_esc(photoUrl)}" alt="Fangfoto" style="width:100%;height:100%;object-fit:cover;" loading="lazy"></div>`:'';
       html+=`<div class="catch-card" style="cursor:pointer;" onclick="_openCatchDetail('${g.id}','${scId}')">
         ${photoHtml}
         <div class="catch-card-body">
           <div class="catch-card-user">
-            <div class="catch-card-avatar" style="background:${color};">${member.name.charAt(0)}</div>
+            <div class="catch-card-avatar" style="background:${color};">${memberName.charAt(0)}</div>
             <div>
-              <div class="catch-card-uname">${_esc(member.name)}</div>
-              <div class="catch-card-utime">${timeStr} · ${c.water||''}</div>
+              <div class="catch-card-uname">${_esc(memberName)}</div>
+              <div class="catch-card-utime">${timeStr} · ${_esc(c.water||'')}</div>
             </div>
           </div>
-          <div style="font-family:var(--fs);font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:4px;">${fIco(c.type)} ${_esc(c.type)} · ${c.length}cm${c.weight?' · '+c.weight+'kg':''}</div>
+          <div style="font-family:var(--fs);font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:4px;">${typeof fIco==='function'?fIco(c.type):''} ${_esc(c.type||'')} · ${c.length||'?'}cm${c.weight?' · '+c.weight+'kg':''}</div>
           <div class="catch-card-bait">
             <div class="catch-card-chip">🎣 ${_esc(c.bait||'–')}</div>
             ${c.baitNote?`<div class="catch-card-chip">${_esc(c.baitNote)}</div>`:''}
@@ -12270,24 +13209,25 @@ function _rndrGroupFeed(){
           </div>
         </div>
       </div>`;
-      // Foto async nachladen
-      if(hasPhoto&&photoKey){
-        setTimeout(async()=>{
-          const ph=await getPhoto(photoKey);
-          const img=document.getElementById('feed-photo-'+scId);
-          if(img&&ph)img.src=ph;
-        },50);
-      }
     }
     else if(item.type==='msg'){
-      // AP2: anklickbarer Standort
-      const locBtn=item.locCoords?`<div onclick="event.stopPropagation();_openLocInMap(${item.locCoords.lat},${item.locCoords.lon},'${_esc(member.name).replace(/'/g,"\\'")}')" style="margin-top:6px;padding:8px 12px;background:var(--green-mist);border:1px solid var(--green-pale);border-radius:8px;font-size:12px;font-weight:600;color:var(--green-mid);cursor:pointer;display:flex;align-items:center;gap:6px;">🗺️ Standort auf Karte öffnen</div>`:'';
-      html+=`<div class="feed-msg${isOwn?' own':''}">
-        <div class="catch-card-avatar" style="background:${color};width:24px;height:24px;font-size:11px;margin-top:2px;flex-shrink:0;">${member.name.charAt(0)}</div>
+      // v54 AP2.4: Reply-Quote rendern wenn vorhanden
+      const quoteHtml=item.replyTo?`<div class="feed-msg-quote" onclick="event.stopPropagation();_grpScrollToMessage('${item.replyTo}')">
+        <div class="feed-msg-quote-body">
+          <div class="feed-msg-quote-name">${_esc(item.replyToUserName||'Antwort')}</div>
+          <div class="feed-msg-quote-text">${_esc(item.replyToText||'')}</div>
+        </div>
+      </div>`:'';
+      const photoHtml=item.photoUrl?`<div style="margin-top:6px;border-radius:10px;overflow:hidden;cursor:pointer;" onclick="event.stopPropagation();_lbOpen('${_esc(item.photoUrl)}')"><img src="${_esc(item.photoUrl)}" alt="Foto" style="display:block;width:100%;max-height:280px;object-fit:cover;" loading="lazy"></div>`:'';
+      const textBody=item.text?_esc(item.text).replace(/\n/g,'<br>'):'';
+      html+=`<div class="feed-msg${isOwn?' own':''}" data-msg-id="${item.id||''}">
+        <div class="catch-card-avatar" style="background:${color};width:24px;height:24px;font-size:11px;margin-top:2px;flex-shrink:0;">${memberName.charAt(0)}</div>
+        <div class="feed-msg-swipe-ico">↩</div>
         <div class="feed-msg-bubble">
-          <div class="feed-msg-name" style="color:${color};">${_esc(member.name)}</div>
-          ${_esc(item.text)}
-          ${locBtn}
+          <div class="feed-msg-name" style="color:${color};">${_esc(memberName)}</div>
+          ${quoteHtml}
+          ${textBody}
+          ${photoHtml}
           <div class="feed-msg-time">${timeStr}</div>
         </div>
       </div>`;
@@ -12297,65 +13237,196 @@ function _rndrGroupFeed(){
   html+='</div>';
   el.innerHTML=html;
 
+  // v54 AP2.4: Swipe-to-Reply auf alle .feed-msg Bubbles aktivieren (außer im Preview)
+  if(!isPreview){
+    el.querySelectorAll('.feed-msg').forEach(node=>_grpAttachSwipe(node));
+  }
+
   // Auto-scroll to bottom
   const scroll=document.getElementById('grp-detail-scroll');
   if(scroll)requestAnimationFrame(()=>scroll.scrollTop=scroll.scrollHeight);
 }
 
-async function _grpSendMsg(){
-  const input=document.getElementById('grp-chat-input');
-  const text=input.value.trim();
-  if(!text)return;
-  const g=_groups.find(x=>x.id===_activeGroupId);
-  if(!g)return;
-  const myId=_sbUser?.id||g.members?.find(m=>m.name===(profile?.name||''))?.id||'me';
-  g.feed.push({type:'msg',text,ts:Date.now(),userId:myId});
-  input.value='';
-  await _saveGroups();
-  _rndrGroupFeed();
+// v54: Bouncing scroll wenn auf zitierte Nachricht geklickt wird
+function _grpScrollToMessage(msgId){
+  if(!msgId)return;
+  const node=document.querySelector(`.feed-msg[data-msg-id="${msgId}"]`);
+  if(!node)return;
+  node.scrollIntoView({behavior:'smooth',block:'center'});
+  node.classList.add('msg-flash');
+  setTimeout(()=>node.classList.remove('msg-flash'),1200);
 }
 
+// v54 AP2.4: Swipe-to-Reply Handler — wischt nach rechts (oder links bei eigenen) und triggert Reply-Modus
+function _grpAttachSwipe(node){
+  const bubble=node.querySelector('.feed-msg-bubble');
+  if(!bubble)return;
+  let startX=0,startY=0,dx=0,dy=0,active=false,locked=false;
+  const isOwn=node.classList.contains('own');
+  const dir=isOwn?-1:1; // own: swipe nach links, andere: nach rechts
+  const TRIGGER=60;
+
+  const onTouchStart=(e)=>{
+    const t=e.touches[0];
+    startX=t.clientX;startY=t.clientY;dx=0;dy=0;active=true;locked=false;
+  };
+  const onTouchMove=(e)=>{
+    if(!active)return;
+    const t=e.touches[0];
+    dx=t.clientX-startX;dy=t.clientY-startY;
+    // Achsen-Lock: ob horizontaler Swipe oder vertikales Scroll
+    if(!locked){
+      if(Math.abs(dx)>8||Math.abs(dy)>8){
+        if(Math.abs(dx)>Math.abs(dy)*1.4){locked='h';}
+        else{locked='v';active=false;return;}
+      }
+    }
+    if(locked==='h'){
+      // Nur in der erlaubten Richtung gestatten
+      const sign=Math.sign(dx);
+      if(sign!==dir){return;}
+      const offset=Math.min(Math.abs(dx),100)*dir;
+      bubble.style.transform=`translateX(${offset}px)`;
+      node.classList.toggle('swipe-active',Math.abs(offset)>=TRIGGER);
+    }
+  };
+  const onTouchEnd=()=>{
+    if(!active&&locked!=='h'){return;}
+    active=false;
+    if(locked==='h'&&Math.abs(dx)>=TRIGGER&&Math.sign(dx)===dir){
+      const msgId=node.getAttribute('data-msg-id');
+      _grpStartReply(msgId);
+    }
+    bubble.style.transform='';
+    node.classList.remove('swipe-active');
+    locked=false;
+  };
+  node.addEventListener('touchstart',onTouchStart,{passive:true});
+  node.addEventListener('touchmove',onTouchMove,{passive:true});
+  node.addEventListener('touchend',onTouchEnd);
+  node.addEventListener('touchcancel',onTouchEnd);
+}
+
+// v54 AP2.4: Reply-Modus aktivieren
+let _grpReplyTo=null;
+function _grpStartReply(msgId){
+  const g=_groups.find(x=>x.id===_activeGroupId);if(!g)return;
+  const msg=g.feed?.find(f=>f.id===msgId);
+  if(!msg)return;
+  const member=g.members?.find(m=>m.id===msg.userId)||{name:msg._userName||'Mitglied'};
+  _grpReplyTo={
+    id:msg.id,
+    text:(msg.text||'(Foto)').slice(0,200),
+    userName:member.name||msg._userName||'Mitglied'
+  };
+  document.getElementById('grp-chat-reply-name').textContent=_grpReplyTo.userName;
+  document.getElementById('grp-chat-reply-text').textContent=_grpReplyTo.text;
+  document.getElementById('grp-chat-reply').style.display='flex';
+  document.getElementById('grp-chat-input')?.focus();
+}
+function _grpClearReply(){
+  _grpReplyTo=null;
+  const r=document.getElementById('grp-chat-reply');
+  if(r)r.style.display='none';
+}
+
+// v54: Auto-Resize-Helper für die Chat-Textarea
+function _grpAutoResize(ta){
+  if(!ta)return;
+  ta.style.height='auto';
+  ta.style.height=Math.min(ta.scrollHeight,120)+'px';
+  // Clear-Button toggeln
+  const clr=document.getElementById('grp-chat-clear');
+  if(clr)clr.classList.toggle('on',(ta.value||'').trim().length>0);
+}
+function _grpClearInput(){
+  const ta=document.getElementById('grp-chat-input');
+  if(!ta)return;
+  ta.value='';_grpAutoResize(ta);
+  ta.focus();
+}
+
+// v54: Send-Message — INSERT in group_messages mit optionalem Photo + Reply-Refs
+async function _grpSendMsg(){
+  if(!_sb||!_sbUser){showToast('⚠️','Login nötig');return;}
+  const ta=document.getElementById('grp-chat-input');
+  const text=(ta.value||'').trim();
+  const hasPhoto=!!_grpPendingPhoto;
+  if(!text&&!hasPhoto)return;
+  const g=_groups.find(x=>x.id===_activeGroupId);
+  if(!g)return;
+  const myName=profile?.name||profile?.vorname||(_sbUser.email||'Angler').split('@')[0];
+
+  // Reply-Refs einlesen UND zurücksetzen
+  const reply=_grpReplyTo;
+  _grpClearReply();
+
+  // Photo falls vorhanden hochladen
+  let photoUrl=null;
+  if(hasPhoto){
+    try{photoUrl=await _grpUploadPhoto(g.id,_grpPendingPhoto.dataUrl,'chat');}
+    catch(e){console.warn('photo upload:',e);showToast('⚠️','Foto-Upload fehlgeschlagen');}
+    _grpClearPhotoPreview();
+  }
+
+  // INSERT
+  try{
+    const{error}=await _sb.from('group_messages').insert({
+      group_id:g.id,user_id:_sbUser.id,type:'msg',
+      text:text||null,photo_url:photoUrl,
+      display_name:myName,
+      reply_to:reply?.id||null,
+      reply_to_text:reply?.text||null,
+      reply_to_user_name:reply?.userName||null
+    });
+    if(error)throw error;
+  }catch(e){
+    console.warn('sendMsg:',e);
+    showToast('⚠️','Senden fehlgeschlagen');
+  }
+  ta.value='';
+  _grpAutoResize(ta);
+  // Realtime liefert die Nachricht zurück → kein manueller Refresh nötig.
+  // Fallback: nach kurzer Zeit refreshen falls Realtime nicht ankommt
+  setTimeout(()=>{if(_isFeedTabActive())_grpRefreshActive();},800);
+}
+
+// v54: Like via toggle_catch_like RPC (atomic + zählt direkt zurück)
 async function _grpLike(gId,catchId){
-  // AP4: DOM-only update – no re-render, viewport stays in place
+  if(!_sb||!_sbUser){showToast('⚠️','Login nötig');return;}
   const g=_groups.find(x=>x.id===gId);
   if(!g)return;
-  const myId=_sbUser?.id||'me';
+  const myId=_sbUser.id;
   const sc=g.sharedCatches?.find(c=>c.id===catchId);
   if(!sc)return;
+  // Optimistic UI
   if(!sc.likes)sc.likes=[];
   const idx=sc.likes.indexOf(myId);
   if(idx>=0)sc.likes.splice(idx,1);
   else sc.likes.push(myId);
-  // Update DOM only – don't re-render feed
-  const btn=document.getElementById('like-btn-'+catchId);
-  if(btn){
-    const liked=sc.likes.includes(myId);
-    btn.classList.toggle('liked',liked);
-    const ico=btn.querySelector('.cc-ico');
-    if(ico)ico.textContent=liked?'❤️':'🤍';
-    const cnt=btn.querySelector('.like-cnt');
-    if(cnt)cnt.textContent=sc.likes.length||'';
-  }
-  _saveGroups();
+  _grpUpdateLikeBtn(catchId,sc);
+  try{
+    const{data,error}=await _sb.rpc('toggle_catch_like',{p_catch_id:catchId});
+    if(error)throw error;
+    if(!data?.ok){
+      // Revert
+      const i2=sc.likes.indexOf(myId);
+      if(i2>=0)sc.likes.splice(i2,1); else sc.likes.push(myId);
+      _grpUpdateLikeBtn(catchId,sc);
+    }
+  }catch(e){console.warn('like:',e);}
 }
 
-// v51 Fix: Kommentar-Expand unter Catch-Card.
-// Bug-Fixes ggü. v50:
-//  - Klicks im Expand-Bereich blubberten zur catch-card → öffneten ungewollt das
-//    Detail-Overlay. Fix: stopPropagation auf dem Expand-Container.
-//  - Layout: Eingabefeld + Button waren zu schmal/eng → eigenes CSS .cm-expand-form
-//    mit voller Breite und sauberen Margins.
-//  - Auto-Scroll und :focus-handling damit Input direkt nutzbar ist.
+// v54: Inline-Kommentar-Expand unter einer Catch-Card. Schreibt in group_catch_comments.
 function _grpComment(gId,catchId,evt){
   evt=evt||window.event;
   const existing=document.getElementById('comment-expand-'+catchId);
-  if(existing){existing.remove();return;} // toggle off
+  if(existing){existing.remove();return;}
   const g=_groups.find(x=>x.id===gId);
   if(!g)return;
   const sc=g.sharedCatches?.find(c=>c.id===catchId);
   if(!sc)return;
 
-  // Comments-Liste rendern
   const commentsHtml=(sc.comments||[]).map(cm=>{
     const cmMember=g.members?.find(m=>m.id===cm.userId)||{name:cm.userName||'?'};
     const cmColor=_userColor(cm.userId);
@@ -12370,7 +13441,6 @@ function _grpComment(gId,catchId,evt){
     </div>`;
   }).join('');
 
-  // Trigger-Card finden (Klick war auf dem 💬-Button innerhalb der catch-card)
   let card=null;
   if(evt&&evt.target)card=evt.target.closest('.catch-card');
   if(!card){
@@ -12379,12 +13449,9 @@ function _grpComment(gId,catchId,evt){
   }
   if(!card)return;
 
-  // Expand-Container aufbauen + Klick-Bubbling stoppen
   const expand=document.createElement('div');
   expand.id='comment-expand-'+catchId;
   expand.className='cm-expand';
-  // KRITISCH: jeder Klick INNERHALB des Expand-Bereichs darf NICHT zur Card hochblubbern,
-  // sonst feuert catch-card.onclick (= _openCatchDetail) bei jedem Tap.
   expand.addEventListener('click',e=>e.stopPropagation());
   expand.addEventListener('mousedown',e=>e.stopPropagation());
   expand.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
@@ -12397,7 +13464,6 @@ function _grpComment(gId,catchId,evt){
     </form>`;
   card.appendChild(expand);
 
-  // Auto-Scroll: Expand sichtbar machen + Input fokussieren (keine Page-Scroll-Sprünge)
   setTimeout(()=>{
     const input=document.getElementById('cm-input-'+catchId);
     if(input){
@@ -12407,28 +13473,37 @@ function _grpComment(gId,catchId,evt){
   },80);
 }
 
+// v54: Comment-Submit — INSERT in group_catch_comments. Realtime liefert die Aktualisierung zurück.
 async function _submitComment(gId,catchId){
+  if(!_sb||!_sbUser){showToast('⚠️','Login nötig');return;}
   const input=document.getElementById('cm-input-'+catchId);
   const text=input?.value?.trim();
   if(!text)return;
-  const g=_groups.find(x=>x.id===gId);
-  if(!g)return;
-  const myId=_sbUser?.id||'me';
-  const myName=profile?.name||profile?.vorname||'Angler';
-  const sc=g.sharedCatches?.find(c=>c.id===catchId);
-  if(!sc)return;
-  if(!sc.comments)sc.comments=[];
-  sc.comments.push({userId:myId,userName:myName,text,ts:Date.now()});
-  // v51: KEIN automatischer Feed-Eintrag mehr — Kommentar bleibt am Fang, blockiert nicht den Chat
-  await _saveGroups();
+  const myName=profile?.name||profile?.vorname||(_sbUser.email||'Angler').split('@')[0];
+  try{
+    const{error}=await _sb.from('group_catch_comments').insert({
+      catch_id:catchId,user_id:_sbUser.id,
+      display_name:myName,text
+    });
+    if(error)throw error;
+  }catch(e){
+    console.warn('submitComment:',e);
+    showToast('⚠️','Kommentar fehlgeschlagen');
+    return;
+  }
   if(input)input.value='';
-  // Frischen Expand mit aktualisierter Liste anzeigen, ohne Feed neu zu rendern
-  const expand=document.getElementById('comment-expand-'+catchId);
-  if(expand)expand.remove();
-  _grpComment(gId,catchId);
-  // Counter-Badge im Card-Footer aktualisieren
-  const commentBtn=document.querySelector(`.catch-card-act[onclick*="_grpComment('${gId}','${catchId}'"]`);
-  if(commentBtn)commentBtn.innerHTML=`<span class="cc-ico">💬</span> ${sc.comments.length||''}`;
+  // Optimistisch lokal hinzufügen damit das UI sofort reagiert
+  const g=_groups.find(x=>x.id===gId);
+  const sc=g?.sharedCatches?.find(c=>c.id===catchId);
+  if(sc){
+    if(!sc.comments)sc.comments=[];
+    sc.comments.push({userId:_sbUser.id,userName:myName,text,ts:Date.now()});
+    const expand=document.getElementById('comment-expand-'+catchId);
+    if(expand)expand.remove();
+    _grpComment(gId,catchId);
+    const commentBtn=document.querySelector(`.catch-card-act[onclick*="_grpComment('${gId}','${catchId}'"]`);
+    if(commentBtn)commentBtn.innerHTML=`<span class="cc-ico">💬</span> ${sc.comments.length||''}`;
+  }
 }
 
 function _grpCopySetup(bait,note){
@@ -12804,78 +13879,182 @@ function _grpMapApplyFilter(){
 }
 
 // ── Group Members ──
+// v54: Mitglieder-Tab — mit Beitrittsanfragen-Sektion (AP1.4) + Click-to-Profile (AP3.3)
 function _rndrGroupMembers(){
   const g=_groups.find(x=>x.id===_activeGroupId);
   if(!g)return;
   const el=document.getElementById('grp-detail-content');
   const myId=_sbUser?.id||'me';
   const isPreview=!!g._isPreview;
-  const isAdmin=!isPreview&&(g.members?.find(m=>m.id===myId)?.role==='admin'||g.createdBy===myId);
+  const isAdmin=!isPreview&&(g.members?.find(m=>m.id===myId)?.role==='admin');
 
-  let html=`<div style="padding:16px;">
+  // v54 AP1.4: Beitrittsanfragen-Block (nur Admin sieht)
+  const reqs=isAdmin?(g.pendingRequests||[]):[];
+  const reqsHtml=reqs.length?`
+    <div style="margin-bottom:18px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+        ⏳ ${reqs.length} Beitrittsanfrage${reqs.length>1?'n':''}
+      </div>
+      ${reqs.map(r=>`<div class="join-req-card">
+        <div class="jrc-avatar" style="background:${_userColor(r.userId)};">${(r.name||'?').charAt(0).toUpperCase()}</div>
+        <div class="jrc-body">
+          <div class="jrc-name">${_esc(r.name||'Angler')}</div>
+          <div class="jrc-meta">vor ${_relTime(new Date(r.requestedAt).getTime())}${r.message?' · '+_esc(r.message):''}</div>
+        </div>
+        <div class="jrc-actions">
+          <button class="jrc-btn rej" onclick="_grpRejectRequest('${r.id}')">Ablehnen</button>
+          <button class="jrc-btn acc" onclick="_grpAcceptRequest('${r.id}')">✓ Aufnehmen</button>
+        </div>
+      </div>`).join('')}
+    </div>
+  `:'';
+
+  let html=`<div class="grp-tab-pad" style="padding-top:16px;padding-bottom:0;">
     ${isPreview?'<div class="preview-restriction-banner">👀 Vorschau · Du bist noch kein Mitglied</div>':''}
+    ${reqsHtml}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
       <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);">${g.members?.length||0} Mitglieder</div>
-      ${isAdmin?`<button onclick="_copyInvite('${g.inviteCode}')" style="padding:6px 12px;background:var(--green-mist);border:1px solid var(--green-pale);border-radius:20px;font-size:11px;font-weight:600;color:var(--green-mid);font-family:var(--fa);cursor:pointer;">🔗 Einladen: ${g.inviteCode}</button>`:''}
+      ${(isAdmin&&g.inviteCode)?`<button onclick="_copyInvite('${g.inviteCode}')" style="padding:6px 12px;background:var(--green-mist);border:1px solid var(--green-pale);border-radius:20px;font-size:11px;font-weight:600;color:var(--green-mid);font-family:var(--fa);cursor:pointer;">🔗 Einladen: ${g.inviteCode}</button>`:''}
     </div>
-    ${(g.members||[]).map(m=>`<div class="grp-item" style="margin-bottom:6px;">
-      <div class="catch-card-avatar" style="background:${_userColor(m.id)};">${m.name.charAt(0)}</div>
+    ${(g.members||[]).map(m=>`<div class="grp-item" style="margin-bottom:6px;cursor:pointer;" onclick="_openMemberProfile('${g.id}','${m.id}')">
+      <div class="catch-card-avatar" style="background:${_userColor(m.id)};">${(m.name||'?').charAt(0).toUpperCase()}</div>
       <div class="grp-item-info">
-        <div class="grp-item-name">${_esc(m.name)}${(!isPreview&&m.id===myId)?' (Du)':''}</div>
+        <div class="grp-item-name">${_esc(m.name||'Angler')}${(!isPreview&&m.id===myId)?' (Du)':''}</div>
         <div class="grp-item-sub">${m.role==='admin'?'👑 Admin':'Mitglied'} · seit ${new Date(m.joinedAt).toLocaleDateString('de-DE')}</div>
       </div>
-      ${m.isBeta?'<div style="font-size:10px;background:var(--purple);color:var(--purple-t);padding:2px 8px;border-radius:10px;">Beta</div>':''}
+      <div style="font-size:13px;color:var(--text-light);">›</div>
     </div>`).join('')}
-    ${isPreview?'':`<!-- AP3: Austreten-Button (nicht für letzten Admin) -->
+    ${isPreview?'':`
     <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--cream-dark);">
       <button onclick="_grpLeave('${g.id}')" style="width:100%;padding:14px;background:var(--rose);color:var(--rose-t);border:1.5px solid var(--rose-b);border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">🚪 Gruppe verlassen</button>
-      <div style="font-size:10px;color:var(--text-light);text-align:center;margin-top:6px;">Du wirst aus der Mitgliederliste entfernt. Geteilte Fänge bleiben anonymisiert in der Gruppen-Statistik.</div>
+      <div style="font-size:10px;color:var(--text-light);text-align:center;margin-top:6px;">Beim Verlassen wirst du aus der Mitgliederliste entfernt. Wenn du der letzte Admin bist, wird das ältest registrierte Mitglied automatisch zum neuen Admin.</div>
     </div>`}
   </div>`;
   el.innerHTML=html;
+}
+
+// v54 AP1.4: Admin akzeptiert Beitrittsanfrage
+async function _grpAcceptRequest(reqId){
+  if(!_sb||!_sbUser)return;
+  try{
+    const{data,error}=await _sb.rpc('accept_join_request',{p_request_id:reqId});
+    if(error)throw error;
+    if(!data?.ok){showToast('⚠️','Fehler: '+(data?.error||'unbekannt'));return;}
+    showToast('✅','Mitglied aufgenommen');
+    // Realtime liefert Update — manueller Refresh als Fallback
+    setTimeout(_grpRefreshActive,300);
+  }catch(e){console.warn('accept:',e);showToast('⚠️','Fehler');}
+}
+
+async function _grpRejectRequest(reqId){
+  if(!_sb||!_sbUser)return;
+  try{
+    const{data,error}=await _sb.rpc('reject_join_request',{p_request_id:reqId});
+    if(error)throw error;
+    if(!data?.ok){showToast('⚠️','Fehler: '+(data?.error||'unbekannt'));return;}
+    showToast('🚫','Anfrage abgelehnt');
+    setTimeout(_grpRefreshActive,300);
+  }catch(e){console.warn('reject:',e);showToast('⚠️','Fehler');}
 }
 
 function _copyInvite(code){
   navigator.clipboard?.writeText(code).then(()=>showToast('📋',`Code ${code} kopiert!`));
 }
 
-// AP3: Gruppe verlassen
+// v54: Gruppe verlassen — via leave_group RPC, danach lokale Liste sofort entfernen (Bugfix AP1.2)
 async function _grpLeave(gId){
+  if(!_sb||!_sbUser){showToast('⚠️','Login nötig');return;}
   const g=_groups.find(x=>x.id===gId);
   if(!g){showToast('⚠️','Gruppe nicht gefunden');return;}
-  const myId=_sbUser?.id||'me';
+  const myId=_sbUser.id;
   const isLastAdmin=(g.members||[]).filter(m=>m.role==='admin').length<=1&&g.members?.find(m=>m.id===myId)?.role==='admin';
   const isOnlyMember=(g.members||[]).length<=1;
   let warn='Möchtest du die Gruppe wirklich verlassen?';
   if(isOnlyMember)warn='Du bist das einzige Mitglied. Wenn du verlässt, wird die Gruppe gelöscht.';
-  else if(isLastAdmin)warn='Du bist der letzte Admin! Bitte ernenne zuerst einen anderen Admin oder die Gruppe wird verwaist.';
+  else if(isLastAdmin)warn='Du bist der letzte Admin. Das älteste Mitglied wird automatisch zum neuen Admin ernannt.';
 
   const ok=await showConf('🚪','Gruppe verlassen?',warn,'Ja, verlassen','danger');
   if(!ok)return;
 
-  if(isOnlyMember){
-    // Gruppe komplett entfernen
+  try{
+    const{data,error}=await _sb.rpc('leave_group',{p_group_id:gId});
+    if(error)throw error;
+    if(!data?.ok){showToast('⚠️','Verlassen fehlgeschlagen: '+(data?.error||'unbekannt'));return;}
+
+    // v54 AP1.2: Sofort aus lokaler _groups-Liste entfernen damit UI sauber ist
     _groups=_groups.filter(x=>x.id!==gId);
-  } else {
-    // Aus Mitgliederliste entfernen
-    g.members=(g.members||[]).filter(m=>m.id!==myId);
-    g.feed=g.feed||[];
-    const myName=profile?.name||profile?.vorname||'Angler';
-    g.feed.push({type:'system',text:`${myName} hat die Gruppe verlassen.`,ts:Date.now(),userId:myId});
+    _activeGroupId=null;
+    _grpRTUnsubscribe();
+    closeFs('group-detail');
+    showToast('🚪',data.deleted?'Gruppe gelöscht (du warst letztes Mitglied)':'Gruppe verlassen');
+    _rndrGroupList();
+  }catch(e){
+    console.warn('leave:',e);
+    showToast('⚠️','Verlassen fehlgeschlagen');
   }
-  await _saveGroups();
-  closeFs('group-detail');
-  showToast('🚪','Gruppe verlassen');
-  // Gruppen-Hub refreshen falls offen
-  if(typeof _rndrGroupList==='function')_rndrGroupList();
 }
 
-// ── v51: Catch Detail Overlay (Wetter + Lightbox-Foto + Smart-Map) ──
+// v54 AP3.3: Mitglieder-Profil-Overlay öffnen
+async function _openMemberProfile(gId,memberId){
+  if(!_sb||!_sbUser){showToast('⚠️','Login nötig');return;}
+  const g=_groups.find(x=>x.id===gId);
+  if(!g)return;
+  const m=g.members?.find(mm=>mm.id===memberId);
+  if(!m)return;
+  openFs('member-profile');
+  const el=document.getElementById('member-profile-content');
+  el.innerHTML=`<div class="member-profile-hero">
+    <div class="member-profile-avatar" style="background:${_userColor(memberId)};">${(m.name||'?').charAt(0).toUpperCase()}</div>
+    <div class="member-profile-name">${_esc(m.name||'Angler')}</div>
+    <div class="member-profile-role">${m.role==='admin'?'👑 Admin':'Mitglied'}</div>
+    <div class="member-profile-since">Mitglied seit ${new Date(m.joinedAt).toLocaleDateString('de-DE',{day:'numeric',month:'long',year:'numeric'})}</div>
+  </div>
+  <div id="member-stats-body" style="padding-top:8px;">
+    <div style="text-align:center;padding:24px;color:var(--text-light);font-size:13px;">⏳ Statistik wird geladen…</div>
+  </div>`;
+
+  try{
+    const{data,error}=await _sb.rpc('get_group_member_stats',{p_group_id:gId,p_user_id:memberId});
+    if(error)throw error;
+    if(!data?.ok){throw new Error(data?.error||'unknown');}
+    const total=data.total_catches||0;
+    const big=data.biggest_catch||null;
+    const body=document.getElementById('member-stats-body');
+    if(!total){
+      body.innerHTML='<div class="member-empty">Noch keine geteilten Fänge in dieser Gruppe.</div>';
+      return;
+    }
+    body.innerHTML=`
+      <div class="member-stat-grid">
+        <div class="member-stat-card">
+          <div class="ms-num">${total}</div>
+          <div class="ms-lbl">Fänge geteilt</div>
+        </div>
+        <div class="member-stat-card">
+          <div class="ms-num" style="font-size:18px;">${big?big.length+'cm':'–'}</div>
+          <div class="ms-lbl">Größter Fang${big?' ('+_esc(big.type||'')+')':''}</div>
+        </div>
+      </div>
+      ${data.top_bait?`<div class="member-stat-row"><span class="msr-emoji">🎣</span><div class="msr-body"><div class="msr-lbl">Lieblings-Köder</div><div class="msr-val">${_esc(data.top_bait)}</div></div></div>`:''}
+      ${data.top_water?`<div class="member-stat-row"><span class="msr-emoji">🌊</span><div class="msr-body"><div class="msr-lbl">Lieblings-Gewässer</div><div class="msr-val">${_esc(data.top_water)}</div></div></div>`:''}
+      ${data.last_catch_at?`<div class="member-stat-row"><span class="msr-emoji">📅</span><div class="msr-body"><div class="msr-lbl">Letzter geteilter Fang</div><div class="msr-val">${new Date(data.last_catch_at).toLocaleDateString('de-DE',{day:'numeric',month:'long',year:'numeric'})}</div></div></div>`:''}
+    `;
+  }catch(e){
+    console.warn('memberStats:',e);
+    document.getElementById('member-stats-body').innerHTML='<div class="member-empty">Statistik konnte nicht geladen werden.</div>';
+  }
+}
+
+// v54: Aktive Catch-Detail-ID (für Realtime-Comment-Updates)
+let _activeCatchDetailId=null;
+
+// ── v54: Catch Detail Overlay — photoUrl (Storage) + sticky Comment-Bar (AP2.5) ──
 function _openCatchDetail(gId,catchId){
   const g=_groups.find(x=>x.id===gId);
   if(!g)return;
   const sc=g.sharedCatches?.find(c=>c.id===catchId);
   if(!sc)return;
+  _activeCatchDetailId=catchId;
   const member=g.members?.find(m=>m.id===sc.userId)||{name:sc.userName||'Unbekannt'};
   const color=_userColor(sc.userId);
   openFs('catch-detail');
@@ -12884,17 +14063,13 @@ function _openCatchDetail(gId,catchId){
   const mapInfo=_resolveCatchLocation(sc);
 
   let html='';
-  // ── Hero: entweder echtes Foto (klickbar / Lightbox) oder Gradient-Fallback ──
-  if(sc.photoKey){
-    html+=`<div id="cd-photo-wrap" style="position:relative;width:100%;background:#1a1d1a;aspect-ratio:4/3;cursor:pointer;overflow:hidden;" onclick="_openCatchPhotoLb('${sc.photoKey}')">
-      <img id="cd-photo" src="" alt="Fangfoto" style="width:100%;height:100%;object-fit:cover;display:none;" onload="this.style.display='block'">
-      <div id="cd-photo-fallback" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--green-deep),#1a3522);color:#fff;">
-        <div style="font-size:64px;">${fIco(sc.type)}</div>
-        <div style="font-size:11px;opacity:.6;margin-top:6px;">Foto wird geladen…</div>
-      </div>
+  // ── Hero: photoUrl von Supabase Storage ──
+  if(sc.photoUrl){
+    html+=`<div id="cd-photo-wrap" style="position:relative;width:100%;background:#1a1d1a;aspect-ratio:4/3;cursor:pointer;overflow:hidden;" onclick="_lbOpen('${_esc(sc.photoUrl)}')">
+      <img src="${_esc(sc.photoUrl)}" alt="Fangfoto" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
       <div style="position:absolute;left:16px;right:16px;bottom:14px;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.6);">
-        <div style="font-size:24px;font-weight:700;font-family:var(--fs);">${_esc(sc.type)}</div>
-        <div style="font-size:14px;opacity:.92;">${sc.length}cm${sc.weight?' · '+sc.weight+'kg':''}</div>
+        <div style="font-size:24px;font-weight:700;font-family:var(--fs);">${_esc(sc.type||'')}</div>
+        <div style="font-size:14px;opacity:.92;">${sc.length||'?'}cm${sc.weight?' · '+sc.weight+'kg':''}</div>
       </div>
       <div style="position:absolute;top:14px;left:14px;background:rgba(0,0,0,.4);color:#fff;font-size:11px;padding:5px 10px;border-radius:14px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">🔍 Tippen für Vollbild</div>
     </div>`;
@@ -12983,40 +14158,30 @@ function _openCatchDetail(gId,catchId){
     </div>`;
   }
 
-  // Likes & Comments
+  // Likes & Comments — Comments-Stream als ID, damit Realtime-Inserts gezielt anhängen können
   const likeCount=sc.likes?.length||0;
   const comments=sc.comments||[];
   html+=`<div style="background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);margin-bottom:24px;">
     <div style="display:flex;gap:16px;margin-bottom:${comments.length?'10':'0'}px;">
-      <span style="font-size:13px;">❤️ ${likeCount} Like${likeCount!==1?'s':''}</span>
-      <span style="font-size:13px;">💬 ${comments.length} Kommentar${comments.length!==1?'e':''}</span>
+      <span style="font-size:13px;">❤️ <span id="cd-like-count">${likeCount}</span> Like${likeCount!==1?'s':''}</span>
+      <span style="font-size:13px;">💬 <span id="cd-comment-count">${comments.length}</span> Kommentar${comments.length!==1?'e':''}</span>
     </div>
-    ${comments.map(cm=>{
-      const cmMember=g.members?.find(m=>m.id===cm.userId)||{name:cm.userName||'?'};
-      const cmColor=_userColor(cm.userId);
-      const cmTime=new Date(cm.ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
-      return`<div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--cream-dark);">
-        <div class="catch-card-avatar" style="background:${cmColor};width:24px;height:24px;font-size:11px;">${(cmMember.name||'?').charAt(0)}</div>
-        <div style="flex:1;"><strong style="font-size:11px;color:${cmColor};">${_esc(cmMember.name||'?')}</strong> <span style="font-size:10px;color:var(--text-light);">${cmTime}</span><div style="font-size:12px;margin-top:2px;">${_esc(cm.text)}</div></div>
-      </div>`;
-    }).join('')}
+    <div id="cd-comment-list">${_cdRenderCommentsHtml(comments,g)}</div>
   </div>`;
 
   html+=`</div>`; // close padding wrapper
 
   document.getElementById('catch-detail-content').innerHTML=html;
 
-  // Foto async aus IDB nachladen
-  if(sc.photoKey){
-    setTimeout(async()=>{
-      try{
-        const ph=await getPhoto(sc.photoKey);
-        if(!ph)return;
-        const img=document.getElementById('cd-photo');
-        const fb=document.getElementById('cd-photo-fallback');
-        if(img){img.src=ph;img.onload=()=>{img.style.display='block';if(fb)fb.style.display='none';};}
-      }catch(e){console.warn('Catch-Photo Load:',e);}
-    },50);
+  // v54 AP2.5: Sticky Comment-Bar einblenden + zurücksetzen
+  const bar=document.getElementById('cd-comment-bar');
+  if(bar){
+    bar.style.display='flex';
+    const inp=document.getElementById('cd-comment-input');
+    if(inp){inp.value='';inp.style.height='auto';}
+    document.getElementById('cd-comment-clear')?.classList.remove('on');
+    bar.dataset.gId=gId;
+    bar.dataset.catchId=catchId;
   }
 
   // Smart-Map rendern
@@ -13069,12 +14234,86 @@ async function _openCatchPhotoLb(photoKey){
   if(img&&img.src&&img.src.length>40&&!img.src.endsWith('/'))src=img.src;
   if(!src){try{src=await getPhoto(photoKey);}catch(e){}}
   if(!src){showToast('⚠️','Foto nicht gefunden');return;}
+  _lbOpen(src);
+}
+
+// v54: URL-basierte Lightbox (für photoUrl statt photoKey)
+function _lbOpen(src){
+  if(!src)return;
   const lb=document.createElement('div');
   lb.className='photo-lightbox';
-  lb.innerHTML=`<button class="photo-lightbox-close" onclick="this.parentElement.remove()">✕</button><img src="${src}" alt="Fangfoto">`;
-  // Klick auf Hintergrund schließt
+  lb.innerHTML=`<button class="photo-lightbox-close" onclick="this.parentElement.remove()">✕</button><img src="${src}" alt="Foto">`;
   lb.addEventListener('click',e=>{if(e.target===lb)lb.remove();});
   document.body.appendChild(lb);
+}
+
+// ── v54 AP2.5: Catch-Detail Comments via group_catch_comments ──
+function _cdRenderCommentsHtml(comments,g){
+  return (comments||[]).map(cm=>{
+    const cmMember=g?.members?.find(m=>m.id===cm.userId)||{name:cm.userName||'?'};
+    const cmColor=_userColor(cm.userId);
+    const cmTime=new Date(cm.ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    return `<div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--cream-dark);">
+      <div class="catch-card-avatar" style="background:${cmColor};width:24px;height:24px;font-size:11px;">${(cmMember.name||'?').charAt(0)}</div>
+      <div style="flex:1;"><strong style="font-size:11px;color:${cmColor};">${_esc(cmMember.name||'?')}</strong> <span style="font-size:10px;color:var(--text-light);">${cmTime}</span><div style="font-size:13px;margin-top:2px;line-height:1.4;">${_esc(cm.text)}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function _cdRenderComments(){
+  if(!_activeCatchDetailId)return;
+  const g=_groups.find(x=>x.id===_activeGroupId);
+  const sc=g?.sharedCatches?.find(c=>c.id===_activeCatchDetailId);
+  if(!sc)return;
+  const list=document.getElementById('cd-comment-list');
+  if(list)list.innerHTML=_cdRenderCommentsHtml(sc.comments||[],g);
+  const cnt=document.getElementById('cd-comment-count');
+  if(cnt)cnt.textContent=String((sc.comments||[]).length);
+}
+
+function _cdCommentResize(ta){
+  if(!ta)return;
+  ta.style.height='auto';
+  ta.style.height=Math.min(ta.scrollHeight,100)+'px';
+  const clr=document.getElementById('cd-comment-clear');
+  if(clr)clr.classList.toggle('on',(ta.value||'').trim().length>0);
+}
+function _cdClearComment(){
+  const ta=document.getElementById('cd-comment-input');
+  if(!ta)return;
+  ta.value='';_cdCommentResize(ta);ta.focus();
+}
+
+async function _cdSendComment(){
+  if(!_sb||!_sbUser){showToast('⚠️','Login nötig');return;}
+  const ta=document.getElementById('cd-comment-input');
+  const text=(ta?.value||'').trim();
+  if(!text)return;
+  const bar=document.getElementById('cd-comment-bar');
+  const gId=bar?.dataset?.gId;
+  const catchId=bar?.dataset?.catchId;
+  if(!gId||!catchId)return;
+  const myName=profile?.name||profile?.vorname||(_sbUser.email||'Angler').split('@')[0];
+  try{
+    const{error}=await _sb.from('group_catch_comments').insert({
+      catch_id:catchId,user_id:_sbUser.id,
+      display_name:myName,text
+    });
+    if(error)throw error;
+  }catch(e){
+    console.warn('cdSendComment:',e);
+    showToast('⚠️','Kommentar fehlgeschlagen');
+    return;
+  }
+  ta.value='';_cdCommentResize(ta);
+  // Optimistic: lokal anhängen, Realtime liefert ohnehin den finalen Stand
+  const g=_groups.find(x=>x.id===gId);
+  const sc=g?.sharedCatches?.find(c=>c.id===catchId);
+  if(sc){
+    if(!sc.comments)sc.comments=[];
+    sc.comments.push({userId:_sbUser.id,userName:myName,text,ts:Date.now()});
+    _cdRenderComments();
+  }
 }
 
 // v51: Hilfsfunktion — Wind-Grad → Kompass-Kürzel
@@ -13084,22 +14323,96 @@ function _compassDir(deg){
   return dirs[Math.round(((deg%360)/45))%8];
 }
 
-// ── AP4: Chat helper functions ──
+// ── v54: Foto-Anhang im Chat (echter Storage-Upload via _grpUploadPhoto) ──
+let _grpPendingPhoto=null; // {dataUrl,name}
+
 function _grpAttachPhoto(){
-  showToast('📷','Foto-Upload kommt bald – Feature in Entwicklung');
+  const inp=document.getElementById('grp-chat-photo-input');
+  if(inp)inp.click();
 }
+
+function _grpHandlePhotoSelect(evt){
+  const file=evt?.target?.files?.[0];
+  if(!file)return;
+  if(!file.type.startsWith('image/')){showToast('⚠️','Bitte ein Bild auswählen');return;}
+  // Auf < 1.5MB komprimieren via canvas — aus Performance- und Bandbreitengründen
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    try{
+      const compressed=await _grpCompressImage(e.target.result,1280,0.82);
+      _grpPendingPhoto={dataUrl:compressed,name:file.name};
+      _grpRenderPhotoPreview();
+    }catch(err){
+      console.warn('compress:',err);
+      _grpPendingPhoto={dataUrl:e.target.result,name:file.name};
+      _grpRenderPhotoPreview();
+    }
+  };
+  reader.readAsDataURL(file);
+  // Input zurücksetzen, damit dieselbe Datei erneut ausgewählt werden kann
+  evt.target.value='';
+}
+
+function _grpCompressImage(dataUrl,maxDim,quality){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const w=img.width,h=img.height;
+      const scale=Math.min(1,maxDim/Math.max(w,h));
+      const nw=Math.round(w*scale),nh=Math.round(h*scale);
+      const c=document.createElement('canvas');
+      c.width=nw;c.height=nh;
+      const ctx=c.getContext('2d');
+      ctx.drawImage(img,0,0,nw,nh);
+      try{resolve(c.toDataURL('image/jpeg',quality));}
+      catch(e){reject(e);}
+    };
+    img.onerror=reject;
+    img.src=dataUrl;
+  });
+}
+
+function _grpRenderPhotoPreview(){
+  if(!_grpPendingPhoto)return _grpClearPhotoPreview();
+  let prev=document.getElementById('grp-chat-photo-preview');
+  const bar=document.getElementById('grp-chat-bar');
+  if(!bar)return;
+  if(!prev){
+    prev=document.createElement('div');
+    prev.id='grp-chat-photo-preview';
+    prev.className='grp-chat-photo-preview';
+    bar.insertBefore(prev,bar.firstChild);
+  }
+  prev.innerHTML=`<img src="${_grpPendingPhoto.dataUrl}" alt="Vorschau">
+    <span class="gpp-name">📷 ${_esc(_grpPendingPhoto.name||'Foto')} · wird beim Senden hochgeladen</span>
+    <button class="gpp-x" onclick="_grpClearPhotoPreview()" title="Foto entfernen">✕</button>`;
+}
+
+function _grpClearPhotoPreview(){
+  _grpPendingPhoto=null;
+  const prev=document.getElementById('grp-chat-photo-preview');
+  if(prev)prev.remove();
+}
+
+// v54: Standort-Share — schickt eine Message mit Karten-Link in den Chat
 function _grpShareLocation(){
+  if(!_sb||!_sbUser){showToast('⚠️','Login nötig');return;}
   if(!navigator.geolocation){showToast('⚠️','GPS nicht verfügbar');return;}
-  navigator.geolocation.getCurrentPosition(pos=>{
+  showToast('📍','GPS wird geholt…');
+  navigator.geolocation.getCurrentPosition(async pos=>{
     const g=_groups.find(x=>x.id===_activeGroupId);
     if(!g)return;
-    const myId=_sbUser?.id||g.members?.find(m=>m.name===(profile?.name||''))?.id||'me';
+    const myName=profile?.name||profile?.vorname||(_sbUser.email||'Angler').split('@')[0];
     const lat=pos.coords.latitude,lon=pos.coords.longitude;
-    // AP2: Strukturierte locCoords für anklickbaren Standort im Feed
-    g.feed.push({type:'msg',text:`📍 Standort geteilt: ${lat.toFixed(4)}, ${lon.toFixed(4)}`,ts:Date.now(),userId:myId,locCoords:{lat,lon}});
-    _saveGroups();
-    _rndrGroupFeed();
-    showToast('📍','Standort im Chat geteilt');
+    try{
+      await _sb.from('group_messages').insert({
+        group_id:g.id,user_id:_sbUser.id,type:'msg',
+        text:`📍 Standort geteilt: ${lat.toFixed(4)}, ${lon.toFixed(4)}`,
+        catch_data:{loc:{lat,lon}},
+        display_name:myName
+      });
+      showToast('📍','Standort geteilt');
+    }catch(e){console.warn('shareLoc:',e);showToast('⚠️','Senden fehlgeschlagen');}
   },()=>showToast('⚠️','GPS-Zugriff verweigert'),{enableHighAccuracy:true,maximumAge:2000,timeout:15000});
 }
 
@@ -13163,47 +14476,19 @@ function _openShareModal(sessId){
 
 function _closeShareModal(){document.getElementById('share-modal').classList.remove('on');}
 
+// v54: Share-to-Group leitet auf den gemeinsamen Multi-Group-Helper weiter,
+// damit alle Share-Pfade (End-Live-Overlay, Edit-Session, Direkt-Share) dieselbe
+// Backend-Logik (group_shared_catches + group_messages + Storage) nutzen.
 async function _shareToGroup(gId,sessId){
   const g=_groups.find(x=>x.id===gId);
   const sess=sessions.find(s=>String(s.id)===String(sessId));
   if(!g||!sess)return;
-  const shareGps=document.getElementById('share-gps-toggle')?.classList.contains('on');
-  const myName=profile?.name||profile?.vorname||'Angler';
-  const myId=_sbUser?.id||'me';
-
-  (sess.catches||[]).forEach(c=>{
-    const shared={
-      id:_newId(),userId:myId,userName:myName,
-      type:c.type,length:c.length,weight:c.weight,
-      bait:c.bait,baitNote:c.baitNote,baitColor:c.baitColor,baitSize:c.baitSize,
-      water:sess.water,spot:sess.spot,
-      date:sess.date,time:c.time||sess.start,
-      shareGps,
-      lat:shareGps?sess.lat:null,lon:shareGps?sess.lon:null,
-      // v51: Wetter-Daten mitschicken — sonst kann Catch-Detail-Overlay & Insights 2.0
-      // (Wetter-Einfluss / Pressure-Trend) nicht ausgewertet werden.
-      pressure:sess.pressure??null,
-      windSpeed:sess.windSpeed??null,
-      windDir:sess.windDir??null,
-      temp:sess.temp??null,
-      humidity:sess.humidity??null,
-      clouds:sess.clouds??null,
-      precip:sess.precip??null,
-      weather:sess.weather||null,
-      moonPhase:sess.moonPhase||null,
-      moonIllum:sess.moonIllum??null,
-      // v51: Foto mitschicken (Lightbox-Effekt im Catch-Detail-Overlay)
-      photoKey:c.photoKey||null,
-      likes:[],comments:[]
-    };
-    if(!g.sharedCatches)g.sharedCatches=[];
-    g.sharedCatches.push(shared);
-    g.feed.push({type:'catch',text:`Hat einen ${c.length||'?'}cm ${c.type||'Fisch'} geteilt!`,ts:Date.now(),userId:myId,catchData:shared});
-  });
-
-  await _saveGroups();
+  const shareGpsToggleOn=document.getElementById('share-gps-toggle')?.classList.contains('on');
+  // shareGps-Toggle nur Hint — _shareSessionToGroups respektiert Resolver
+  if(!shareGpsToggleOn){sess._shareGpsHint=false;}
+  const count=await _shareSessionToGroups(sess,[gId]);
   _closeShareModal();
-  showToast('✅',`${sess.catches?.length||0} Fang/Fänge in "${g.name}" geteilt!`);
+  showToast('✅',`${count} Fang${count===1?'':'/Fänge'} in "${g.name}" geteilt!`);
 }
 
 // ── Map Layer Toggle ──
