@@ -1569,8 +1569,10 @@ input[type=file]{display:none;}
 @keyframes voicePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
 
 /* ═══ LEAFLET MAP TAB ═══ */
-#page-map .sc{padding:0;overflow:hidden;}
-#map-container{width:100%;height:100%;position:absolute;inset:0;z-index:1;}
+/* v53: Bug1 — Map nutzt volle Höhe (Bottom-Nav schwebt mit Glas-Effekt drüber) */
+#page-map{position:relative;}
+#page-map .sc{padding:0;overflow:hidden;position:absolute;inset:0;height:100%;}
+#map-container{width:100%;height:100%;min-height:100%;position:absolute;inset:0;z-index:1;background:#e6e9ec;}
 
 /* v52 AP2: In-Place Spot-Markier-Modus
    Toolbar oben unter der Header-Bar (Wasser/Spot-Picker + Cancel)
@@ -1584,7 +1586,9 @@ input[type=file]{display:none;}
   border:1px solid rgba(200,221,208,.6);
 }
 .spot-mark-toolbar.on{display:flex;}
+/* v53: Erste Zeile bekommt rechts Platz, damit das ✕ nicht vom Select verdeckt wird */
 .spot-mark-toolbar .smt-row{display:flex;gap:6px;align-items:center;}
+.spot-mark-toolbar .smt-row.smt-row-first{padding-right:32px;}
 .spot-mark-toolbar .smt-lbl{font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;width:64px;}
 .spot-mark-toolbar select,.spot-mark-toolbar input[type="text"]{
   flex:1;min-width:0;padding:7px 10px;border:1px solid var(--cream-dark);border-radius:8px;
@@ -2286,7 +2290,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v52 · Supabase · Leaflet · PWA</div>
+    <div class="burg-ver">Fishing Buddy v53 · Supabase · Leaflet · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -2455,7 +2459,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v52</div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v53</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
@@ -2799,15 +2803,16 @@ input[type=file]{display:none;}
       <button class="map-hdr-btn" id="btn-spot-mark" onclick="_enterSpotMarkMode()">📌 Spot markieren</button>
     </div>
     <!-- v52 AP2: Inline-Toolbar oben — Wasser/Spot-Picker, erscheint im Markier-Modus -->
+    <!-- v53: Bug2 erste Zeile mit padding-right damit ✕ nicht überdeckt wird; Bug4 Spot ist jetzt Select -->
     <div class="spot-mark-toolbar" id="spot-mark-toolbar">
       <button class="smt-cancel" onclick="_exitSpotMarkMode()" aria-label="Abbrechen">✕</button>
-      <div class="smt-row">
+      <div class="smt-row smt-row-first">
         <span class="smt-lbl">Gewässer</span>
         <select id="smt-water" onchange="_smtOnWaterChange()"><option value="">– wählen –</option></select>
       </div>
       <div class="smt-row">
         <span class="smt-lbl">Spot</span>
-        <input type="text" id="smt-spot" placeholder="z.B. Steg Nord (optional)" autocomplete="off">
+        <select id="smt-spot" onchange="_smtOnSpotChange()" disabled><option value="">– zuerst Gewässer wählen –</option></select>
       </div>
       <div class="smt-hint" id="smt-hint">Tippe auf die Karte, um den Spot zu markieren.</div>
     </div>
@@ -3160,7 +3165,7 @@ function sbInit(){
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v52`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v53`;
       } else {
         _sbUser=null;
       }
@@ -3176,7 +3181,7 @@ async function _checkAuthSession(){
     if(data?.session?.user){
       _sbUser=data.session.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v52`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v53`;
       return true;
     }
   }catch(e){console.warn('Auth-Check Fehler:',e);}
@@ -3222,7 +3227,7 @@ async function handleAuth(e){
       //   5. ERST jetzt Login-Overlay weg + auf Fangbuch wechseln
       _sbUser=result.data.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v52`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v53`;
       // Cloud = Single Source of Truth bei Login. _renderAll() läuft am Ende.
       await syncFromCloud({authoritative:true});
       // Sicherheits-Re-Render falls syncFromCloud früh ausstieg (z.B. offline mid-flight)
@@ -3245,7 +3250,7 @@ async function handleAuth(e){
         _sbUser=result.data.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v52`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v53`;
         // Onboarding starten
         document.getElementById('onboarding').classList.remove('hidden');
         document.getElementById('ob-btn').disabled=true;
@@ -3298,7 +3303,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v52';
+  document.getElementById('hdr-sub').textContent='Offline · v53';
   if(!profile){
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('ob-btn').disabled=true;
@@ -3598,7 +3603,7 @@ async function sbLogout(){
   _lsRemove(LS_FAVS);
   _lsRemove(LS_GROUPS);
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v52';
+  document.getElementById('hdr-sub').textContent='Offline · v53';
   showToast('👋','Abgemeldet');
 }
 
@@ -4532,7 +4537,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v52`:`PLZ ${profile.plz||'–'} · v52`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v53`:`PLZ ${profile.plz||'–'} · v53`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -6735,7 +6740,62 @@ async function _openPhotoLb(el){
 // AP2: WETTER-DETAIL OVERLAY (Chart + Intervall-Tabelle)
 // ═══════════════════════════════════════════════════════════
 let _dayWxChart=null;
-async function openDayWxDetail(dateKey, metric){
+
+// v53: Bug8 — Inline-Plugin: Angelzeit-Hervorhebung + senkrechte Fang-Striche mit 🐟
+const _wxSessionHighlightPlugin={
+  id:'wxSessionHighlight',
+  beforeDatasetsDraw(chart,_,opts){
+    if(!opts||!chart.scales?.x)return;
+    const{ctx,chartArea,scales:{x}}=chart;
+    if(!chartArea)return;
+    // 1) Angelzeit-Bereich einfärben
+    if(opts.fishStartIdx!=null&&opts.fishEndIdx!=null&&opts.fishEndIdx>=opts.fishStartIdx){
+      const xStart=x.getPixelForValue(opts.fishStartIdx);
+      const xEnd=x.getPixelForValue(opts.fishEndIdx);
+      ctx.save();
+      ctx.fillStyle='rgba(74,124,89,0.18)';
+      ctx.fillRect(xStart,chartArea.top,xEnd-xStart,chartArea.bottom-chartArea.top);
+      // dünne Rand-Linien links/rechts
+      ctx.strokeStyle='rgba(74,124,89,0.55)';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(xStart,chartArea.top);ctx.lineTo(xStart,chartArea.bottom);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(xEnd,chartArea.top);ctx.lineTo(xEnd,chartArea.bottom);ctx.stroke();
+      ctx.restore();
+    }
+  },
+  afterDatasetsDraw(chart,_,opts){
+    if(!opts||!chart.scales?.x)return;
+    const{ctx,chartArea,scales:{x}}=chart;
+    if(!chartArea||!opts.catchMarks?.length)return;
+    // 2) Senkrechte Striche pro Fang + 🐟 oben
+    ctx.save();
+    opts.catchMarks.forEach(m=>{
+      if(m.idx==null)return;
+      const px=x.getPixelForValue(m.idx);
+      ctx.strokeStyle='rgba(196,150,58,0.95)';ctx.lineWidth=2;ctx.setLineDash([]);
+      ctx.beginPath();ctx.moveTo(px,chartArea.top);ctx.lineTo(px,chartArea.bottom);ctx.stroke();
+      // Fischsymbol oben
+      ctx.font='14px "DM Sans",system-ui,sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='top';
+      ctx.fillStyle='#fff';ctx.fillRect(px-10,chartArea.top-2,20,18);
+      ctx.fillStyle='#C4963A';ctx.fillText(m.icon||'🐟',px,chartArea.top-1);
+    });
+    ctx.restore();
+  }
+};
+
+// v53: Helper — "HH:MM" → nächster Stunden-Index in der labels-Liste, sonst null
+function _hourToIdx(hhmm,labels){
+  if(!hhmm||!labels?.length)return null;
+  const[h,m]=String(hhmm).split(':').map(n=>parseInt(n,10));
+  if(isNaN(h))return null;
+  // exakte Übereinstimmung mit "HH:00" oder "HH:30"
+  const exact=labels.indexOf(hhmm);
+  if(exact>=0)return exact;
+  // Fallback: nächste Stunde
+  return Math.max(0,Math.min(labels.length-1,h+(m>=30?0.5:0)));
+}
+
+async function openDayWxDetail(dateKey,metric,sessionId){
   const LABELS={temp:'🌡 Temperatur',wind:'💨 Wind',pressure:'📊 Luftdruck',humidity:'💧 Luftfeuchtigkeit',clouds:'☁️ Bewölkung'};
   const UNITS={temp:'°C',wind:'km/h',pressure:'hPa',humidity:'%',clouds:'%'};
   const COLORS={temp:'#e67e22',wind:'#3498db',pressure:'#9b59b6',humidity:'#1abc9c',clouds:'#95a5a6'};
@@ -6747,11 +6807,12 @@ async function openDayWxDetail(dateKey, metric){
   const body=document.getElementById('fs-dwx-body');
   body.innerHTML='<div style="text-align:center;padding:32px;color:var(--text-light);font-size:13px;">⏳ Lade Stundenwerte…</div>';
 
-  // Wetterdaten für den Tag laden (Open-Meteo Historical)
   try{
     const daySess=sessions.filter(s=>String(s.date)===String(dateKey));
+    // v53: wenn sessionId mitgegeben → diese Session bevorzugen für lat/lon und Angelzeit/Fänge
+    const focusSess=sessionId?sessions.find(s=>String(s.id)===String(sessionId)):null;
     let lat=_plzCoords?.lat, lon=_plzCoords?.lon;
-    const geoSess=daySess.find(s=>s.lat&&s.lon);
+    const geoSess=focusSess&&focusSess.lat&&focusSess.lon?focusSess:daySess.find(s=>s.lat&&s.lon);
     if(geoSess){lat=parseFloat(geoSess.lat);lon=parseFloat(geoSess.lon);}
     if(!lat||!lon){
       if(profile?.plz)await resolvePlzCoords(profile.plz);
@@ -6769,16 +6830,35 @@ async function openDayWxDetail(dateKey, metric){
     const vals=data.hourly[MAP[metric]]||[];
     const gusts=metric==='wind'?(data.hourly.windgusts_10m||[]):[];
 
-    // Angelzeit markieren
+    // v53: Angelzeit aus focusSess bevorzugen, sonst Tages-Min/Max
+    const focusForTime=focusSess||daySess[0];
     const starts=daySess.map(s=>s.start).filter(Boolean).sort();
     const ends=daySess.map(s=>s.end).filter(Boolean).sort((a,b)=>b.localeCompare(a));
-    const fishStart=starts[0]||'00:00';
-    const fishEnd=ends[0]||'23:59';
+    const fishStart=focusForTime?.start||starts[0]||'00:00';
+    const fishEnd=focusForTime?.end||ends[0]||'23:59';
+    const fishStartIdx=_hourToIdx(fishStart,hours);
+    const fishEndIdx=_hourToIdx(fishEnd,hours);
 
-    // Chart + Tabelle rendern
+    // v53: Fang-Marker (Zeit + Fischsymbol) — aus focusSess oder allen Tages-Sessions
+    const catchMarks=[];
+    const catchSrc=focusSess?[focusSess]:daySess;
+    catchSrc.forEach(s=>{
+      (s.catches||[]).forEach(c=>{
+        if(!c.time)return;
+        const idx=_hourToIdx(c.time,hours);
+        if(idx!=null)catchMarks.push({idx,icon:fIco?fIco(c.type):'🐟',type:c.type,length:c.length});
+      });
+    });
+
     body.innerHTML=`
-      <div style="background:#fff;border-radius:var(--rs);padding:14px;margin-bottom:16px;box-shadow:var(--sh-sm);border:1px solid rgba(200,221,208,.3);">
-        <canvas id="dwx-chart" height="180"></canvas>
+      <div style="background:#fff;border-radius:var(--rs);padding:14px;margin-bottom:12px;box-shadow:var(--sh-sm);border:1px solid rgba(200,221,208,.3);">
+        <div style="position:relative;width:100%;height:200px;">
+          <canvas id="dwx-chart"></canvas>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;color:var(--text-mid);">
+          <span style="display:inline-flex;align-items:center;gap:5px;"><span style="display:inline-block;width:14px;height:10px;background:rgba(74,124,89,.35);border:1px dashed rgba(74,124,89,.7);"></span>Angelzeit ${fishStart}–${fishEnd}</span>
+          ${catchMarks.length?`<span style="display:inline-flex;align-items:center;gap:5px;"><span style="display:inline-block;width:2px;height:14px;background:#C4963A;"></span>${catchMarks.length} Fang${catchMarks.length>1?'e':''}</span>`:''}
+        </div>
       </div>
       <div class="slbl">Stundenwerte</div>
       <div style="background:#fff;border-radius:var(--rs);overflow:hidden;border:1px solid rgba(200,221,208,.3);box-shadow:var(--sh-sm);">
@@ -6790,8 +6870,9 @@ async function openDayWxDetail(dateKey, metric){
           </tr></thead>
           <tbody>${hours.map((h,i)=>{
             const inFish=h>=fishStart&&h<=fishEnd;
+            const isCatch=catchMarks.some(m=>Math.round(m.idx)===i);
             return`<tr style="${inFish?'background:rgba(95,208,144,.08);font-weight:600;':''}border-bottom:1px solid rgba(200,221,208,.2);">
-              <td style="padding:6px 10px;">${h}${inFish?' 🎣':''}</td>
+              <td style="padding:6px 10px;">${h}${isCatch?' 🐟':inFish?' 🎣':''}</td>
               <td style="padding:6px 10px;text-align:right;">${vals[i]!=null?vals[i]+' '+UNITS[metric]:'–'}</td>
               ${metric==='wind'?`<td style="padding:6px 10px;text-align:right;">${gusts[i]!=null?gusts[i]+' km/h':'–'}</td>`:''}
             </tr>`;
@@ -6799,7 +6880,6 @@ async function openDayWxDetail(dateKey, metric){
         </table>
       </div>`;
 
-    // Chart.js rendern
     if(_dayWxChart){_dayWxChart.destroy();_dayWxChart=null;}
     const ctx=document.getElementById('dwx-chart')?.getContext('2d');
     if(ctx&&typeof Chart!=='undefined'){
@@ -6813,11 +6893,21 @@ async function openDayWxDetail(dateKey, metric){
       if(metric==='wind'&&gusts.length){
         datasets.push({label:'Böen',data:gusts,borderColor:'#e74c3c',borderWidth:1.5,borderDash:[4,3],tension:.3,fill:false,pointRadius:0});
       }
-      _dayWxChart=new Chart(ctx,{type:'line',data:{labels:hours,datasets},options:{
-        responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:datasets.length>1,labels:{font:{size:11,family:'DM Sans'}}},tooltip:{mode:'index',intersect:false}},
-        scales:{x:{ticks:{font:{size:10},maxTicksLimit:8},grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,.06)'}}}
-      }});
+      _dayWxChart=new Chart(ctx,{
+        type:'line',
+        data:{labels:hours,datasets},
+        plugins:[_wxSessionHighlightPlugin],
+        options:{
+          responsive:true,maintainAspectRatio:false,
+          layout:{padding:{top:18}}, // Platz für 🐟-Symbole oben
+          plugins:{
+            legend:{display:datasets.length>1,labels:{font:{size:11,family:'DM Sans'}}},
+            tooltip:{mode:'index',intersect:false},
+            wxSessionHighlight:{fishStartIdx,fishEndIdx,catchMarks}
+          },
+          scales:{x:{ticks:{font:{size:10},maxTicksLimit:8},grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,.06)'}}}
+        }
+      });
     }
   }catch(e){
     console.warn('Wx-Detail Fehler:',e);
@@ -6971,22 +7061,76 @@ function _exitSpotMarkMode(){
   _spotMarkTempMarker=null;
   _spotMarkTempLatLng=null;
   const c=document.getElementById('map-container');if(c)c.style.cursor='';
-  // UI-Reset
+  // UI-Reset (v53: Spot ist jetzt Select — disabled mit Hinweis-Option)
   const water=document.getElementById('smt-water');if(water)water.value='';
-  const spot=document.getElementById('smt-spot');if(spot)spot.value='';
+  const spot=document.getElementById('smt-spot');
+  if(spot){
+    spot.innerHTML='<option value="">– zuerst Gewässer wählen –</option>';
+    spot.disabled=true;
+  }
   const btn=document.getElementById('btn-spot-confirm');if(btn)btn.disabled=true;
 }
 
 function _smtPopulateWaters(){
   const sel=document.getElementById('smt-water');
   if(!sel)return;
-  const waters=[...new Set((sessions||[]).map(s=>s.water).filter(Boolean))].sort();
+  // v53: Gewässer-Quellen vereinen — Sessions + profile.spotMap (markierte Spots)
+  const waterSet=new Set();
+  (sessions||[]).forEach(s=>{if(s.water)waterSet.add(s.water);});
+  const sm=profile?.spotMap||{};
+  Object.keys(sm).forEach(k=>{
+    const w=k.split('|')[0];
+    if(!w)return;
+    // spotMap-Keys sind lowercase — Original-Casing aus Sessions wenn möglich
+    const orig=(sessions||[]).find(s=>s.water&&s.water.toLowerCase()===w)?.water||w;
+    waterSet.add(orig);
+  });
+  const waters=[...waterSet].sort();
   sel.innerHTML='<option value="">– Gewässer wählen –</option>'+
     waters.map(w=>{
-      const hasGps=sessions.some(s=>s.water===w&&s.lat&&s.lon);
-      return `<option value="${_esc(w)}">${_esc(w)}${hasGps?' 📍':''}</option>`;
+      // v53: ✅ wenn ein Spot zum Gewässer ODER das Gewässer selbst markiert wurde
+      const hasMark=_waterHasAnyMark(w);
+      return `<option value="${_esc(w)}">${_esc(w)}${hasMark?' ✅':''}</option>`;
     }).join('')+
     '<option value="__new__">+ Neues Gewässer eingeben…</option>';
+}
+
+// v53: Prüft ob ein Gewässer (oder ein Spot davon) bereits einen GPS-Punkt hat
+function _waterHasAnyMark(water){
+  if(!water)return false;
+  const wl=water.trim().toLowerCase();
+  const sm=profile?.spotMap||{};
+  for(const k of Object.keys(sm)){
+    if(k===wl||k.startsWith(wl+'|'))return true;
+  }
+  return (sessions||[]).some(s=>s.water===water&&s.lat&&s.lon);
+}
+
+// v53: Liefert alle bekannten Spots für ein Gewässer (Sessions + spotMap)
+// Case-insensitive dedupliziert — Original-Casing aus Sessions hat Vorrang
+// Rückgabe: [{name, hasMark}]
+function _spotsForWater(water){
+  if(!water)return[];
+  const wl=water.trim().toLowerCase();
+  const byKey=new Map(); // lowercase → original-casing-name
+  (sessions||[]).forEach(s=>{
+    if(s.water===water&&s.spot){
+      const k=s.spot.trim().toLowerCase();
+      if(!byKey.has(k))byKey.set(k,s.spot);
+    }
+  });
+  const sm=profile?.spotMap||{};
+  Object.keys(sm).forEach(k=>{
+    const[w,sp]=k.split('|');
+    if(w===wl&&sp){
+      const lk=sp.trim().toLowerCase();
+      if(!byKey.has(lk))byKey.set(lk,sp); // Session-Casing nicht überschreiben
+    }
+  });
+  return [...byKey.values()].sort((a,b)=>a.localeCompare(b,'de')).map(name=>({
+    name,
+    hasMark:!!_lookupSpotGps(water,name)
+  }));
 }
 
 function _smtOnWaterChange(){
@@ -6998,6 +7142,44 @@ function _smtOnWaterChange(){
       opt.value=name.trim();opt.textContent=name.trim();opt.selected=true;
       sel.insertBefore(opt,sel.querySelector('option[value="__new__"]'));
     }else{sel.value='';}
+  }
+  // v53: Spot-Dropdown nach Gewässer-Auswahl befüllen
+  _smtPopulateSpots(sel.value);
+  _smtUpdateConfirmState();
+}
+
+// v53: Bug4 — Spot-Select befüllen mit allen bekannten Spots des gewählten Gewässers
+function _smtPopulateSpots(water){
+  const sp=document.getElementById('smt-spot');
+  if(!sp)return;
+  if(!water){
+    sp.innerHTML='<option value="">– zuerst Gewässer wählen –</option>';
+    sp.disabled=true;
+    return;
+  }
+  sp.disabled=false;
+  const spots=_spotsForWater(water);
+  // Erste Option: nur Gewässer (kein Spot)
+  const waterMark=_lookupSpotGps(water,'')?' ✅':'';
+  let html=`<option value="">(nur Gewässer)${waterMark}</option>`;
+  spots.forEach(({name,hasMark})=>{
+    html+=`<option value="${_esc(name)}">${_esc(name)}${hasMark?' ✅':''}</option>`;
+  });
+  html+='<option value="__new__">+ Neuer Spot…</option>';
+  sp.innerHTML=html;
+}
+
+// v53: Bug4 — Spot-Select Change-Handler (für "+ Neuer Spot…")
+function _smtOnSpotChange(){
+  const sp=document.getElementById('smt-spot');
+  if(!sp)return;
+  if(sp.value==='__new__'){
+    const name=prompt('Name des neuen Spots:');
+    if(name&&name.trim()){
+      const opt=document.createElement('option');
+      opt.value=name.trim();opt.textContent=name.trim();opt.selected=true;
+      sp.insertBefore(opt,sp.querySelector('option[value="__new__"]'));
+    }else{sp.value='';}
   }
   _smtUpdateConfirmState();
 }
@@ -7470,23 +7652,31 @@ function _windDir(deg){
 // ═══════════════════════════════════════════════════════════
 // DETAIL – BugFix: fully synchronous, photos async after
 // ═══════════════════════════════════════════════════════════
-function showDetail(id){
+// v53: Bug7 — Globaler Return-Page-State, gesetzt wenn showDetail aus der Karte aufgerufen wird
+let _detailReturnPage='fangbuch';
+function showDetail(id,returnPage){
   const s=sessions.find(x=>x.id===id);if(!s)return;
+  // v53: Return-Page merken (default = fangbuch, von der Karte aus = 'map')
+  _detailReturnPage=returnPage||'fangbuch';
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
   document.getElementById('page-detail').classList.add('on');
   const dur=calcDur(s.start,s.end);
   const lens=s.catches.map(c=>c.length);
   const maxL=lens.length?Math.max(...lens):0;
   const avgL=lens.length?(lens.reduce((a,b)=>a+b,0)/lens.length).toFixed(1):'–';
+  // v53: Bug6 — Edit/Close-Icons inline auf gleicher Höhe wie das Datum (statt absolut über App-Header)
   document.getElementById('detail-hdr').innerHTML=`
     <div class="dhdr">
-      <div style="position:absolute;top:12px;right:12px;display:flex;gap:6px;z-index:5;">
-        <button class="bico" style="color:rgba(255,255,255,.85);background:rgba(255,255,255,.15);border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px;" onclick="_patchedEditSess('${s.id}')" aria-label="Bearbeiten">✏️</button>
-        <button class="xbtn" style="position:static;" onclick="showPage('fangbuch')" aria-label="Schließen">✕</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;padding-right:80px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
         <span style="font-size:28px;">${s.moonIcon||'🌕'}</span>
-        <div><div class="dtitle">${fmtDate(s.date)}</div><div class="dmeta">${s.moonName||''} · ${s.moonIllum!==undefined?s.moonIllum+'% bel.':''}</div></div>
+        <div style="flex:1;min-width:0;">
+          <div class="dtitle">${fmtDate(s.date)}</div>
+          <div class="dmeta">${s.moonName||''} · ${s.moonIllum!==undefined?s.moonIllum+'% bel.':''}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0;align-items:center;">
+          <button class="bico" style="color:rgba(255,255,255,.85);background:rgba(255,255,255,.15);border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px;" onclick="_patchedEditSess('${s.id}')" aria-label="Bearbeiten">✏️</button>
+          <button class="xbtn" style="position:static;" onclick="showPage(_detailReturnPage||'fangbuch')" aria-label="Schließen">✕</button>
+        </div>
       </div>
       <div class="dmeta">${s.water}${s.spot?' · '+s.spot:''} · ${s.weather}${s.temp!=null?' · '+s.temp+'°C':''}${s.pressure?` · ${Math.round(s.pressure)}hPa`:''}${s.lat?' · 📍':''}</div>
       <div class="dmeta">${s.start}–${s.end||'?'} Uhr · ${dur}${s.clarity?` · ${s.clarity}`:''}</div>
@@ -7499,13 +7689,15 @@ function showDetail(id){
   let wxDetailHtml='';
   if(s.pressure||s.windSpeed!=null||s.temp!=null){
     let wxTiles='';
-    if(s.temp!=null)wxTiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">🌡️</div><div class="dd-wx-val">${s.temp}°C</div><div class="dd-wx-lbl">Temp.</div></div>`;
-    if(s.pressure)wxTiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">📊</div><div class="dd-wx-val">${Math.round(s.pressure)} hPa</div><div class="dd-wx-lbl">Druck</div></div>`;
-    if(s.windSpeed!=null)wxTiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">💨</div><div class="dd-wx-val">${s.windSpeed} km/h</div><div class="dd-wx-lbl">Wind ${_windDir(s.windDir)}</div></div>`;
-    if(s.clouds!=null)wxTiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">☁️</div><div class="dd-wx-val">${s.clouds}%</div><div class="dd-wx-lbl">Bewölk.</div></div>`;
+    // v53: Bug8 — Alle Wetter-Kacheln anklickbar (öffnet Detail-Chart mit Angelzeit-Highlight & Fang-Strichen)
+    const dKey=s.date||'';
+    if(s.temp!=null)wxTiles+=`<div class="dd-wx-tile" onclick="openDayWxDetail('${dKey}','temp','${s.id}')" style="cursor:pointer;"><div class="dd-wx-ico">🌡️</div><div class="dd-wx-val">${s.temp}°C</div><div class="dd-wx-lbl">Temp.</div></div>`;
+    if(s.pressure)wxTiles+=`<div class="dd-wx-tile" onclick="openDayWxDetail('${dKey}','pressure','${s.id}')" style="cursor:pointer;"><div class="dd-wx-ico">📊</div><div class="dd-wx-val">${Math.round(s.pressure)} hPa</div><div class="dd-wx-lbl">Druck</div></div>`;
+    if(s.windSpeed!=null)wxTiles+=`<div class="dd-wx-tile" onclick="openDayWxDetail('${dKey}','wind','${s.id}')" style="cursor:pointer;"><div class="dd-wx-ico">💨</div><div class="dd-wx-val">${s.windSpeed} km/h</div><div class="dd-wx-lbl">Wind ${_windDir(s.windDir)}</div></div>`;
+    if(s.clouds!=null)wxTiles+=`<div class="dd-wx-tile" onclick="openDayWxDetail('${dKey}','clouds','${s.id}')" style="cursor:pointer;"><div class="dd-wx-ico">☁️</div><div class="dd-wx-val">${s.clouds}%</div><div class="dd-wx-lbl">Bewölk.</div></div>`;
     // AP3: 5. Kachel Tide + 6. Kachel Karte
-    wxTiles+=`<div class="dd-wx-tile" onclick="openTideForDay('${s.date||''}')" style="cursor:pointer;"><div class="dd-wx-ico">🌊</div><div class="dd-wx-val">Öffnen</div><div class="dd-wx-lbl">Tide</div></div>`;
-    wxTiles+=`<div class="dd-wx-tile" onclick="openMapForDay('${s.date||''}')" style="cursor:pointer;"><div class="dd-wx-ico">🗺️</div><div class="dd-wx-val">Öffnen</div><div class="dd-wx-lbl">Karte</div></div>`;
+    wxTiles+=`<div class="dd-wx-tile" onclick="openTideForDay('${dKey}')" style="cursor:pointer;"><div class="dd-wx-ico">🌊</div><div class="dd-wx-val">Öffnen</div><div class="dd-wx-lbl">Tide</div></div>`;
+    wxTiles+=`<div class="dd-wx-tile" onclick="openMapForDay('${dKey}')" style="cursor:pointer;"><div class="dd-wx-ico">🗺️</div><div class="dd-wx-val">Öffnen</div><div class="dd-wx-lbl">Karte</div></div>`;
     if(wxTiles)wxDetailHtml=`<div class="slbl">Bedingungen</div><div class="dd-wx-grid">${wxTiles}</div>`;
   } else {
     // AP5: Wetter nachladen
@@ -8698,19 +8890,26 @@ async function openTideCal(){
 }
 
 // AP3: Tide für einen spezifischen Angel-Tag öffnen mit Session-Highlight
+// v53: Bug8 — Highlight enthält jetzt auch catches (Zeit + Icon) für senkrechte Striche im Tide-Chart
 async function openTideForDay(dateKey){
   if(!dateKey){openTideCal();return;}
   openFs('tide-cal');
   document.getElementById('fs-tide-body').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);">🔄 Lade Tidendaten…</div>';
-  // Finde Sessions für den Tag und speichere Highlight-Info
   const daySess=(sessions||[]).filter(s=>s.date===dateKey);
   if(daySess.length){
     const s=daySess[0];
     const achieved=s.catches&&s.catches.length>0&&!s.skunked;
+    const catches=[];
+    daySess.forEach(sx=>{
+      (sx.catches||[]).forEach(c=>{
+        if(c.time)catches.push({time:c.time,icon:fIco?fIco(c.type):'🐟',type:c.type,length:c.length});
+      });
+    });
     window._tideSessHighlight={
       start:s.start||'',end:s.end||s.start||'',
       color:achieved?'rgba(74,124,89,.22)':'rgba(204,64,64,.18)',
-      label:achieved?`🐟 ${s.catches.length} Fang${s.catches.length!==1?'e':''}`:'🪝 Schneider'
+      label:achieved?`🐟 ${catches.length} Fang${catches.length!==1?'e':''}`:'🪝 Schneider',
+      catches
     };
   } else {
     window._tideSessHighlight=null;
@@ -9058,6 +9257,52 @@ async function _renderTideCal(river,startDate){
       ctx.restore();
     }};
 
+    // v53: Bug8 — Angelzeit-Highlight & Fang-Striche im Tide-Chart
+    const _hhmmToTideIdx=hhmm=>{
+      if(!hhmm)return null;
+      const[h,m]=String(hhmm).split(':').map(n=>parseInt(n,10));
+      if(isNaN(h))return null;
+      return (h*60+(m||0))/15;
+    };
+    const sessHighlightPlugin={id:'sessHighlight',beforeDatasetsDraw(chart){
+      const hi=window._tideSessHighlight;
+      if(!hi)return;
+      const sIdx=_hhmmToTideIdx(hi.start);
+      const eIdx=_hhmmToTideIdx(hi.end);
+      if(sIdx==null||eIdx==null||eIdx<sIdx)return;
+      const scale=chart.scales.x;
+      const xS=scale.getPixelForValue(sIdx);
+      const xE=scale.getPixelForValue(eIdx);
+      const yT=chart.scales.y.top,yB=chart.scales.y.bottom;
+      const ctx=chart.ctx;
+      ctx.save();
+      ctx.fillStyle=hi.color||'rgba(74,124,89,.22)';
+      ctx.fillRect(xS,yT,xE-xS,yB-yT);
+      ctx.strokeStyle='rgba(74,124,89,.55)';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(xS,yT);ctx.lineTo(xS,yB);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(xE,yT);ctx.lineTo(xE,yB);ctx.stroke();
+      ctx.restore();
+    }};
+    const sessCatchPlugin={id:'sessCatches',afterDatasetsDraw(chart){
+      const hi=window._tideSessHighlight;
+      if(!hi||!hi.catches?.length)return;
+      const ctx=chart.ctx,scale=chart.scales.x,yT=chart.scales.y.top,yB=chart.scales.y.bottom;
+      ctx.save();
+      hi.catches.forEach(c=>{
+        const idx=_hhmmToTideIdx(c.time);
+        if(idx==null)return;
+        const x=scale.getPixelForValue(idx);
+        if(x<scale.left||x>scale.right)return;
+        ctx.strokeStyle='rgba(196,150,58,0.95)';ctx.lineWidth=2;ctx.setLineDash([]);
+        ctx.beginPath();ctx.moveTo(x,yT);ctx.lineTo(x,yB);ctx.stroke();
+        ctx.fillStyle='#fff';ctx.fillRect(x-10,yT-2,20,18);
+        ctx.font='14px "DM Sans",system-ui,sans-serif';
+        ctx.textAlign='center';ctx.textBaseline='top';
+        ctx.fillStyle='#C4963A';ctx.fillText(c.icon||'🐟',x,yT-1);
+      });
+      ctx.restore();
+    }};
+
     const lineColor=liveCount>0?'#2a8cba':'#b08c3c';
     new Chart(c,{
       type:'line',
@@ -9068,10 +9313,10 @@ async function _renderTideCal(river,startDate){
         fill:true,tension:.4,pointRadius:0,pointHoverRadius:0,
         borderWidth:2.5,borderDash:(liveCount===0)?[6,3]:[],spanGaps:true
       }]},
-      plugins:[nowLinePlugin],
+      plugins:[sessHighlightPlugin,nowLinePlugin,sessCatchPlugin],
       options:{
         responsive:false,maintainAspectRatio:false,
-        layout:{padding:0},
+        layout:{padding:{top:18,bottom:0,left:0,right:0}}, // v53: Platz für 🐟-Symbole oben
         plugins:{legend:{display:false},tooltip:{enabled:false}},
         scales:{
           x:{min:0,max:96,
@@ -11230,7 +11475,8 @@ function initMap(){
   if(!container)return;
 
   if(_leafletMap){
-    setTimeout(()=>_leafletMap.invalidateSize(),150);
+    // v53: Bug1 — Multi-Tick invalidateSize (gleicher Trick wie in _grpMapRender)
+    [80,200,400,800].forEach(t=>setTimeout(()=>_leafletMap?.invalidateSize(),t));
     _updateMapMarkers();
     return;
   }
@@ -11249,7 +11495,8 @@ function initMap(){
     maxZoom:18
   }).addTo(_leafletMap);
 
-  setTimeout(()=>_leafletMap.invalidateSize(),200);
+  // v53: Bug1 — Multi-Tick invalidateSize, damit Karte volle Höhe rendert (Tabs schweben drüber)
+  [80,200,400,800].forEach(t=>setTimeout(()=>_leafletMap?.invalidateSize(),t));
   _updateMapMarkers();
 }
 
@@ -11335,7 +11582,8 @@ function _updateMapMarkers(){
   _mapMarkers=[];
   if(_mapCluster){_leafletMap.removeLayer(_mapCluster);_mapCluster=null;}
 
-  let withCoords=sessions.filter(s=>s.lat&&s.lon);
+  // v53: Toggle "Meine"/"Gruppe" filtert exklusiv — niemals beides parallel
+  let withCoords=_mapLayer==='private'?sessions.filter(s=>s.lat&&s.lon):[];
 
   // v45: Group layer – add group shared catches with GPS
   let groupCatches=[];
@@ -11365,7 +11613,8 @@ function _updateMapMarkers(){
     withCoords=withCoords.filter(s=>{const h=parseInt(s.start);return !isNaN(h)&&h<=ht;});
   }
 
-  if(!withCoords.length)return;
+  // v53: Bug5 — Frühzeitig returnen nur wenn KEINE Marker (privat + group) übrig sind
+  if(!withCoords.length&&!groupCatches.length)return;
 
   _mapCluster=L.markerClusterGroup({maxClusterRadius:40,spiderfyOnMaxZoom:true,showCoverageOnHover:false});
 
@@ -11386,8 +11635,9 @@ function _updateMapMarkers(){
     const color=isSkunked?'#cc0000':catchCnt>=3?'#7BAE8A':'#2D4A35';
 
     const catchList=s.catches?.map(c=>`${fIco(c.type)} ${c.type}${c.length?' '+c.length+'cm':''}`).join('<br>')||'Schneider 🎣';
+    // v53: Bug7 — showDetail mit returnPage='map' aufrufen, damit X zur Karte zurückführt
     const popupHtml=`
-      <div style="min-width:160px;cursor:pointer;" onclick="showDetail('${s.id}')">
+      <div style="min-width:160px;cursor:pointer;" onclick="showDetail('${s.id}','map')">
         <div style="font-family:var(--fs);font-weight:600;font-size:14px;margin-bottom:4px;">${s.water||'–'}${s.spot?' · '+s.spot:''}</div>
         <div style="font-size:11px;color:#666;margin-bottom:6px;">${fmtDate(s.date)} · ${s.start}–${s.end||'?'}</div>
         <div style="font-size:12px;line-height:1.6;">${catchList}</div>
@@ -13367,12 +13617,14 @@ async function _loadSessionWeather(s){
     if(avgPress)s.pressure=avgPress;if(wind!=null)s.windSpeed=wind;if(wDir!=null)s.windDir=wDir;
     if(avgHum!=null)s.humidity=avgHum;if(avgCloud!=null)s.clouds=avgCloud;if(rain!=null)s.precip=rain;
     await saveOneSess(s);
+    // v53: Bug8 — Auch nachgeladene Wetter-Kacheln klickbar machen
+    const dKey=s.date||'';
     let tiles='';
-    if(tMax!=null)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">🌡️</div><div class="dd-wx-val">${tMin!=null?tMin+'–':''}${tMax}°C</div><div class="dd-wx-lbl">Temp.</div></div>`;
-    if(avgPress)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">📊</div><div class="dd-wx-val">${avgPress} hPa</div><div class="dd-wx-lbl">Druck</div></div>`;
-    if(wind!=null)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">💨</div><div class="dd-wx-val">${wind} km/h</div><div class="dd-wx-lbl">Wind ${_windDir(wDir)}</div></div>`;
-    if(avgHum!=null)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">💧</div><div class="dd-wx-val">${avgHum}%</div><div class="dd-wx-lbl">Luftf.</div></div>`;
-    if(avgCloud!=null)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">☁️</div><div class="dd-wx-val">${avgCloud}%</div><div class="dd-wx-lbl">Bewölk.</div></div>`;
+    if(tMax!=null)tiles+=`<div class="dd-wx-tile" onclick="openDayWxDetail('${dKey}','temp','${s.id}')" style="cursor:pointer;"><div class="dd-wx-ico">🌡️</div><div class="dd-wx-val">${tMin!=null?tMin+'–':''}${tMax}°C</div><div class="dd-wx-lbl">Temp.</div></div>`;
+    if(avgPress)tiles+=`<div class="dd-wx-tile" onclick="openDayWxDetail('${dKey}','pressure','${s.id}')" style="cursor:pointer;"><div class="dd-wx-ico">📊</div><div class="dd-wx-val">${avgPress} hPa</div><div class="dd-wx-lbl">Druck</div></div>`;
+    if(wind!=null)tiles+=`<div class="dd-wx-tile" onclick="openDayWxDetail('${dKey}','wind','${s.id}')" style="cursor:pointer;"><div class="dd-wx-ico">💨</div><div class="dd-wx-val">${wind} km/h</div><div class="dd-wx-lbl">Wind ${_windDir(wDir)}</div></div>`;
+    if(avgHum!=null)tiles+=`<div class="dd-wx-tile" onclick="openDayWxDetail('${dKey}','humidity','${s.id}')" style="cursor:pointer;"><div class="dd-wx-ico">💧</div><div class="dd-wx-val">${avgHum}%</div><div class="dd-wx-lbl">Luftf.</div></div>`;
+    if(avgCloud!=null)tiles+=`<div class="dd-wx-tile" onclick="openDayWxDetail('${dKey}','clouds','${s.id}')" style="cursor:pointer;"><div class="dd-wx-ico">☁️</div><div class="dd-wx-val">${avgCloud}%</div><div class="dd-wx-lbl">Bewölk.</div></div>`;
     if(rain!=null&&rain>0)tiles+=`<div class="dd-wx-tile"><div class="dd-wx-ico">🌧</div><div class="dd-wx-val">${rain} mm</div><div class="dd-wx-lbl">Nieders.</div></div>`;
     if(tiles)el.innerHTML=`<div class="slbl">Bedingungen</div><div class="dd-wx-grid">${tiles}</div>`;
     else el.innerHTML='';
