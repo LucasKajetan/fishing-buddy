@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,viewport-fit=cover,interactive-widget=resizes-content">
-<title>Fishing Buddy</title>
-<meta name="theme-color" content="#2D4A35">
+<title>Angeln+</title>
+<meta name="theme-color" content="#1F3D2E">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Fishing Buddy">
-<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Fishing%20Buddy%22%2C%22short_name%22%3A%22Fishing%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23F8F5EF%22%2C%22theme_color%22%3A%22%232D4A35%22%7D">
+<meta name="apple-mobile-web-app-title" content="Angeln+">
+<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Angeln%2B%22%2C%22short_name%22%3A%22Angeln%2B%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23F5F3EE%22%2C%22theme_color%22%3A%22%231F3D2E%22%7D">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232D4A35' rx='20'/><text y='72' x='50' font-size='60' text-anchor='middle'>🎣</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -19,22 +19,28 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <style>:root{
-  --cream:#F8F5EF;--cream-dark:#EDE8DC;
-  --green-deep:#2D4A35;--green-mid:#4A7C59;--green-light:#7BAE8A;
-  --green-pale:#C8DDD0;--green-mist:#EAF2ED;
-  --beige:#F2EDE3;--text-dark:#1A2B20;--text-mid:#4A5C4F;--text-light:#8A9A8F;
-  --gold:#C4963A;--gold-l:#F5E8CC;--gold-d:#8B6420;
-  --red:#B45A46;--rose:#FADADD;--rose-b:#F0AABB;--rose-t:#8B3A4A;
+  /* v56 Design-System – Tanne / Salbei / Sand / Gold / Grau
+     Variable-Namen bleiben für Rückwärtskompatibilität, Werte aktualisiert. */
+  --cream:#F5F3EE;--cream-dark:#EDE8DC;
+  --green-deep:#1F3D2E;--green-mid:#3E5F4A;--green-light:#7BAE8A;
+  --green-pale:#C8DDD0;--green-mist:#E8F0EB;
+  --beige:#F2EDE3;--text-dark:#0F1F18;--text-mid:#3E5F4A;--text-light:#6B7280;
+  --gold:#D6A23A;--gold-l:#FBF3DE;--gold-d:#8B6420;
+  --red:#B45A46;--rose:#FCE7E1;--rose-b:#F0AABB;--rose-t:#A04A38;
   --yellow:#FFF8E7;--yellow-b:#F0D890;--yellow-t:#7A5C10;
   --blue:#E6F1FB;--blue-t:#0C447C;
   --purple:#EEEDFE;--purple-t:#3C3489;
   --teal:#E1F5EE;--teal-t:#085041;
-  --sh-sm:0 2px 8px rgba(45,74,53,.08);--sh-md:0 4px 20px rgba(45,74,53,.14);
+  /* v56 Aliase – neuer Code kann diese Namen nutzen */
+  --tanne:#1F3D2E;--forest:#3E5F4A;--salbei:#E8F0EB;--salbei-lt:#F2F6F3;
+  --sand:#F5F3EE;--sand-dark:#EDE8DC;--gold-soft:#FBF3DE;
+  --grau:#6B7280;--grau-lt:#A8AEB5;--line:rgba(31,61,46,.08);--line-strong:rgba(31,61,46,.14);
+  --sh-sm:0 2px 8px rgba(31,61,46,.06);--sh-md:0 4px 20px rgba(31,61,46,.12);
   --r:16px;--rs:10px;
-  --fa:'DM Sans',system-ui,sans-serif;
-  --fs:'Playfair Display',Georgia,serif;
-  /* v55 Editorial Nature: Fraunces für Werte/Headlines, Inter für Text. */
-  --f-edit:'Fraunces','Playfair Display',Georgia,serif;
+  /* v56 Typografie – Inter durchgehend, Hierarchie via Weight & Größe */
+  --fa:'Inter','DM Sans',system-ui,-apple-system,sans-serif;
+  --fs:'Inter','Playfair Display',Georgia,sans-serif;
+  --f-edit:'Inter','Fraunces',Georgia,sans-serif;
   --f-edit-text:'Inter','DM Sans',system-ui,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -75,8 +81,9 @@
   animation:blSpin 1s linear infinite;
 }
 #boot-loader .bl-logo{
-  font-family:var(--fs);font-size:26px;font-weight:600;color:#fff;letter-spacing:.4px;
+  font-family:var(--fa);font-size:28px;font-weight:500;color:#A8D5B5;letter-spacing:-.015em;
 }
+#boot-loader .bl-logo .hlogo-plus{color:var(--gold);font-weight:600;margin-left:1px;}
 #boot-loader .bl-sub{
   font-size:12px;color:rgba(255,255,255,.60);letter-spacing:.5px;
 }
@@ -164,11 +171,12 @@ body{
 .hbtn{width:38px;height:38px;background:rgba(255,255,255,.15);border:none;border-radius:10px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0;}
 .hbtn:hover{background:rgba(255,255,255,.25);}
 .hlogo{text-align:center;flex:1;}
-.hlogo-n{font-family:var(--fs);font-size:20px;font-weight:600;color:#fff;letter-spacing:.3px;}
+.hlogo-n{font-family:var(--fa);font-size:21px;font-weight:500;color:#A8D5B5;letter-spacing:-.015em;}
+.hlogo-n .hlogo-plus{color:var(--gold);font-weight:600;margin-left:1px;}
 .hlogo-s{font-size:10px;color:rgba(255,255,255,.55);margin-top:1px;}
-.hplus{background:var(--gold);font-size:20px;font-weight:700;}
-.hplus:hover{background:#d4a640;}
-@keyframes plusTap{0%{transform:scale(1);}40%{transform:scale(1.25);background:#e8c44a;}100%{transform:scale(1);background:var(--gold);}}
+.hplus{background:var(--gold);font-size:18px;font-weight:600;border-radius:50%;width:32px;height:32px;color:#fff;box-shadow:0 2px 8px rgba(214,162,58,.25);}
+.hplus:hover{background:#E0AE48;}
+@keyframes plusTap{0%{transform:scale(1);}40%{transform:scale(1.25);background:#E8B856;}100%{transform:scale(1);background:var(--gold);}}
 .hplus-tap{animation:plusTap .3s ease;}
 
 /* BOTTOM TAB BAR – schwebende Glassmorphism-Pille */
@@ -201,6 +209,96 @@ body{
 .btab-lbl{font-size:10px;font-weight:500;color:var(--text-light);letter-spacing:.2px;transition:color .2s,font-weight .1s;}
 .btab.on .btab-ico{color:var(--green-mid);transform:scale(1.1);}
 .btab.on .btab-lbl{color:var(--green-mid);font-weight:700;}
+
+/* ═════════════════════════════════════════════════
+   v56 PAGE-HEADER-PATTERN (auf allen Seiten gleich)
+   ═════════════════════════════════════════════════ */
+.ic{
+  width:22px;height:22px;
+  stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;
+  fill:none;flex-shrink:0;
+}
+.ic-sm{width:18px;height:18px;stroke-width:1.8;}
+.ic-xs{width:14px;height:14px;stroke-width:2;}
+.ic-lg{width:28px;height:28px;stroke-width:1.6;}
+.ic-fish{width:30px;height:18px;stroke-width:1.6;}
+
+.page-hdr{
+  background:#fff;padding:14px 16px 14px;
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;flex-shrink:0;
+}
+.page-hdr-back{
+  display:flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:99px;background:var(--salbei);
+  border:none;color:var(--tanne);flex-shrink:0;cursor:pointer;
+  transition:background .15s;
+}
+.page-hdr-back:active{background:#DCE7DF;}
+.page-hdr-back .ic{width:16px;height:16px;}
+.page-hdr-icon-wrap{
+  width:34px;height:34px;border-radius:11px;background:var(--salbei);
+  display:flex;align-items:center;justify-content:center;color:var(--forest);
+  flex-shrink:0;
+}
+.page-hdr-icon-wrap.gold-wrap{background:var(--gold-soft);color:#8B6420;}
+.page-hdr-icon-wrap .ic{width:20px;height:20px;}
+.page-hdr-left{flex:1;min-width:0;}
+.page-hdr-title{
+  font-family:var(--fa);font-size:20px;font-weight:600;
+  color:var(--text-dark);letter-spacing:-.02em;line-height:1.15;
+}
+.page-hdr-sub{
+  font-family:var(--fa);font-size:11.5px;color:var(--grau);
+  font-weight:400;margin-top:2px;
+}
+.page-hdr-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+
+.pill-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--salbei);border:none;border-radius:99px;
+  padding:7px 13px;font-size:12px;font-weight:500;
+  color:var(--tanne);font-family:var(--fa);cursor:pointer;
+  transition:background .15s,transform .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+.pill-btn:active{background:#DCE7DF;transform:scale(.96);}
+.pill-btn .ic{width:14px;height:14px;stroke-width:1.8;}
+.pill-btn.icon-only{padding:7px;width:34px;height:34px;justify-content:center;}
+.pill-btn.icon-only .ic{width:16px;height:16px;}
+
+.pill-select{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--salbei);border:none;border-radius:99px;
+  padding:7px 10px 7px 13px;font-size:12px;font-weight:500;
+  color:var(--tanne);font-family:var(--fa);cursor:pointer;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%231F3D2E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat;background-position:right 10px center;
+  padding-right:26px;
+}
+
+.page-hdr-tabs{
+  background:#fff;padding:0 16px;
+  border-bottom:1px solid var(--line);
+  display:flex;gap:18px;flex-shrink:0;overflow-x:auto;
+  scrollbar-width:none;
+}
+.page-hdr-tabs::-webkit-scrollbar{display:none;}
+.page-hdr-tab{
+  font-size:13px;font-weight:500;color:var(--grau);
+  padding:10px 0 10px;border-bottom:2px solid transparent;
+  cursor:pointer;font-family:var(--fa);background:none;
+  border-top:none;border-left:none;border-right:none;
+  white-space:nowrap;
+}
+.page-hdr-tab.on{color:var(--tanne);font-weight:600;border-bottom-color:var(--tanne);}
+.page-hdr-tab .badge{
+  display:inline-block;margin-left:5px;padding:1px 6px;
+  background:var(--gold);color:#fff;border-radius:99px;
+  font-size:10px;font-weight:600;
+}
 
 /* PAGES — v51: explizit height:100% + flex:1 für Edge-to-Edge */
 .pages{display:flex;flex-direction:column;flex:1;height:100%;min-height:0;overflow:hidden;}
@@ -328,11 +426,12 @@ position:relative;}
 .fc-kachel.wide .fc-kachel-days{
   padding:0 6px 12px;
 }
-/* Mini-Tagesreihe in Vorhersage-Kachel */
+/* Mini-Tagesreihe in Vorhersage-Kachel
+   v56-Fix: scroll-snap-stop:always entfernt + scroll-behavior:smooth nur programmatisch
+   → User kann flüssig durchwischen, programmatische Scrolls bleiben smooth */
 .fc-mini-days{
   display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;scroll-behavior:smooth;
-  /* AP1: Smooth Snap-Scroll – Kacheln rasten beim Wischen sauber ein */
+  -webkit-overflow-scrolling:touch;
   scroll-snap-type:x mandatory;
   scroll-padding-left:6px;scroll-padding-right:6px;
   overscroll-behavior-x:contain;
@@ -344,14 +443,15 @@ position:relative;}
   display:flex;flex-direction:column;align-items:center;gap:3px;
   padding:8px 6px;border-radius:10px;cursor:pointer;min-width:46px;
   transition:background .15s;flex-shrink:0;
-  /* AP1: Snap-Einrastpunkt pro Tag */
-  scroll-snap-align:start;scroll-snap-stop:always;
+  scroll-snap-align:center;
 }
-.fc-mini-day:hover{background:var(--green-mist);}
-.fc-mini-day.today{background:var(--green-deep);}
+.fc-mini-day:hover{background:var(--salbei);}
+.fc-mini-day.today{background:var(--tanne);}
 .fc-mini-day.today *{color:#fff!important;}
-.fc-mini-dow{font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;}
-.fc-mini-ico{font-size:18px;}
+.fc-mini-dow{font-size:10px;font-weight:600;color:var(--grau);text-transform:uppercase;letter-spacing:.05em;}
+.fc-mini-ico{font-size:18px;color:var(--forest);display:flex;align-items:center;justify-content:center;}
+.fc-mini-ico .ic{width:18px;height:18px;stroke-width:1.7;}
+.fc-mini-day.today .fc-mini-ico{color:#fff;}
 .fc-mini-tmp{font-size:11px;font-weight:600;color:var(--text-dark);}
 .fc-mini-bite{font-size:10px;font-weight:700;color:var(--green-mid);}
 
@@ -777,27 +877,37 @@ position:relative;}
 }
 .st-headline-sub{font-size:12px;color:var(--text-light);font-weight:500;}
 
-/* Kachel-Grid 2×2 */
+/* v56: Kachel-Grid 2×2 — mittelaxial, Icon+Label oben, Wert zentriert, Hint unten */
 .st-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .st-tile{
-  background:#fff;border-radius:var(--r);padding:16px;
-  box-shadow:var(--sh-sm);border:1px solid rgba(200,221,208,.4);
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:14px 12px 12px;
   cursor:pointer;transition:transform .15s,box-shadow .15s;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  text-align:center;
 }
 .st-tile:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
 .st-tile:active{transform:scale(.98);}
-.st-tile
-.st-tile
-.st-tile       /* volle Breite */
-.st-tile
-.st-tile-ico{font-size:20px;margin-bottom:8px;}
-.st-tile-val{font-size:30px;font-weight:700;color:var(--text-dark);letter-spacing:-.5px;line-height:1;}
-.st-tile
-.st-tile-lbl{font-size:11px;color:var(--text-light);font-weight:600;margin-top:4px;
-  text-transform:uppercase;letter-spacing:.5px;}
-.st-tile
-.st-tile-hint{font-size:10px;color:var(--green-mid);font-weight:600;margin-top:6px;}
-.st-tile
+.st-tile-head{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  color:var(--forest);
+}
+.st-tile-head .ic{width:16px;height:16px;stroke-width:1.7;}
+.st-tile-ico{font-size:20px;line-height:1;}
+.st-tile-val{
+  font-family:var(--fa);font-size:30px;font-weight:600;
+  color:var(--text-dark);letter-spacing:-.025em;line-height:1.05;
+}
+.st-tile-val .unit{font-size:14px;font-weight:500;color:var(--grau);margin-left:1px;}
+.st-tile-lbl{
+  font-size:10px;color:var(--grau);font-weight:600;
+  text-transform:uppercase;letter-spacing:.07em;
+}
+.st-tile-hint{
+  font-size:11px;color:var(--grau);font-weight:400;
+  display:flex;align-items:center;justify-content:center;gap:4px;margin-top:2px;
+}
+.st-tile-hint .ic{width:11px;height:11px;stroke-width:2;color:var(--forest);}
 
 /* Erfolgsquote Progress-Bar */
 .st-rate-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
@@ -816,10 +926,10 @@ position:relative;}
 }
 .st-fish-row:last-child{border-bottom:none;}
 .st-fish-row:hover{background:var(--green-mist);}
-.st-fish-ico{font-size:20px;width:32px;text-align:center;flex-shrink:0;}
-.st-fish-name{font-size:14px;font-weight:600;color:var(--text-dark);flex:1;}
-.st-fish-bar{height:6px;border-radius:3px;background:var(--green-mid);min-width:6px;}
-.st-fish-cnt{font-size:14px;font-weight:700;color:var(--green-deep);min-width:28px;text-align:right;}
+.st-fish-ico{display:flex;align-items:center;justify-content:center;width:36px;color:var(--tanne);flex-shrink:0;}
+.st-fish-name{font-size:14px;font-weight:600;color:var(--text-dark);flex:1;letter-spacing:-.005em;}
+.st-fish-bar{height:5px;border-radius:99px;background:var(--forest);min-width:6px;}
+.st-fish-cnt{font-size:14px;font-weight:600;color:var(--tanne);min-width:28px;text-align:right;}
 
 /* ── ZIEL-KACHELN (Gamification) ── */
 @keyframes goalShine{
@@ -940,23 +1050,44 @@ position:relative;}
 .st-mehr-sub{font-size:12px;color:rgba(255,255,255,.65);}
 .st-mehr-arrow{font-size:24px;color:rgba(255,255,255,.75);}
 
-/* Rekord-Banner */
+/* v56: Rekord-Banner mit Gold-Icon-Box (statt Emoji) */
 .st-rekord{
-  background:linear-gradient(135deg,var(--green-deep) 0%,var(--green-mid) 100%);
-  border-radius:var(--r);padding:16px 18px;margin-bottom:14px;
-  display:flex;align-items:center;gap:14px;box-shadow:var(--sh-md);
+  background:linear-gradient(135deg,var(--tanne) 0%,#2A4D38 100%);
+  border-radius:18px;padding:16px 18px;margin-bottom:14px;
+  display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
 }
+.st-rekord::after{
+  content:'';position:absolute;right:-30px;top:-20px;width:120px;height:120px;
+  background:radial-gradient(circle,rgba(214,162,58,.18) 0%,transparent 70%);
+  pointer-events:none;
+}
+.st-rekord-ico-wrap{
+  width:48px;height:48px;border-radius:14px;
+  background:rgba(214,162,58,.18);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gold);flex-shrink:0;position:relative;z-index:1;
+}
+.st-rekord-ico-wrap .ic{width:26px;height:26px;}
 .st-rekord-ico{font-size:36px;flex-shrink:0;}
-.st-rekord-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:3px;}
-.st-rekord-fish{font-family:var(--fs);font-size:20px;font-weight:600;color:#fff;}
-.st-rekord-len{font-size:26px;font-weight:700;color:var(--gold);}
+.st-rekord-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:2px;position:relative;z-index:1;}
+.st-rekord-fish{font-family:var(--fa);font-size:15px;font-weight:600;color:#fff;letter-spacing:-.01em;position:relative;z-index:1;}
+.st-rekord-len{font-family:var(--fa);font-size:24px;font-weight:600;color:var(--gold);letter-spacing:-.02em;line-height:1;margin-top:2px;position:relative;z-index:1;}
 
 /* Chart-Wrapper */
 .st-chart-card{background:#fff;border-radius:var(--r);padding:16px;
   box-shadow:var(--sh-sm);margin-bottom:14px;border:1px solid rgba(200,221,208,.4);}
 .st-chart-lbl{font-size:11px;font-weight:700;color:var(--text-light);
   text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;}
+/* v56: Section-Label mit optionalem Inline-Icon */
+.slbl{
+  font-family:var(--fa);font-size:11px;font-weight:600;color:var(--grau);
+  text-transform:uppercase;letter-spacing:.08em;
+  margin:14px 4px 8px;
+  display:flex;align-items:center;gap:6px;
+}
 .slbl:first-child{margin-top:0;}
+.slbl .ic{flex-shrink:0;}
 .card{background:#fff;border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh-sm);margin-bottom:10px;border:1px solid rgba(200,221,208,.4);}
 
 /* INPUTS */
@@ -1164,46 +1295,48 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .fb-month-line{flex:1;height:1px;background:var(--green-pale);}
 .fb-month-count{font-size:11px;font-weight:600;color:var(--text-light);white-space:nowrap;}
 
-/* ── FANGBUCH: Kompakte Kachel (v16 Redesign) ── */
+/* ── v56 FANGBUCH-CARD: Datum/Zeit links als fixe Spalte, Wasser/Fisch bündig rechts ── */
 .fb-card{
-  background:#fff;border-radius:var(--r);box-shadow:var(--sh-sm);
-  margin-bottom:8px;border:1px solid rgba(200,221,208,.35);
+  background:#fff;border-radius:14px;
+  margin-bottom:8px;border:1px solid var(--line);
   cursor:pointer;transition:transform .15s,box-shadow .15s;
-  overflow:hidden;display:flex;align-items:stretch;
+  overflow:hidden;display:flex;align-items:center;
+  padding:13px 16px;
 }
-.fb-card:hover{transform:translateY(-1px);box-shadow:var(--sh-md);}
+.fb-card:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(31,61,46,.10);}
 .fb-card:active{transform:scale(.99);}
-/* Hauptinhalt – nimmt volle Breite, Inhalt unten bündig */
-.fb-card-content{
-  flex:1;min-width:0;padding:10px 10px 10px 12px;
-  display:flex;flex-direction:column;justify-content:flex-end;
+.fb-card-content{flex:1;min-width:0;}
+/* Grid-Layout: Spalte 1 fix für Datum/Zeit, Spalte 2 nimmt Rest für Wasser/Fisch
+   → Wasser- und Fischname starten bündig untereinander */
+.fb-card-row1, .fb-card-row2{
+  display:grid;
+  grid-template-columns:96px 1fr;
+  align-items:baseline;
 }
-/* Zeile 1: Datum links (shrink:0) + Gewässer nimmt Rest */
-.fb-card-row1{display:flex;align-items:baseline;gap:5px;margin-bottom:2px;}
+.fb-card-row1{margin-bottom:3px;}
 .fb-date{
-  font-family:var(--fa);font-size:11px;font-weight:700;
-  color:var(--text-dark);white-space:nowrap;flex-shrink:0;
+  font-family:var(--fa);font-size:11px;font-weight:500;
+  color:var(--grau);white-space:nowrap;
 }
 .fb-water{
-  font-family:var(--fa);font-size:13px;font-weight:700;color:var(--text-dark);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  flex:1;min-width:0;
+  font-family:var(--fa);font-size:14.5px;font-weight:600;
+  color:var(--text-dark);letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
 }
-/* Zeile 2: Uhrzeit + Fischart */
-.fb-card-row2{display:flex;align-items:center;gap:5px;}
-.fb-time{font-size:11px;font-weight:400;color:var(--text-light);white-space:nowrap;flex-shrink:0;}
+.fb-time{font-family:var(--fa);font-size:11px;font-weight:400;color:var(--grau);white-space:nowrap;}
 .fb-fish{
-  font-size:11px;font-weight:400;color:var(--text-light);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;
+  font-family:var(--fa);font-size:12px;font-weight:400;color:var(--grau);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
 }
-/* Rechter Fang-Zähler – feste Breite, ebenfalls unten bündig */
+.fb-card.skunked .fb-fish{color:var(--rose-t);font-weight:500;}
+/* Rechter Fang-Zähler */
 .fb-cnt-col{
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  padding:10px 14px 10px 6px;flex-shrink:0;min-width:42px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex-shrink:0;min-width:38px;margin-left:8px;
 }
-.fb-cnt{font-size:26px;font-weight:700;color:var(--green-deep);line-height:1;}
-.fb-cnt.skunked-cnt{color:#d06060;}
-.fb-cnt-lbl{font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-light);margin-top:1px;text-align:center;}
+.fb-cnt{font-family:var(--fa);font-size:24px;font-weight:600;color:var(--tanne);letter-spacing:-.02em;line-height:1;}
+.fb-cnt.skunked-cnt{color:var(--rose-t);}
+.fb-cnt-lbl{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--grau);margin-top:3px;text-align:center;}
 
 /* ── DAY DETAIL: neues Hero-Design (v16) ── */
 #fs-day-detail{z-index:115;}
@@ -1911,7 +2044,7 @@ input[type=file]{display:none;}
 .smart-import-btn:hover{filter:brightness(1.05);}
 
 /* Stats Dropdown */
-.st-year-select{padding:6px 28px 6px 12px;border:1.5px solid var(--green-pale);border-radius:20px;font-size:12px;font-weight:600;font-family:var(--fa);background:#fff;color:var(--green-deep);cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234A7C59' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+.st-year-select{padding:7px 26px 7px 13px;border:none;border-radius:99px;font-size:12px;font-weight:500;font-family:var(--fa);background:var(--salbei);color:var(--tanne);cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%231F3D2E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 10px center;}
 
 /* Live End Summary (Fitness Style) */
 /* AP4: Summary in exakt Header-Grün */
@@ -2172,7 +2305,7 @@ input[type=file]{display:none;}
 .fc-kachel.wide .fc-kachel-head{padding:0 16px 6px;}
 .fc-kachel.wide .fc-kachel-title{font-family:var(--f-edit);font-weight:600;letter-spacing:-.01em;color:var(--text-dark);}
 .fc-kachel.wide .fc-kachel-sub{font-family:var(--f-edit-text);color:var(--text-light);}
-/* AP2.1: Smooth scroll-snap analog zur Tide */
+/* v56: Soft Snap (kein scroll-stop), Center-Align für ruhigeres Wischen */
 .fc-mini-days{
   scroll-snap-type:x mandatory;
   -webkit-overflow-scrolling:touch;
@@ -2181,7 +2314,7 @@ input[type=file]{display:none;}
   gap:6px;
 }
 .fc-mini-day{
-  scroll-snap-align:start;
+  scroll-snap-align:center;
   flex:0 0 auto;
   min-width:54px;
   border-radius:14px;
@@ -2219,17 +2352,21 @@ input[type=file]{display:none;}
   font-size:22px;
   line-height:1;
   margin-bottom:4px;
-  opacity:.85;
+  color:var(--forest);
+  display:flex;align-items:center;justify-content:center;
 }
+.fc-square-ico .ic{width:22px;height:22px;stroke-width:1.6;}
+.fc-square.gold .fc-square-ico{color:var(--gold);}
 .fc-square-val{
   font-family:var(--f-edit);
   font-size:26px;
   font-weight:600;
-  letter-spacing:-.01em;
+  letter-spacing:-.025em;
   color:var(--text-dark);
-  line-height:1.1;
+  line-height:1.05;
   margin-top:2px;
 }
+.fc-square-val.compact{font-size:20px;letter-spacing:-.02em;}
 .fc-square-val .unit{
   font-size:13px;
   font-weight:500;
@@ -2504,9 +2641,73 @@ input[type=file]{display:none;}
 </style>
 </head>
 <body>
+<!-- v56: SVG-Icon-Library — zentral definiert, überall via <use href="#i-..."/> nutzbar -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <!-- UI / Navigation -->
+  <symbol id="i-burger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-arrow-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+  <symbol id="i-arrow-dn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></symbol>
+  <symbol id="i-arrow-rt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 9v6l-4-2v-4z"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8.6 13.5l6.8 3.5M15.4 7l-6.8 3.5"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="18" cy="12" r="1.5" fill="currentColor"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="13" r="4"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-7z"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="4" cy="18" r="1.5"/></symbol>
+  <!-- Bottom-Nav (entsprechen den existierenden btab-Icons) -->
+  <symbol id="i-fb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h20M2 12h20M2 18h20"/><circle cx="20" cy="6" r="3" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 3 22 9 18 15 22 21 18 21 2 15 6 9 2 3 6"/><line x1="9" y1="2" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="22"/></symbol>
+  <symbol id="i-stats" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="13" width="4" height="8" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></symbol>
+  <!-- Wetter / Umwelt -->
+  <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a5 5 0 0 1 0-10 6 6 0 0 1 11.5 1.5A4 4 0 0 1 18 18H7z"/></symbol>
+  <symbol id="i-cloud-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6a3 3 0 0 1 3 3M14 3v1M19.5 4.5l-.7.7M21 9h-1"/><path d="M5 18a4 4 0 0 1 0-8 5 5 0 0 1 9.7 1.5A3.5 3.5 0 0 1 14 18H5z"/></symbol>
+  <symbol id="i-rain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14a4 4 0 0 1 0-8 5 5 0 0 1 9.7 1.5A3.5 3.5 0 0 1 15 14H6z"/><path d="M9 18l-1 2M13 18l-1 2M17 18l-1 2"/></symbol>
+  <symbol id="i-wind" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 14h15a3 3 0 1 1-3 3"/><path d="M3 11h7"/></symbol>
+  <symbol id="i-thermo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14V5a2 2 0 1 0-4 0v9a4 4 0 1 0 4 0z"/><circle cx="12" cy="17" r="1.5" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-pressure" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 18 0"/><path d="M12 12l4-3"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9c2 0 2-2 5-2s3 2 5 2 3-2 5-2 3 2 5 2"/><path d="M2 15c2 0 2-2 5-2s3 2 5 2 3-2 5-2 3 2 5 2"/></symbol>
+  <symbol id="i-water" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l6 8a6 6 0 1 1-12 0l6-8z"/></symbol>
+  <!-- Angeln-Spezifisch -->
+  <symbol id="i-hook" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v8a4 4 0 1 1-4 4"/><circle cx="12" cy="3" r="1.4"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a2 2 0 0 0 2 4M16 6h3a2 2 0 0 1-2 4"/><path d="M9 17h6M10 17v-3M14 17v-3M8 21h8"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7 7-12a7 7 0 0 0-14 0c0 5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+  <symbol id="i-pin-add" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7 7-12a7 7 0 0 0-14 0c0 5 7 12 7 12z"/><path d="M12 6v6M9 9h6"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 3 14.5 9 21 9.5 16 14 17.5 21 12 17.5 6.5 21 8 14 3 9.5 9.5 9"/></symbol>
+  <symbol id="i-crew" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 19a6 6 0 0 1 12 0M14 19a4 4 0 0 1 7 0"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5-7-12a4 4 0 0 1 7-3 4 4 0 0 1 7 3c0 7-7 12-7 12z"/></symbol>
+  <symbol id="i-comment" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-12 7l-5 1 1-5a8 8 0 1 1 16-3z"/></symbol>
+  <symbol id="i-skunk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 8l8 8M16 8l-8 8"/></symbol>
+  <!-- Fisch-Silhouetten (32×18 viewBox, in Inhaltszeilen 28×16 verwendet) -->
+  <symbol id="f-default" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 Q5 5 11 5 Q18 4 22 8 L28 5 L26 9 L28 13 L22 10 Q18 14 11 13 Q5 13 3 9 Z"/><circle cx="7" cy="8.5" r=".7" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="f-hecht" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9 L7 6 Q14 3 22 7 L28 5 L26 9 L28 13 L22 11 Q14 15 7 12 Z"/><path d="M18 5 L20 2 L22 5"/><circle cx="6" cy="8" r=".7" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="f-zander" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 Q3 5 9 5 Q14 4 22 8 L28 5 L26 9 L28 13 L22 10 Q14 14 9 13 Q3 13 3 9 Z"/><path d="M9 5 L10 2 M12 4 L13 1 M15 4 L16 1.5"/><circle cx="7" cy="8" r=".7" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="f-barsch" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 Q3 4 10 4 Q18 3 23 8 L28 5 L26 9 L28 13 L23 10 Q18 15 10 14 Q3 14 3 9 Z"/><path d="M9 4 L11 1 L13 4"/><path d="M11 6 L11 13 M14 5 L14 13 M17 5 L17 13" stroke-width="1.1" opacity=".6"/><circle cx="7" cy="8" r=".7" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="f-forelle" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9 Q4 5 10 5 Q18 4 22 8 L28 5 L26 9 L28 13 L22 10 Q18 14 10 13 Q4 13 2 9 Z"/><circle cx="6" cy="9" r=".7" fill="currentColor" stroke="none"/><circle cx="11" cy="7" r=".5" fill="currentColor" stroke="none" opacity=".6"/><circle cx="15" cy="8.5" r=".5" fill="currentColor" stroke="none" opacity=".6"/><circle cx="13" cy="11" r=".5" fill="currentColor" stroke="none" opacity=".6"/><circle cx="17" cy="11" r=".5" fill="currentColor" stroke="none" opacity=".6"/></symbol>
+  <symbol id="f-karpfen" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9 Q4 3 12 3 Q20 2 24 8 L28 5 L26 9 L28 13 L24 10 Q20 16 12 15 Q4 15 4 9 Z"/><path d="M4 9 Q2 8 1 9 M4 9 Q2 11 1 11"/><path d="M11 3 L13 1 L15 3"/><circle cx="7" cy="8" r=".7" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="f-aal" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9 Q5 7 9 9 Q13 11 17 9 Q21 7 25 9 L28 8 L27 10 L28 12 L25 10 Q21 11 17 9.5"/><circle cx="5" cy="8.5" r=".6" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="f-wels" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9 Q2 4 8 4 Q14 3 20 7 Q24 8 28 6 L26 9 L28 12 Q24 10 20 11 Q14 15 8 14 Q2 14 2 9 Z"/><path d="M2 8 Q-1 7 -2 8 M2 10 Q-1 11 -2 10" stroke-width="1.1"/><circle cx="6" cy="7" r=".7" fill="currentColor" stroke="none"/></symbol>
+</defs>
+</svg>
+
 <!-- AP3: Boot-Loader (sofort sichtbar, blockiert Login-Flash) -->
 <div id="boot-loader" aria-hidden="true">
-  <div class="bl-logo">🎣 Fishing Buddy</div>
+  <div class="bl-logo">angeln<span class="hlogo-plus">+</span></div>
   <div class="bl-spinner"></div>
   <div class="bl-sub">Daten werden geladen…</div>
 </div>
@@ -2738,7 +2939,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Fishing Buddy v55 · Editorial Nature · Realtime · PWA</div>
+    <div class="burg-ver">Angeln+ v56 · Editorial Nature · Realtime · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -2906,8 +3107,8 @@ input[type=file]{display:none;}
       </svg>
     </button>
     <div class="hlogo">
-      <div class="hlogo-n">Fishing Buddy</div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v55</div>
+      <div class="hlogo-n">angeln<span class="hlogo-plus">+</span></div>
+      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v56</div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
@@ -3050,13 +3251,18 @@ input[type=file]{display:none;}
 
 <!-- PAGE: FANGBUCH (ehemals Verlauf) – v9.1 Kalender + Liste -->
 <div class="page" id="page-fangbuch">
-  <!-- Headline-Leiste -->
-  <div class="fb-header">
-    <span class="fb-header-title" id="fb-view-title">Fangbuch</span>
-    <button class="fb-view-toggle" id="fb-view-btn" onclick="toggleFbView()" aria-label="Ansicht wechseln">
-      <span id="fb-toggle-ico">📅</span>
-      <span id="fb-toggle-lbl">Kalender</span>
-    </button>
+  <!-- v56: Page-Header-Pattern -->
+  <div class="page-hdr">
+    <div class="page-hdr-left">
+      <div class="page-hdr-title" id="fb-view-title">Fangbuch</div>
+      <div class="page-hdr-sub" id="fb-view-sub"></div>
+    </div>
+    <div class="page-hdr-actions">
+      <button class="pill-btn" id="fb-view-btn" onclick="toggleFbView()" aria-label="Ansicht wechseln">
+        <svg class="ic" id="fb-toggle-ico"><use href="#i-cal"/></svg>
+        <span id="fb-toggle-lbl">Kalender</span>
+      </button>
+    </div>
   </div>
   <div class="sc" id="fangbuch-sc">
     <div id="fangbuch-list"></div>
@@ -3227,28 +3433,53 @@ input[type=file]{display:none;}
 
 <!-- PAGE: STATISTIK -->
 <div class="page" id="page-stats">
+  <div class="page-hdr">
+    <div class="page-hdr-left">
+      <div class="page-hdr-title">Statistik</div>
+      <div class="page-hdr-sub" id="stats-hdr-sub">Saison &amp; Fänge…</div>
+    </div>
+    <div class="page-hdr-actions" id="stats-hdr-actions">
+      <!-- Wird per JS aus rndrStats() gefüllt: Jahr- &amp; Monats-Select -->
+    </div>
+  </div>
   <div class="sc"><div id="stats-con"></div></div>
 </div>
 
 <!-- PAGE: VORHERSAGE -->
 <div class="page" id="page-forecast">
+  <div class="page-hdr">
+    <div class="page-hdr-left">
+      <div class="page-hdr-title">Vorhersage</div>
+      <div class="page-hdr-sub" id="fc-hdr-sub">14 Tage</div>
+    </div>
+    <div class="page-hdr-actions">
+      <button class="pill-btn icon-only" onclick="openBurg()" aria-label="Standort"><svg class="ic"><use href="#i-pin"/></svg></button>
+    </div>
+  </div>
   <div class="sc"><div id="fc-con"></div></div>
 </div>
 
 <!-- PAGE: KARTE – v52 AP2: In-Place Spot-Markieren (Top-Right Button + Inline-Toolbar + Confirm-Bar) -->
 <div class="page" id="page-map">
+  <!-- v56: Page-Header-Pattern -->
+  <div class="page-hdr">
+    <div class="page-hdr-left">
+      <div class="page-hdr-title">Karte</div>
+      <div class="page-hdr-sub" id="map-hdr-sub">Spots &amp; Gewässer</div>
+    </div>
+    <div class="page-hdr-actions">
+      <button class="pill-btn" onclick="_openMapFilter()" aria-label="Filter"><svg class="ic"><use href="#i-filter"/></svg>Filter<span class="map-filter-badge" id="map-filter-badge"></span></button>
+      <button class="pill-btn icon-only" id="btn-spot-mark" onclick="_enterSpotMarkMode()" aria-label="Spot markieren"><svg class="ic"><use href="#i-pin-add"/></svg></button>
+    </div>
+  </div>
   <div class="sc" style="padding:0;position:relative;overflow:hidden;">
     <div id="map-container"></div>
+    <!-- v56: Layer-Toggle bleibt floating über der Map -->
     <div class="map-hdr-bar">
-      <div style="display:flex;gap:8px;align-items:center;">
-        <button class="map-hdr-btn" onclick="_openMapFilter()">🔍 Filter <span class="map-filter-badge" id="map-filter-badge"></span></button>
-        <div class="map-layer-toggle-inline" id="map-layer-toggle">
-          <button class="map-layer-btn on" id="ml-private" onclick="_setMapLayer('private')">🔒 Meine</button>
-          <button class="map-layer-btn" id="ml-group" onclick="_setMapLayer('group')">👥 Gruppe</button>
-        </div>
+      <div class="map-layer-toggle-inline" id="map-layer-toggle">
+        <button class="map-layer-btn on" id="ml-private" onclick="_setMapLayer('private')">🔒 Meine</button>
+        <button class="map-layer-btn" id="ml-group" onclick="_setMapLayer('group')">👥 Gruppe</button>
       </div>
-      <!-- v52 AP2: Top-Right "Spot markieren" startet In-Place-Modus -->
-      <button class="map-hdr-btn" id="btn-spot-mark" onclick="_enterSpotMarkMode()">📌 Spot markieren</button>
     </div>
     <!-- v52 AP2: Inline-Toolbar oben — Wasser/Spot-Picker, erscheint im Markier-Modus -->
     <!-- v53: Bug2 erste Zeile mit padding-right damit ✕ nicht überdeckt wird; Bug4 Spot ist jetzt Select -->
@@ -3656,7 +3887,7 @@ function sbInit(){
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v55`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`;
       } else {
         _sbUser=null;
       }
@@ -3672,7 +3903,7 @@ async function _checkAuthSession(){
     if(data?.session?.user){
       _sbUser=data.session.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v55`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`;
       return true;
     }
   }catch(e){console.warn('Auth-Check Fehler:',e);}
@@ -3718,7 +3949,7 @@ async function handleAuth(e){
       //   5. ERST jetzt Login-Overlay weg + auf Fangbuch wechseln
       _sbUser=result.data.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v55`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`;
       // Cloud = Single Source of Truth bei Login. _renderAll() läuft am Ende.
       await syncFromCloud({authoritative:true});
       // Sicherheits-Re-Render falls syncFromCloud früh ausstieg (z.B. offline mid-flight)
@@ -3741,7 +3972,7 @@ async function handleAuth(e){
         _sbUser=result.data.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v55`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`;
         // Onboarding starten
         document.getElementById('onboarding').classList.remove('hidden');
         document.getElementById('ob-btn').disabled=true;
@@ -3794,7 +4025,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v55';
+  document.getElementById('hdr-sub').textContent='Offline · v56';
   if(!profile){
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('ob-btn').disabled=true;
@@ -4087,7 +4318,7 @@ async function sbLogout(){
   _lsRemove(LS_FAVS);
   _lsRemove(LS_GROUPS);
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v55';
+  document.getElementById('hdr-sub').textContent='Offline · v56';
   showToast('👋','Abgemeldet');
 }
 
@@ -4456,6 +4687,19 @@ const SZ_DISC='Angaben ohne Gewähr – stets beim zuständigen Fischereiverband
 const KONF=['#C4963A','#E8B54A','#7BAE8A','#2D4A35','#C8DDD0','#F5E8CC','#4A7C59','#F8F5EF'];
 
 function fIco(n){for(const k of Object.keys(FICONS))if(n&&n.toLowerCase().includes(k.toLowerCase()))return FICONS[k];return'🐟';}
+// v56: SVG-Silhouette als Alternative zu fIco — nutzt Strich-Symbole aus der Icon-Library
+function fSvg(name){
+  const n=(name||'').toLowerCase();
+  let id='f-default';
+  if(n.includes('hecht'))id='f-hecht';
+  else if(n.includes('zander'))id='f-zander';
+  else if(n.includes('barsch'))id='f-barsch';
+  else if(n.includes('forelle'))id='f-forelle';
+  else if(n.includes('karpfen'))id='f-karpfen';
+  else if(n.includes('aal'))id='f-aal';
+  else if(n.includes('wels'))id='f-wels';
+  return`<svg class="ic ic-fish"><use href="#${id}"/></svg>`;
+}
 function fScore(t,l){return Math.round((FMULT[t]||1.0)*l*10)/10;}
 function chkMM(type,len){const mm=MMM[type];if(!mm||!len||len<=0)return null;if(len<mm)return{ok:false,mm,msg:`⚠️ Unter Mindestmaß (${mm}cm) – C&R empfohlen`};return{ok:true,mm};}
 
@@ -5021,7 +5265,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v55`:`PLZ ${profile.plz||'–'} · v55`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`:`PLZ ${profile.plz||'–'} · v56`;
   document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -6841,12 +7085,14 @@ function toggleFbView(){
   _fbView=_fbView==='list'?'cal':'list';
   const ico=document.getElementById('fb-toggle-ico');
   const lbl=document.getElementById('fb-toggle-lbl');
+  // v56: Icon ist jetzt ein SVG mit <use href> — wir tauschen das Symbol
+  const useEl=ico?.querySelector('use');
   if(_fbView==='cal'){
-    if(ico)ico.textContent='☰';
+    if(useEl)useEl.setAttribute('href','#i-list');
     if(lbl)lbl.textContent='Liste';
     rndrCalendar();
   } else {
-    if(ico)ico.textContent='📅';
+    if(useEl)useEl.setAttribute('href','#i-cal');
     if(lbl)lbl.textContent='Kalender';
     rndrFangbuch();
   }
@@ -6860,6 +7106,18 @@ function fmtDow(ds){return DOW_FB[new Date(ds+'T12:00:00').getDay()];}
 
 function rndrFangbuch(){
   const el=document.getElementById('fangbuch-list');if(!el)return;
+  // v56: Page-Header-Subline mit Session/Fang-Count
+  const subEl=document.getElementById('fb-view-sub');
+  if(subEl){
+    if(!sessions.length){
+      subEl.textContent='Tippe auf + für deine erste Session';
+    }else{
+      const totalCatches=sessions.reduce((s,x)=>s+(x.catches?.reduce((a,c)=>a+(c.count||1),0)||0),0);
+      const fangLbl=totalCatches===1?'Fang':'Fänge';
+      const sessLbl=sessions.length===1?'Session':'Sessions';
+      subEl.textContent=`${totalCatches} ${fangLbl} in ${sessions.length} ${sessLbl}`;
+    }
+  }
   if(!sessions.length){
     el.innerHTML='<div class="empty"><div class="empty-ico">🎣</div><div class="empty-t">Noch keine Sessions</div><div class="empty-s">Tippe auf + um deine erste Session zu erfassen.</div></div>';
     return;
@@ -6906,16 +7164,16 @@ function rndrFangbuch(){
       const MON_S=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
       const dateLabel=fmtDow(dateKey)+', '+parseInt(dy)+'. '+MON_S[parseInt(mo2)-1];
 
-      html+='<div class="fb-card" onclick="openDayDetail(\''+dateKey+'\')" role="button" tabindex="0">'+
-        '<div class="fb-indicator '+indClass+'"></div>'+
+      // v56: Kein Indicator-Badge, kein Clock-Emoji, Grid-Layout für Bündigkeit
+      html+='<div class="fb-card '+(isSkunked?'skunked':'')+'" onclick="openDayDetail(\''+dateKey+'\')" role="button" tabindex="0">'+
         '<div class="fb-card-content">'+
           '<div class="fb-card-row1">'+
             '<span class="fb-date">'+dateLabel+'</span>'+
             '<span class="fb-water">'+waterLabel+'</span>'+
           '</div>'+
           '<div class="fb-card-row2">'+
-            '<span class="fb-time">⏱ '+timeLabel+'</span>'+
-            (fishLabel?'<span class="fb-fish">'+fishLabel+'</span>':'')+
+            '<span class="fb-time">'+timeLabel+'</span>'+
+            (fishLabel?'<span class="fb-fish">'+fishLabel+'</span>':'<span></span>')+
           '</div>'+
         '</div>'+
         '<div class="fb-cnt-col">'+
@@ -8414,6 +8672,11 @@ function rndrStats(){
   }
 
   if(!sessions.length){
+    // v56: Page-Header trotzdem mit Hinweis-Subline füllen, Selects ausblenden
+    const subEl=document.getElementById('stats-hdr-sub');
+    const actEl=document.getElementById('stats-hdr-actions');
+    if(subEl)subEl.textContent='Noch keine Daten';
+    if(actEl)actEl.innerHTML='';
     el.innerHTML=`<div class="empty"><div class="empty-ico">📊</div><div class="empty-t">Noch keine Daten</div><div class="empty-s">Erfasse Sessionen um Statistiken zu sehen.</div></div>`;
     return;
   }
@@ -8446,42 +8709,44 @@ function rndrStats(){
     </select>
   </div>`;
 
+  // v56: Headline lebt jetzt im Page-Header, Selects in den Actions
+  const subEl=document.getElementById('stats-hdr-sub');
+  const actEl=document.getElementById('stats-hdr-actions');
+  if(subEl){
+    const seasonLbl=_statSeason==='all'?'Gesamt':'Saison '+selYear;
+    const monthLbl=_statMonth!=='all'?' · '+MONTHS[parseInt(_statMonth)]:'';
+    subEl.textContent=`${seasonLbl}${monthLbl} · ${total} Session${total!==1?'s':''} · ${allC.reduce((s,c)=>s+_getFishCountForStats(c),0)} Fänge`;
+  }
+  if(actEl)actEl.innerHTML=seasonToggle;
+
   el.innerHTML=`
-    <div class="st-headline">
-      <div>
-        <div class="st-headline-title">${_statSeason==='all'?'Gesamt':'Saison '+selYear}${_statMonth!=='all'?' · '+MONTHS[parseInt(_statMonth)]:''}</div>
-        <div class="st-headline-sub">${total} Session${total!==1?'s':''} · ${allC.reduce((s,c)=>s+_getFishCountForStats(c),0)} Fänge</div>
-      </div>
-      ${seasonToggle}
-    </div>
-
-    <!-- 4 KPI-Kacheln – clean, zentriert -->
+    <!-- v56: 4 KPI-Kacheln – mittelaxial mit Strich-Icons -->
     <div class="st-grid">
-      <div class="st-tile" onclick="openFsCatches()" style="text-align:center;">
-        <div class="st-tile-val" style="color:var(--text-dark);">${allC.reduce((s,c)=>s+_getFishCountForStats(c),0)}</div>
-        <div class="st-tile-lbl">Fänge gesamt</div>
-        <div class="st-tile-hint">→ Details</div>
+      <div class="st-tile" onclick="openFsCatches()">
+        <div class="st-tile-head"><svg class="ic"><use href="#f-default"/></svg><span class="st-tile-lbl">Fänge</span></div>
+        <div class="st-tile-val">${allC.reduce((s,c)=>s+_getFishCountForStats(c),0)}</div>
+        <div class="st-tile-hint"><svg class="ic"><use href="#i-arrow-rt"/></svg>Details</div>
       </div>
-      <div class="st-tile" onclick="openFsTaken()" style="text-align:center;cursor:pointer;">
-        <div class="st-tile-val" style="color:var(--text-dark);">${tkN}</div>
-        <div class="st-tile-lbl">Entnommene Fische</div>
-        <div class="st-tile-hint">→ Details</div>
+      <div class="st-tile" onclick="openFsTaken()">
+        <div class="st-tile-head"><svg class="ic"><use href="#i-hook"/></svg><span class="st-tile-lbl">Entnommen</span></div>
+        <div class="st-tile-val">${tkN}</div>
+        <div class="st-tile-hint"><svg class="ic"><use href="#i-arrow-rt"/></svg>Details</div>
       </div>
-      <div class="st-tile" onclick="openFsHours()" style="text-align:center;">
-        <div class="st-tile-val" style="color:var(--text-dark);font-size:${hrs>=100?'20px':'26px'}">${hrsLabel}</div>
-        <div class="st-tile-lbl">Angelstunden</div>
-        <div class="st-tile-hint">→ Details</div>
+      <div class="st-tile" onclick="openFsHours()">
+        <div class="st-tile-head"><svg class="ic"><use href="#i-clock"/></svg><span class="st-tile-lbl">Stunden</span></div>
+        <div class="st-tile-val" style="font-size:${hrs>=100?'24px':'30px'}">${hrsLabel}</div>
+        <div class="st-tile-hint"><svg class="ic"><use href="#i-arrow-rt"/></svg>Details</div>
       </div>
-      <div class="st-tile" onclick="openFsSessions()" style="text-align:center;">
-        <div class="st-tile-val" style="color:var(--text-dark);">${total}</div>
-        <div class="st-tile-lbl">Sessions</div>
-        <div class="st-tile-hint">→ Alle ansehen</div>
+      <div class="st-tile" onclick="openFsSessions()">
+        <div class="st-tile-head"><svg class="ic"><use href="#i-cal"/></svg><span class="st-tile-lbl">Sessions</span></div>
+        <div class="st-tile-val">${total}</div>
+        <div class="st-tile-hint"><svg class="ic"><use href="#i-arrow-rt"/></svg>Alle ansehen</div>
       </div>
     </div>
 
-    <!-- Größter Fang -->
+    <!-- v56: Persönlicher Rekord mit Strich-Trophy in Gold-Box -->
     ${maxC?`<div class="st-rekord" style="margin-bottom:14px;">
-      <div class="st-rekord-ico">🏆</div>
+      <div class="st-rekord-ico-wrap"><svg class="ic"><use href="#i-trophy"/></svg></div>
       <div>
         <div class="st-rekord-lbl">Persönlicher Rekord</div>
         <div class="st-rekord-fish">${maxC.type}</div>
@@ -8496,12 +8761,12 @@ function rndrStats(){
       ${scored.map((c,i)=>{const sd=filtered.find(s=>s.catches.some(x=>x.type===c.type&&x.length===c.length&&x.time===c.time));return`<div class="mrow"><div class="mi">${medals[i]}</div><div class="minfo"><div class="mn">${c.type} · ${c.length}cm</div><div class="md">${sd?fmtDate(sd.date)+' · '+sd.water+(sd.spot?' · '+sd.spot:''):''}</div></div><div class="msc"><div class="msv">${c.fS}</div><div class="msl">Punkte</div></div></div>`;}).join('')}
     </div>`:''}
 
-    <!-- Fischarten-Liste -->
+    <!-- v56: Fischarten-Liste mit Strich-Silhouetten -->
     ${topF.length?`
-    <div class="slbl">Fischarten</div>
+    <div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-trend"/></svg>Top Fischarten</div>
     <div class="card" style="margin-bottom:14px;">
       ${topF.map(([fish,count])=>`<div class="st-fish-row" onclick="openFsFish('${fish.replace(/'/g,"\\'")}')">
-        <div class="st-fish-ico">${fIco(fish)}</div>
+        <div class="st-fish-ico">${fSvg(fish)}</div>
         <div class="st-fish-name">${fish}</div>
         <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
           <div class="st-fish-bar" style="width:${Math.round(count/topF[0][1]*64)}px;"></div>
@@ -9155,6 +9420,15 @@ function rndrForecast(){
 function _renderFcDashboard(){
   const el=document.getElementById('fc-con');
   const d=_fcData?.daily;if(!d)return;
+  // v56: Page-Header-Subline mit Standort + Stand-Zeit
+  const subEl=document.getElementById('fc-hdr-sub');
+  if(subEl){
+    const loc=profile?.plz?`PLZ ${profile.plz}`:'Standort';
+    const now=new Date();
+    const hh=String(now.getHours()).padStart(2,'0');
+    const mm=String(now.getMinutes()).padStart(2,'0');
+    subEl.textContent=`${loc} · 14 Tage · Stand ${hh}:${mm}`;
+  }
   const days=d.time.map((t,i)=>({
     date:t,wc:d.weathercode[i],
     tmax:d.temperature_2m_max[i],tmin:d.temperature_2m_min[i],
@@ -9163,11 +9437,16 @@ function _renderFcDashboard(){
   }));
   const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
   const coords=_plzCoords||gpsCoords;
-  const isTideRegion=coords&&(
-    (Math.abs(coords.lat-53.07)<1.2&&Math.abs(coords.lon-8.8)<1.5)||  // Weser/Bremen
-    (Math.abs(coords.lat-53.5)<1.0&&Math.abs(coords.lon-9.8)<1.2)||   // Elbe/Hamburg
-    (Math.abs(coords.lat-53.3)<0.8&&Math.abs(coords.lon-7.2)<0.8)     // Ems
-  );
+  // v56: Welcher Pegel ist relevant? (für HW-Berechnung)
+  let tideRiver=null;
+  if(coords){
+    if(Math.abs(coords.lat-53.07)<1.2&&Math.abs(coords.lon-8.8)<1.5)tideRiver='weser';
+    else if(Math.abs(coords.lat-53.5)<1.0&&Math.abs(coords.lon-9.8)<1.2)tideRiver='elbe';
+    else if(Math.abs(coords.lat-53.3)<0.8&&Math.abs(coords.lon-7.2)<0.8)tideRiver='ems';
+  }
+  const isTideRegion=!!tideRiver;
+  const tideRiverLbl={weser:'Weser',elbe:'Elbe',ems:'Ems'}[tideRiver]||'';
+  const tideHW=isTideRegion?_nextTideHW(tideRiver):null;
 
   // Mini-Tage für Vorhersage-Kachel
   const miniDays=days.slice(0,14).map((day,i)=>{
@@ -9176,7 +9455,7 @@ function _renderFcDashboard(){
     const bp=calcBiteProb(day);
     return`<div class="fc-mini-day${isToday?' today':''}" onclick="openFcDayDetail(${i},'${day.date}')">
       <div class="fc-mini-dow">${dow}</div>
-      <div class="fc-mini-ico">${wxIco(day.wc)}</div>
+      <div class="fc-mini-ico"><svg class="ic"><use href="#${wxIcoId(day.wc)}"/></svg></div>
       <div class="fc-mini-tmp">${Math.round(day.tmax??0)}°</div>
       <div class="fc-mini-bite" style="color:${bp.pct>=70?'var(--green-mid)':bp.pct>=40?'var(--gold)':'var(--text-light)'};">${bp.pct}%</div>
     </div>`;
@@ -9215,25 +9494,25 @@ function _renderFcDashboard(){
       </div>
     </div>
 
-    <!-- AP2.2/2.3: 3-Spalten-Grid mit Quadrat-Kacheln -->
+    <!-- v56: 3-Spalten-Grid mit Strich-Icons -->
     <div class="fc-grid3">
       <!-- Mond -->
       <div class="fc-square${isFullOrNew?' gold':''}" onclick="openMoonCal()">
-        <div class="fc-square-ico">${moonInfo.icon}</div>
+        <div class="fc-square-ico"><svg class="ic"><use href="#i-moon"/></svg></div>
         <div class="fc-square-val">${moonInfo.illum}<span class="unit">%</span></div>
         <div class="fc-square-lbl">Mond</div>
         <div class="fc-square-sub">${moonInfo.name}</div>
       </div>
 
-      ${isTideRegion?`<!-- Tide -->
+      ${isTideRegion?`<!-- Tide HW -->
       <div class="fc-square" onclick="openTideCal()">
-        <div class="fc-square-ico">🌊</div>
-        <div class="fc-square-val" style="font-size:20px;">Weser</div>
-        <div class="fc-square-lbl">Tide</div>
-        <div class="fc-square-sub">Weser · Elbe · Ems</div>
+        <div class="fc-square-ico"><svg class="ic"><use href="#i-wave"/></svg></div>
+        <div class="fc-square-val">${tideHW?tideHW.time:'–'}</div>
+        <div class="fc-square-lbl">Tide HW</div>
+        <div class="fc-square-sub">${tideHW?`Hub ${tideHW.rangeM}m · ${tideRiverLbl}`:tideRiverLbl}</div>
       </div>`:`<!-- Sonne als Tide-Ersatz für Binnen-Regionen -->
       <div class="fc-square" onclick="openMoonCal()">
-        <div class="fc-square-ico">☀️</div>
+        <div class="fc-square-ico"><svg class="ic"><use href="#i-sun"/></svg></div>
         <div class="fc-square-val" style="font-size:18px;">${(_fcData?.daily?.sunrise?.[0]||'').slice(11,16)||'–'}</div>
         <div class="fc-square-lbl">Sonnenaufgang</div>
         <div class="fc-square-sub">Untergang ${(_fcData?.daily?.sunset?.[0]||'').slice(11,16)||'–'}</div>
@@ -9241,7 +9520,7 @@ function _renderFcDashboard(){
 
       <!-- Wind -->
       <div class="fc-square" onclick="openWxChart('wind')">
-        <div class="fc-square-ico">💨</div>
+        <div class="fc-square-ico"><svg class="ic"><use href="#i-wind"/></svg></div>
         <div class="fc-square-val">${Math.round(avgWind||0)}<span class="unit">km/h</span></div>
         <div class="fc-square-lbl">Wind</div>
         <div class="fc-square-sub">${windLabel(today.windDir)} · max ${Math.round(today.wind||0)}</div>
@@ -9249,7 +9528,7 @@ function _renderFcDashboard(){
 
       <!-- Regen -->
       <div class="fc-square" onclick="openWxChart('rain')">
-        <div class="fc-square-ico">🌧</div>
+        <div class="fc-square-ico"><svg class="ic"><use href="#i-rain"/></svg></div>
         <div class="fc-square-val">${maxRain}<span class="unit">%</span></div>
         <div class="fc-square-lbl">Regen</div>
         <div class="fc-square-sub">${maxRain>=50?'Niederschlag wahrscheinlich':maxRain>=20?'Schauer möglich':'Trocken'}</div>
@@ -9257,16 +9536,16 @@ function _renderFcDashboard(){
 
       <!-- Temperatur -->
       <div class="fc-square" onclick="openWxChart('temp')">
-        <div class="fc-square-ico">🌡</div>
+        <div class="fc-square-ico"><svg class="ic"><use href="#i-thermo"/></svg></div>
         <div class="fc-square-val">${Math.round(today.tmax??0)}<span class="unit">°</span></div>
         <div class="fc-square-lbl">Temp</div>
         <div class="fc-square-sub">${Math.round(today.tmin??0)}° – ${Math.round(today.tmax??0)}° heute</div>
       </div>
 
-      <!-- Luftdruck -->
+      <!-- Luftdruck (v56: compact Font bei 4-stelligem Wert) -->
       <div class="fc-square" onclick="openWxChart('pressure')">
-        <div class="fc-square-ico">🔵</div>
-        <div class="fc-square-val">${Math.round(presToday)}<span class="unit">hPa</span></div>
+        <div class="fc-square-ico"><svg class="ic"><use href="#i-pressure"/></svg></div>
+        <div class="fc-square-val${Math.round(presToday)>=1000?' compact':''}">${Math.round(presToday)}<span class="unit">hPa</span></div>
         <div class="fc-square-lbl">Druck</div>
         <div class="fc-square-sub">${presTrend}</div>
       </div>
@@ -9383,6 +9662,51 @@ function _predictTideHarmonic(river,dateStr,minuteOfDay){
     val+=c.amp*Math.cos((c.speed*hoursFromEpoch-c.phase)*Math.PI/180);
   }
   return Math.round(val);
+}
+
+// v56: Nächstes Hochwasser ab "jetzt" finden (für Vorhersage-Kachel)
+// Sucht Maximum innerhalb der nächsten ~13h (eine volle M2-Periode = ~12.4h)
+function _nextTideHW(river){
+  river=river||'weser';
+  const now=new Date();
+  const startMs=now.getTime();
+  const stepMin=2;
+  const horizonMin=13*60;
+  let bestVal=-Infinity, bestOff=0;
+  for(let off=0;off<=horizonMin;off+=stepMin){
+    const t=new Date(startMs+off*60000);
+    const dateStr=_localDateStr(t);
+    const minuteOfDay=t.getHours()*60+t.getMinutes();
+    const v=_predictTideHarmonic(river,dateStr,minuteOfDay);
+    if(v>bestVal){bestVal=v;bestOff=off;}
+  }
+  // Niedrigwasser-Höhe für Hub-Berechnung
+  let lowVal=Infinity;
+  for(let off=0;off<=horizonMin;off+=stepMin){
+    const t=new Date(startMs+off*60000);
+    const dateStr=_localDateStr(t);
+    const minuteOfDay=t.getHours()*60+t.getMinutes();
+    const v=_predictTideHarmonic(river,dateStr,minuteOfDay);
+    if(v<lowVal)lowVal=v;
+  }
+  const peakTime=new Date(startMs+bestOff*60000);
+  const hh=String(peakTime.getHours()).padStart(2,'0');
+  const mm=String(peakTime.getMinutes()).padStart(2,'0');
+  const tideRange=Math.max(0,(bestVal-lowVal)/100); // cm → m
+  return {time:`${hh}:${mm}`,heightCm:bestVal,rangeM:tideRange.toFixed(1).replace('.',','),offsetMin:bestOff};
+}
+
+// v56: SVG-Icon-ID für Wettercode (statt Emoji-wxIco)
+function wxIcoId(wc){
+  if(wc==null)return'i-cloud';
+  if(wc<=1)return'i-sun';
+  if(wc<=3)return'i-cloud-sun';
+  if(wc<=49)return'i-cloud';
+  if(wc<=67)return'i-rain';
+  if(wc<=77)return'i-cloud';
+  if(wc<=82)return'i-rain';
+  if(wc<=86)return'i-cloud';
+  return'i-rain';
 }
 
 function _localDateStr(d){
