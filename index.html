@@ -300,6 +300,137 @@ body{
   font-size:10px;font-weight:600;
 }
 
+/* ═════════════════════════════════════════════════
+   v56 CHART-DETAIL Bausteine (Hero · Chart · Window · Stats)
+   ═════════════════════════════════════════════════ */
+.chart-hero{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:14px 16px 12px;margin:0 2px 12px;
+}
+.chart-hero-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.chart-hero-info{flex:1;min-width:0;}
+.chart-hero-lbl{
+  font-family:var(--fa);font-size:10px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--grau);margin-bottom:4px;
+  display:flex;align-items:center;gap:5px;
+}
+.chart-hero-lbl .ic{width:12px;height:12px;color:var(--forest);}
+.chart-hero-val{
+  font-family:var(--fa);font-size:34px;font-weight:600;color:var(--text-dark);
+  letter-spacing:-.03em;line-height:1;display:flex;align-items:baseline;gap:3px;
+}
+.chart-hero-val .unit{font-size:14px;font-weight:500;color:var(--grau);letter-spacing:0;}
+.chart-hero-meta{
+  font-family:var(--fa);font-size:12px;color:var(--grau);font-weight:400;margin-top:5px;
+}
+.chart-hero-trend{
+  display:flex;align-items:center;gap:4px;
+  background:var(--salbei);color:var(--tanne);
+  padding:5px 10px;border-radius:99px;
+  font-size:11px;font-weight:600;flex-shrink:0;font-family:var(--fa);
+}
+.chart-hero-trend.up{background:#E8F2EA;color:#2D6A4F;}
+.chart-hero-trend.down{background:var(--rose);color:var(--rose-t);}
+.chart-hero-trend .ic{width:11px;height:11px;stroke-width:2;}
+
+.chart-card{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:12px 0 0;margin:0 2px 12px;overflow:hidden;
+}
+.chart-card-hdr{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:0 16px 8px;gap:10px;
+}
+.chart-card-title{
+  font-family:var(--fa);font-size:13px;font-weight:600;color:var(--text-dark);letter-spacing:-.005em;
+}
+.chart-card-sub{
+  font-family:var(--fa);font-size:10.5px;color:var(--grau);font-weight:400;margin-top:1px;
+}
+.chart-card-nav{display:flex;gap:6px;align-items:center;}
+.chart-card-nav button{
+  width:28px;height:28px;border-radius:99px;border:1px solid var(--line);
+  background:#fff;color:var(--tanne);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fa);
+}
+.chart-card-nav button:active{background:var(--salbei);}
+.chart-card-nav button .ic{width:14px;height:14px;}
+.chart-card-nav-lbl{
+  font-family:var(--fa);font-size:10px;font-weight:600;color:var(--grau);
+  letter-spacing:.06em;text-transform:uppercase;
+  min-width:64px;text-align:center;
+}
+.chart-svg-wrap{padding:0 6px;position:relative;}
+.chart-svg-wrap svg{display:block;width:100%;height:auto;}
+
+/* Day-Strip unter dem Chart — 14 Spalten als CSS-Grid (kein horizontaler Scroll) */
+.day-strip{
+  display:grid;grid-template-columns:repeat(14,minmax(0,1fr));
+  background:#fff;border-top:1px solid var(--line);
+  padding:8px 6px 12px;gap:1px;
+}
+.day-cell{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 1px;border-radius:8px;
+  text-align:center;cursor:pointer;
+}
+.day-cell.past{opacity:.45;}
+.day-cell.today{background:var(--tanne);color:#fff;}
+.day-cell.today .day-num,.day-cell.today .day-dow{color:#fff;}
+.day-num{
+  font-family:var(--fa);font-size:12px;font-weight:600;color:var(--text-dark);
+  letter-spacing:-.02em;line-height:1;
+}
+.day-dow{
+  font-family:var(--fa);font-size:9px;font-weight:600;color:var(--grau);
+  text-transform:uppercase;letter-spacing:.04em;
+}
+
+/* Best-Window-Card (gold akzentuiert) */
+.window-card{
+  background:linear-gradient(135deg,var(--gold-soft) 0%,#fff 65%);
+  border:1px solid rgba(214,162,58,.22);border-radius:16px;
+  padding:14px 16px;margin:0 2px 12px;display:flex;gap:12px;align-items:center;
+}
+.window-card-ico{
+  width:38px;height:38px;border-radius:12px;background:rgba(214,162,58,.18);
+  color:var(--gold);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.window-card-ico .ic{width:20px;height:20px;}
+.window-card-info{flex:1;min-width:0;}
+.window-card-lbl{
+  font-family:var(--fa);font-size:10px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:#8B6420;margin-bottom:1px;
+}
+.window-card-title{
+  font-family:var(--fa);font-size:14px;font-weight:600;color:var(--text-dark);letter-spacing:-.01em;
+}
+.window-card-sub{
+  font-family:var(--fa);font-size:11.5px;color:var(--grau);margin-top:2px;
+}
+
+/* Stats-Tiles (Min/Schnitt/Max) */
+.chart-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  margin:0 2px 12px;
+}
+.chart-stat{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:10px 6px;text-align:center;
+}
+.chart-stat-lbl{
+  font-family:var(--fa);font-size:10px;font-weight:600;color:var(--grau);
+  text-transform:uppercase;letter-spacing:.06em;
+}
+.chart-stat-val{
+  font-family:var(--fa);font-size:18px;font-weight:600;color:var(--text-dark);
+  letter-spacing:-.02em;line-height:1;margin-top:4px;
+}
+.chart-stat-val.compact{font-size:14px;}
+.chart-stat-val .unit{font-size:11px;font-weight:500;color:var(--grau);margin-left:1px;}
+
 /* PAGES — v51: explizit height:100% + flex:1 für Edge-to-Edge */
 .pages{display:flex;flex-direction:column;flex:1;height:100%;min-height:0;overflow:hidden;}
 .page{display:none;flex-direction:column;flex:1;height:100%;min-height:0;overflow:hidden;}
@@ -352,12 +483,12 @@ position:relative;}
 }
 .xbtn:hover{background:rgba(255,255,255,.32);}
 
-/* Overlay-Scroll-Body */
-.fsov > div:not(.fshdr):not(.fbar){
+/* Overlay-Scroll-Body — v56: page-hdr & page-hdr-tabs auch ausschließen */
+.fsov > div:not(.fshdr):not(.fbar):not(.page-hdr):not(.page-hdr-tabs){
   flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
   overscroll-behavior-y:contain;scrollbar-width:none;
 }
-.fsov > div:not(.fshdr):not(.fbar)::-webkit-scrollbar{display:none;}
+.fsov > div:not(.fshdr):not(.fbar):not(.page-hdr):not(.page-hdr-tabs)::-webkit-scrollbar{display:none;}
 .fsov-scroll{
   flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
   overscroll-behavior:contain;padding:16px 16px var(--nav-clearance);scrollbar-width:none;
@@ -1759,18 +1890,28 @@ input[type=file]{display:none;}
 /* v52 AP2: Bottom-Nav verstecken wenn Markier-Modus aktiv */
 .phone.spot-marking .btabs{display:none;}
 /* AP2: Map-Header ohne Farbverlauf, Toggle integriert */
-.map-hdr-bar{position:absolute;top:max(8px,env(safe-area-inset-top,0px));left:8px;right:8px;z-index:10;padding:0;
-  display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:none;}
+/* v56: Layer-Toggle als floating Pillen-Gruppe (statt Glasmorphism) */
+.map-hdr-bar{position:absolute;top:max(10px,env(safe-area-inset-top,0px));left:8px;right:8px;z-index:10;padding:0;
+  display:flex;align-items:center;justify-content:flex-start;gap:8px;pointer-events:none;}
 .map-hdr-bar>*{pointer-events:auto;}
-.map-hdr-btn{height:36px;padding:0 12px;border-radius:10px;border:none;font-size:12px;font-weight:600;
+.map-hdr-btn{height:36px;padding:0 12px;border-radius:99px;border:none;font-size:12px;font-weight:500;
   font-family:var(--fa);cursor:pointer;display:flex;align-items:center;gap:5px;
-  background:rgba(255,255,255,.95);color:var(--green-deep);box-shadow:0 2px 8px rgba(0,0,0,.20);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+  background:#fff;color:var(--tanne);box-shadow:0 4px 14px rgba(31,61,46,.12);
+  border:1px solid var(--line);}
 .map-hdr-btn:active{transform:scale(.95);}
-.map-filter-badge{display:none;width:8px;height:8px;border-radius:50%;background:#cc0000;flex-shrink:0;}
-/* AP2: Map-Layer-Toggle nach oben neben die Filter */
-.map-layer-toggle-inline{display:flex;gap:4px;background:rgba(255,255,255,.95);border-radius:10px;padding:3px;box-shadow:0 2px 8px rgba(0,0,0,.20);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
-.map-layer-toggle-inline .map-layer-btn{height:30px;padding:0 10px;border:none;background:transparent;font-family:var(--fa);font-size:11px;font-weight:600;color:var(--text-light);border-radius:8px;cursor:pointer;}
-.map-layer-toggle-inline .map-layer-btn.on{background:var(--green-deep);color:#fff;}
+.map-filter-badge{display:none;width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.map-layer-toggle-inline{
+  display:flex;background:#fff;border:1px solid var(--line);
+  border-radius:99px;padding:3px;
+  box-shadow:0 4px 14px rgba(31,61,46,.12);
+}
+.map-layer-toggle-inline .map-layer-btn{
+  height:30px;padding:0 12px;border:none;background:transparent;
+  font-family:var(--fa);font-size:11.5px;font-weight:500;color:var(--grau);
+  border-radius:99px;cursor:pointer;display:flex;align-items:center;gap:5px;
+  letter-spacing:.005em;
+}
+.map-layer-toggle-inline .map-layer-btn.on{background:var(--tanne);color:#fff;font-weight:600;}
 #map-container .leaflet-control-zoom{border-radius:var(--rs)!important;overflow:hidden;box-shadow:var(--sh-sm)!important;}
 #map-container .leaflet-popup-content-wrapper{border-radius:var(--rs)!important;box-shadow:var(--sh-md)!important;font-family:var(--fa)!important;}
 #map-container .leaflet-popup-content{margin:12px 14px!important;font-size:13px!important;}
@@ -3292,11 +3433,18 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- Mondkalender Overlay -->
-<div class="fsov" id="fs-moon-cal" role="dialog" aria-modal="true" style="z-index:115;">
-  <div class="fshdr">
-    <div><div class="fstitle">🌙 Mondkalender</div><div class="fsmeta" id="fs-moon-meta"></div></div>
-    <button class="xbtn" onclick="closeFs('moon-cal')">✕</button>
+<!-- v56: Mondkalender Overlay – neues Page-Header-Pattern (Gold-Icon-Box) -->
+<div class="fsov" id="fs-moon-cal" role="dialog" aria-modal="true" style="z-index:115;background:var(--sand);">
+  <div class="page-hdr">
+    <button class="page-hdr-back" onclick="closeFs('moon-cal')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
+    <div class="page-hdr-icon-wrap gold-wrap"><svg class="ic"><use href="#i-moon"/></svg></div>
+    <div class="page-hdr-left">
+      <div class="page-hdr-title">Mond</div>
+      <div class="page-hdr-sub" id="fs-moon-meta">Kalender · Phasen</div>
+    </div>
+    <div class="page-hdr-actions">
+      <button class="pill-btn icon-only" aria-label="Heute"><svg class="ic"><use href="#i-cal"/></svg></button>
+    </div>
   </div>
   <div class="fsov-scroll" id="fs-moon-body"></div>
 </div>
@@ -3309,38 +3457,66 @@ input[type=file]{display:none;}
   </div>
   <div class="fsov-scroll" id="fs-goals-body"></div>
 </div>
-<!-- Tidenkalender Overlay -->
-<div class="fsov" id="fs-tide-cal" role="dialog" aria-modal="true" style="z-index:115;">
-  <div class="fshdr">
-    <div><div class="fstitle">🌊 Tidenkalender</div><div class="fsmeta" id="fs-tide-meta">Weser · Elbe · Ems</div></div>
-    <button class="xbtn" onclick="closeFs('tide-cal')">✕</button>
+<!-- v56: Tidenkalender Overlay – neues Page-Header-Pattern -->
+<div class="fsov" id="fs-tide-cal" role="dialog" aria-modal="true" style="z-index:115;background:var(--sand);">
+  <div class="page-hdr">
+    <button class="page-hdr-back" onclick="closeFs('tide-cal')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
+    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-wave"/></svg></div>
+    <div class="page-hdr-left">
+      <div class="page-hdr-title">Tide</div>
+      <div class="page-hdr-sub" id="fs-tide-meta">Weser · Elbe · Ems</div>
+    </div>
+    <div class="page-hdr-actions">
+      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
+    </div>
   </div>
   <div class="fsov-scroll" id="fs-tide-body"></div>
 </div>
 
-<!-- Wind Overlay -->
-<div class="fsov" id="fs-wx-wind" role="dialog" aria-modal="true" style="z-index:115;background:#f5f7f5;">
-  <div class="fshdr">
-    <div><div class="fstitle">💨 Windverlauf</div><div class="fsmeta" id="fs-wind-meta"></div></div>
-    <button class="xbtn" onclick="closeFs('wx-wind')">✕</button>
+<!-- v56: Wind Overlay – neues Page-Header-Pattern -->
+<div class="fsov" id="fs-wx-wind" role="dialog" aria-modal="true" style="z-index:115;background:var(--sand);">
+  <div class="page-hdr">
+    <button class="page-hdr-back" onclick="closeFs('wx-wind')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
+    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-wind"/></svg></div>
+    <div class="page-hdr-left">
+      <div class="page-hdr-title">Wind</div>
+      <div class="page-hdr-sub" id="fs-wind-meta">14 Tage</div>
+    </div>
+    <div class="page-hdr-actions">
+      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
+    </div>
   </div>
   <div class="fsov-scroll" id="fs-wind-body"></div>
 </div>
 
-<!-- Regen Overlay -->
-<div class="fsov" id="fs-wx-rain" role="dialog" aria-modal="true" style="z-index:115;background:#f5f7f5;">
-  <div class="fshdr">
-    <div><div class="fstitle">🌧 Regenverlauf</div><div class="fsmeta" id="fs-rain-meta"></div></div>
-    <button class="xbtn" onclick="closeFs('wx-rain')">✕</button>
+<!-- v56: Regen Overlay – neues Page-Header-Pattern -->
+<div class="fsov" id="fs-wx-rain" role="dialog" aria-modal="true" style="z-index:115;background:var(--sand);">
+  <div class="page-hdr">
+    <button class="page-hdr-back" onclick="closeFs('wx-rain')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
+    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-rain"/></svg></div>
+    <div class="page-hdr-left">
+      <div class="page-hdr-title">Regen</div>
+      <div class="page-hdr-sub" id="fs-rain-meta">14 Tage</div>
+    </div>
+    <div class="page-hdr-actions">
+      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
+    </div>
   </div>
   <div class="fsov-scroll" id="fs-rain-body"></div>
 </div>
 
-<!-- Temperatur Overlay -->
-<div class="fsov" id="fs-wx-temp" role="dialog" aria-modal="true" style="z-index:115;">
-  <div class="fshdr">
-    <div><div class="fstitle">🌡 Temperatur</div><div class="fsmeta" id="fs-temp-meta"></div></div>
-    <button class="xbtn" onclick="closeFs('wx-temp')">✕</button>
+<!-- v56: Temperatur/Druck Overlay – neues Page-Header-Pattern (Titel/Icon werden per JS gesetzt) -->
+<div class="fsov" id="fs-wx-temp" role="dialog" aria-modal="true" style="z-index:115;background:var(--sand);">
+  <div class="page-hdr">
+    <button class="page-hdr-back" onclick="closeFs('wx-temp')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
+    <div class="page-hdr-icon-wrap" id="fs-temp-icon-wrap"><svg class="ic"><use href="#i-thermo" id="fs-temp-icon-use"/></svg></div>
+    <div class="page-hdr-left">
+      <div class="page-hdr-title" id="fs-temp-title">Temperatur</div>
+      <div class="page-hdr-sub" id="fs-temp-meta">14 Tage</div>
+    </div>
+    <div class="page-hdr-actions">
+      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
+    </div>
   </div>
   <div class="fsov-scroll" id="fs-temp-body"></div>
 </div>
@@ -3474,11 +3650,11 @@ input[type=file]{display:none;}
   </div>
   <div class="sc" style="padding:0;position:relative;overflow:hidden;">
     <div id="map-container"></div>
-    <!-- v56: Layer-Toggle bleibt floating über der Map -->
+    <!-- v56: Layer-Toggle als Pillen-Gruppe mit SVG-Icons -->
     <div class="map-hdr-bar">
       <div class="map-layer-toggle-inline" id="map-layer-toggle">
-        <button class="map-layer-btn on" id="ml-private" onclick="_setMapLayer('private')">🔒 Meine</button>
-        <button class="map-layer-btn" id="ml-group" onclick="_setMapLayer('group')">👥 Gruppe</button>
+        <button class="map-layer-btn on" id="ml-private" onclick="_setMapLayer('private')"><svg class="ic" style="width:13px;height:13px;"><use href="#i-lock"/></svg>Meine</button>
+        <button class="map-layer-btn" id="ml-group" onclick="_setMapLayer('group')"><svg class="ic" style="width:13px;height:13px;"><use href="#i-users"/></svg>Gruppe</button>
       </div>
     </div>
     <!-- v52 AP2: Inline-Toolbar oben — Wasser/Spot-Picker, erscheint im Markier-Modus -->
@@ -4688,17 +4864,22 @@ const KONF=['#C4963A','#E8B54A','#7BAE8A','#2D4A35','#C8DDD0','#F5E8CC','#4A7C59
 
 function fIco(n){for(const k of Object.keys(FICONS))if(n&&n.toLowerCase().includes(k.toLowerCase()))return FICONS[k];return'🐟';}
 // v56: SVG-Silhouette als Alternative zu fIco — nutzt Strich-Symbole aus der Icon-Library
-function fSvg(name){
+function fSvgId(name){
   const n=(name||'').toLowerCase();
-  let id='f-default';
-  if(n.includes('hecht'))id='f-hecht';
-  else if(n.includes('zander'))id='f-zander';
-  else if(n.includes('barsch'))id='f-barsch';
-  else if(n.includes('forelle'))id='f-forelle';
-  else if(n.includes('karpfen'))id='f-karpfen';
-  else if(n.includes('aal'))id='f-aal';
-  else if(n.includes('wels'))id='f-wels';
-  return`<svg class="ic ic-fish"><use href="#${id}"/></svg>`;
+  if(n.includes('hecht'))return'f-hecht';
+  if(n.includes('zander'))return'f-zander';
+  if(n.includes('barsch'))return'f-barsch';
+  if(n.includes('forelle'))return'f-forelle';
+  if(n.includes('karpfen'))return'f-karpfen';
+  if(n.includes('aal'))return'f-aal';
+  if(n.includes('wels'))return'f-wels';
+  return'f-default';
+}
+function fSvg(name){
+  return`<svg class="ic ic-fish"><use href="#${fSvgId(name)}"/></svg>`;
+}
+function fSvgInline(name,w,h){
+  return`<svg width="${w||20}" height="${h||14}" viewBox="0 0 32 18"><use href="#${fSvgId(name)}"/></svg>`;
 }
 function fScore(t,l){return Math.round((FMULT[t]||1.0)*l*10)/10;}
 function chkMM(type,len){const mm=MMM[type];if(!mm||!len||len<=0)return null;if(len<mm)return{ok:false,mm,msg:`⚠️ Unter Mindestmaß (${mm}cm) – C&R empfohlen`};return{ok:true,mm};}
@@ -7721,7 +7902,7 @@ function openSessMap(dateKey){
           const cLat=parseFloat(c.lat),cLon=parseFloat(c.lon);
           if(!isNaN(cLat)&&!isNaN(cLon)){
             const catchIcon=L.divIcon({
-              html:`<div style="background:var(--green-mid);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 1px 4px rgba(0,0,0,.3);border:1.5px solid #fff;">${fIco(c.type)}</div>`,
+              html:`<div style="background:var(--gold);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(31,61,46,.25);border:1.5px solid #fff;">${fSvgInline(c.type,14,9)}</div>`,
               className:'',iconSize:[22,22],iconAnchor:[11,22],popupAnchor:[0,-24]
             });
             const cPopup=`<strong>${c.type}</strong>${c.length?' · '+c.length+'cm':''}${c.bait?'<br>Köder: '+c.bait:''}${c.time?'<br>'+c.time:''}`;
@@ -7942,10 +8123,12 @@ function _spotMarkClickHandler(e){
   if(_spotMarkTempMarker){
     try{_leafletMap.removeLayer(_spotMarkTempMarker);}catch(_){}
   }
-  // Temp-Marker (orange, gestrichelt)
+  // v56: Temp-Marker im Markier-Modus (Gold, line-style Pin-Add-Icon)
   const icon=L.divIcon({
-    html:`<div style="width:28px;height:28px;border-radius:50%;background:#e67e22;border:3px dashed #fff;box-shadow:0 2px 10px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;">📌</div>`,
-    className:'',iconSize:[28,28],iconAnchor:[14,14]
+    html:`<div style="width:32px;height:32px;border-radius:50%;background:var(--gold);border:3px solid #fff;box-shadow:0 4px 14px rgba(214,162,58,.45);display:flex;align-items:center;justify-content:center;color:#fff;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pin-add"/></svg>
+    </div>`,
+    className:'',iconSize:[32,32],iconAnchor:[16,16]
   });
   _spotMarkTempMarker=L.marker(e.latlng,{icon}).addTo(_leafletMap);
   // Hint aktualisieren
@@ -8184,7 +8367,7 @@ function _viewCatchGps(sessId,catchIdx){
     _sessMap=L.map(container).setView([la,lo],16);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OSM',maxZoom:18}).addTo(_sessMap);
     const catchIcon=L.divIcon({
-      html:`<div style="background:var(--green-mid);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.3);border:2px solid #fff;">${fIco(c.type)}</div>`,
+      html:`<div style="background:var(--gold);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(31,61,46,.25);border:2px solid #fff;">${fSvgInline(c.type,18,12)}</div>`,
       className:'',iconSize:[28,28],iconAnchor:[14,28],popupAnchor:[0,-30]
     });
     const popup=`<strong>${c.type||'–'}</strong>${c.length?' · '+c.length+'cm':''}${c.bait?'<br>Köder: '+c.bait:''}`;
@@ -9781,7 +9964,7 @@ function openMapForDay(dateKey){
     (s.catches||[]).forEach((c,i)=>{
       if(c.lat&&c.lon){
         const lat=parseFloat(c.lat),lon=parseFloat(c.lon);
-        const icon=L.divIcon({html:`<div style="width:28px;height:28px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);">${fIco(c.type)}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]});
+        const icon=L.divIcon({html:`<div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 3px 8px rgba(31,61,46,.25);">${fSvgInline(c.type,18,12)}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]});
         L.marker([lat,lon],{icon}).addTo(window._locMapInst).bindPopup(`<strong>${c.type} · ${c.length}cm</strong>`);
         bounds.push([lat,lon]);
       }
@@ -10364,6 +10547,252 @@ function _tideStripExtend(river,dir){
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+// v56: NEUE CHART-DETAIL-RENDER-FUNKTION (Hero · Chart · Window · Stats)
+// 14-Tage-Window: 3 zurück + heute + 10 voraus (Heute = Index 3)
+// ═══════════════════════════════════════════════════════════════
+async function _loadChartWindow(type,anchorOff){
+  const coords=_plzCoords||gpsCoords;
+  if(!coords)return null;
+  const today=new Date();today.setHours(0,0,0,0);
+  const startD=new Date(today);startD.setDate(today.getDate()+anchorOff-3);
+  const endD=new Date(today);endD.setDate(today.getDate()+anchorOff+10);
+  try{
+    const res=await fetchEnvSeries({
+      type,start:_localDateStr(startD),end:_localDateStr(endD),
+      lat:coords.lat,lon:coords.lon
+    });
+    return res?.daily||null;
+  }catch(e){
+    console.warn('[chartWin] fetch failed',e);
+    return null;
+  }
+}
+
+function _extractChartSeries(d,type){
+  if(!d||!d.time)return[];
+  const DOW=['So','Mo','Di','Mi','Do','Fr','Sa'];
+  return d.time.map((t,i)=>{
+    const dt=new Date(t+'T12:00:00');
+    let val=null,val2=null,sub='';
+    if(type==='wind'){
+      val=d.windspeed_10m_max?.[i];
+      val2=d.windgusts_10m_max?.[i];
+      sub=windLabel(d.winddirection_10m_dominant?.[i]);
+    }else if(type==='rain'){
+      val=d.precipitation_probability_max?.[i]??0;
+      val2=d.precipitation_sum?.[i];
+    }else if(type==='temp'){
+      val=d.temperature_2m_max?.[i];
+      val2=d.temperature_2m_min?.[i];
+    }else if(type==='pressure'){
+      val=d.surface_pressure_mean?.[i];
+    }
+    return{date:t,dow:DOW[dt.getDay()],dayNum:dt.getDate(),val,val2,sub};
+  });
+}
+
+function _buildHeroV56(type,series){
+  const today=series[3]||series[0];
+  if(!today)return'';
+  let val='',unit='',meta='',icoId='',label='Aktuell',trendHtml='';
+  if(type==='wind'){
+    val=Math.round(today.val||0);unit='km/h';icoId='i-wind';
+    const gusts=Math.round(today.val2||today.val||0);
+    meta=`${today.sub||''} · Böen ${gusts} km/h`;
+  }else if(type==='rain'){
+    val=Math.round(today.val||0);unit='%';icoId='i-rain';label='Heute';
+    meta=today.val2!=null?`${today.val2.toFixed(1).replace('.',',')} mm erwartet`:'Trocken';
+  }else if(type==='temp'){
+    val=Math.round(today.val||0);unit='°';icoId='i-thermo';label='Heute Max';
+    meta=`${Math.round(today.val2||0)}° / ${Math.round(today.val||0)}° heute`;
+  }else if(type==='pressure'){
+    val=Math.round(today.val||0);unit='hPa';icoId='i-pressure';
+    const yd=series[2]?.val;
+    const delta=yd!=null?(today.val||0)-yd:0;
+    if(Math.abs(delta)<1){meta='Stabile Druckverhältnisse';trendHtml='<span style="font-size:11px;font-weight:600;">→ stabil</span>';}
+    else if(delta>0){meta=`Druck steigt um ${delta.toFixed(1).replace('.',',')} hPa`;trendHtml=`<svg class="ic"><use href="#i-arrow-up"/></svg>+${delta.toFixed(1).replace('.',',')}`;}
+    else{meta=`Druck fällt um ${Math.abs(delta).toFixed(1).replace('.',',')} hPa`;trendHtml=`<svg class="ic"><use href="#i-arrow-dn"/></svg>${delta.toFixed(1).replace('.',',')}`;}
+  }
+  const valCompact=(type==='pressure'&&val>=1000)?'style="font-size:28px;"':'';
+  const trendClass=type==='pressure'?(/[+\-]/.test(trendHtml)?(trendHtml.includes('-')?' down':' up'):''):'';
+  return`<div class="chart-hero">
+    <div class="chart-hero-row">
+      <div class="chart-hero-info">
+        <div class="chart-hero-lbl"><svg class="ic"><use href="#${icoId}"/></svg>${label}</div>
+        <div class="chart-hero-val" ${valCompact}>${val}<span class="unit">${unit}</span></div>
+        <div class="chart-hero-meta">${meta}</div>
+      </div>
+      ${trendHtml?`<div class="chart-hero-trend${trendClass}">${trendHtml}</div>`:''}
+    </div>
+  </div>`;
+}
+
+function _buildSvgChartV56(type,series){
+  const W=332,H=130,colW=W/14;
+  const vals=series.map(s=>s.val).filter(v=>v!=null);
+  if(!vals.length)return`<svg viewBox="0 0 ${W} ${H}"></svg>`;
+  let mn=Math.min(...vals),mx=Math.max(...vals);
+  // Min temp einbeziehen für Range
+  if(type==='temp'){
+    const v2=series.map(s=>s.val2).filter(v=>v!=null);
+    if(v2.length)mn=Math.min(mn,Math.min(...v2));
+  }
+  const range=mx-mn||1;
+  const pad=Math.max(range*0.15,1);
+  let yMin=mn-pad,yMax=mx+pad;
+  // v56: Type-spezifische Y-Achse-Limits (Regen 0-100%, andere natürlich)
+  if(type==='rain'){yMin=0;yMax=100;}
+  const yPos=v=>H-((v-yMin)/(yMax-yMin))*(H-25)-12;
+  const cx=i=>(i+0.5)*colW;
+  // Hauptlinie
+  const pts=series.map((s,i)=>s.val!=null?[cx(i),yPos(s.val)]:null);
+  const validPts=pts.filter(p=>p);
+  const path=validPts.map((p,i)=>`${i===0?'M':'L'}${p[0]} ${p[1]}`).join(' ');
+  // Sekundärlinie für temp (min)
+  let secondaryPath='',secondaryFill='';
+  if(type==='temp'){
+    const ptsMin=series.map((s,i)=>s.val2!=null?[cx(i),yPos(s.val2)]:null).filter(p=>p);
+    secondaryPath=ptsMin.length?`<path d="${ptsMin.map((p,i)=>`${i===0?'M':'L'}${p[0]} ${p[1]}`).join(' ')}" fill="none" stroke="#7BA5C9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`:'';
+    if(ptsMin.length===validPts.length){
+      const areaPath=validPts.map((p,i)=>`${i===0?'M':'L'}${p[0]} ${p[1]}`).join(' ')+
+        ' '+ptsMin.slice().reverse().map(p=>`L${p[0]} ${p[1]}`).join(' ')+'Z';
+      secondaryFill=`<path d="${areaPath}" fill="rgba(224,143,92,.18)"/>`;
+    }
+  }
+  // Past-Band (col 0-2) + Today-Band (col 3)
+  const bands=`<rect x="0" y="0" width="${3*colW}" height="${H}" fill="rgba(31,61,46,.04)"/>
+    <rect x="${3*colW}" y="0" width="${colW}" height="${H}" fill="rgba(31,61,46,.08)"/>`;
+  // Grid
+  const grid=[0.25,0.5,0.75].map(f=>{
+    const y=12+(H-25)*f;
+    return`<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="rgba(31,61,46,.06)" stroke-dasharray="2 4"/>`;
+  }).join('');
+  // Y-Labels (3 Stufen) — gleichmäßig über die Y-Range verteilt
+  const yLevels=[yMax,(yMax+yMin)/2,yMin].map((v,i)=>{
+    const y=[20,H/2+3,H-15][i];
+    return`<text x="2" y="${y}" font-size="9" fill="#6B7280" font-family="Inter">${Math.round(v)}</text>`;
+  }).join('');
+  // Heute-Punkt (Index 3)
+  const todayDot=pts[3]?`<circle cx="${pts[3][0]}" cy="${pts[3][1]}" r="5" fill="#D6A23A" stroke="#fff" stroke-width="2"/>`:'';
+  const mainColor=type==='wind'?'#5B8AB0':type==='rain'?'#5B8AB0':type==='temp'?'#E08F5C':'#3E5F4A';
+  return`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    ${bands}${grid}${secondaryFill}
+    <path d="${path}" fill="none" stroke="${mainColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    ${secondaryPath}
+    ${yLevels}
+    ${todayDot}
+  </svg>`;
+}
+
+function _buildDayStripV56(series){
+  return series.map((s,i)=>{
+    const isPast=i<3,isToday=i===3;
+    let cls='day-cell';
+    if(isPast)cls+=' past';
+    if(isToday)cls+=' today';
+    return`<div class="${cls}">
+      <span class="day-num">${s.dayNum}</span>
+      <span class="day-dow">${s.dow}</span>
+    </div>`;
+  }).join('');
+}
+
+function _findBestWindowV56(type,series){
+  const future=series.slice(3); // heute + 10 zukünftige
+  if(!future.length)return null;
+  if(type==='wind'){
+    let best=future[0],bestI=0;
+    for(let i=1;i<future.length;i++){
+      if(future[i].val!=null&&(best.val==null||future[i].val<best.val)){best=future[i];bestI=i;}
+    }
+    return{label:'Bestes Fenster',title:`${best.dow}, ${best.dayNum}.`,sub:`Wind ${Math.round(best.val||0)} km/h ${best.sub||''} · ruhig`};
+  }else if(type==='rain'){
+    let best=future[0];
+    for(let i=1;i<future.length;i++){
+      if(future[i].val!=null&&future[i].val<(best.val??Infinity))best=future[i];
+    }
+    return{label:'Trockenster Tag',title:`${best.dow}, ${best.dayNum}.`,sub:`${Math.round(best.val||0)}% · ${(best.val2||0).toFixed(1).replace('.',',')} mm`};
+  }else if(type==='temp'){
+    let best=future[0];
+    for(let i=1;i<future.length;i++){
+      if(future[i].val!=null&&future[i].val>(best.val??-Infinity))best=future[i];
+    }
+    return{label:'Wärmster Tag',title:`${best.dow}, ${best.dayNum}. · ${Math.round(best.val||0)}°`,sub:`Min ${Math.round(best.val2||0)}° · ideal für Karpfen`};
+  }else if(type==='pressure'){
+    let bestDelta=0,bestI=0;
+    for(let i=1;i<future.length;i++){
+      if(future[i].val==null||future[i-1].val==null)continue;
+      const d=future[i].val-future[i-1].val;
+      if(d<bestDelta){bestDelta=d;bestI=i;}
+    }
+    if(bestDelta<-2){
+      const day=future[bestI];
+      return{label:'Bestes Beiß-Fenster',title:`${day.dow}, ${day.dayNum}.`,sub:`Druck fällt um ${Math.abs(bestDelta).toFixed(1).replace('.',',')} hPa`};
+    }
+    return{label:'Beiß-Fenster',title:'Stabile Wetterlage',sub:'Konstanter Druck — moderate Beißchancen'};
+  }
+  return null;
+}
+
+function _buildWindowCardV56(w){
+  if(!w)return'';
+  return`<div class="window-card">
+    <div class="window-card-ico"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div class="window-card-info">
+      <div class="window-card-lbl">${w.label}</div>
+      <div class="window-card-title">${w.title}</div>
+      <div class="window-card-sub">${w.sub}</div>
+    </div>
+  </div>`;
+}
+
+function _buildStatsV56(type,series){
+  const vals=series.map(s=>s.val).filter(v=>v!=null);
+  if(!vals.length)return'';
+  const mn=Math.round(Math.min(...vals));
+  const mx=Math.round(Math.max(...vals));
+  const avg=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  const unit={wind:'km/h',rain:'%',temp:'°',pressure:'hPa'}[type]||'';
+  const compactCls=type==='pressure'?' compact':'';
+  return`<div class="chart-stats">
+    <div class="chart-stat"><div class="chart-stat-lbl">Min</div><div class="chart-stat-val${compactCls}">${mn}<span class="unit">${unit}</span></div></div>
+    <div class="chart-stat"><div class="chart-stat-lbl">Schnitt</div><div class="chart-stat-val${compactCls}">${avg}<span class="unit">${unit}</span></div></div>
+    <div class="chart-stat"><div class="chart-stat-lbl">Max</div><div class="chart-stat-val${compactCls}">${mx}<span class="unit">${unit}</span></div></div>
+  </div>`;
+}
+
+async function _renderChartV56(type,bodyEl){
+  bodyEl.innerHTML=`<div style="text-align:center;padding:40px;color:var(--grau);font-size:12px;">Lade Daten…</div>`;
+  const anchorOff=_envWin[type]?.anchorOffset||0;
+  const d=await _loadChartWindow(type,anchorOff);
+  if(!d||!d.time||!d.time.length){
+    bodyEl.innerHTML=`<div style="text-align:center;padding:40px;color:var(--grau);">Keine Daten für diesen Zeitraum.</div>`;
+    return;
+  }
+  const series=_extractChartSeries(d,type);
+  const titles={wind:{t:'Geschwindigkeit',s:'Tageshöchst & Böen'},rain:{t:'Niederschlag',s:'Wahrscheinlichkeit · Menge'},temp:{t:'Tagesbereich',s:'Tiefst- bis Höchstwert'},pressure:{t:'Druckverlauf',s:'Tendenz · Hoch & Tief'}}[type]||{t:'',s:''};
+  const offsetLbl=anchorOff===0?'Heute':(anchorOff<0?Math.abs(anchorOff)+'d zurück':'+'+anchorOff+'d');
+  const hero=_buildHeroV56(type,series);
+  const chart=`<div class="chart-card">
+    <div class="chart-card-hdr">
+      <div>
+        <div class="chart-card-title">${titles.t}</div>
+        <div class="chart-card-sub">${titles.s} · 14 Tage</div>
+      </div>
+      <div class="chart-card-nav">
+        <button onclick="_envChartShift('${type}',-14)" aria-label="14 Tage zurück"><svg class="ic"><use href="#i-arrow-l"/></svg></button>
+        <span class="chart-card-nav-lbl">${offsetLbl}</span>
+        <button onclick="_envChartShift('${type}',14)" aria-label="14 Tage vor"><svg class="ic"><use href="#i-arrow-r"/></svg></button>
+      </div>
+    </div>
+    <div class="chart-svg-wrap">${_buildSvgChartV56(type,series)}</div>
+    <div class="day-strip">${_buildDayStripV56(series)}</div>
+  </div>`;
+  const win=_findBestWindowV56(type,series);
+  bodyEl.innerHTML=hero+chart+_buildWindowCardV56(win)+_buildStatsV56(type,series);
+}
+
 // ── Einzel-Kachel Wetter-Overlays (14-Tage Tages-Graph + Tabelle) ──────
 // v52 AP4: Window-Navigation via _envWin[type].anchorOffset
 //   offset===0 → nutze Live-Forecast-Cache (_fcData)
@@ -10382,19 +10811,25 @@ async function openWxChart(type,opts={}){
   const metaId=metaMap[type]||'fs-temp-meta';
 
   openFs(ovId2);
-  if(metaId&&document.getElementById(metaId))document.getElementById(metaId).textContent='14-Tage Vorhersage';
-  // v45: Update overlay title for pressure (reuses temp overlay)
+  if(metaId&&document.getElementById(metaId))document.getElementById(metaId).textContent='14 Tage';
+  // v56: Title + Icon im neuen Page-Header-Pattern setzen (Temp/Druck teilen sich das Overlay)
+  const titleEl=document.getElementById('fs-temp-title');
+  const iconUseEl=document.getElementById('fs-temp-icon-use');
   if(type==='pressure'){
-    const titleEl=document.querySelector('#fs-wx-temp .fstitle, [id="wx-temp"] .fstitle');
-    if(!titleEl){const t2=document.getElementById('fs-temp-body')?.closest('.fsov')?.querySelector('.fstitle');if(t2)t2.textContent='🔵 Luftdruck';}
-    else titleEl.textContent='🔵 Luftdruck';
+    if(titleEl)titleEl.textContent='Luftdruck';
+    if(iconUseEl)iconUseEl.setAttribute('href','#i-pressure');
   }else if(type==='temp'){
-    const titleEl=document.getElementById('fs-temp-body')?.closest('.fsov')?.querySelector('.fstitle');
-    if(titleEl)titleEl.textContent='🌡 Temperatur';
+    if(titleEl)titleEl.textContent='Temperatur';
+    if(iconUseEl)iconUseEl.setAttribute('href','#i-thermo');
   }
 
   const bodyEl=document.getElementById(bodyId);
   if(!bodyEl)return;
+
+  // v56: Neue Render-Funktion für die 4 Wettertypen — Hero + Chart (-3/heute/+10) + Window + Stats
+  if(type==='wind'||type==='rain'||type==='temp'||type==='pressure'){
+    return _renderChartV56(type,bodyEl);
+  }
 
   // v52 AP4: Window-Anchor bestimmen + Daten via Adapter laden bei Offset
   const anchorOff=_envWin[type]?.anchorOffset||0;
@@ -12588,8 +13023,11 @@ function _updateMapMarkers(){
   _mapCluster=L.markerClusterGroup({maxClusterRadius:40,spiderfyOnMaxZoom:true,showCoverageOnHover:false});
 
   function _mkIcon(color){
+    // v56: Strich-Fisch-Silhouette statt Emoji
     return L.divIcon({
-      html:`<div style="background:${color};color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,.3);border:2px solid #fff;">🐟</div>`,
+      html:`<div style="background:${color};color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(31,61,46,.30);border:2.5px solid #fff;">
+        <svg width="20" height="14" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#f-default"/></svg>
+      </div>`,
       className:'',iconSize:[32,32],iconAnchor:[16,32],popupAnchor:[0,-34]
     });
   }
@@ -12601,7 +13039,8 @@ function _updateMapMarkers(){
 
     const catchCnt=_totalCatchCount(s.catches||[]);
     const isSkunked=s.skunked||catchCnt===0;
-    const color=isSkunked?'#cc0000':catchCnt>=3?'#7BAE8A':'#2D4A35';
+    // v56: neue Farb-Logik – Skunked rose-t, ≥3 Fänge gold, sonst Tanne-Primär
+    const color=isSkunked?'#A04A38':catchCnt>=3?'#D6A23A':'#1F3D2E';
 
     const catchList=s.catches?.map(c=>`${fIco(c.type)} ${c.type}${c.length?' '+c.length+'cm':''}`).join('<br>')||'Schneider 🎣';
     // v53: Bug7 — showDetail mit returnPage='map' aufrufen, damit X zur Karte zurückführt
@@ -12626,7 +13065,7 @@ function _updateMapMarkers(){
       if(isNaN(cLat)||isNaN(cLon))return;
       if(cLat===lat&&cLon===lon)return; // Skip wenn identisch mit Session-Position
       const catchIcon=L.divIcon({
-        html:`<div style="background:var(--green-mid);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.3);border:2px solid #fff;">${fIco(c.type)}</div>`,
+        html:`<div style="background:var(--gold);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(31,61,46,.25);border:2px solid #fff;">${fSvgInline(c.type,17,11)}</div>`,
         className:'',iconSize:[26,26],iconAnchor:[13,26],popupAnchor:[0,-28]
       });
       const cPopup=`<strong>${c.type}</strong>${c.length?' · '+c.length+'cm':''}${c.bait?'<br>Köder: '+c.bait:''}${c.time?'<br>'+c.time:''}`;
@@ -12641,7 +13080,7 @@ function _updateMapMarkers(){
     const cLat=parseFloat(c.lat),cLon=parseFloat(c.lon);
     if(isNaN(cLat)||isNaN(cLon))return;
     const icon=L.divIcon({
-      html:`<div style="background:${c._color};color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.3);border:2px solid #fff;">${fIco(c.type)}</div>`,
+      html:`<div style="background:${c._color};color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(31,61,46,.25);border:2px solid #fff;">${fSvgInline(c.type,18,12)}</div>`,
       className:'',iconSize:[28,28],iconAnchor:[14,28],popupAnchor:[0,-30]
     });
     const popup=`<div style="min-width:140px;">
@@ -14161,7 +14600,7 @@ function _grpMapRender(catches){
     catches.forEach(c=>{
       const lat=parseFloat(c.lat),lon=parseFloat(c.lon);
       if(isNaN(lat)||isNaN(lon))return;
-      const icon=L.divIcon({html:`<div style="width:28px;height:28px;border-radius:50%;background:${_userColor(c.userId)};display:flex;align-items:center;justify-content:center;font-size:13px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);">${fIco(c.type)}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]});
+      const icon=L.divIcon({html:`<div style="width:28px;height:28px;border-radius:50%;background:${_userColor(c.userId)};color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 3px 8px rgba(31,61,46,.25);">${fSvgInline(c.type,18,12)}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,14]});
       const marker=L.marker([lat,lon],{icon}).addTo(_grpLeafletMap);
       // AP2: Klick auf Marker → Standard-Spot-Layout (Catch-Detail)
       const gId=_activeGroupId;
@@ -14517,7 +14956,7 @@ function _openCatchDetail(gId,catchId){
       const m=L.map(mapEl,{zoomControl:false,attributionControl:false}).setView([mapInfo.lat,mapInfo.lon],zoom);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
       const opacity=mapInfo.kind==='exact'?1:0.85;
-      const icon=L.divIcon({html:`<div style="width:34px;height:34px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);opacity:${opacity};">${fIco(sc.type)}</div>`,className:'',iconSize:[34,34],iconAnchor:[17,17]});
+      const icon=L.divIcon({html:`<div style="width:34px;height:34px;border-radius:50%;background:${color};color:#fff;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 4px 12px rgba(31,61,46,.30);opacity:${opacity};">${fSvgInline(sc.type,22,14)}</div>`,className:'',iconSize:[34,34],iconAnchor:[17,17]});
       L.marker([mapInfo.lat,mapInfo.lon],{icon}).addTo(m);
       // Bei Approximation: Unsicherheits-Kreis (Radius je nach Quelle)
       if(mapInfo.kind!=='exact'){
@@ -15305,7 +15744,7 @@ function _openDetailMap(id){
           const cla=parseFloat(c.lat),clo=parseFloat(c.lon);
           if(!isNaN(cla)&&!isNaN(clo)){
             bounds.push(L.latLng(cla,clo));
-            const icon=L.divIcon({className:'',html:`<div style="background:#ff5722;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);">${fIco(c.type)}</div>`,iconSize:[28,28],iconAnchor:[14,14]});
+            const icon=L.divIcon({className:'',html:`<div style="background:#A04A38;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 3px 10px rgba(31,61,46,.30);">${fSvgInline(c.type,18,12)}</div>`,iconSize:[28,28],iconAnchor:[14,14]});
             L.marker([cla,clo],{icon}).addTo(_detailMap).bindPopup(`<b>${c.type}</b><br>${c.length}cm · ${c.time||''}`);
           }
         }
