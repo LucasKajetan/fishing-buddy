@@ -464,42 +464,24 @@ body{
 .photo-lightbox-close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
 @keyframes lbFadeIn{from{opacity:0}to{opacity:1}}
 
-/* v56 POLISH: Overlay-Header global an Page-Header-Pattern angeglichen
-   → ALLE bestehenden .fshdr-Header bekommen automatisch den neuen Look:
-   Weiß statt Tanne, Inter Bold Title, grauer Subtitle, Salbei-✕-Pille */
+/* Overlay-Header fix */
 .fshdr{
-  background:#fff;padding:14px 16px;color:var(--text-dark);
+  background:var(--green-deep);padding:16px 20px;color:#fff;
   display:flex;align-items:center;gap:12px;flex-shrink:0;
-  position:relative;
-  border-bottom:1px solid var(--line);
-}
-.fstitle{
-  font-family:var(--fa);font-size:20px;font-weight:600;flex:1;
-  color:var(--text-dark);letter-spacing:-.02em;line-height:1.15;
-}
-.fsmeta{
-  font-family:var(--fa);font-size:11.5px;color:var(--grau);
-  margin-top:2px;font-weight:400;
-}
+position:relative;}
+.fstitle{font-family:var(--fs);font-size:20px;font-weight:600;flex:1;}
+.fsmeta{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;}
 
-/* X-Button als Salbei-Pille (statt weißer Glasmorphism) */
+/* X-Button: immer absolut oben rechts */
 .xbtn{
-  position:absolute;top:11px;right:14px;
-  background:var(--salbei);border:none;color:var(--tanne);
+  position:absolute;top:14px;right:14px;
+  background:rgba(255,255,255,.18);border:none;color:#fff;
   width:34px;height:34px;border-radius:50%;cursor:pointer;
-  font-size:14px;display:flex;align-items:center;justify-content:center;
+  font-size:17px;display:flex;align-items:center;justify-content:center;
   z-index:10;flex-shrink:0;
-  transition:background .15s;font-family:var(--fa);font-weight:500;
+  transition:background .15s;
 }
-.xbtn:hover{background:#DCE7DF;}
-.xbtn:active{background:#DCE7DF;transform:scale(.94);}
-
-/* Spezial: Overlays die einen farbigen Header behalten sollen (z.B. Live-Catch rot) */
-.fshdr.fshdr-tinted{color:#fff;border-bottom:none;}
-.fshdr.fshdr-tinted .fstitle{color:#fff;}
-.fshdr.fshdr-tinted .fsmeta{color:rgba(255,255,255,.7);}
-.fshdr.fshdr-tinted .xbtn{background:rgba(255,255,255,.18);color:#fff;}
-.fshdr.fshdr-tinted .xbtn:hover{background:rgba(255,255,255,.32);}
+.xbtn:hover{background:rgba(255,255,255,.32);}
 
 /* Overlay-Scroll-Body — v56: page-hdr & page-hdr-tabs auch ausschließen */
 .fsov > div:not(.fshdr):not(.fbar):not(.page-hdr):not(.page-hdr-tabs){
@@ -1541,16 +1523,83 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 
 /* Wetter-Kacheln im Body */
 .dd-wx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.dd-wx-tile{background:#fff;border-radius:var(--rs);padding:10px;box-shadow:var(--sh-sm);text-align:center;border:1px solid rgba(200,221,208,.3);}
-.dd-wx-ico{font-size:20px;margin-bottom:4px;}
-.dd-wx-val{font-size:14px;font-weight:700;color:var(--text-dark);}
+/* v56 POLISH: Bedingungen-Kacheln als fc-square-Look (konsistent mit Vorhersage) */
+.dd-wx-tile{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:12px 6px 10px;aspect-ratio:1/1;text-align:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  min-width:0;overflow:hidden;
+  cursor:pointer;transition:transform .15s,box-shadow .2s;
+}
+.dd-wx-tile:active{transform:scale(.97);}
+.dd-wx-tile:hover{box-shadow:0 6px 16px rgba(31,61,46,.10);}
+.dd-wx-ico{
+  font-size:20px;line-height:1;margin-bottom:0;
+  color:var(--forest);
+  display:flex;align-items:center;justify-content:center;
+}
+.dd-wx-ico .ic{width:22px;height:22px;stroke-width:1.6;}
+.dd-wx-val{
+  font-family:var(--fa);font-size:22px;font-weight:600;
+  color:var(--text-dark);letter-spacing:-.025em;line-height:1.05;
+}
+.dd-wx-val.compact{font-size:18px;}
+.dd-wx-val .unit{font-size:11px;font-weight:500;color:var(--grau);margin-left:1px;}
+.dd-wx-lbl{
+  font-family:var(--fa);font-size:9.5px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--tanne);
+}
+
+/* v56 POLISH: Session-Stats-Hero-Card (Tanne mit Gold-Counter) */
+.dd-stats-card{
+  background:linear-gradient(135deg,var(--tanne) 0%,#2A4D38 100%);
+  border-radius:18px;padding:16px 18px;margin:0 2px 12px;
+  display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;color:#fff;
+}
+.dd-stats-card::after{
+  content:'';position:absolute;right:-30px;top:-20px;width:140px;height:140px;
+  background:radial-gradient(circle,rgba(214,162,58,.18) 0%,transparent 70%);
+  pointer-events:none;
+}
+.dd-stats-info{flex:1;position:relative;z-index:1;}
+.dd-stats-time{
+  font-family:var(--fa);font-size:11px;font-weight:500;
+  color:rgba(255,255,255,.75);margin-bottom:6px;
+  display:flex;align-items:center;gap:5px;
+}
+.dd-stats-time .ic{width:11px;height:11px;}
+.dd-stats-row{
+  display:flex;gap:14px;margin-top:8px;
+}
+.dd-stats-stat{flex:1;}
+.dd-stats-stat-val{
+  font-family:var(--fa);font-size:14px;font-weight:600;color:#fff;letter-spacing:-.01em;
+}
+.dd-stats-stat-lbl{
+  font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.6);margin-top:1px;
+}
+.dd-stats-cnt-wrap{
+  text-align:center;flex-shrink:0;position:relative;z-index:1;
+  padding-left:6px;
+}
+.dd-stats-cnt{
+  font-family:var(--fa);font-size:36px;font-weight:600;color:var(--gold);
+  letter-spacing:-.025em;line-height:1;
+}
+.dd-stats-cnt-lbl{
+  font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.6);margin-top:3px;
+}
 .dd-wx-lbl{font-size:10px;color:var(--text-light);margin-top:2px;}
 /* Session-Trennlinie im Overlay */
 
 /* Catch-Zeile im Overlay */
 .dd-catch-row{display:flex;align-items:center;padding:11px 12px;border-bottom:1px solid rgba(200,221,208,.3);gap:10px;}
 .dd-catch-row:last-child{border-bottom:none;}
-.dd-catch-photo{width:40px;height:40px;border-radius:9px;background:var(--green-mist);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;}
+.dd-catch-photo{width:40px;height:40px;border-radius:10px;background:var(--salbei);color:var(--tanne);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;}
+.dd-catch-photo .ic{width:26px;height:18px;stroke-width:1.6;}
 .dd-catch-photo img{width:100%;height:100%;object-fit:cover;}
 .dd-catch-info{flex:1;min-width:0;}
 .dd-catch-name{font-size:14px;font-weight:600;color:var(--text-dark);}
@@ -1656,12 +1705,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .burg-slbl{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-light);margin-bottom:8px;padding-left:4px;}
 .bitem{display:flex;align-items:center;gap:12px;padding:13px 10px;border-radius:var(--rs);cursor:pointer;transition:background .15s;border:none;background:transparent;width:100%;font-family:var(--fa);text-align:left;}
 .bitem:hover{background:var(--green-mist);}
-.bitem-ico{
-  font-size:20px;width:34px;height:34px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:10px;background:var(--salbei);color:var(--tanne);
-}
-.bitem-ico .ic{width:18px;height:18px;stroke-width:1.7;}
+.bitem-ico{font-size:20px;width:26px;text-align:center;flex-shrink:0;}
 .bitem-txt{font-size:14px;font-weight:600;color:var(--text-dark);}
 .bitem-sub{font-size:11px;color:var(--text-light);margin-top:1px;}
 .burg-ver{padding:12px;font-size:11px;color:var(--text-light);text-align:center;}
@@ -1801,14 +1845,9 @@ select.obif{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3
 .fav-btn-note{background:var(--teal);color:var(--teal-t);font-size:11px;padding:4px 9px;}
 input[type=file]{display:none;}
 .empty{text-align:center;padding:50px 20px;}
-.empty-ico{
-  font-size:52px;margin-bottom:14px;opacity:.45;
-  display:inline-flex;align-items:center;justify-content:center;
-  width:64px;height:64px;border-radius:18px;background:var(--salbei);color:var(--tanne);
-}
-.empty-ico .ic{width:32px;height:32px;stroke-width:1.5;}
-.empty-t{font-family:var(--fa);font-size:16px;font-weight:600;color:var(--text-mid);margin-bottom:6px;letter-spacing:-.01em;}
-.empty-s{font-family:var(--fa);font-size:13px;color:var(--text-light);line-height:1.6;}
+.empty-ico{font-size:52px;margin-bottom:14px;opacity:.45;}
+.empty-t{font-size:16px;font-weight:600;color:var(--text-mid);margin-bottom:6px;}
+.empty-s{font-size:13px;color:var(--text-light);line-height:1.6;}
 
 /* ═══ LOGIN OVERLAY ═══ */
 .login-ov{position:absolute;inset:0;z-index:200;background:var(--green-deep);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;transition:opacity .4s;}
@@ -2830,6 +2869,9 @@ input[type=file]{display:none;}
   <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="13" r="4"/></symbol>
   <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-7z"/></symbol>
   <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="4" cy="18" r="1.5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-split" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M9 6L20 17M9 18L20 7"/></symbol>
   <!-- Bottom-Nav (entsprechen den existierenden btab-Icons) -->
   <symbol id="i-fb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h20M2 12h20M2 18h20"/><circle cx="20" cy="6" r="3" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></symbol>
@@ -2937,9 +2979,9 @@ input[type=file]{display:none;}
 
 <!-- ═══ LIVE SESSION START OVERLAY ═══ -->
 <div class="fsov" id="fs-live-start" role="dialog" aria-modal="true" style="z-index:130;background:#f5f7f5;">
-  <div class="fshdr fshdr-tinted" style="background:linear-gradient(135deg,var(--tanne),#2A4D38);">
-    <div><div class="fstitle">Live Session starten</div><div class="fsmeta">Echtzeit-Tracking mit GPS</div></div>
-    <button class="xbtn" onclick="closeLiveStartOv()">✕</button>
+  <div class="fshdr" style="background:linear-gradient(135deg,var(--green-deep),#3a6b4a);">
+    <div><div class="fstitle" style="color:#fff;">🎣 Live Session starten</div><div class="fsmeta" style="color:rgba(255,255,255,.7);">Echtzeit-Tracking mit GPS</div></div>
+    <button class="xbtn" onclick="closeLiveStartOv()" style="color:#fff;">✕</button>
   </div>
   <div class="fsov-scroll" style="padding:16px;">
     <div class="ls-start-wx" id="ls-start-wx">
@@ -3063,49 +3105,49 @@ input[type=file]{display:none;}
   <div class="burg-panel">
     <div class="burg-hdr">
       <div style="font-size:32px;margin-bottom:8px;">🎣</div>
-      <div class="burg-n" id="burg-name">Angeln+</div>
-      <div class="burg-s" id="burg-sub">v56 · Local-First PWA</div>
+      <div class="burg-n" id="burg-name">Fishing Buddy</div>
+      <div class="burg-s" id="burg-sub">v37 · Local-First PWA</div>
     </div>
     <div class="burg-body">
       <div class="burg-sec">
         <div class="burg-slbl">Profil &amp; Account</div>
-        <button class="bitem" onclick="openProfileEdit();closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-users"/></svg></span><div><div class="bitem-txt" id="burg-pname">–</div><div class="bitem-sub" id="burg-psub">Profil bearbeiten</div></div></button>
-        <button class="bitem" onclick="openGoalEdit();closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-target"/></svg></span><div><div class="bitem-txt">Ziele bearbeiten</div><div class="bitem-sub">Saisonziele hinzufügen &amp; löschen</div></div></button>
+        <button class="bitem" onclick="openProfileEdit();closeBurg()"><span class="bitem-ico">👤</span><div><div class="bitem-txt" id="burg-pname">–</div><div class="bitem-sub" id="burg-psub">Profil bearbeiten</div></div></button>
+        <button class="bitem" onclick="openGoalEdit();closeBurg()"><span class="bitem-ico">🎯</span><div><div class="bitem-txt">Ziele bearbeiten</div><div class="bitem-sub">Saisonziele hinzufügen &amp; löschen</div></div></button>
         <button class="bitem" id="burg-auth-btn" onclick="closeBurg();_sbUser?sbLogout():document.getElementById('login-ov').classList.remove('hidden')">
-          <span class="bitem-ico" id="burg-auth-ico"><svg class="ic"><use href="#i-cloud"/></svg></span>
+          <span class="bitem-ico" id="burg-auth-ico">☁️</span>
           <div><div class="bitem-txt" id="burg-auth-txt">Anmelden / Registrieren</div><div class="bitem-sub" id="burg-auth-sub">Cloud-Sync aktivieren</div></div>
         </button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Gruppen &amp; Social</div>
-        <button class="bitem" onclick="_openGroupHub();closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-crew"/></svg></span><div><div class="bitem-txt">Meine Gruppen</div><div class="bitem-sub" id="burg-grp-sub">Crews, Feed &amp; Insights</div></div></button>
-        <button class="bitem" onclick="openFs('group-join');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-share"/></svg></span><div><div class="bitem-txt">Gruppe beitreten</div><div class="bitem-sub">Per Einladungscode</div></div></button>
+        <button class="bitem" onclick="_openGroupHub();closeBurg()"><span class="bitem-ico">👥</span><div><div class="bitem-txt">Meine Gruppen</div><div class="bitem-sub" id="burg-grp-sub">Crews, Feed &amp; Insights</div></div></button>
+        <button class="bitem" onclick="openFs('group-join');closeBurg()"><span class="bitem-ico">🔗</span><div><div class="bitem-txt">Gruppe beitreten</div><div class="bitem-sub">Per Einladungscode</div></div></button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Spot-Karte</div>
-        <button class="bitem" onclick="showPage('map');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-map"/></svg></span><div><div class="bitem-txt">Spot-Karte öffnen</div><div class="bitem-sub">Alle Angelspots auf der Karte</div></div></button>
-        <button class="bitem" onclick="openSpotGpsLink();closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-pin"/></svg></span><div><div class="bitem-txt">Karte</div><div class="bitem-sub">Spot-Text mit GPS verknüpfen</div></div></button>
+        <button class="bitem" onclick="showPage('map');closeBurg()"><span class="bitem-ico">🗺️</span><div><div class="bitem-txt">Spot-Karte öffnen</div><div class="bitem-sub">Alle Angelspots auf der Karte</div></div></button>
+        <button class="bitem" onclick="openSpotGpsLink();closeBurg()"><span class="bitem-ico">📌</span><div><div class="bitem-txt">Karte</div><div class="bitem-sub">Spot-Text mit GPS verknüpfen</div></div></button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Live Session</div>
         <button class="bitem" id="burg-live-btn" onclick="closeBurg();_liveSession?openLiveOv():startLiveSession()">
-          <span class="bitem-ico" id="burg-live-ico" style="color:#A04A38;"><svg class="ic"><use href="#i-target"/></svg></span>
+          <span class="bitem-ico" id="burg-live-ico">🔴</span>
           <div><div class="bitem-txt" id="burg-live-txt">Live Session starten</div><div class="bitem-sub">Echtzeit-Tracking mit GPS</div></div>
         </button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Daten</div>
         <button class="bitem" onclick="openExp();closeBurg()">
-          <span class="bitem-ico" style="position:relative;"><svg class="ic"><use href="#i-share"/></svg><span id="backup-dot" style="display:none;position:absolute;top:-2px;right:-4px;width:8px;height:8px;background:var(--red);border-radius:50%;"></span></span>
+          <span class="bitem-ico" style="position:relative;">📦<span id="backup-dot" style="display:none;position:absolute;top:-2px;right:-4px;width:8px;height:8px;background:var(--red);border-radius:50%;"></span></span>
           <div><div class="bitem-txt">Backup &amp; Export</div><div class="bitem-sub" id="backup-sub">JSON exportieren / importieren</div></div>
         </button>
-        <button class="bitem" onclick="showBurgSec('storage');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-stats"/></svg></span><div><div class="bitem-txt">Speicher-Info</div><div class="bitem-sub" id="burg-storasub">IndexedDB</div></div></button>
+        <button class="bitem" onclick="showBurgSec('storage');closeBurg()"><span class="bitem-ico">💾</span><div><div class="bitem-txt">Speicher-Info</div><div class="bitem-sub" id="burg-storasub">IndexedDB</div></div></button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Info &amp; Rechtliches</div>
-        <button class="bitem" onclick="showBurgSec('schonzeiten');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-list"/></svg></span><div><div class="bitem-txt">Schonzeiten &amp; Verbände</div><div class="bitem-sub">Links zu Fischereibehörden</div></div></button>
-        <button class="bitem" onclick="showBurgSec('legal');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-info"/></svg></span><div><div class="bitem-txt">Impressum &amp; Datenschutz</div><div class="bitem-sub">DSGVO-konform</div></div></button>
-        <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-info"/></svg></span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
+        <button class="bitem" onclick="showBurgSec('schonzeiten');closeBurg()"><span class="bitem-ico">📋</span><div><div class="bitem-txt">Schonzeiten &amp; Verbände</div><div class="bitem-sub">Links zu Fischereibehörden</div></div></button>
+        <button class="bitem" onclick="showBurgSec('legal');closeBurg()"><span class="bitem-ico">⚖️</span><div><div class="bitem-txt">Impressum &amp; Datenschutz</div><div class="bitem-sub">DSGVO-konform</div></div></button>
+        <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
     <div class="burg-ver">Angeln+ v56 · Editorial Nature · Realtime · PWA</div>
@@ -3439,7 +3481,19 @@ input[type=file]{display:none;}
 </div>
 
 <!-- DAY DETAIL OVERLAY (AP2) -->
-<div class="fsov" id="fs-day-detail" role="dialog" aria-modal="true" aria-label="Tages-Details">
+<div class="fsov" id="fs-day-detail" role="dialog" aria-modal="true" aria-label="Tages-Details" style="background:var(--sand);">
+  <!-- v56: Page-Header-Pattern statt v16-Hero -->
+  <div class="page-hdr" id="dd-page-hdr">
+    <button class="page-hdr-back" onclick="closeDayDetail()" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
+    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-water"/></svg></div>
+    <div class="page-hdr-left">
+      <div class="page-hdr-title" id="dd-page-title">Tag</div>
+      <div class="page-hdr-sub" id="dd-page-sub"></div>
+    </div>
+    <div class="page-hdr-actions">
+      <button class="pill-btn icon-only" id="dd-edit-btn" aria-label="Bearbeiten" style="display:none;"><svg class="ic"><use href="#i-info"/></svg></button>
+    </div>
+  </div>
   <div id="dd-hero-wrap" style="display:none;"></div>
   <div class="fsov-scroll" id="dd-body"></div>
 </div>
@@ -3480,7 +3534,7 @@ input[type=file]{display:none;}
 <!-- Ziele bearbeiten Overlay -->
 <div class="fsov" id="fs-goals" role="dialog" aria-modal="true" aria-label="Ziele bearbeiten">
   <div class="fshdr">
-    <div><div class="fstitle">Ziele bearbeiten</div><div class="fsmeta" id="fs-goals-meta"></div></div>
+    <div><div class="fstitle">🎯 Ziele bearbeiten</div><div class="fsmeta" id="fs-goals-meta"></div></div>
     <button class="xbtn" onclick="closeFs('goals')">✕</button>
   </div>
   <div class="fsov-scroll" id="fs-goals-body"></div>
@@ -3587,7 +3641,7 @@ input[type=file]{display:none;}
 <!-- AP2: Session Mini-Map Overlay -->
 <div class="fsov" id="fs-sess-map" role="dialog" aria-modal="true" style="z-index:117;">
   <div class="fshdr">
-    <div><div class="fstitle">Kartenansicht</div><div class="fsmeta" id="fs-smap-meta"></div></div>
+    <div><div class="fstitle">📍 Kartenansicht</div><div class="fsmeta" id="fs-smap-meta"></div></div>
     <button class="xbtn" onclick="_closeSessMap()">✕</button>
   </div>
   <div style="flex:1;position:relative;"><div id="sess-map-container" style="position:absolute;inset:0;"></div></div>
@@ -3614,7 +3668,7 @@ input[type=file]{display:none;}
 <!-- AP3: Karten-Filter Overlay -->
 <div class="fsov" id="fs-map-filter" role="dialog" aria-modal="true" style="z-index:120;background:#f5f7f5;">
   <div class="fshdr">
-    <div><div class="fstitle">Karten-Filter</div><div class="fsmeta">Angezeigte Marker filtern</div></div>
+    <div><div class="fstitle">🔍 Karten-Filter</div><div class="fsmeta">Angezeigte Marker filtern</div></div>
     <button class="xbtn" onclick="closeFs('map-filter')">✕</button>
   </div>
   <div class="fsov-scroll" id="map-filter-body" style="padding:16px;"></div>
@@ -3708,9 +3762,9 @@ input[type=file]{display:none;}
 
 <!-- ═══ LIVE CATCH OVERLAY (reduziert) ═══ -->
 <div class="fsov" id="fs-live-catch" style="z-index:121;">
-  <div class="fshdr fshdr-tinted" style="background:linear-gradient(135deg,#A04A38,#7A3A2C);">
-    <div><div class="fstitle">Fang melden</div></div>
-    <button class="xbtn" onclick="closeLiveCatch()">✕</button>
+  <div class="fshdr" style="background:linear-gradient(135deg,#cc0000,#991111);">
+    <div><div class="fstitle" style="color:#fff;">🐟 Fang melden</div></div>
+    <button class="xbtn" onclick="closeLiveCatch()" style="color:#fff;">✕</button>
   </div>
   <div class="fsov-scroll" style="padding:16px;">
     <div style="font-size:11px;color:var(--text-light);margin-bottom:12px;text-align:center;" id="lc-time-hint">⏱️ Uhrzeit wird automatisch erfasst</div>
@@ -3790,17 +3844,11 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- v56 POLISH: GROUP HUB OVERLAY mit Page-Header-Pattern -->
-<div class="fsov" id="fs-group-hub" style="z-index:115;background:var(--sand);">
-  <div class="page-hdr">
-    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-users"/></svg></div>
-    <div class="page-hdr-left">
-      <div class="page-hdr-title">Gruppen</div>
-      <div class="page-hdr-sub" id="grp-hub-meta">Deine Angel-Crews</div>
-    </div>
-    <div class="page-hdr-actions">
-      <button class="pill-btn icon-only" onclick="closeFs('group-hub')" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
-    </div>
+<!-- ═══ GROUP HUB OVERLAY ═══ -->
+<div class="fsov" id="fs-group-hub" style="z-index:115;">
+  <div class="fshdr" style="background:var(--green-deep);">
+    <div><div class="fstitle" style="color:#fff;">👥 Gruppen</div><div class="fsmeta" style="color:rgba(255,255,255,.6);" id="grp-hub-meta">Deine Angel-Crews</div></div>
+    <button class="xbtn" onclick="closeFs('group-hub')" style="color:#fff;">✕</button>
   </div>
   <div class="fsov-scroll" style="padding-top:12px;">
     <div class="grp-tabs" id="grp-hub-tabs">
@@ -3811,18 +3859,14 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- v56 POLISH: GROUP DETAIL / FEED OVERLAY mit Page-Header-Pattern -->
-<div class="fsov" id="fs-group-detail" style="z-index:116;background:var(--sand);">
-  <div class="page-hdr" id="grp-detail-hdr">
-    <button class="page-hdr-back" onclick="closeFs('group-detail')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
-    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-crew"/></svg></div>
-    <div class="page-hdr-left">
-      <div class="page-hdr-title" id="grp-detail-title">Gruppe</div>
-      <div class="page-hdr-sub" id="grp-detail-meta">0 Mitglieder</div>
+<!-- ═══ GROUP DETAIL / FEED OVERLAY (AP4: restructured) ═══ -->
+<div class="fsov" id="fs-group-detail" style="z-index:116;">
+  <div class="fshdr" id="grp-detail-hdr" style="background:var(--green-deep);">
+    <div>
+      <div class="fstitle" style="color:#fff;" id="grp-detail-title">Gruppe</div>
+      <div class="fsmeta" style="color:rgba(255,255,255,.6);" id="grp-detail-meta">0 Mitglieder</div>
     </div>
-    <div class="page-hdr-actions">
-      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
-    </div>
+    <button class="xbtn" onclick="closeFs('group-detail')" style="color:#fff;">✕</button>
   </div>
   <div class="fsov-scroll" id="grp-detail-scroll">
     <div id="grp-detail-content"></div>
@@ -3896,9 +3940,9 @@ input[type=file]{display:none;}
 
 <!-- ═══ GROUP CREATE OVERLAY ═══ -->
 <div class="fsov" id="fs-group-create" style="z-index:117;">
-  <div class="fshdr">
-    <div><div class="fstitle">Gruppe erstellen</div></div>
-    <button class="xbtn" onclick="closeFs('group-create')">✕</button>
+  <div class="fshdr" style="background:var(--green-deep);">
+    <div><div class="fstitle" style="color:#fff;">➕ Gruppe erstellen</div></div>
+    <button class="xbtn" onclick="closeFs('group-create')" style="color:#fff;">✕</button>
   </div>
   <div class="fsov-scroll" style="padding:16px;">
     <div class="ig" style="margin-bottom:14px;">
@@ -3938,9 +3982,9 @@ input[type=file]{display:none;}
 
 <!-- ═══ GROUP JOIN OVERLAY ═══ -->
 <div class="fsov" id="fs-group-join" style="z-index:117;">
-  <div class="fshdr">
-    <div><div class="fstitle">Gruppe beitreten</div></div>
-    <button class="xbtn" onclick="closeFs('group-join')">✕</button>
+  <div class="fshdr" style="background:var(--green-deep);">
+    <div><div class="fstitle" style="color:#fff;">🔗 Gruppe beitreten</div></div>
+    <button class="xbtn" onclick="closeFs('group-join')" style="color:#fff;">✕</button>
   </div>
   <div class="fsov-scroll" style="padding:16px;">
     <div class="ig" style="margin-bottom:14px;">
@@ -7323,25 +7367,22 @@ let _fbScrollY = 0;
 const DOW_FB = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 function fmtDow(ds){return DOW_FB[new Date(ds+'T12:00:00').getDay()];}
 
-// v56: Page-Header-Subline für Fangbuch (geteilt von Listen- und Kalender-View)
-function _updateFbSubline(){
-  const subEl=document.getElementById('fb-view-sub');
-  if(!subEl)return;
-  if(!sessions.length){
-    subEl.textContent='Tippe auf + für deine erste Session';
-  }else{
-    const totalCatches=sessions.reduce((s,x)=>s+(x.catches?.reduce((a,c)=>a+(c.count||1),0)||0),0);
-    const fangLbl=totalCatches===1?'Fang':'Fänge';
-    const sessLbl=sessions.length===1?'Session':'Sessions';
-    subEl.textContent=`${totalCatches} ${fangLbl} in ${sessions.length} ${sessLbl}`;
-  }
-}
-
 function rndrFangbuch(){
   const el=document.getElementById('fangbuch-list');if(!el)return;
-  _updateFbSubline();
+  // v56: Page-Header-Subline mit Session/Fang-Count
+  const subEl=document.getElementById('fb-view-sub');
+  if(subEl){
+    if(!sessions.length){
+      subEl.textContent='Tippe auf + für deine erste Session';
+    }else{
+      const totalCatches=sessions.reduce((s,x)=>s+(x.catches?.reduce((a,c)=>a+(c.count||1),0)||0),0);
+      const fangLbl=totalCatches===1?'Fang':'Fänge';
+      const sessLbl=sessions.length===1?'Session':'Sessions';
+      subEl.textContent=`${totalCatches} ${fangLbl} in ${sessions.length} ${sessLbl}`;
+    }
+  }
   if(!sessions.length){
-    el.innerHTML='<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#f-default"/></svg></div><div class="empty-t">Noch keine Sessions</div><div class="empty-s">Tippe auf + um deine erste Session zu erfassen.</div></div>';
+    el.innerHTML='<div class="empty"><div class="empty-ico">🎣</div><div class="empty-t">Noch keine Sessions</div><div class="empty-s">Tippe auf + um deine erste Session zu erfassen.</div></div>';
     return;
   }
   const byDate={};
@@ -7412,7 +7453,6 @@ function rndrHistory(){if(_fbView==='cal')rndrCalendar();else rndrFangbuch();}
 
 function rndrCalendar(){
   const el=document.getElementById('fangbuch-list');if(!el)return;
-  _updateFbSubline(); // v56: Subline auch im Kalender-View aktuell halten
 
   const byDate={};
   sessions.forEach(s=>{
@@ -7490,7 +7530,7 @@ function rndrCalendar(){
     </div>`;
   });
 
-  el.innerHTML=html||`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#f-default"/></svg></div><div class="empty-t">Noch keine Sessions</div></div>`;
+  el.innerHTML=html||`<div class="empty"><div class="empty-ico">🎣</div><div class="empty-t">Noch keine Sessions</div></div>`;
 
   // Zum aktuellen Monat scrollen (da aufsteigend sortiert, ist er unten)
   requestAnimationFrame(()=>{
@@ -7558,23 +7598,40 @@ async function openDayDetail(dateKey){
   const [,mo,dy]=dateKey.split('-');
   const MON_FULL=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 
-  // Wetter-Kacheln (anklickbar für Kurven-Overlay)
-  const _wxTile=(ico,val,lbl,action)=>
-    `<div class="dd-wx-tile"${action?` onclick="${action}" style="cursor:pointer;"`:''}><div class="dd-wx-ico">${ico}</div><div class="dd-wx-val">${val}</div><div class="dd-wx-lbl">${lbl}</div></div>`;
+  // v56 POLISH: Bedingungen-Kacheln im fc-square-Stil (konsistent mit Vorhersage)
+  // Helper: Wert + Unit + Label-Format wie auf Vorhersage-Seite
+  const _wxTile=(icoId,val,unit,lbl,action,sub,compact)=>{
+    const valHtml=`<div class="dd-wx-val${compact?' compact':''}">${val}${unit?`<span class="unit">${unit}</span>`:''}</div>`;
+    const subHtml=sub?`<div style="font-size:9.5px;color:var(--grau);font-weight:400;line-height:1.3;">${sub}</div>`:'';
+    return `<div class="dd-wx-tile"${action?` onclick="${action}"`:''}>
+      <div class="dd-wx-ico"><svg class="ic"><use href="#${icoId}"/></svg></div>
+      ${valHtml}
+      <div class="dd-wx-lbl">${lbl}</div>
+      ${subHtml}
+    </div>`;
+  };
 
   let wxHtml='';
   if(wxAvg){
     let tiles='';
-    if(wxAvg.temp!=null)tiles+=_wxTile('🌡️',wxAvg.temp+'°C','Temp. Ø',`openDayWxDetail('${dateKey}','temp')`);
-    if(wxAvg.windSpeed!=null)tiles+=_wxTile('💨',wxAvg.windSpeed+' km/h','Wind '+_windDir(wxAvg.windDir),`openDayWxDetail('${dateKey}','wind')`);
-    if(wxAvg.pressure)tiles+=_wxTile('📊',wxAvg.pressure+' hPa','Luftdruck',`openDayWxDetail('${dateKey}','pressure')`);
-    if(wxAvg.clouds!=null)tiles+=_wxTile('☁️',wxAvg.clouds+'%','Bewölk.',`openDayWxDetail('${dateKey}','clouds')`);
-    // AP3: 5. Kachel Tide (ersetzt Luftfeuchtigkeit) + 6. Kachel Karte
-    tiles+=_wxTile('🌊','Öffnen','Tide',`openTideForDay('${dateKey}')`);
-    tiles+=_wxTile('🗺️','Öffnen','Karte',`openMapForDay('${dateKey}')`);
-    if(tiles)wxHtml=`<div class="slbl" style="margin-top:0;">Bedingungen <small style="font-weight:400;opacity:.6;font-size:10px;">Ø über Angelzeit · Tippen für Details</small></div><div class="dd-wx-grid">${tiles}</div>`;
+    if(wxAvg.temp!=null)tiles+=_wxTile('i-thermo',Math.round(wxAvg.temp),'°','Temp',`openDayWxDetail('${dateKey}','temp')`,'Ø Angelzeit');
+    if(wxAvg.windSpeed!=null)tiles+=_wxTile('i-wind',Math.round(wxAvg.windSpeed),'km/h','Wind',`openDayWxDetail('${dateKey}','wind')`,_windDir(wxAvg.windDir));
+    if(wxAvg.pressure)tiles+=_wxTile('i-pressure',wxAvg.pressure,'hPa','Druck',`openDayWxDetail('${dateKey}','pressure')`,'Mittel',true);
+    if(wxAvg.clouds!=null)tiles+=_wxTile('i-cloud',Math.round(wxAvg.clouds),'%','Bewölk.',`openDayWxDetail('${dateKey}','clouds')`);
+    // 5. Tide + 6. Karte als Action-Tiles (kein Wert, Strich-Icon zentriert)
+    tiles+=`<div class="dd-wx-tile" onclick="openTideForDay('${dateKey}')">
+      <div class="dd-wx-ico"><svg class="ic"><use href="#i-wave"/></svg></div>
+      <div class="dd-wx-val" style="font-size:13px;color:var(--tanne);font-weight:500;">Öffnen</div>
+      <div class="dd-wx-lbl">Tide</div>
+    </div>`;
+    tiles+=`<div class="dd-wx-tile" onclick="openMapForDay('${dateKey}')">
+      <div class="dd-wx-ico"><svg class="ic"><use href="#i-map"/></svg></div>
+      <div class="dd-wx-val" style="font-size:13px;color:var(--tanne);font-weight:500;">Öffnen</div>
+      <div class="dd-wx-lbl">Karte</div>
+    </div>`;
+    if(tiles)wxHtml=`<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-cloud-sun"/></svg>Bedingungen <span style="font-weight:400;color:var(--grau-lt);font-size:10px;text-transform:none;letter-spacing:0;margin-left:auto;">Ø über Angelzeit</span></div><div class="dd-wx-grid">${tiles}</div>`;
   } else if(profile?.plz){
-    wxHtml=`<div style="padding:8px 0 14px;"><button onclick="reloadWeatherForDay('${dateKey}')" style="width:100%;padding:10px;background:var(--blue);color:var(--blue-t);border:1.5px solid rgba(12,68,124,.2);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;">🌡️ Wetter via PLZ ${profile.plz} nachladen</button></div>`;
+    wxHtml=`<div style="padding:8px 0 14px;"><button onclick="reloadWeatherForDay('${dateKey}')" style="width:100%;padding:11px;background:var(--salbei);color:var(--tanne);border:none;border-radius:14px;font-size:13px;font-weight:500;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><svg class="ic" style="width:14px;height:14px;"><use href="#i-cloud-sun"/></svg>Wetter via PLZ ${profile.plz} nachladen</button></div>`;
   }
 
   // Session-Kacheln mit Fängen
@@ -7593,7 +7650,7 @@ async function openDayDetail(dateKey){
           const mm=chkMM(c.type,c.length);
           const safeId=String(s.id).replace(/[^a-z0-9]/gi,'_');
           return`<div class="dd-catch-row">
-            <div class="dd-catch-photo dd-photo-${safeId}-${i}" ${c.photoKey?`onclick="_openPhotoLb(this)" style="cursor:pointer;"`:''} data-photokey="${c.photoKey||''}">${fIco(c.type)}</div>
+            <div class="dd-catch-photo dd-photo-${safeId}-${i}" ${c.photoKey?`onclick="_openPhotoLb(this)" style="cursor:pointer;"`:''} data-photokey="${c.photoKey||''}">${fSvg(c.type)}</div>
             <div class="dd-catch-info">
               <div class="dd-catch-name">${c.type||'–'}</div>
               <div class="dd-catch-meta">${c.time||'–'} Uhr${c.bait?' · '+c.bait:''}${c.baitNote?' · '+c.baitNote:''}</div>
@@ -7620,9 +7677,9 @@ async function openDayDetail(dateKey){
             <div style="font-size:11px;color:var(--text-mid);margin-top:1px;">${sessTimeLabel}</div>
           </div>
           <div style="display:flex;gap:6px;">
-            <button onclick="splitSession('${s.id}','${dateKey}')" style="padding:6px 10px;background:rgba(74,124,89,.10);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:var(--green-mid);" title="Session splitten">✂️</button>
-            <button onclick="editSess('${s.id}')" style="padding:6px 10px;background:rgba(74,124,89,.15);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:var(--green-deep);">✏️</button>
-            <button onclick="delSessFromDetail('${s.id}','${dateKey}')" style="padding:6px 10px;background:rgba(200,60,60,.12);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:#c04040;">🗑️</button>
+            <button onclick="splitSession('${s.id}','${dateKey}')" style="padding:6px;width:32px;height:32px;background:var(--salbei);border:none;border-radius:99px;cursor:pointer;color:var(--tanne);display:inline-flex;align-items:center;justify-content:center;" title="Session splitten"><svg class="ic" style="width:14px;height:14px;"><use href="#i-split"/></svg></button>
+            <button onclick="editSess('${s.id}')" style="padding:6px;width:32px;height:32px;background:var(--salbei);border:none;border-radius:99px;cursor:pointer;color:var(--tanne);display:inline-flex;align-items:center;justify-content:center;" title="Bearbeiten"><svg class="ic" style="width:14px;height:14px;"><use href="#i-edit"/></svg></button>
+            <button onclick="delSessFromDetail('${s.id}','${dateKey}')" style="padding:6px;width:32px;height:32px;background:var(--rose);border:none;border-radius:99px;cursor:pointer;color:var(--rose-t);display:inline-flex;align-items:center;justify-content:center;" title="Löschen"><svg class="ic" style="width:14px;height:14px;"><use href="#i-trash"/></svg></button>
           </div>
         </div>
         <div style="padding:0;">${catchRows}</div>
@@ -7631,35 +7688,36 @@ async function openDayDetail(dateKey){
   }
 
   if(isSkunked&&!sessionsHtml.trim()){
-    sessionsHtml=`<div style="text-align:center;padding:28px;color:var(--text-light);">🪝 Schneider – kein Fang</div>`;
+    sessionsHtml=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-skunk"/></svg></div><div class="empty-t">Schneider</div><div class="empty-s">Kein Fang an diesem Tag</div></div>`;
   }
+
+  // v56 POLISH: Page-Header-Title + Sub setzen
+  const dateLabelFull=`${fmtDow(dateKey)}, ${parseInt(dy)}. ${MON_FULL[parseInt(mo)-1]} ${dateKey.split('-')[0]}`;
+  const titleEl=document.getElementById('dd-page-title');
+  const subEl=document.getElementById('dd-page-sub');
+  if(titleEl)titleEl.textContent=dateLabelFull;
+  if(subEl)subEl.textContent=`${waterLabel}${timeSpan&&timeSpan!=='–'?' · '+timeSpan:''}`;
 
   const body=document.getElementById('dd-body');
   body.innerHTML=`
-    <div class="dd-hero-v16">
-      <button class="dd-hero-v16-close" onclick="closeDayDetail()" aria-label="Schließen">✕</button>
-      <div class="dd-hero-v16-inner">
-        <div class="dd-hero-v16-date">${fmtDow(dateKey)}, ${parseInt(dy)}. ${MON_FULL[parseInt(mo)-1]} ${dateKey.split('-')[0]}</div>
-        <div class="dd-hero-v16-water">${waterLabel}</div>
-        <div style="display:flex;align-items:flex-end;gap:16px;margin-top:4px;">
-          <div style="flex:1;min-width:0;">
-            <div class="dd-hero-v16-time">${timeSpan}</div>
-          </div>
-          <div style="text-align:right;flex-shrink:0;padding-bottom:2px;">
-            <div class="dd-hero-v16-cnt">${isSkunked?'–':totalCnt}</div>
-            <div class="dd-hero-v16-cnt-lbl">${isSkunked?'Schneider':'Fänge'}</div>
-          </div>
-        </div>
+    <!-- v56 POLISH: Stats-Card (Tanne mit Gold-Counter) statt grünem Hero -->
+    <div class="dd-stats-card">
+      <div class="dd-stats-info">
+        <div class="dd-stats-time"><svg class="ic"><use href="#i-clock"/></svg>${timeSpan}</div>
+        ${!isSkunked?`<div class="dd-stats-row">
+          <div class="dd-stats-stat"><div class="dd-stats-stat-val">${avgLen}<span style="font-size:11px;font-weight:500;color:rgba(255,255,255,.55);margin-left:1px;">cm</span></div><div class="dd-stats-stat-lbl">Ø Länge</div></div>
+          <div class="dd-stats-stat"><div class="dd-stats-stat-val">${maxLen}<span style="font-size:11px;font-weight:500;color:rgba(255,255,255,.55);margin-left:1px;">cm</span></div><div class="dd-stats-stat-lbl">Rekord</div></div>
+          <div class="dd-stats-stat"><div class="dd-stats-stat-val">${takenCnt}</div><div class="dd-stats-stat-lbl">Entnommen</div></div>
+        </div>`:''}
       </div>
-      ${!isSkunked?`<div class="dd-hero-v16-stats">
-        <div class="dd-hero-v16-stat"><div class="dd-hero-v16-stat-val">${avgLen}cm</div><div class="dd-hero-v16-stat-lbl">Ø Länge</div></div>
-        <div class="dd-hero-v16-stat"><div class="dd-hero-v16-stat-val">${maxLen}cm</div><div class="dd-hero-v16-stat-lbl">Rekord</div></div>
-        <div class="dd-hero-v16-stat"><div class="dd-hero-v16-stat-val">${takenCnt}</div><div class="dd-hero-v16-stat-lbl">Entnommen</div></div>
-      </div>`:''}
+      <div class="dd-stats-cnt-wrap">
+        <div class="dd-stats-cnt">${isSkunked?'–':totalCnt}</div>
+        <div class="dd-stats-cnt-lbl">${isSkunked?'Schneider':totalCnt===1?'Fang':'Fänge'}</div>
+      </div>
     </div>
     <div class="dd-body-pad">
     ${wxHtml}
-    <div class="slbl" style="padding-left:16px;">Fänge</div>
+    <div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#f-default"/></svg>Fänge</div>
     ${sessionsHtml}
     </div>`;
 
@@ -8661,7 +8719,7 @@ function showDetail(id,returnPage){
       ${s.skunked&&!s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:14px;font-weight:600;">🪝 Schneider</div>`:!s.skunked?`<div class="sg3" style="grid-template-columns:repeat(3,1fr);"><div class="sm"><div class="sv">${_totalCatchCount(s.catches)}</div><div class="sl">Fänge</div></div><div class="sm"><div class="sv">${avgL}cm</div><div class="sl">Ø Länge</div></div><div class="sm"><div class="sv">${maxL}cm</div><div class="sl">Rekord</div></div></div>`:''}
     </div>`;
   const body=document.getElementById('detail-body');
-  if(s.skunked||!s.catches.length){body.innerHTML=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-hook"/></svg></div><div class="empty-t">Kein Fang</div></div><div style="padding:0 2px;display:flex;flex-direction:column;gap:10px;">${!s.lat?`<button class="btn" onclick="_openSessGpsMap('${s.id}')" style="background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);">📍 Standort nachtragen</button>`:''}<button class="btn" onclick="_patchedEditSess('${s.id}')">✏️ Bearbeiten</button><button class="btn danger" onclick="delSess('${s.id}')">Löschen</button></div>`;return;}
+  if(s.skunked||!s.catches.length){body.innerHTML=`<div class="empty"><div class="empty-ico">🪝</div><div class="empty-t">Kein Fang</div></div><div style="padding:0 2px;display:flex;flex-direction:column;gap:10px;">${!s.lat?`<button class="btn" onclick="_openSessGpsMap('${s.id}')" style="background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);">📍 Standort nachtragen</button>`:''}<button class="btn" onclick="_patchedEditSess('${s.id}')">✏️ Bearbeiten</button><button class="btn danger" onclick="delSess('${s.id}')">Löschen</button></div>`;return;}
   // AP5: Wetter-Sektion für Session-Detail (historisch via API)
   let wxDetailHtml='';
   if(s.pressure||s.windSpeed!=null||s.temp!=null){
@@ -8902,7 +8960,7 @@ function rndrStats(){
     const actEl=document.getElementById('stats-hdr-actions');
     if(subEl)subEl.textContent='Noch keine Daten';
     if(actEl)actEl.innerHTML='';
-    el.innerHTML=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-stats"/></svg></div><div class="empty-t">Noch keine Daten</div><div class="empty-s">Erfasse Sessionen um Statistiken zu sehen.</div></div>`;
+    el.innerHTML=`<div class="empty"><div class="empty-ico">📊</div><div class="empty-t">Noch keine Daten</div><div class="empty-s">Erfasse Sessionen um Statistiken zu sehen.</div></div>`;
     return;
   }
 
@@ -8981,7 +9039,7 @@ function rndrStats(){
 
     <!-- Fair-Ranking (nur für Raubfisch-Angler) -->
     ${scored.length&&(profile?.angeltyp||'Allround')==='Raubfisch'?`
-    <div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--gold);"><use href="#i-trophy"/></svg>Fair-Ranking</div>
+    <div class="slbl">🏅 Fair-Ranking</div>
     <div class="mcard" style="margin-bottom:14px;">
       ${scored.map((c,i)=>{const sd=filtered.find(s=>s.catches.some(x=>x.type===c.type&&x.length===c.length&&x.time===c.time));return`<div class="mrow"><div class="mi">${medals[i]}</div><div class="minfo"><div class="mn">${c.type} · ${c.length}cm</div><div class="md">${sd?fmtDate(sd.date)+' · '+sd.water+(sd.spot?' · '+sd.spot:''):''}</div></div><div class="msc"><div class="msv">${c.fS}</div><div class="msl">Punkte</div></div></div>`;}).join('')}
     </div>`:''}
@@ -9007,7 +9065,7 @@ function rndrStats(){
       if(!goals.length)return'';
       const yr=_statSeason==='year'?String(curYear):_statSeason;
       const gCatches=_statSeason==='all'?allC:sessions.filter(s=>s.date?.startsWith(yr)).flatMap(s=>s.catches);
-      return`<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-target"/></svg>Saisonziele</div><div class="goal-grid">${goals.map(g=>_goalCardHtml(g,gCatches,true,parseInt(yr))).join('')}</div>`;
+      return`<div class="slbl">🎯 Saisonziele</div><div class="goal-grid">${goals.map(g=>_goalCardHtml(g,gCatches,true,parseInt(yr))).join('')}</div>`;
     })()}
 
     <!-- CTA: Weitere Statistiken (Erfolgsquote + Donut + Ziele) -->
@@ -9081,7 +9139,7 @@ function _renderMoreStats(){
   if(goals.length){
     if(isYear){
       // Saison-Ansicht: nur Fänge des aktuellen Jahres gegen Ziele
-      goalsHtml = `<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-target"/></svg>Saisonziele ${curYear}</div><div class="goal-grid">`;
+      goalsHtml = `<div class="slbl">🎯 Saisonziele ${curYear}</div><div class="goal-grid">`;
       goals.forEach(g => {
         const targetYear = g.year || curYear;
         const gCatches = sessions
@@ -9092,7 +9150,7 @@ function _renderMoreStats(){
       goalsHtml += `</div>`;
     } else {
       // Gesamt-Ansicht: Ziele nach ihrem eigenen Jahr gruppiert
-      goalsHtml = `<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-target"/></svg>Historische Zielerfüllung</div>`;
+      goalsHtml = `<div class="slbl">🎯 Historische Zielerfüllung</div>`;
 
       const goalYears = [...new Set(goals.map(g => g.year || curYear))];
       const sessionYears = [...new Set(sessions.map(s => s.date?.slice(0,4)).filter(Boolean))];
@@ -9114,13 +9172,13 @@ function _renderMoreStats(){
           });
           goalsHtml += `</div></div>`;
         });
-        if(goalsHtml === `<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-target"/></svg>Historische Zielerfüllung</div>`){
+        if(goalsHtml === `<div class="slbl">🎯 Historische Zielerfüllung</div>`){
           goalsHtml += `<div class="card" style="text-align:center;padding:16px;color:var(--text-light);font-size:12px;">Ziele ohne Jahres-Zuordnung. Lege neue Ziele an um sie hier zu sehen.</div>`;
         }
       }
     }
   } else {
-    goalsHtml = `<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-target"/></svg>Saisonziele</div>
+    goalsHtml = `<div class="slbl">🎯 Saisonziele</div>
     <div class="card" style="text-align:center;padding:20px;color:var(--text-light);">
       <div style="font-size:28px;margin-bottom:8px;">🎯</div>
       <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Noch keine Ziele definiert</div>
@@ -9454,7 +9512,7 @@ function openFsHours(){
   const topW=Object.entries(byWater).sort((a,b)=>b[1]-a[1]).slice(0,6);
   const maxW=topW[0]?.[1]||1;
   if(!Object.keys(byMonth).length){
-    document.getElementById('fs-hours-content').innerHTML=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-clock"/></svg></div><div class="empty-t">Noch keine Zeitdaten</div><div class="empty-s">Trage bei deiner nächsten Session Start- und Endzeit ein.</div></div>`;
+    document.getElementById('fs-hours-content').innerHTML=`<div class="empty"><div class="empty-ico">⏱️</div><div class="empty-t">Noch keine Zeitdaten</div><div class="empty-s">Trage bei deiner nächsten Session Start- und Endzeit ein.</div></div>`;
     return;
   }
   document.getElementById('fs-hours-content').innerHTML=`
@@ -9566,7 +9624,7 @@ function openFsBait(bait){
   document.getElementById('fs-bait-meta').textContent=`${rows.length} Fänge mit ${bait}`;
  
   if(!rows.length){
-    document.getElementById('fs-bait-content').innerHTML=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-hook"/></svg></div><div class="empty-t">Keine Fänge mit ${bait}</div><div class="empty-s">Sobald du Fänge mit diesem Köder loggst, erscheinen hier Details und Keywords.</div></div>`;
+    document.getElementById('fs-bait-content').innerHTML=`<div class="empty"><div class="empty-ico">🪝</div><div class="empty-t">Keine Fänge mit ${bait}</div><div class="empty-s">Sobald du Fänge mit diesem Köder loggst, erscheinen hier Details und Keywords.</div></div>`;
     return;
   }
   // Keyword analysis from notes
@@ -11768,15 +11826,7 @@ function calcHrs(s,e){
   const mins=_calcMins(s,e);
   return mins?mins/60:0;
 }
-function showToast(ico,msg,isErr=false){
-  // v56: Akzeptiert sowohl Emoji (legacy) als auch SVG-String (neu)
-  const icoEl=document.getElementById('toast-ico');
-  if(ico&&ico.trim().startsWith('<'))icoEl.innerHTML=ico;
-  else icoEl.textContent=ico||'';
-  document.getElementById('toast-msg').textContent=msg;
-  const t=document.getElementById('toast');t.className='toast'+(isErr?' err':'');
-  t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3200);
-}
+function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').textContent=ico;document.getElementById('toast-msg').textContent=msg;const t=document.getElementById('toast');t.className='toast'+(isErr?' err':'');t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3200);}
 
 // ═══════════════════════════════════════════════════════════
 // LIVE SESSION (v40)
@@ -13773,10 +13823,9 @@ async function _openGroupDetail(gId){
   }
   g._unread=0;
   openFs('group-detail');
-  document.getElementById('grp-detail-title').textContent=g.name;
+  document.getElementById('grp-detail-title').textContent=`${g.icon||'🎣'} ${g.name}`;
   const memberCount=g._memberCount||g.members?.length||0;
-  const typeLbl=g.type==='private'?'Privat':g.type==='elite'?'Elite':'Öffentlich';
-  document.getElementById('grp-detail-meta').textContent=`${memberCount} Mitglieder · ${typeLbl}`;
+  document.getElementById('grp-detail-meta').textContent=`${memberCount} Mitglieder · ${g.type==='private'?'🔒 Privat':g.type==='elite'?'⭐ Elite':'🌍 Öffentlich'}`;
   const subnav=document.getElementById('grp-subnav');
   if(subnav)subnav.style.display='';
 
