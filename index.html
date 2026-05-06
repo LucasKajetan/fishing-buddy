@@ -179,36 +179,35 @@ body{
 @keyframes plusTap{0%{transform:scale(1);}40%{transform:scale(1.25);background:#E8B856;}100%{transform:scale(1);background:var(--gold);}}
 .hplus-tap{animation:plusTap .3s ease;}
 
-/* BOTTOM TAB BAR – schwebende Glassmorphism-Pille */
+/* v56 POLISH: BOTTOM TAB BAR – flache Edge-to-Edge-Leiste, konsistent auf allen Seiten */
 .btabs{
   position:absolute;
-  bottom:max(24px, env(safe-area-inset-bottom, 24px));
-  left:12.5%;right:12.5%;width:75%;
-  display:flex;
-  background:rgba(248,245,239,0.85);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-radius:30px;
-  border:1px solid rgba(200,221,208,0.6);
-  box-shadow:0 10px 30px rgba(45,74,53,0.15);
+  bottom:0;left:0;right:0;
+  display:flex;align-items:center;justify-content:space-around;
+  background:#fff;
+  border-top:1px solid var(--line);
   z-index:100;
-  padding:8px 12px;
+  padding:8px 4px max(8px,env(safe-area-inset-bottom,8px));
   flex-shrink:0;
 }
 .btab{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
-  cursor:pointer;padding:6px 4px 2px;border:none;background:transparent;
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;padding:6px 4px;border:none;background:transparent;
   font-family:var(--fa);
-  transition:transform .15s cubic-bezier(.22,1,.36,1),background .1s;
+  transition:color .15s,transform .15s cubic-bezier(.22,1,.36,1);
   -webkit-tap-highlight-color:transparent;
-  border-radius:12px;
-  margin:0 2px;
+  color:var(--grau-lt);
 }
-@keyframes tabTap{0%{transform:scale(1);}35%{transform:scale(.82);}100%{transform:scale(1);}}
+@keyframes tabTap{0%{transform:scale(1);}35%{transform:scale(.88);}100%{transform:scale(1);}}
 .btab:active{animation:tabTap .2s cubic-bezier(.22,1,.36,1);}
-.btab-ico{width:24px;height:24px;color:var(--text-light);transition:color .2s,transform .2s;}
-.btab-lbl{font-size:10px;font-weight:500;color:var(--text-light);letter-spacing:.2px;transition:color .2s,font-weight .1s;}
-.btab.on .btab-ico{color:var(--green-mid);transform:scale(1.1);}
-.btab.on .btab-lbl{color:var(--green-mid);font-weight:700;}
+.btab-ico{width:24px;height:24px;color:currentColor;stroke-width:1.7;transition:color .2s;}
+.btab-lbl{
+  font-family:var(--fa);font-size:10.5px;font-weight:500;
+  color:currentColor;letter-spacing:.01em;
+  transition:color .2s,font-weight .1s;
+}
+.btab.on{color:var(--tanne);}
+.btab.on .btab-lbl{font-weight:600;}
 
 /* ═════════════════════════════════════════════════
    v56 PAGE-HEADER-PATTERN (auf allen Seiten gleich)
@@ -464,24 +463,42 @@ body{
 .photo-lightbox-close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
 @keyframes lbFadeIn{from{opacity:0}to{opacity:1}}
 
-/* Overlay-Header fix */
+/* v56 POLISH: Overlay-Header global an Page-Header-Pattern angeglichen
+   → ALLE bestehenden .fshdr-Header bekommen automatisch den neuen Look:
+   Weiß statt Tanne, Inter Bold Title, grauer Subtitle, Salbei-✕-Pille */
 .fshdr{
-  background:var(--green-deep);padding:16px 20px;color:#fff;
+  background:#fff;padding:14px 16px;color:var(--text-dark);
   display:flex;align-items:center;gap:12px;flex-shrink:0;
-position:relative;}
-.fstitle{font-family:var(--fs);font-size:20px;font-weight:600;flex:1;}
-.fsmeta{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px;}
-
-/* X-Button: immer absolut oben rechts */
-.xbtn{
-  position:absolute;top:14px;right:14px;
-  background:rgba(255,255,255,.18);border:none;color:#fff;
-  width:34px;height:34px;border-radius:50%;cursor:pointer;
-  font-size:17px;display:flex;align-items:center;justify-content:center;
-  z-index:10;flex-shrink:0;
-  transition:background .15s;
+  position:relative;
+  border-bottom:1px solid var(--line);
 }
-.xbtn:hover{background:rgba(255,255,255,.32);}
+.fstitle{
+  font-family:var(--fa);font-size:20px;font-weight:600;flex:1;
+  color:var(--text-dark);letter-spacing:-.02em;line-height:1.15;
+}
+.fsmeta{
+  font-family:var(--fa);font-size:11.5px;color:var(--grau);
+  margin-top:2px;font-weight:400;
+}
+
+/* X-Button als Salbei-Pille (statt weißer Glasmorphism) */
+.xbtn{
+  position:absolute;top:11px;right:14px;
+  background:var(--salbei);border:none;color:var(--tanne);
+  width:34px;height:34px;border-radius:50%;cursor:pointer;
+  font-size:14px;display:flex;align-items:center;justify-content:center;
+  z-index:10;flex-shrink:0;
+  transition:background .15s;font-family:var(--fa);font-weight:500;
+}
+.xbtn:hover{background:#DCE7DF;}
+.xbtn:active{background:#DCE7DF;transform:scale(.94);}
+
+/* Spezial: Overlays die einen farbigen Header behalten sollen (z.B. Live-Catch rot) */
+.fshdr.fshdr-tinted{color:#fff;border-bottom:none;}
+.fshdr.fshdr-tinted .fstitle{color:#fff;}
+.fshdr.fshdr-tinted .fsmeta{color:rgba(255,255,255,.7);}
+.fshdr.fshdr-tinted .xbtn{background:rgba(255,255,255,.18);color:#fff;}
+.fshdr.fshdr-tinted .xbtn:hover{background:rgba(255,255,255,.32);}
 
 /* Overlay-Scroll-Body — v56: page-hdr & page-hdr-tabs auch ausschließen */
 .fsov > div:not(.fshdr):not(.fbar):not(.page-hdr):not(.page-hdr-tabs){
@@ -1040,6 +1057,259 @@ position:relative;}
 }
 .st-tile-hint .ic{width:11px;height:11px;stroke-width:2;color:var(--forest);}
 
+/* v56 Phase 8a: Statistik-Filter-Pillen (Zeitraum + Fischart) */
+.stat-filters{
+  display:flex;flex-direction:column;gap:8px;
+  padding:0 2px;margin-bottom:14px;
+}
+.stat-filter-row{
+  display:flex;align-items:center;gap:8px;
+}
+.stat-filter-row-lbl{
+  font-family:var(--fa);font-size:10px;font-weight:600;
+  color:var(--grau);text-transform:uppercase;letter-spacing:.07em;
+  width:64px;flex-shrink:0;
+}
+.stat-filter-pills{
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;flex:1;
+}
+.stat-filter-pills::-webkit-scrollbar{display:none;}
+.stat-filter-pill{
+  flex:0 0 auto;padding:7px 14px;
+  background:#fff;border:1px solid var(--line);
+  border-radius:99px;font-family:var(--fa);font-size:12px;font-weight:500;
+  color:var(--grau);cursor:pointer;
+  transition:all .15s;-webkit-tap-highlight-color:transparent;
+  white-space:nowrap;
+}
+.stat-filter-pill:active{transform:scale(.96);}
+.stat-filter-pill.on{
+  background:var(--tanne);color:#fff;border-color:var(--tanne);font-weight:600;
+}
+
+/* KPI-Reihe in 4 Spalten (Auto-Fallback auf 2x2 bei wenig Platz) */
+.stat-kpi-row{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;
+  margin-bottom:14px;padding:0 2px;
+}
+@media (max-width:380px){
+  .stat-kpi-row{grid-template-columns:repeat(2,1fr);gap:8px;}
+}
+.stat-kpi{
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:11px 6px 10px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+  min-width:0;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.stat-kpi:active{transform:scale(.97);}
+.stat-kpi:hover{box-shadow:0 4px 12px rgba(31,61,46,.08);}
+.stat-kpi-val{
+  font-family:var(--fa);font-size:22px;font-weight:600;
+  color:var(--text-dark);letter-spacing:-.025em;line-height:1.05;
+}
+.stat-kpi-val .unit{font-size:11px;font-weight:500;color:var(--grau);margin-left:1px;}
+.stat-kpi-val.compact{font-size:18px;}
+.stat-kpi-lbl{
+  font-family:var(--fa);font-size:9px;font-weight:600;
+  color:var(--grau);text-transform:uppercase;letter-spacing:.06em;
+}
+.stat-kpi-cmp{
+  font-family:var(--fa);font-size:9.5px;font-weight:600;
+  margin-top:2px;
+}
+.stat-kpi-cmp.up{color:#2D6A4F;}
+.stat-kpi-cmp.down{color:var(--rose-t);}
+.stat-kpi-cmp.flat{color:var(--grau-lt);}
+
+/* Details-Action-Card */
+.stat-details-action{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:14px 16px;margin:0 2px 12px;
+  display:flex;align-items:center;gap:12px;cursor:pointer;
+  transition:transform .15s,box-shadow .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.stat-details-action:active{transform:scale(.99);}
+.stat-details-action:hover{box-shadow:0 4px 14px rgba(31,61,46,.08);}
+.stat-details-ico{
+  width:38px;height:38px;border-radius:11px;background:var(--salbei);
+  color:var(--tanne);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.stat-details-ico .ic{width:20px;height:20px;}
+.stat-details-info{flex:1;min-width:0;}
+.stat-details-title{
+  font-family:var(--fa);font-size:14px;font-weight:600;color:var(--text-dark);
+  letter-spacing:-.01em;
+}
+.stat-details-sub{
+  font-family:var(--fa);font-size:11.5px;color:var(--grau);
+  font-weight:400;margin-top:2px;
+}
+.stat-details-arrow{color:var(--grau-lt);flex-shrink:0;}
+
+/* Insight-Banner */
+.stat-insight{
+  background:linear-gradient(135deg,var(--gold-soft) 0%,#fff 65%);
+  border:1px solid rgba(214,162,58,.22);border-radius:16px;
+  padding:14px 16px;margin:0 2px 12px;display:flex;gap:12px;align-items:flex-start;
+}
+.stat-insight-ico{
+  width:34px;height:34px;border-radius:10px;background:rgba(214,162,58,.18);
+  color:var(--gold);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.stat-insight-ico .ic{width:18px;height:18px;}
+.stat-insight-info{flex:1;min-width:0;}
+.stat-insight-lbl{
+  font-family:var(--fa);font-size:10px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:#8B6420;margin-bottom:3px;
+}
+.stat-insight-text{
+  font-family:var(--fa);font-size:12.5px;color:var(--text-dark);
+  line-height:1.5;font-weight:400;
+}
+
+/* v56 Phase 8b: Statistik-Details-Page Cards (Tanne-Grid analog Screenshot 4) */
+.detail-section{margin:0 2px 14px;}
+.detail-section-lbl{
+  font-family:var(--fa);font-size:11px;font-weight:600;
+  color:var(--grau);text-transform:uppercase;letter-spacing:.08em;
+  margin:14px 4px 8px;display:flex;align-items:center;gap:6px;
+}
+.detail-section-lbl .ic{width:13px;height:13px;color:var(--forest);}
+
+/* Tanne-Card-Container */
+.detail-card{
+  background:linear-gradient(135deg,var(--tanne) 0%,#2A4D38 100%);
+  color:#fff;border-radius:18px;padding:16px 18px;
+  position:relative;overflow:hidden;
+}
+.detail-card::after{
+  content:'';position:absolute;right:-30px;top:-20px;width:140px;height:140px;
+  background:radial-gradient(circle,rgba(214,162,58,.14) 0%,transparent 70%);
+  pointer-events:none;
+}
+.detail-card-hdr{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:10px;margin-bottom:14px;position:relative;z-index:1;
+}
+.detail-card-title{
+  font-family:var(--fa);font-size:14px;font-weight:600;
+  color:#fff;letter-spacing:-.01em;
+}
+.detail-card-sub{
+  font-family:var(--fa);font-size:11px;color:rgba(255,255,255,.65);
+  font-weight:400;margin-top:2px;
+}
+.detail-card-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.15);
+  padding:5px 11px;border-radius:99px;font-family:var(--fa);
+  font-size:11px;font-weight:500;color:#fff;
+}
+.detail-card-pill .ic{width:11px;height:11px;}
+
+/* Sub-Cards innerhalb Tanne-Card */
+.detail-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;position:relative;z-index:1;}
+.detail-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative;z-index:1;}
+.detail-grid-mixed{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative;z-index:1;}
+.detail-mini{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+  border-radius:12px;padding:11px 10px;text-align:left;
+}
+.detail-mini-lbl{
+  font-family:var(--fa);font-size:9.5px;font-weight:600;
+  color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.06em;
+  margin-bottom:6px;
+}
+.detail-mini-val{
+  font-family:var(--fa);font-size:22px;font-weight:600;
+  color:#fff;letter-spacing:-.025em;line-height:1;
+}
+.detail-mini-val.compact{font-size:18px;}
+.detail-mini-val .unit{font-size:11px;font-weight:500;color:rgba(255,255,255,.55);margin-left:1px;}
+.detail-mini-cmp{
+  font-family:var(--fa);font-size:11px;font-weight:600;
+  margin-top:4px;
+}
+.detail-mini-cmp.up{color:#7CD9A6;}
+.detail-mini-cmp.down{color:#F0AABB;}
+
+/* Insight-Banner inside detail-card */
+.detail-insight{
+  background:rgba(214,162,58,.12);border:1px solid rgba(214,162,58,.25);
+  border-radius:12px;padding:11px 14px;margin-top:12px;
+  display:flex;gap:10px;align-items:flex-start;position:relative;z-index:1;
+}
+.detail-insight .ic-wrap{
+  flex-shrink:0;width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;color:var(--gold);
+}
+.detail-insight .ic-wrap .ic{width:16px;height:16px;}
+.detail-insight-text{
+  font-family:var(--fa);font-size:12px;color:rgba(255,255,255,.92);
+  line-height:1.5;
+}
+.detail-insight-text strong{color:#fff;}
+
+/* Aktivitätszeiten-Pillen */
+.detail-time-pills{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
+  margin-bottom:12px;position:relative;z-index:1;
+}
+.detail-time-pill{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+  border-radius:12px;padding:11px 6px;text-align:center;
+}
+.detail-time-pill.peak{
+  background:rgba(214,162,58,.20);border-color:rgba(214,162,58,.45);
+}
+.detail-time-pill-name{
+  font-family:var(--fa);font-size:10px;font-weight:600;
+  color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.05em;
+}
+.detail-time-pill.peak .detail-time-pill-name{color:var(--gold);}
+.detail-time-pill-time{
+  font-family:var(--fa);font-size:10px;font-weight:500;
+  color:rgba(255,255,255,.55);margin-top:2px;
+}
+.detail-time-pill-icon{margin-top:6px;color:rgba(255,255,255,.5);}
+.detail-time-pill-icon .ic{width:18px;height:18px;}
+.detail-time-pill.peak .detail-time-pill-icon{color:var(--gold);}
+.detail-time-pill-lvl{
+  font-family:var(--fa);font-size:9.5px;font-weight:600;
+  color:rgba(255,255,255,.55);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;
+}
+.detail-time-pill.peak .detail-time-pill-lvl{color:var(--gold);}
+
+/* Donut für Saisonziel */
+.detail-donut-wrap{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;
+}
+.detail-donut-wrap svg{width:80px;height:80px;}
+.detail-donut-wrap .donut-pct{
+  font-family:var(--fa);font-size:18px;font-weight:600;color:#fff;letter-spacing:-.02em;
+  position:absolute;
+}
+.detail-donut-info{text-align:center;margin-top:4px;}
+.detail-donut-info-lbl{font-family:var(--fa);font-size:9.5px;font-weight:500;color:rgba(255,255,255,.55);}
+
+/* Mini-Sparkline */
+.detail-sparkline{height:36px;margin-top:6px;}
+.detail-sparkline svg{width:100%;height:100%;display:block;}
+
+/* Activity-Chart in Detail-Card */
+.detail-activity-wrap{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);
+  border-radius:12px;padding:10px;margin-top:10px;position:relative;z-index:1;
+}
+.detail-activity-svg{height:100px;width:100%;}
+
 /* Erfolgsquote Progress-Bar */
 .st-rate-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
 .st-rate-num{font-size:32px;font-weight:700;color:var(--green-deep);}
@@ -1523,83 +1793,16 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 
 /* Wetter-Kacheln im Body */
 .dd-wx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-/* v56 POLISH: Bedingungen-Kacheln als fc-square-Look (konsistent mit Vorhersage) */
-.dd-wx-tile{
-  background:#fff;border:1px solid var(--line);border-radius:16px;
-  padding:12px 6px 10px;aspect-ratio:1/1;text-align:center;
-  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
-  min-width:0;overflow:hidden;
-  cursor:pointer;transition:transform .15s,box-shadow .2s;
-}
-.dd-wx-tile:active{transform:scale(.97);}
-.dd-wx-tile:hover{box-shadow:0 6px 16px rgba(31,61,46,.10);}
-.dd-wx-ico{
-  font-size:20px;line-height:1;margin-bottom:0;
-  color:var(--forest);
-  display:flex;align-items:center;justify-content:center;
-}
-.dd-wx-ico .ic{width:22px;height:22px;stroke-width:1.6;}
-.dd-wx-val{
-  font-family:var(--fa);font-size:22px;font-weight:600;
-  color:var(--text-dark);letter-spacing:-.025em;line-height:1.05;
-}
-.dd-wx-val.compact{font-size:18px;}
-.dd-wx-val .unit{font-size:11px;font-weight:500;color:var(--grau);margin-left:1px;}
-.dd-wx-lbl{
-  font-family:var(--fa);font-size:9.5px;font-weight:600;
-  text-transform:uppercase;letter-spacing:.07em;color:var(--tanne);
-}
-
-/* v56 POLISH: Session-Stats-Hero-Card (Tanne mit Gold-Counter) */
-.dd-stats-card{
-  background:linear-gradient(135deg,var(--tanne) 0%,#2A4D38 100%);
-  border-radius:18px;padding:16px 18px;margin:0 2px 12px;
-  display:flex;align-items:center;gap:14px;
-  position:relative;overflow:hidden;color:#fff;
-}
-.dd-stats-card::after{
-  content:'';position:absolute;right:-30px;top:-20px;width:140px;height:140px;
-  background:radial-gradient(circle,rgba(214,162,58,.18) 0%,transparent 70%);
-  pointer-events:none;
-}
-.dd-stats-info{flex:1;position:relative;z-index:1;}
-.dd-stats-time{
-  font-family:var(--fa);font-size:11px;font-weight:500;
-  color:rgba(255,255,255,.75);margin-bottom:6px;
-  display:flex;align-items:center;gap:5px;
-}
-.dd-stats-time .ic{width:11px;height:11px;}
-.dd-stats-row{
-  display:flex;gap:14px;margin-top:8px;
-}
-.dd-stats-stat{flex:1;}
-.dd-stats-stat-val{
-  font-family:var(--fa);font-size:14px;font-weight:600;color:#fff;letter-spacing:-.01em;
-}
-.dd-stats-stat-lbl{
-  font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  color:rgba(255,255,255,.6);margin-top:1px;
-}
-.dd-stats-cnt-wrap{
-  text-align:center;flex-shrink:0;position:relative;z-index:1;
-  padding-left:6px;
-}
-.dd-stats-cnt{
-  font-family:var(--fa);font-size:36px;font-weight:600;color:var(--gold);
-  letter-spacing:-.025em;line-height:1;
-}
-.dd-stats-cnt-lbl{
-  font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  color:rgba(255,255,255,.6);margin-top:3px;
-}
+.dd-wx-tile{background:#fff;border-radius:var(--rs);padding:10px;box-shadow:var(--sh-sm);text-align:center;border:1px solid rgba(200,221,208,.3);}
+.dd-wx-ico{font-size:20px;margin-bottom:4px;}
+.dd-wx-val{font-size:14px;font-weight:700;color:var(--text-dark);}
 .dd-wx-lbl{font-size:10px;color:var(--text-light);margin-top:2px;}
 /* Session-Trennlinie im Overlay */
 
 /* Catch-Zeile im Overlay */
 .dd-catch-row{display:flex;align-items:center;padding:11px 12px;border-bottom:1px solid rgba(200,221,208,.3);gap:10px;}
 .dd-catch-row:last-child{border-bottom:none;}
-.dd-catch-photo{width:40px;height:40px;border-radius:10px;background:var(--salbei);color:var(--tanne);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;}
-.dd-catch-photo .ic{width:26px;height:18px;stroke-width:1.6;}
+.dd-catch-photo{width:40px;height:40px;border-radius:9px;background:var(--green-mist);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;}
 .dd-catch-photo img{width:100%;height:100%;object-fit:cover;}
 .dd-catch-info{flex:1;min-width:0;}
 .dd-catch-name{font-size:14px;font-weight:600;color:var(--text-dark);}
@@ -1705,7 +1908,12 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .burg-slbl{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-light);margin-bottom:8px;padding-left:4px;}
 .bitem{display:flex;align-items:center;gap:12px;padding:13px 10px;border-radius:var(--rs);cursor:pointer;transition:background .15s;border:none;background:transparent;width:100%;font-family:var(--fa);text-align:left;}
 .bitem:hover{background:var(--green-mist);}
-.bitem-ico{font-size:20px;width:26px;text-align:center;flex-shrink:0;}
+.bitem-ico{
+  font-size:20px;width:34px;height:34px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:10px;background:var(--salbei);color:var(--tanne);
+}
+.bitem-ico .ic{width:18px;height:18px;stroke-width:1.7;}
 .bitem-txt{font-size:14px;font-weight:600;color:var(--text-dark);}
 .bitem-sub{font-size:11px;color:var(--text-light);margin-top:1px;}
 .burg-ver{padding:12px;font-size:11px;color:var(--text-light);text-align:center;}
@@ -1845,9 +2053,14 @@ select.obif{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3
 .fav-btn-note{background:var(--teal);color:var(--teal-t);font-size:11px;padding:4px 9px;}
 input[type=file]{display:none;}
 .empty{text-align:center;padding:50px 20px;}
-.empty-ico{font-size:52px;margin-bottom:14px;opacity:.45;}
-.empty-t{font-size:16px;font-weight:600;color:var(--text-mid);margin-bottom:6px;}
-.empty-s{font-size:13px;color:var(--text-light);line-height:1.6;}
+.empty-ico{
+  font-size:52px;margin-bottom:14px;opacity:.45;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:64px;height:64px;border-radius:18px;background:var(--salbei);color:var(--tanne);
+}
+.empty-ico .ic{width:32px;height:32px;stroke-width:1.5;}
+.empty-t{font-family:var(--fa);font-size:16px;font-weight:600;color:var(--text-mid);margin-bottom:6px;letter-spacing:-.01em;}
+.empty-s{font-family:var(--fa);font-size:13px;color:var(--text-light);line-height:1.6;}
 
 /* ═══ LOGIN OVERLAY ═══ */
 .login-ov{position:absolute;inset:0;z-index:200;background:var(--green-deep);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;transition:opacity .4s;}
@@ -2079,26 +2292,103 @@ input[type=file]{display:none;}
 .feed-date-sep::before,.feed-date-sep::after{content:'';position:absolute;top:50%;width:28%;height:1px;background:var(--cream-dark);}
 .feed-date-sep::before{left:0;}.feed-date-sep::after{right:0;}
 
-/* ── Catch Card (Social) ── */
-.catch-card{border-radius:var(--r);overflow:hidden;background:#fff;box-shadow:var(--sh-md);position:relative;}
-.catch-card-hero{height:180px;background-size:cover;background-position:center;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;}
-.catch-card-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,0) 50%);}
-.catch-card-hero-no{height:0;padding:0;}
-.catch-card-hero *{position:relative;z-index:2;}
-.catch-card-hero-fish{font-size:22px;font-weight:700;color:#fff;font-family:var(--fs);}
-.catch-card-hero-specs{font-size:12px;color:rgba(255,255,255,.85);margin-top:2px;}
-.catch-card-body{padding:14px;}
-.catch-card-user{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.catch-card-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700;flex-shrink:0;}
-.catch-card-uname{font-size:12px;font-weight:600;color:var(--text-dark);}
-.catch-card-utime{font-size:10px;color:var(--text-light);}
-.catch-card-bait{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
-.catch-card-chip{padding:4px 10px;background:var(--green-mist);border-radius:20px;font-size:11px;color:var(--green-deep);font-weight:600;}
-.catch-card-actions{display:flex;align-items:center;gap:0;border-top:1px solid var(--cream-dark);margin-top:10px;padding-top:10px;}
-.catch-card-act{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:6px;border:none;background:none;font-size:12px;font-weight:600;color:var(--text-mid);cursor:pointer;font-family:var(--fa);border-radius:8px;transition:background .15s;}
-.catch-card-act:hover{background:var(--cream-dark);}
-.catch-card-act .cc-ico{font-size:16px;}
-.catch-card-act.liked .cc-ico{color:#e74c3c;}
+/* v56 Phase 8d: Catch Card – Hero-Moment-Look mit Foto + Hard-Fact-Chips */
+.catch-card{
+  border-radius:18px;overflow:hidden;background:#fff;
+  border:1px solid var(--line);position:relative;
+  transition:transform .15s,box-shadow .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.catch-card:active{transform:scale(.99);}
+.catch-card:hover{box-shadow:0 6px 18px rgba(31,61,46,.12);}
+/* Foto-Hero (groß wenn Foto vorhanden) */
+.catch-card-photo{
+  position:relative;width:100%;aspect-ratio:4/3;
+  background:#1A2B20;overflow:hidden;
+}
+.catch-card-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.catch-card-photo::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 45%);
+  pointer-events:none;
+}
+.catch-card-photo-overlay{
+  position:absolute;left:16px;right:16px;bottom:14px;z-index:2;
+  color:#fff;font-family:var(--fa);
+}
+.catch-card-photo-fish{
+  font-size:13px;font-weight:600;letter-spacing:.05em;
+  text-transform:uppercase;opacity:.9;line-height:1;
+}
+.catch-card-photo-len{
+  font-size:34px;font-weight:600;letter-spacing:-.025em;
+  line-height:1.05;color:var(--gold);margin-top:4px;
+}
+.catch-card-photo-len .unit{font-size:18px;font-weight:500;color:rgba(255,255,255,.85);margin-left:3px;}
+/* Card ohne Foto (kompakt) */
+.catch-card-no-photo{
+  padding:14px 16px 0;
+}
+.catch-card-no-photo .catch-card-photo-fish{
+  color:var(--grau);
+}
+.catch-card-no-photo .catch-card-photo-len{
+  color:var(--gold);
+  font-size:30px;
+}
+.catch-card-no-photo .catch-card-photo-len .unit{color:var(--grau);}
+
+/* Body */
+.catch-card-body{padding:12px 14px 0;}
+.catch-card-user{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.catch-card-avatar{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fa);font-size:12px;color:#fff;font-weight:600;flex-shrink:0;
+  letter-spacing:-.01em;
+}
+.catch-card-user-info{flex:1;min-width:0;}
+.catch-card-uname{font-family:var(--fa);font-size:13px;font-weight:600;color:var(--text-dark);letter-spacing:-.005em;}
+.catch-card-utime{font-family:var(--fa);font-size:11px;color:var(--grau);font-weight:400;margin-top:1px;}
+.catch-card-more{color:var(--grau-lt);}
+.catch-card-more .ic{width:18px;height:18px;}
+
+/* Description */
+.catch-card-desc{
+  font-family:var(--fa);font-size:13px;color:var(--text-mid);
+  line-height:1.5;margin-bottom:10px;font-weight:400;
+}
+
+/* Hard-Fact-Chips: Köder, Wetter, Uhrzeit, Gewässer */
+.catch-card-chips{
+  display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;
+}
+.catch-card-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 11px;background:var(--salbei);border-radius:99px;
+  font-family:var(--fa);font-size:11.5px;font-weight:500;color:var(--tanne);
+  white-space:nowrap;
+}
+.catch-card-chip .ic{width:12px;height:12px;color:var(--forest);stroke-width:1.8;}
+.catch-card-chip .ic-fish{width:18px;height:11px;}
+
+/* Actions: Like + Comment (kein Share/Copy) */
+.catch-card-actions{
+  display:flex;align-items:center;gap:14px;
+  border-top:1px solid var(--line);
+  margin-top:6px;padding:10px 14px;
+}
+.catch-card-act{
+  display:inline-flex;align-items:center;gap:5px;
+  background:none;border:none;cursor:pointer;
+  font-family:var(--fa);font-size:13px;font-weight:500;color:var(--grau);
+  padding:4px 0;transition:color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.catch-card-act:active{transform:scale(.94);}
+.catch-card-act .ic{width:18px;height:18px;stroke-width:1.7;}
+.catch-card-act.liked{color:var(--gold);}
+.catch-card-act.liked .ic{fill:var(--gold);stroke:var(--gold);}
 
 /* ── Live Alert Banner ── */
 .feed-live-alert{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,#1a3522,#2D4A35);border-radius:var(--rs);color:#fff;}
@@ -2869,9 +3159,6 @@ input[type=file]{display:none;}
   <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="13" r="4"/></symbol>
   <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-7z"/></symbol>
   <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="4" cy="18" r="1.5"/></symbol>
-  <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
-  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14M10 11v6M14 11v6"/></symbol>
-  <symbol id="i-split" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M9 6L20 17M9 18L20 7"/></symbol>
   <!-- Bottom-Nav (entsprechen den existierenden btab-Icons) -->
   <symbol id="i-fb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h20M2 12h20M2 18h20"/><circle cx="20" cy="6" r="3" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></symbol>
@@ -2979,9 +3266,9 @@ input[type=file]{display:none;}
 
 <!-- ═══ LIVE SESSION START OVERLAY ═══ -->
 <div class="fsov" id="fs-live-start" role="dialog" aria-modal="true" style="z-index:130;background:#f5f7f5;">
-  <div class="fshdr" style="background:linear-gradient(135deg,var(--green-deep),#3a6b4a);">
-    <div><div class="fstitle" style="color:#fff;">🎣 Live Session starten</div><div class="fsmeta" style="color:rgba(255,255,255,.7);">Echtzeit-Tracking mit GPS</div></div>
-    <button class="xbtn" onclick="closeLiveStartOv()" style="color:#fff;">✕</button>
+  <div class="fshdr fshdr-tinted" style="background:linear-gradient(135deg,var(--tanne),#2A4D38);">
+    <div><div class="fstitle">Live Session starten</div><div class="fsmeta">Echtzeit-Tracking mit GPS</div></div>
+    <button class="xbtn" onclick="closeLiveStartOv()">✕</button>
   </div>
   <div class="fsov-scroll" style="padding:16px;">
     <div class="ls-start-wx" id="ls-start-wx">
@@ -3105,49 +3392,49 @@ input[type=file]{display:none;}
   <div class="burg-panel">
     <div class="burg-hdr">
       <div style="font-size:32px;margin-bottom:8px;">🎣</div>
-      <div class="burg-n" id="burg-name">Fishing Buddy</div>
-      <div class="burg-s" id="burg-sub">v37 · Local-First PWA</div>
+      <div class="burg-n" id="burg-name">Angeln+</div>
+      <div class="burg-s" id="burg-sub">v56 · Local-First PWA</div>
     </div>
     <div class="burg-body">
       <div class="burg-sec">
         <div class="burg-slbl">Profil &amp; Account</div>
-        <button class="bitem" onclick="openProfileEdit();closeBurg()"><span class="bitem-ico">👤</span><div><div class="bitem-txt" id="burg-pname">–</div><div class="bitem-sub" id="burg-psub">Profil bearbeiten</div></div></button>
-        <button class="bitem" onclick="openGoalEdit();closeBurg()"><span class="bitem-ico">🎯</span><div><div class="bitem-txt">Ziele bearbeiten</div><div class="bitem-sub">Saisonziele hinzufügen &amp; löschen</div></div></button>
+        <button class="bitem" onclick="openProfileEdit();closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-users"/></svg></span><div><div class="bitem-txt" id="burg-pname">–</div><div class="bitem-sub" id="burg-psub">Profil bearbeiten</div></div></button>
+        <button class="bitem" onclick="openGoalEdit();closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-target"/></svg></span><div><div class="bitem-txt">Ziele bearbeiten</div><div class="bitem-sub">Saisonziele hinzufügen &amp; löschen</div></div></button>
         <button class="bitem" id="burg-auth-btn" onclick="closeBurg();_sbUser?sbLogout():document.getElementById('login-ov').classList.remove('hidden')">
-          <span class="bitem-ico" id="burg-auth-ico">☁️</span>
+          <span class="bitem-ico" id="burg-auth-ico"><svg class="ic"><use href="#i-cloud"/></svg></span>
           <div><div class="bitem-txt" id="burg-auth-txt">Anmelden / Registrieren</div><div class="bitem-sub" id="burg-auth-sub">Cloud-Sync aktivieren</div></div>
         </button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Gruppen &amp; Social</div>
-        <button class="bitem" onclick="_openGroupHub();closeBurg()"><span class="bitem-ico">👥</span><div><div class="bitem-txt">Meine Gruppen</div><div class="bitem-sub" id="burg-grp-sub">Crews, Feed &amp; Insights</div></div></button>
-        <button class="bitem" onclick="openFs('group-join');closeBurg()"><span class="bitem-ico">🔗</span><div><div class="bitem-txt">Gruppe beitreten</div><div class="bitem-sub">Per Einladungscode</div></div></button>
+        <button class="bitem" onclick="_openGroupHub();closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-crew"/></svg></span><div><div class="bitem-txt">Meine Gruppen</div><div class="bitem-sub" id="burg-grp-sub">Crews, Feed &amp; Insights</div></div></button>
+        <button class="bitem" onclick="openFs('group-join');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-share"/></svg></span><div><div class="bitem-txt">Gruppe beitreten</div><div class="bitem-sub">Per Einladungscode</div></div></button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Spot-Karte</div>
-        <button class="bitem" onclick="showPage('map');closeBurg()"><span class="bitem-ico">🗺️</span><div><div class="bitem-txt">Spot-Karte öffnen</div><div class="bitem-sub">Alle Angelspots auf der Karte</div></div></button>
-        <button class="bitem" onclick="openSpotGpsLink();closeBurg()"><span class="bitem-ico">📌</span><div><div class="bitem-txt">Karte</div><div class="bitem-sub">Spot-Text mit GPS verknüpfen</div></div></button>
+        <button class="bitem" onclick="showPage('map');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-map"/></svg></span><div><div class="bitem-txt">Spot-Karte öffnen</div><div class="bitem-sub">Alle Angelspots auf der Karte</div></div></button>
+        <button class="bitem" onclick="openSpotGpsLink();closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-pin"/></svg></span><div><div class="bitem-txt">Karte</div><div class="bitem-sub">Spot-Text mit GPS verknüpfen</div></div></button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Live Session</div>
         <button class="bitem" id="burg-live-btn" onclick="closeBurg();_liveSession?openLiveOv():startLiveSession()">
-          <span class="bitem-ico" id="burg-live-ico">🔴</span>
+          <span class="bitem-ico" id="burg-live-ico" style="color:#A04A38;"><svg class="ic"><use href="#i-target"/></svg></span>
           <div><div class="bitem-txt" id="burg-live-txt">Live Session starten</div><div class="bitem-sub">Echtzeit-Tracking mit GPS</div></div>
         </button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Daten</div>
         <button class="bitem" onclick="openExp();closeBurg()">
-          <span class="bitem-ico" style="position:relative;">📦<span id="backup-dot" style="display:none;position:absolute;top:-2px;right:-4px;width:8px;height:8px;background:var(--red);border-radius:50%;"></span></span>
+          <span class="bitem-ico" style="position:relative;"><svg class="ic"><use href="#i-share"/></svg><span id="backup-dot" style="display:none;position:absolute;top:-2px;right:-4px;width:8px;height:8px;background:var(--red);border-radius:50%;"></span></span>
           <div><div class="bitem-txt">Backup &amp; Export</div><div class="bitem-sub" id="backup-sub">JSON exportieren / importieren</div></div>
         </button>
-        <button class="bitem" onclick="showBurgSec('storage');closeBurg()"><span class="bitem-ico">💾</span><div><div class="bitem-txt">Speicher-Info</div><div class="bitem-sub" id="burg-storasub">IndexedDB</div></div></button>
+        <button class="bitem" onclick="showBurgSec('storage');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-stats"/></svg></span><div><div class="bitem-txt">Speicher-Info</div><div class="bitem-sub" id="burg-storasub">IndexedDB</div></div></button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Info &amp; Rechtliches</div>
-        <button class="bitem" onclick="showBurgSec('schonzeiten');closeBurg()"><span class="bitem-ico">📋</span><div><div class="bitem-txt">Schonzeiten &amp; Verbände</div><div class="bitem-sub">Links zu Fischereibehörden</div></div></button>
-        <button class="bitem" onclick="showBurgSec('legal');closeBurg()"><span class="bitem-ico">⚖️</span><div><div class="bitem-txt">Impressum &amp; Datenschutz</div><div class="bitem-sub">DSGVO-konform</div></div></button>
-        <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico">⚠️</span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
+        <button class="bitem" onclick="showBurgSec('schonzeiten');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-list"/></svg></span><div><div class="bitem-txt">Schonzeiten &amp; Verbände</div><div class="bitem-sub">Links zu Fischereibehörden</div></div></button>
+        <button class="bitem" onclick="showBurgSec('legal');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-info"/></svg></span><div><div class="bitem-txt">Impressum &amp; Datenschutz</div><div class="bitem-sub">DSGVO-konform</div></div></button>
+        <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-info"/></svg></span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
     <div class="burg-ver">Angeln+ v56 · Editorial Nature · Realtime · PWA</div>
@@ -3481,19 +3768,7 @@ input[type=file]{display:none;}
 </div>
 
 <!-- DAY DETAIL OVERLAY (AP2) -->
-<div class="fsov" id="fs-day-detail" role="dialog" aria-modal="true" aria-label="Tages-Details" style="background:var(--sand);">
-  <!-- v56: Page-Header-Pattern statt v16-Hero -->
-  <div class="page-hdr" id="dd-page-hdr">
-    <button class="page-hdr-back" onclick="closeDayDetail()" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
-    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-water"/></svg></div>
-    <div class="page-hdr-left">
-      <div class="page-hdr-title" id="dd-page-title">Tag</div>
-      <div class="page-hdr-sub" id="dd-page-sub"></div>
-    </div>
-    <div class="page-hdr-actions">
-      <button class="pill-btn icon-only" id="dd-edit-btn" aria-label="Bearbeiten" style="display:none;"><svg class="ic"><use href="#i-info"/></svg></button>
-    </div>
-  </div>
+<div class="fsov" id="fs-day-detail" role="dialog" aria-modal="true" aria-label="Tages-Details">
   <div id="dd-hero-wrap" style="display:none;"></div>
   <div class="fsov-scroll" id="dd-body"></div>
 </div>
@@ -3505,6 +3780,22 @@ input[type=file]{display:none;}
     <button class="xbtn" onclick="closeFs('more-stats')">✕</button>
   </div>
   <div class="fsov-scroll" id="fs-more-body"></div>
+</div>
+
+<!-- v56 Phase 8b: STATS DETAILS OVERLAY -->
+<div class="fsov" id="fs-stats-details" role="dialog" aria-modal="true" aria-label="Statistik-Details" style="background:var(--sand);">
+  <div class="page-hdr">
+    <button class="page-hdr-back" onclick="closeFs('stats-details')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
+    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-trend"/></svg></div>
+    <div class="page-hdr-left">
+      <div class="page-hdr-title">Details &amp; Insights</div>
+      <div class="page-hdr-sub" id="fs-stats-details-sub">Saison 2026</div>
+    </div>
+    <div class="page-hdr-actions">
+      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
+    </div>
+  </div>
+  <div class="fsov-scroll" id="fs-stats-details-body"></div>
 </div>
 
 <!-- AP4: FORECAST DAY DETAIL OVERLAY – Helles Theme -->
@@ -3534,7 +3825,7 @@ input[type=file]{display:none;}
 <!-- Ziele bearbeiten Overlay -->
 <div class="fsov" id="fs-goals" role="dialog" aria-modal="true" aria-label="Ziele bearbeiten">
   <div class="fshdr">
-    <div><div class="fstitle">🎯 Ziele bearbeiten</div><div class="fsmeta" id="fs-goals-meta"></div></div>
+    <div><div class="fstitle">Ziele bearbeiten</div><div class="fsmeta" id="fs-goals-meta"></div></div>
     <button class="xbtn" onclick="closeFs('goals')">✕</button>
   </div>
   <div class="fsov-scroll" id="fs-goals-body"></div>
@@ -3641,7 +3932,7 @@ input[type=file]{display:none;}
 <!-- AP2: Session Mini-Map Overlay -->
 <div class="fsov" id="fs-sess-map" role="dialog" aria-modal="true" style="z-index:117;">
   <div class="fshdr">
-    <div><div class="fstitle">📍 Kartenansicht</div><div class="fsmeta" id="fs-smap-meta"></div></div>
+    <div><div class="fstitle">Kartenansicht</div><div class="fsmeta" id="fs-smap-meta"></div></div>
     <button class="xbtn" onclick="_closeSessMap()">✕</button>
   </div>
   <div style="flex:1;position:relative;"><div id="sess-map-container" style="position:absolute;inset:0;"></div></div>
@@ -3668,7 +3959,7 @@ input[type=file]{display:none;}
 <!-- AP3: Karten-Filter Overlay -->
 <div class="fsov" id="fs-map-filter" role="dialog" aria-modal="true" style="z-index:120;background:#f5f7f5;">
   <div class="fshdr">
-    <div><div class="fstitle">🔍 Karten-Filter</div><div class="fsmeta">Angezeigte Marker filtern</div></div>
+    <div><div class="fstitle">Karten-Filter</div><div class="fsmeta">Angezeigte Marker filtern</div></div>
     <button class="xbtn" onclick="closeFs('map-filter')">✕</button>
   </div>
   <div class="fsov-scroll" id="map-filter-body" style="padding:16px;"></div>
@@ -3762,9 +4053,9 @@ input[type=file]{display:none;}
 
 <!-- ═══ LIVE CATCH OVERLAY (reduziert) ═══ -->
 <div class="fsov" id="fs-live-catch" style="z-index:121;">
-  <div class="fshdr" style="background:linear-gradient(135deg,#cc0000,#991111);">
-    <div><div class="fstitle" style="color:#fff;">🐟 Fang melden</div></div>
-    <button class="xbtn" onclick="closeLiveCatch()" style="color:#fff;">✕</button>
+  <div class="fshdr fshdr-tinted" style="background:linear-gradient(135deg,#A04A38,#7A3A2C);">
+    <div><div class="fstitle">Fang melden</div></div>
+    <button class="xbtn" onclick="closeLiveCatch()">✕</button>
   </div>
   <div class="fsov-scroll" style="padding:16px;">
     <div style="font-size:11px;color:var(--text-light);margin-bottom:12px;text-align:center;" id="lc-time-hint">⏱️ Uhrzeit wird automatisch erfasst</div>
@@ -3844,11 +4135,17 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- ═══ GROUP HUB OVERLAY ═══ -->
-<div class="fsov" id="fs-group-hub" style="z-index:115;">
-  <div class="fshdr" style="background:var(--green-deep);">
-    <div><div class="fstitle" style="color:#fff;">👥 Gruppen</div><div class="fsmeta" style="color:rgba(255,255,255,.6);" id="grp-hub-meta">Deine Angel-Crews</div></div>
-    <button class="xbtn" onclick="closeFs('group-hub')" style="color:#fff;">✕</button>
+<!-- v56 POLISH: GROUP HUB OVERLAY mit Page-Header-Pattern -->
+<div class="fsov" id="fs-group-hub" style="z-index:115;background:var(--sand);">
+  <div class="page-hdr">
+    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-users"/></svg></div>
+    <div class="page-hdr-left">
+      <div class="page-hdr-title">Gruppen</div>
+      <div class="page-hdr-sub" id="grp-hub-meta">Deine Angel-Crews</div>
+    </div>
+    <div class="page-hdr-actions">
+      <button class="pill-btn icon-only" onclick="closeFs('group-hub')" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
   </div>
   <div class="fsov-scroll" style="padding-top:12px;">
     <div class="grp-tabs" id="grp-hub-tabs">
@@ -3859,14 +4156,18 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- ═══ GROUP DETAIL / FEED OVERLAY (AP4: restructured) ═══ -->
-<div class="fsov" id="fs-group-detail" style="z-index:116;">
-  <div class="fshdr" id="grp-detail-hdr" style="background:var(--green-deep);">
-    <div>
-      <div class="fstitle" style="color:#fff;" id="grp-detail-title">Gruppe</div>
-      <div class="fsmeta" style="color:rgba(255,255,255,.6);" id="grp-detail-meta">0 Mitglieder</div>
+<!-- v56 POLISH: GROUP DETAIL / FEED OVERLAY mit Page-Header-Pattern -->
+<div class="fsov" id="fs-group-detail" style="z-index:116;background:var(--sand);">
+  <div class="page-hdr" id="grp-detail-hdr">
+    <button class="page-hdr-back" onclick="closeFs('group-detail')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
+    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-crew"/></svg></div>
+    <div class="page-hdr-left">
+      <div class="page-hdr-title" id="grp-detail-title">Gruppe</div>
+      <div class="page-hdr-sub" id="grp-detail-meta">0 Mitglieder</div>
     </div>
-    <button class="xbtn" onclick="closeFs('group-detail')" style="color:#fff;">✕</button>
+    <div class="page-hdr-actions">
+      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
+    </div>
   </div>
   <div class="fsov-scroll" id="grp-detail-scroll">
     <div id="grp-detail-content"></div>
@@ -3940,9 +4241,9 @@ input[type=file]{display:none;}
 
 <!-- ═══ GROUP CREATE OVERLAY ═══ -->
 <div class="fsov" id="fs-group-create" style="z-index:117;">
-  <div class="fshdr" style="background:var(--green-deep);">
-    <div><div class="fstitle" style="color:#fff;">➕ Gruppe erstellen</div></div>
-    <button class="xbtn" onclick="closeFs('group-create')" style="color:#fff;">✕</button>
+  <div class="fshdr">
+    <div><div class="fstitle">Gruppe erstellen</div></div>
+    <button class="xbtn" onclick="closeFs('group-create')">✕</button>
   </div>
   <div class="fsov-scroll" style="padding:16px;">
     <div class="ig" style="margin-bottom:14px;">
@@ -3982,9 +4283,9 @@ input[type=file]{display:none;}
 
 <!-- ═══ GROUP JOIN OVERLAY ═══ -->
 <div class="fsov" id="fs-group-join" style="z-index:117;">
-  <div class="fshdr" style="background:var(--green-deep);">
-    <div><div class="fstitle" style="color:#fff;">🔗 Gruppe beitreten</div></div>
-    <button class="xbtn" onclick="closeFs('group-join')" style="color:#fff;">✕</button>
+  <div class="fshdr">
+    <div><div class="fstitle">Gruppe beitreten</div></div>
+    <button class="xbtn" onclick="closeFs('group-join')">✕</button>
   </div>
   <div class="fsov-scroll" style="padding:16px;">
     <div class="ig" style="margin-bottom:14px;">
@@ -7367,22 +7668,25 @@ let _fbScrollY = 0;
 const DOW_FB = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 function fmtDow(ds){return DOW_FB[new Date(ds+'T12:00:00').getDay()];}
 
+// v56: Page-Header-Subline für Fangbuch (geteilt von Listen- und Kalender-View)
+function _updateFbSubline(){
+  const subEl=document.getElementById('fb-view-sub');
+  if(!subEl)return;
+  if(!sessions.length){
+    subEl.textContent='Tippe auf + für deine erste Session';
+  }else{
+    const totalCatches=sessions.reduce((s,x)=>s+(x.catches?.reduce((a,c)=>a+(c.count||1),0)||0),0);
+    const fangLbl=totalCatches===1?'Fang':'Fänge';
+    const sessLbl=sessions.length===1?'Session':'Sessions';
+    subEl.textContent=`${totalCatches} ${fangLbl} in ${sessions.length} ${sessLbl}`;
+  }
+}
+
 function rndrFangbuch(){
   const el=document.getElementById('fangbuch-list');if(!el)return;
-  // v56: Page-Header-Subline mit Session/Fang-Count
-  const subEl=document.getElementById('fb-view-sub');
-  if(subEl){
-    if(!sessions.length){
-      subEl.textContent='Tippe auf + für deine erste Session';
-    }else{
-      const totalCatches=sessions.reduce((s,x)=>s+(x.catches?.reduce((a,c)=>a+(c.count||1),0)||0),0);
-      const fangLbl=totalCatches===1?'Fang':'Fänge';
-      const sessLbl=sessions.length===1?'Session':'Sessions';
-      subEl.textContent=`${totalCatches} ${fangLbl} in ${sessions.length} ${sessLbl}`;
-    }
-  }
+  _updateFbSubline();
   if(!sessions.length){
-    el.innerHTML='<div class="empty"><div class="empty-ico">🎣</div><div class="empty-t">Noch keine Sessions</div><div class="empty-s">Tippe auf + um deine erste Session zu erfassen.</div></div>';
+    el.innerHTML='<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#f-default"/></svg></div><div class="empty-t">Noch keine Sessions</div><div class="empty-s">Tippe auf + um deine erste Session zu erfassen.</div></div>';
     return;
   }
   const byDate={};
@@ -7453,6 +7757,7 @@ function rndrHistory(){if(_fbView==='cal')rndrCalendar();else rndrFangbuch();}
 
 function rndrCalendar(){
   const el=document.getElementById('fangbuch-list');if(!el)return;
+  _updateFbSubline(); // v56: Subline auch im Kalender-View aktuell halten
 
   const byDate={};
   sessions.forEach(s=>{
@@ -7530,7 +7835,7 @@ function rndrCalendar(){
     </div>`;
   });
 
-  el.innerHTML=html||`<div class="empty"><div class="empty-ico">🎣</div><div class="empty-t">Noch keine Sessions</div></div>`;
+  el.innerHTML=html||`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#f-default"/></svg></div><div class="empty-t">Noch keine Sessions</div></div>`;
 
   // Zum aktuellen Monat scrollen (da aufsteigend sortiert, ist er unten)
   requestAnimationFrame(()=>{
@@ -7598,40 +7903,23 @@ async function openDayDetail(dateKey){
   const [,mo,dy]=dateKey.split('-');
   const MON_FULL=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 
-  // v56 POLISH: Bedingungen-Kacheln im fc-square-Stil (konsistent mit Vorhersage)
-  // Helper: Wert + Unit + Label-Format wie auf Vorhersage-Seite
-  const _wxTile=(icoId,val,unit,lbl,action,sub,compact)=>{
-    const valHtml=`<div class="dd-wx-val${compact?' compact':''}">${val}${unit?`<span class="unit">${unit}</span>`:''}</div>`;
-    const subHtml=sub?`<div style="font-size:9.5px;color:var(--grau);font-weight:400;line-height:1.3;">${sub}</div>`:'';
-    return `<div class="dd-wx-tile"${action?` onclick="${action}"`:''}>
-      <div class="dd-wx-ico"><svg class="ic"><use href="#${icoId}"/></svg></div>
-      ${valHtml}
-      <div class="dd-wx-lbl">${lbl}</div>
-      ${subHtml}
-    </div>`;
-  };
+  // Wetter-Kacheln (anklickbar für Kurven-Overlay)
+  const _wxTile=(ico,val,lbl,action)=>
+    `<div class="dd-wx-tile"${action?` onclick="${action}" style="cursor:pointer;"`:''}><div class="dd-wx-ico">${ico}</div><div class="dd-wx-val">${val}</div><div class="dd-wx-lbl">${lbl}</div></div>`;
 
   let wxHtml='';
   if(wxAvg){
     let tiles='';
-    if(wxAvg.temp!=null)tiles+=_wxTile('i-thermo',Math.round(wxAvg.temp),'°','Temp',`openDayWxDetail('${dateKey}','temp')`,'Ø Angelzeit');
-    if(wxAvg.windSpeed!=null)tiles+=_wxTile('i-wind',Math.round(wxAvg.windSpeed),'km/h','Wind',`openDayWxDetail('${dateKey}','wind')`,_windDir(wxAvg.windDir));
-    if(wxAvg.pressure)tiles+=_wxTile('i-pressure',wxAvg.pressure,'hPa','Druck',`openDayWxDetail('${dateKey}','pressure')`,'Mittel',true);
-    if(wxAvg.clouds!=null)tiles+=_wxTile('i-cloud',Math.round(wxAvg.clouds),'%','Bewölk.',`openDayWxDetail('${dateKey}','clouds')`);
-    // 5. Tide + 6. Karte als Action-Tiles (kein Wert, Strich-Icon zentriert)
-    tiles+=`<div class="dd-wx-tile" onclick="openTideForDay('${dateKey}')">
-      <div class="dd-wx-ico"><svg class="ic"><use href="#i-wave"/></svg></div>
-      <div class="dd-wx-val" style="font-size:13px;color:var(--tanne);font-weight:500;">Öffnen</div>
-      <div class="dd-wx-lbl">Tide</div>
-    </div>`;
-    tiles+=`<div class="dd-wx-tile" onclick="openMapForDay('${dateKey}')">
-      <div class="dd-wx-ico"><svg class="ic"><use href="#i-map"/></svg></div>
-      <div class="dd-wx-val" style="font-size:13px;color:var(--tanne);font-weight:500;">Öffnen</div>
-      <div class="dd-wx-lbl">Karte</div>
-    </div>`;
-    if(tiles)wxHtml=`<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-cloud-sun"/></svg>Bedingungen <span style="font-weight:400;color:var(--grau-lt);font-size:10px;text-transform:none;letter-spacing:0;margin-left:auto;">Ø über Angelzeit</span></div><div class="dd-wx-grid">${tiles}</div>`;
+    if(wxAvg.temp!=null)tiles+=_wxTile('🌡️',wxAvg.temp+'°C','Temp. Ø',`openDayWxDetail('${dateKey}','temp')`);
+    if(wxAvg.windSpeed!=null)tiles+=_wxTile('💨',wxAvg.windSpeed+' km/h','Wind '+_windDir(wxAvg.windDir),`openDayWxDetail('${dateKey}','wind')`);
+    if(wxAvg.pressure)tiles+=_wxTile('📊',wxAvg.pressure+' hPa','Luftdruck',`openDayWxDetail('${dateKey}','pressure')`);
+    if(wxAvg.clouds!=null)tiles+=_wxTile('☁️',wxAvg.clouds+'%','Bewölk.',`openDayWxDetail('${dateKey}','clouds')`);
+    // AP3: 5. Kachel Tide (ersetzt Luftfeuchtigkeit) + 6. Kachel Karte
+    tiles+=_wxTile('🌊','Öffnen','Tide',`openTideForDay('${dateKey}')`);
+    tiles+=_wxTile('🗺️','Öffnen','Karte',`openMapForDay('${dateKey}')`);
+    if(tiles)wxHtml=`<div class="slbl" style="margin-top:0;">Bedingungen <small style="font-weight:400;opacity:.6;font-size:10px;">Ø über Angelzeit · Tippen für Details</small></div><div class="dd-wx-grid">${tiles}</div>`;
   } else if(profile?.plz){
-    wxHtml=`<div style="padding:8px 0 14px;"><button onclick="reloadWeatherForDay('${dateKey}')" style="width:100%;padding:11px;background:var(--salbei);color:var(--tanne);border:none;border-radius:14px;font-size:13px;font-weight:500;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;"><svg class="ic" style="width:14px;height:14px;"><use href="#i-cloud-sun"/></svg>Wetter via PLZ ${profile.plz} nachladen</button></div>`;
+    wxHtml=`<div style="padding:8px 0 14px;"><button onclick="reloadWeatherForDay('${dateKey}')" style="width:100%;padding:10px;background:var(--blue);color:var(--blue-t);border:1.5px solid rgba(12,68,124,.2);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;">🌡️ Wetter via PLZ ${profile.plz} nachladen</button></div>`;
   }
 
   // Session-Kacheln mit Fängen
@@ -7650,7 +7938,7 @@ async function openDayDetail(dateKey){
           const mm=chkMM(c.type,c.length);
           const safeId=String(s.id).replace(/[^a-z0-9]/gi,'_');
           return`<div class="dd-catch-row">
-            <div class="dd-catch-photo dd-photo-${safeId}-${i}" ${c.photoKey?`onclick="_openPhotoLb(this)" style="cursor:pointer;"`:''} data-photokey="${c.photoKey||''}">${fSvg(c.type)}</div>
+            <div class="dd-catch-photo dd-photo-${safeId}-${i}" ${c.photoKey?`onclick="_openPhotoLb(this)" style="cursor:pointer;"`:''} data-photokey="${c.photoKey||''}">${fIco(c.type)}</div>
             <div class="dd-catch-info">
               <div class="dd-catch-name">${c.type||'–'}</div>
               <div class="dd-catch-meta">${c.time||'–'} Uhr${c.bait?' · '+c.bait:''}${c.baitNote?' · '+c.baitNote:''}</div>
@@ -7677,9 +7965,9 @@ async function openDayDetail(dateKey){
             <div style="font-size:11px;color:var(--text-mid);margin-top:1px;">${sessTimeLabel}</div>
           </div>
           <div style="display:flex;gap:6px;">
-            <button onclick="splitSession('${s.id}','${dateKey}')" style="padding:6px;width:32px;height:32px;background:var(--salbei);border:none;border-radius:99px;cursor:pointer;color:var(--tanne);display:inline-flex;align-items:center;justify-content:center;" title="Session splitten"><svg class="ic" style="width:14px;height:14px;"><use href="#i-split"/></svg></button>
-            <button onclick="editSess('${s.id}')" style="padding:6px;width:32px;height:32px;background:var(--salbei);border:none;border-radius:99px;cursor:pointer;color:var(--tanne);display:inline-flex;align-items:center;justify-content:center;" title="Bearbeiten"><svg class="ic" style="width:14px;height:14px;"><use href="#i-edit"/></svg></button>
-            <button onclick="delSessFromDetail('${s.id}','${dateKey}')" style="padding:6px;width:32px;height:32px;background:var(--rose);border:none;border-radius:99px;cursor:pointer;color:var(--rose-t);display:inline-flex;align-items:center;justify-content:center;" title="Löschen"><svg class="ic" style="width:14px;height:14px;"><use href="#i-trash"/></svg></button>
+            <button onclick="splitSession('${s.id}','${dateKey}')" style="padding:6px 10px;background:rgba(74,124,89,.10);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:var(--green-mid);" title="Session splitten">✂️</button>
+            <button onclick="editSess('${s.id}')" style="padding:6px 10px;background:rgba(74,124,89,.15);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:var(--green-deep);">✏️</button>
+            <button onclick="delSessFromDetail('${s.id}','${dateKey}')" style="padding:6px 10px;background:rgba(200,60,60,.12);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--fa);color:#c04040;">🗑️</button>
           </div>
         </div>
         <div style="padding:0;">${catchRows}</div>
@@ -7688,36 +7976,35 @@ async function openDayDetail(dateKey){
   }
 
   if(isSkunked&&!sessionsHtml.trim()){
-    sessionsHtml=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-skunk"/></svg></div><div class="empty-t">Schneider</div><div class="empty-s">Kein Fang an diesem Tag</div></div>`;
+    sessionsHtml=`<div style="text-align:center;padding:28px;color:var(--text-light);">🪝 Schneider – kein Fang</div>`;
   }
-
-  // v56 POLISH: Page-Header-Title + Sub setzen
-  const dateLabelFull=`${fmtDow(dateKey)}, ${parseInt(dy)}. ${MON_FULL[parseInt(mo)-1]} ${dateKey.split('-')[0]}`;
-  const titleEl=document.getElementById('dd-page-title');
-  const subEl=document.getElementById('dd-page-sub');
-  if(titleEl)titleEl.textContent=dateLabelFull;
-  if(subEl)subEl.textContent=`${waterLabel}${timeSpan&&timeSpan!=='–'?' · '+timeSpan:''}`;
 
   const body=document.getElementById('dd-body');
   body.innerHTML=`
-    <!-- v56 POLISH: Stats-Card (Tanne mit Gold-Counter) statt grünem Hero -->
-    <div class="dd-stats-card">
-      <div class="dd-stats-info">
-        <div class="dd-stats-time"><svg class="ic"><use href="#i-clock"/></svg>${timeSpan}</div>
-        ${!isSkunked?`<div class="dd-stats-row">
-          <div class="dd-stats-stat"><div class="dd-stats-stat-val">${avgLen}<span style="font-size:11px;font-weight:500;color:rgba(255,255,255,.55);margin-left:1px;">cm</span></div><div class="dd-stats-stat-lbl">Ø Länge</div></div>
-          <div class="dd-stats-stat"><div class="dd-stats-stat-val">${maxLen}<span style="font-size:11px;font-weight:500;color:rgba(255,255,255,.55);margin-left:1px;">cm</span></div><div class="dd-stats-stat-lbl">Rekord</div></div>
-          <div class="dd-stats-stat"><div class="dd-stats-stat-val">${takenCnt}</div><div class="dd-stats-stat-lbl">Entnommen</div></div>
-        </div>`:''}
+    <div class="dd-hero-v16">
+      <button class="dd-hero-v16-close" onclick="closeDayDetail()" aria-label="Schließen">✕</button>
+      <div class="dd-hero-v16-inner">
+        <div class="dd-hero-v16-date">${fmtDow(dateKey)}, ${parseInt(dy)}. ${MON_FULL[parseInt(mo)-1]} ${dateKey.split('-')[0]}</div>
+        <div class="dd-hero-v16-water">${waterLabel}</div>
+        <div style="display:flex;align-items:flex-end;gap:16px;margin-top:4px;">
+          <div style="flex:1;min-width:0;">
+            <div class="dd-hero-v16-time">${timeSpan}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;padding-bottom:2px;">
+            <div class="dd-hero-v16-cnt">${isSkunked?'–':totalCnt}</div>
+            <div class="dd-hero-v16-cnt-lbl">${isSkunked?'Schneider':'Fänge'}</div>
+          </div>
+        </div>
       </div>
-      <div class="dd-stats-cnt-wrap">
-        <div class="dd-stats-cnt">${isSkunked?'–':totalCnt}</div>
-        <div class="dd-stats-cnt-lbl">${isSkunked?'Schneider':totalCnt===1?'Fang':'Fänge'}</div>
-      </div>
+      ${!isSkunked?`<div class="dd-hero-v16-stats">
+        <div class="dd-hero-v16-stat"><div class="dd-hero-v16-stat-val">${avgLen}cm</div><div class="dd-hero-v16-stat-lbl">Ø Länge</div></div>
+        <div class="dd-hero-v16-stat"><div class="dd-hero-v16-stat-val">${maxLen}cm</div><div class="dd-hero-v16-stat-lbl">Rekord</div></div>
+        <div class="dd-hero-v16-stat"><div class="dd-hero-v16-stat-val">${takenCnt}</div><div class="dd-hero-v16-stat-lbl">Entnommen</div></div>
+      </div>`:''}
     </div>
     <div class="dd-body-pad">
     ${wxHtml}
-    <div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#f-default"/></svg>Fänge</div>
+    <div class="slbl" style="padding-left:16px;">Fänge</div>
     ${sessionsHtml}
     </div>`;
 
@@ -8719,7 +9006,7 @@ function showDetail(id,returnPage){
       ${s.skunked&&!s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:14px;font-weight:600;">🪝 Schneider</div>`:!s.skunked?`<div class="sg3" style="grid-template-columns:repeat(3,1fr);"><div class="sm"><div class="sv">${_totalCatchCount(s.catches)}</div><div class="sl">Fänge</div></div><div class="sm"><div class="sv">${avgL}cm</div><div class="sl">Ø Länge</div></div><div class="sm"><div class="sv">${maxL}cm</div><div class="sl">Rekord</div></div></div>`:''}
     </div>`;
   const body=document.getElementById('detail-body');
-  if(s.skunked||!s.catches.length){body.innerHTML=`<div class="empty"><div class="empty-ico">🪝</div><div class="empty-t">Kein Fang</div></div><div style="padding:0 2px;display:flex;flex-direction:column;gap:10px;">${!s.lat?`<button class="btn" onclick="_openSessGpsMap('${s.id}')" style="background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);">📍 Standort nachtragen</button>`:''}<button class="btn" onclick="_patchedEditSess('${s.id}')">✏️ Bearbeiten</button><button class="btn danger" onclick="delSess('${s.id}')">Löschen</button></div>`;return;}
+  if(s.skunked||!s.catches.length){body.innerHTML=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-hook"/></svg></div><div class="empty-t">Kein Fang</div></div><div style="padding:0 2px;display:flex;flex-direction:column;gap:10px;">${!s.lat?`<button class="btn" onclick="_openSessGpsMap('${s.id}')" style="background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);">📍 Standort nachtragen</button>`:''}<button class="btn" onclick="_patchedEditSess('${s.id}')">✏️ Bearbeiten</button><button class="btn danger" onclick="delSess('${s.id}')">Löschen</button></div>`;return;}
   // AP5: Wetter-Sektion für Session-Detail (historisch via API)
   let wxDetailHtml='';
   if(s.pressure||s.windSpeed!=null||s.temp!=null){
@@ -8934,97 +9221,432 @@ async function editSess(id){
 // ═══════════════════════════════════════════════════════════
 let _statSeason='year'; // 'year' | 'all' | '2025' | '2024' etc.
 let _statMonth='all'; // 'all' | '01'..'12'
+// v56 Phase 8a: Zeitraum-Filter-Pillen (Tag-basiert) + Fischart-Filter
+let _statRange='season'; // 'd7' | 'd30' | 'season' | 'all'
+let _statFishFilter='all'; // 'all' | 'Hecht' | 'Zander' | 'Barsch' | ...
+
+function setStatRange(r){_statRange=r;rndrStats();}
+function setStatFishFilter(f){_statFishFilter=f;rndrStats();}
+
+// v56 Phase 8b: Details-Page öffnen + rendern
+function openStatsDetails(){
+  openFs('stats-details');
+  _renderStatsDetails();
+}
+
+function _renderStatsDetails(){
+  const body=document.getElementById('fs-stats-details-body');
+  const subEl=document.getElementById('fs-stats-details-sub');
+  if(!body)return;
+
+  const today=new Date();
+  const curYear=today.getFullYear();
+
+  // Range-spezifischer Datensatz
+  const rangeLbls={d7:'Letzte 7 Tage',d30:'Letzte 30 Tage',season:'Saison '+curYear,all:'Gesamt'};
+  if(subEl)subEl.textContent=rangeLbls[_statRange]||'Saison';
+
+  const cur=_filterByRange(sessions,_statRange);
+  const prev=_filterPrevPeriod(sessions,_statRange);
+
+  // ── Vergleichswerte ──
+  const curC=cur.flatMap(s=>s.catches);
+  const prevC=prev.flatMap(s=>s.catches);
+  const curCnt=curC.reduce((s,c)=>s+_getFishCountForStats(c),0);
+  const prevCnt=prevC.reduce((s,c)=>s+_getFishCountForStats(c),0);
+  const curHrs=cur.reduce((s,x)=>s+calcHrs(x.start,x.end),0);
+  const prevHrs=prev.reduce((s,x)=>s+calcHrs(x.start,x.end),0);
+  const curHechtCnt=curC.filter(c=>(c.type||'').toLowerCase().includes('hecht')).length;
+  const prevHechtCnt=prevC.filter(c=>(c.type||'').toLowerCase().includes('hecht')).length;
+
+  const _pct=(curr,p)=>{if(!p||p===0)return curr>0?'+100%':'±0';const d=Math.round((curr-p)/p*100);return(d>=0?'+':'')+d+'%';};
+  const _cls=(curr,p)=>{if(!p||p===0)return curr>0?'up':'flat';return curr>p?'up':curr<p?'down':'flat';};
+
+  // ── Aktivitätszeiten-Analyse (Catch-Time-Histogram) ──
+  const timeBuckets={morn:0,mid:0,eve:0,night:0}; // 6-10, 10-16, 16-22, 22-6
+  curC.forEach(c=>{
+    if(!c.time)return;
+    const h=parseInt((c.time||'').slice(0,2));
+    if(isNaN(h))return;
+    if(h>=6&&h<10)timeBuckets.morn++;
+    else if(h>=10&&h<16)timeBuckets.mid++;
+    else if(h>=16&&h<22)timeBuckets.eve++;
+    else timeBuckets.night++;
+  });
+  const peakBucket=Object.entries(timeBuckets).sort((a,b)=>b[1]-a[1])[0];
+  const peakName={morn:'Morgenphase',mid:'Mittagsphase',eve:'Abendphase',night:'Nachtphase'}[peakBucket[0]];
+  const _lvl=v=>{if(v===0)return'—';const max=Math.max(...Object.values(timeBuckets));if(v>=max*0.66)return'Hoch';if(v>=max*0.33)return'Mittel';return'Niedrig';};
+
+  // ── Beste Stunde (für die Aktivitätskurve) ──
+  const hourBuckets=Array(24).fill(0);
+  curC.forEach(c=>{const h=parseInt((c.time||'').slice(0,2));if(!isNaN(h))hourBuckets[h]++;});
+  const maxHourCnt=Math.max(...hourBuckets,1);
+  const peakHour=hourBuckets.indexOf(Math.max(...hourBuckets));
+  const peakStart=String(Math.max(0,peakHour-1)).padStart(2,'0')+':00';
+  const peakEnd=String(Math.min(23,peakHour+1)).padStart(2,'0')+':00';
+
+  // ── Saisonziel ──
+  const goals=profile?.goals||[];
+  const seasonCatches=sessions.filter(s=>s.date?.startsWith(String(curYear))).flatMap(s=>s.catches);
+  const seasonCnt=seasonCatches.reduce((s,c)=>s+_getFishCountForStats(c),0);
+  let goalProgress=null;
+  if(goals.length){
+    const totalTarget=goals.reduce((s,g)=>s+(g.count||0),0);
+    if(totalTarget>0){
+      const totalQual=goals.reduce((s,g)=>s+seasonCatches.filter(c=>_catchQualifiesForGoal(c,g)).reduce((a,c)=>a+_getFishCountForStats(c),0),0);
+      goalProgress={pct:Math.min(100,Math.round(totalQual/totalTarget*100)),qual:totalQual,target:totalTarget};
+    }
+  }
+
+  // ── Längste Fang-Serie (consecutive non-skunked sessions) ──
+  const sortedSess=[...sessions].filter(s=>s.date).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  let bestSeries=0,curSeries=0;
+  sortedSess.forEach(s=>{
+    if(!s.skunked&&s.catches?.length){curSeries+=s.catches.reduce((a,c)=>a+_getFishCountForStats(c),0);if(curSeries>bestSeries)bestSeries=curSeries;}
+    else curSeries=0;
+  });
+
+  // ── Sparkline-Daten: Fänge pro Tag in Range ──
+  const dayCnts={};
+  cur.forEach(s=>{
+    const k=s.date;if(!k)return;
+    const c=(s.catches||[]).reduce((a,x)=>a+_getFishCountForStats(x),0);
+    dayCnts[k]=(dayCnts[k]||0)+c;
+  });
+  const sparkVals=Object.entries(dayCnts).sort((a,b)=>a[0].localeCompare(b[0])).map(([,v])=>v);
+
+  // ── Build SVG sparkline ──
+  const _sparkline=(vals,color)=>{
+    if(!vals||vals.length<2)return'';
+    const W=200,H=36;
+    const max=Math.max(...vals,1);
+    const stepX=W/(vals.length-1);
+    const pts=vals.map((v,i)=>[i*stepX,H-(v/max)*(H-4)-2]);
+    const path=pts.map((p,i)=>`${i===0?'M':'L'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+    return`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><path d="${path}" fill="none" stroke="${color||'#7CD9A6'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  };
+
+  const _activityCurve=(buckets)=>{
+    const W=320,H=100;
+    const max=Math.max(...buckets,1);
+    const stepX=W/(buckets.length-1);
+    const pts=buckets.map((v,i)=>[i*stepX,H-(v/max)*(H-12)-6]);
+    const path=pts.map((p,i)=>`${i===0?'M':'L'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+    const areaPath=`M0 ${H} ${pts.map(p=>`L${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ')} L${W} ${H} Z`;
+    const peakX=peakHour*stepX;
+    return`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="detail-activity-svg">
+      <defs><linearGradient id="actGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(214,162,58,.35)"/><stop offset="100%" stop-color="rgba(214,162,58,0)"/></linearGradient></defs>
+      <path d="${areaPath}" fill="url(#actGrad)"/>
+      <path d="${path}" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="${peakX}" y1="0" x2="${peakX}" y2="${H}" stroke="rgba(214,162,58,.6)" stroke-width="1" stroke-dasharray="3 2"/>
+    </svg>`;
+  };
+
+  // ── Donut für Saisonziel ──
+  const _donut=(pct)=>{
+    const r=32,circ=2*Math.PI*r;
+    const dash=circ*pct/100;
+    return`<svg viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="${r}" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="6"/>
+      <circle cx="40" cy="40" r="${r}" fill="none" stroke="var(--gold)" stroke-width="6"
+        stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="${circ/4}"
+        stroke-linecap="round" transform="rotate(-90 40 40)"/>
+      <text x="40" y="46" text-anchor="middle" font-size="16" font-weight="600" fill="#fff" font-family="Inter">${pct}%</text>
+    </svg>`;
+  };
+
+  // ── HTML-Rendering ──
+  body.innerHTML=`
+    <!-- 1. Zeitraumvergleich -->
+    <div class="detail-section-lbl"><svg class="ic"><use href="#i-trend"/></svg>Zeitraumvergleich</div>
+    <div class="detail-section">
+      <div class="detail-card">
+        <div class="detail-card-hdr">
+          <div>
+            <div class="detail-card-title">${rangeLbls[_statRange]||'Saison'} vs. Vorperiode</div>
+            <div class="detail-card-sub">${cur.length} Sessions · ${curCnt} Fänge</div>
+          </div>
+        </div>
+        <div class="detail-grid-3">
+          <div class="detail-mini">
+            <div class="detail-mini-lbl">Fänge</div>
+            <div class="detail-mini-val">${curCnt}</div>
+            <div class="detail-mini-cmp ${_cls(curCnt,prevCnt)}">${_pct(curCnt,prevCnt)}</div>
+          </div>
+          <div class="detail-mini">
+            <div class="detail-mini-lbl">Sessions</div>
+            <div class="detail-mini-val">${cur.length}</div>
+            <div class="detail-mini-cmp ${_cls(cur.length,prev.length)}">${_pct(cur.length,prev.length)}</div>
+          </div>
+          <div class="detail-mini">
+            <div class="detail-mini-lbl">Stunden</div>
+            <div class="detail-mini-val compact">${Math.round(curHrs)}<span class="unit">h</span></div>
+            <div class="detail-mini-cmp ${_cls(curHrs,prevHrs)}">${_pct(curHrs,prevHrs)}</div>
+          </div>
+        </div>
+        ${prevCnt>0?`<div class="detail-insight">
+          <div class="ic-wrap"><svg class="ic"><use href="#i-target"/></svg></div>
+          <div class="detail-insight-text">${curCnt>prevCnt?`Du angelst aktiv: <strong>+${curCnt-prevCnt} Fänge</strong> gegenüber der Vorperiode.`:curCnt<prevCnt?`Ruhigere Phase: <strong>${prevCnt-curCnt} Fänge weniger</strong> als zuvor — vielleicht andere Bedingungen?`:'Stabile Phase mit gleicher Fang-Anzahl wie zuvor.'}</div>
+        </div>`:''}
+      </div>
+    </div>
+
+    <!-- 2. Aktivitätszeiten -->
+    <div class="detail-section-lbl"><svg class="ic"><use href="#i-clock"/></svg>Aktivitätszeiten</div>
+    <div class="detail-section">
+      <div class="detail-card">
+        <div class="detail-card-hdr">
+          <div>
+            <div class="detail-card-title">Beste Beiß-Phase</div>
+            <div class="detail-card-sub">Wann beißen die Fische?</div>
+          </div>
+          ${peakBucket[1]>0?`<div class="detail-card-pill"><svg class="ic"><use href="#i-target"/></svg>${peakName}</div>`:''}
+        </div>
+        <div class="detail-time-pills">
+          <div class="detail-time-pill${peakBucket[0]==='morn'?' peak':''}">
+            <div class="detail-time-pill-name">Morgen</div>
+            <div class="detail-time-pill-time">06–10</div>
+            <div class="detail-time-pill-icon"><svg class="ic"><use href="#i-sun"/></svg></div>
+            <div class="detail-time-pill-lvl">${_lvl(timeBuckets.morn)}</div>
+          </div>
+          <div class="detail-time-pill${peakBucket[0]==='mid'?' peak':''}">
+            <div class="detail-time-pill-name">Mittag</div>
+            <div class="detail-time-pill-time">10–16</div>
+            <div class="detail-time-pill-icon"><svg class="ic"><use href="#i-sun"/></svg></div>
+            <div class="detail-time-pill-lvl">${_lvl(timeBuckets.mid)}</div>
+          </div>
+          <div class="detail-time-pill${peakBucket[0]==='eve'?' peak':''}">
+            <div class="detail-time-pill-name">Abend</div>
+            <div class="detail-time-pill-time">16–22</div>
+            <div class="detail-time-pill-icon"><svg class="ic"><use href="#i-cloud-sun"/></svg></div>
+            <div class="detail-time-pill-lvl">${_lvl(timeBuckets.eve)}</div>
+          </div>
+          <div class="detail-time-pill${peakBucket[0]==='night'?' peak':''}">
+            <div class="detail-time-pill-name">Nacht</div>
+            <div class="detail-time-pill-time">22–06</div>
+            <div class="detail-time-pill-icon"><svg class="ic"><use href="#i-moon"/></svg></div>
+            <div class="detail-time-pill-lvl">${_lvl(timeBuckets.night)}</div>
+          </div>
+        </div>
+        ${curC.length>0?`<div class="detail-activity-wrap">
+          <div style="display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.55);font-family:var(--fa);font-weight:500;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px;">
+            <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+          </div>
+          ${_activityCurve(hourBuckets)}
+          <div class="detail-insight" style="margin-top:8px;">
+            <div class="ic-wrap"><svg class="ic"><use href="#i-clock"/></svg></div>
+            <div class="detail-insight-text">Bestes Zeitfenster: <strong>${peakStart}–${peakEnd}</strong></div>
+          </div>
+        </div>`:''}
+      </div>
+    </div>
+
+    <!-- 3. Persönlicher Fortschritt (Saisonziel + Längste Serie + Sparkline) -->
+    <div class="detail-section-lbl"><svg class="ic"><use href="#i-trophy"/></svg>Dein Fortschritt</div>
+    <div class="detail-section">
+      <div class="detail-card">
+        <div class="detail-card-hdr">
+          <div>
+            <div class="detail-card-title">Saison ${curYear}</div>
+            <div class="detail-card-sub">${seasonCnt} Fänge insgesamt</div>
+          </div>
+        </div>
+        <div class="detail-grid-mixed" style="grid-template-columns:1fr 1fr;">
+          ${goalProgress?`<div class="detail-mini" style="display:flex;flex-direction:column;align-items:center;">
+            <div class="detail-mini-lbl">Saisonziel</div>
+            <div class="detail-donut-wrap" style="margin-top:4px;">${_donut(goalProgress.pct)}</div>
+            <div class="detail-donut-info">
+              <div class="detail-donut-info-lbl">${goalProgress.qual} / ${goalProgress.target}</div>
+            </div>
+          </div>`:`<div class="detail-mini">
+            <div class="detail-mini-lbl">Saisonziel</div>
+            <div class="detail-mini-val compact" style="font-size:13px;color:rgba(255,255,255,.6);font-weight:500;margin-top:8px;">Noch keine Ziele</div>
+          </div>`}
+          <div class="detail-mini">
+            <div class="detail-mini-lbl">Längste Serie</div>
+            <div class="detail-mini-val">${bestSeries}</div>
+            <div style="font-family:var(--fa);font-size:10.5px;font-weight:500;color:rgba(255,255,255,.65);margin-top:4px;">Fänge in Folge</div>
+          </div>
+        </div>
+        ${sparkVals.length>=2?`<div style="margin-top:12px;position:relative;z-index:1;">
+          <div class="detail-mini-lbl" style="margin-bottom:0;">Fang-Verlauf</div>
+          <div class="detail-sparkline">${_sparkline(sparkVals,'#7CD9A6')}</div>
+          <div style="display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.45);font-family:var(--fa);">
+            <span>${cur.length?cur[cur.length-1]?.date?.slice(8):'—'}.${cur.length?cur[cur.length-1]?.date?.slice(5,7):''}</span>
+            <span>heute</span>
+          </div>
+        </div>`:''}
+      </div>
+    </div>
+
+    <!-- 4. Top Hechtkontakte (für Hecht-Filter) -->
+    ${prevHechtCnt>0||curHechtCnt>0?`
+    <div class="detail-section-lbl"><svg class="ic"><use href="#f-hecht"/></svg>Hechtkontakte</div>
+    <div class="detail-section">
+      <div class="detail-card">
+        <div class="detail-card-hdr">
+          <div>
+            <div class="detail-card-title">${rangeLbls[_statRange]} vs. Vorperiode</div>
+            <div class="detail-card-sub">Spezialisiert auf Hechte</div>
+          </div>
+        </div>
+        <div class="detail-grid-2">
+          <div class="detail-mini">
+            <div class="detail-mini-lbl">Aktuelle Periode</div>
+            <div class="detail-mini-val">${curHechtCnt}</div>
+            <div class="detail-mini-cmp ${_cls(curHechtCnt,prevHechtCnt)}">${_pct(curHechtCnt,prevHechtCnt)}</div>
+          </div>
+          <div class="detail-mini">
+            <div class="detail-mini-lbl">Vorperiode</div>
+            <div class="detail-mini-val">${prevHechtCnt}</div>
+            <div style="font-family:var(--fa);font-size:10.5px;font-weight:500;color:rgba(255,255,255,.55);margin-top:4px;">Vergleich</div>
+          </div>
+        </div>
+      </div>
+    </div>`:''}
+
+    <div style="height:24px;"></div>
+  `;
+}
+
+// Helper: Sessions für aktuellen Zeitraum filtern
+function _filterByRange(sessList,range){
+  if(!sessList||!sessList.length)return[];
+  if(range==='all')return sessList;
+  const today=new Date();today.setHours(23,59,59,999);
+  if(range==='d7'){
+    const start=new Date(today);start.setDate(today.getDate()-6);start.setHours(0,0,0,0);
+    return sessList.filter(s=>{const d=new Date(s.date+'T12:00:00');return d>=start&&d<=today;});
+  }
+  if(range==='d30'){
+    const start=new Date(today);start.setDate(today.getDate()-29);start.setHours(0,0,0,0);
+    return sessList.filter(s=>{const d=new Date(s.date+'T12:00:00');return d>=start&&d<=today;});
+  }
+  // 'season' = aktuelles Jahr
+  const yr=String(today.getFullYear());
+  return sessList.filter(s=>s.date&&s.date.startsWith(yr));
+}
+
+// Helper: Vorperioden-Sessions für Vergleich
+function _filterPrevPeriod(sessList,range){
+  if(!sessList||!sessList.length)return[];
+  const today=new Date();today.setHours(23,59,59,999);
+  if(range==='d7'){
+    const end=new Date(today);end.setDate(today.getDate()-7);end.setHours(23,59,59,999);
+    const start=new Date(end);start.setDate(end.getDate()-6);start.setHours(0,0,0,0);
+    return sessList.filter(s=>{const d=new Date(s.date+'T12:00:00');return d>=start&&d<=end;});
+  }
+  if(range==='d30'){
+    const end=new Date(today);end.setDate(today.getDate()-30);end.setHours(23,59,59,999);
+    const start=new Date(end);start.setDate(end.getDate()-29);start.setHours(0,0,0,0);
+    return sessList.filter(s=>{const d=new Date(s.date+'T12:00:00');return d>=start&&d<=end;});
+  }
+  if(range==='season'){
+    const prevYr=String(today.getFullYear()-1);
+    return sessList.filter(s=>s.date&&s.date.startsWith(prevYr));
+  }
+  return [];
+}
+
+// Helper: Vergleich zweier Werte als HTML
+function _stat_cmp(curr,prev,unit){
+  if(prev==null||prev===0){
+    if(curr>0)return`<span class="stat-kpi-cmp up">+${curr}${unit||''}</span>`;
+    return`<span class="stat-kpi-cmp flat">—</span>`;
+  }
+  const diff=curr-prev;
+  if(Math.abs(diff)<.5)return`<span class="stat-kpi-cmp flat">±0</span>`;
+  const sign=diff>0?'+':'';
+  const cls=diff>0?'up':'down';
+  const val=Math.abs(diff)<10?diff.toFixed(1).replace('.',','):Math.round(diff);
+  return`<span class="stat-kpi-cmp ${cls}">${sign}${val}${unit||''} zum Vgl.</span>`;
+}
 function setSeason(s){_statSeason=s;_statMonth='all';rndrStats();}
 function setStatMonth(m){_statMonth=m;rndrStats();}
 
 function rndrStats(){
   const el=document.getElementById('stats-con');
   const curYear=new Date().getFullYear();
-  // v45: Dynamic year list from all session data
-  const allYears=[...new Set(sessions.filter(s=>s.date).map(s=>s.date.substring(0,4)))].sort().reverse();
-  if(!allYears.includes(String(curYear)))allYears.unshift(String(curYear));
-  let filtered;
-  if(_statSeason==='all') filtered=sessions;
-  else {
-    const yr=_statSeason==='year'?String(curYear):_statSeason;
-    filtered=sessions.filter(s=>s.date&&s.date.startsWith(yr));
-  }
-  // v45: Month filter
-  if(_statMonth!=='all'){
-    filtered=filtered.filter(s=>s.date&&s.date.substring(5,7)===_statMonth);
-  }
+  // v56 Phase 8a: Filter via Zeitraum-Pillen + Fischart-Pillen
+  const filtered=_filterByRange(sessions,_statRange);
+  const prevPeriod=_filterPrevPeriod(sessions,_statRange);
 
   if(!sessions.length){
-    // v56: Page-Header trotzdem mit Hinweis-Subline füllen, Selects ausblenden
     const subEl=document.getElementById('stats-hdr-sub');
     const actEl=document.getElementById('stats-hdr-actions');
     if(subEl)subEl.textContent='Noch keine Daten';
     if(actEl)actEl.innerHTML='';
-    el.innerHTML=`<div class="empty"><div class="empty-ico">📊</div><div class="empty-t">Noch keine Daten</div><div class="empty-s">Erfasse Sessionen um Statistiken zu sehen.</div></div>`;
+    el.innerHTML=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-stats"/></svg></div><div class="empty-t">Noch keine Daten</div><div class="empty-s">Erfasse Sessionen um Statistiken zu sehen.</div></div>`;
     return;
   }
 
   const total=filtered.length;
-  const suSess=filtered.filter(s=>!s.skunked);
   const allC=filtered.flatMap(s=>s.catches);
   const maxC=allC.length?allC.reduce((a,b)=>b.length>a.length?b:a):null;
   const hrs=filtered.reduce((s,x)=>s+calcHrs(x.start,x.end),0);
   const tkN=allC.filter(c=>c.taken).reduce((s,c)=>s+_getFishCountForStats(c),0);
+  const totalCatches=allC.reduce((s,c)=>s+_getFishCountForStats(c),0);
   const freq={};allC.forEach(c=>{if(c.type)freq[c.type]=(freq[c.type]||0)+_getFishCountForStats(c);});
-  const topF=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  // v56 Phase 8a: Top Fischarten ggf. nach _statFishFilter filtern
+  let topF=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if(_statFishFilter!=='all')topF=topF.filter(([f])=>f===_statFishFilter);
   const scored=allC.map(c=>({...c,fS:fScore(c.type,c.length)})).sort((a,b)=>b.fS-a.fS).slice(0,3);
   const medals=['🥇','🥈','🥉'];
   const hrsTotal=Math.round(hrs);
   const hrsH=Math.floor(hrsTotal),hrsM=Math.round((hrs-hrsH)*60);
   const hrsLabel=hrsH>0?`${hrsH}h${hrsM>0?` ${String(hrsM).padStart(2,'0')}m`:''}`:`${hrsM}m`;
+  const avgPerSession=total>0?(totalCatches/total).toFixed(1).replace('.',','):'0';
 
-  // v45: Dropdown statt starre Buttons
-  const MONTHS=['','Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-  const selYear=_statSeason==='year'?String(curYear):_statSeason;
-  const seasonToggle=`<div style="display:flex;gap:6px;align-items:center;">
-    <select class="st-year-select" onchange="setSeason(this.value)">
-      ${allYears.map(y=>`<option value="${y}"${selYear===y?' selected':''}>${y}</option>`).join('')}
-      <option value="all"${_statSeason==='all'?' selected':''}>Gesamt</option>
-    </select>
-    <select class="st-year-select" onchange="setStatMonth(this.value)" style="min-width:64px;">
-      <option value="all"${_statMonth==='all'?' selected':''}>Alle</option>
-      ${MONTHS.slice(1).map((m,i)=>`<option value="${String(i+1).padStart(2,'0')}"${_statMonth===String(i+1).padStart(2,'0')?' selected':''}>${m}</option>`).join('')}
-    </select>
-  </div>`;
+  // v56 Phase 8a: Vergleichswerte zur Vorperiode
+  const prevTotal=prevPeriod.length;
+  const prevAllC=prevPeriod.flatMap(s=>s.catches);
+  const prevTotalCatches=prevAllC.reduce((s,c)=>s+_getFishCountForStats(c),0);
+  const prevHrs=prevPeriod.reduce((s,x)=>s+calcHrs(x.start,x.end),0);
+  const prevAvgPerSession=prevTotal>0?prevTotalCatches/prevTotal:0;
 
-  // v56: Headline lebt jetzt im Page-Header, Selects in den Actions
+  // Page-Header-Subline aktualisieren
+  const rangeLabels={d7:'Letzte 7 Tage',d30:'Letzte 30 Tage',season:'Saison '+curYear,all:'Gesamt'};
+  const rangeLbl=rangeLabels[_statRange]||'Saison';
   const subEl=document.getElementById('stats-hdr-sub');
   const actEl=document.getElementById('stats-hdr-actions');
-  if(subEl){
-    const seasonLbl=_statSeason==='all'?'Gesamt':'Saison '+selYear;
-    const monthLbl=_statMonth!=='all'?' · '+MONTHS[parseInt(_statMonth)]:'';
-    subEl.textContent=`${seasonLbl}${monthLbl} · ${total} Session${total!==1?'s':''} · ${allC.reduce((s,c)=>s+_getFishCountForStats(c),0)} Fänge`;
+  if(subEl)subEl.textContent=`${rangeLbl} · ${total} Session${total!==1?'s':''} · ${totalCatches} Fänge`;
+  if(actEl)actEl.innerHTML='';
+
+  // Verfügbare Fischarten für Filter (Top 4)
+  const fishOptions=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([f])=>f);
+
+  // Insight-Text generieren
+  let insightText='';
+  if(_statRange==='d30'&&prevTotalCatches>0){
+    const diffPct=Math.round((totalCatches-prevTotalCatches)/prevTotalCatches*100);
+    if(diffPct>=15)insightText=`Top-Performance in den letzten 30 Tagen: <strong>+${diffPct}% mehr Fänge</strong> als in den 30 Tagen davor.`;
+    else if(diffPct<=-15)insightText=`Letzte 30 Tage waren ruhiger: <strong>${diffPct}% weniger Fänge</strong> als zuvor. Bedingungen prüfen?`;
+    else insightText=`Stabile Phase: ${diffPct>=0?'+':''}${diffPct}% gegenüber den vorherigen 30 Tagen.`;
+  } else if(_statRange==='d7'&&total>0){
+    insightText=`<strong>${totalCatches} Fänge</strong> in <strong>${total} Session${total!==1?'s':''}</strong> diese Woche · Ø ${avgPerSession} pro Session.`;
+  } else if(_statRange==='season'&&maxC){
+    insightText=`Saisonbestleistung: <strong>${maxC.type} ${maxC.length} cm</strong>. Weiter so!`;
   }
-  if(actEl)actEl.innerHTML=seasonToggle;
 
   el.innerHTML=`
-    <!-- v56: 4 KPI-Kacheln – mittelaxial mit Strich-Icons -->
-    <div class="st-grid">
-      <div class="st-tile" onclick="openFsCatches()">
-        <div class="st-tile-head"><svg class="ic"><use href="#f-default"/></svg><span class="st-tile-lbl">Fänge</span></div>
-        <div class="st-tile-val">${allC.reduce((s,c)=>s+_getFishCountForStats(c),0)}</div>
-        <div class="st-tile-hint"><svg class="ic"><use href="#i-arrow-rt"/></svg>Details</div>
+    <!-- v56 Phase 8a: Filter-Pillen für Zeitraum + Fischart -->
+    <div class="stat-filters">
+      <div class="stat-filter-row">
+        <span class="stat-filter-row-lbl">Zeitraum</span>
+        <div class="stat-filter-pills">
+          <button class="stat-filter-pill${_statRange==='d7'?' on':''}" onclick="setStatRange('d7')">7 Tage</button>
+          <button class="stat-filter-pill${_statRange==='d30'?' on':''}" onclick="setStatRange('d30')">30 Tage</button>
+          <button class="stat-filter-pill${_statRange==='season'?' on':''}" onclick="setStatRange('season')">Saison</button>
+          <button class="stat-filter-pill${_statRange==='all'?' on':''}" onclick="setStatRange('all')">Gesamt</button>
+        </div>
       </div>
-      <div class="st-tile" onclick="openFsTaken()">
-        <div class="st-tile-head"><svg class="ic"><use href="#i-hook"/></svg><span class="st-tile-lbl">Entnommen</span></div>
-        <div class="st-tile-val">${tkN}</div>
-        <div class="st-tile-hint"><svg class="ic"><use href="#i-arrow-rt"/></svg>Details</div>
-      </div>
-      <div class="st-tile" onclick="openFsHours()">
-        <div class="st-tile-head"><svg class="ic"><use href="#i-clock"/></svg><span class="st-tile-lbl">Stunden</span></div>
-        <div class="st-tile-val" style="font-size:${hrs>=100?'24px':'30px'}">${hrsLabel}</div>
-        <div class="st-tile-hint"><svg class="ic"><use href="#i-arrow-rt"/></svg>Details</div>
-      </div>
-      <div class="st-tile" onclick="openFsSessions()">
-        <div class="st-tile-head"><svg class="ic"><use href="#i-cal"/></svg><span class="st-tile-lbl">Sessions</span></div>
-        <div class="st-tile-val">${total}</div>
-        <div class="st-tile-hint"><svg class="ic"><use href="#i-arrow-rt"/></svg>Alle ansehen</div>
-      </div>
+      ${fishOptions.length?`<div class="stat-filter-row">
+        <span class="stat-filter-row-lbl">Fischarten</span>
+        <div class="stat-filter-pills">
+          ${fishOptions.map(f=>`<button class="stat-filter-pill${_statFishFilter===f?' on':''}" onclick="setStatFishFilter('${f.replace(/'/g,"\\'")}')">${f}</button>`).join('')}
+          <button class="stat-filter-pill${_statFishFilter==='all'?' on':''}" onclick="setStatFishFilter('all')">Alle</button>
+        </div>
+      </div>`:''}
     </div>
 
     <!-- v56: Persönlicher Rekord mit Strich-Trophy in Gold-Box -->
@@ -9037,9 +9659,52 @@ function rndrStats(){
       </div>
     </div>`:''}
 
+    <!-- v56 Phase 8a: 4-KPI-Reihe mit Vergleichswerten -->
+    <div class="stat-kpi-row">
+      <div class="stat-kpi" onclick="openFsCatches()">
+        <div class="stat-kpi-val">${totalCatches}</div>
+        <div class="stat-kpi-lbl">Fänge</div>
+        ${_stat_cmp(totalCatches,prevTotalCatches,'')}
+      </div>
+      <div class="stat-kpi" onclick="openFsSessions()">
+        <div class="stat-kpi-val">${total}</div>
+        <div class="stat-kpi-lbl">Sessions</div>
+        ${_stat_cmp(total,prevTotal,'')}
+      </div>
+      <div class="stat-kpi" onclick="openFsHours()">
+        <div class="stat-kpi-val${hrs>=100?' compact':''}">${hrsLabel}</div>
+        <div class="stat-kpi-lbl">Stunden</div>
+        ${_stat_cmp(Math.round(hrs),Math.round(prevHrs),'h')}
+      </div>
+      <div class="stat-kpi">
+        <div class="stat-kpi-val">${avgPerSession}</div>
+        <div class="stat-kpi-lbl">Ø/Session</div>
+        ${_stat_cmp(parseFloat(avgPerSession.replace(',','.')),parseFloat(prevAvgPerSession.toFixed(1)),'')}
+      </div>
+    </div>
+
+    <!-- v56 Phase 8a: Details-Action-Card → öffnet Details-Page -->
+    <div class="stat-details-action" onclick="openStatsDetails()">
+      <div class="stat-details-ico"><svg class="ic"><use href="#i-trend"/></svg></div>
+      <div class="stat-details-info">
+        <div class="stat-details-title">Details &amp; Insights</div>
+        <div class="stat-details-sub">Zeitraumvergleich · Aktivitätszeiten · Fortschritt</div>
+      </div>
+      <svg class="ic stat-details-arrow"><use href="#i-arrow-r"/></svg>
+    </div>
+
+    <!-- v56 Phase 8a: Insight-Banner unten -->
+    ${insightText?`<div class="stat-insight">
+      <div class="stat-insight-ico"><svg class="ic"><use href="#i-trend"/></svg></div>
+      <div class="stat-insight-info">
+        <div class="stat-insight-lbl">Insight</div>
+        <div class="stat-insight-text">${insightText}</div>
+      </div>
+    </div>`:''}
+
     <!-- Fair-Ranking (nur für Raubfisch-Angler) -->
     ${scored.length&&(profile?.angeltyp||'Allround')==='Raubfisch'?`
-    <div class="slbl">🏅 Fair-Ranking</div>
+    <div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--gold);"><use href="#i-trophy"/></svg>Fair-Ranking</div>
     <div class="mcard" style="margin-bottom:14px;">
       ${scored.map((c,i)=>{const sd=filtered.find(s=>s.catches.some(x=>x.type===c.type&&x.length===c.length&&x.time===c.time));return`<div class="mrow"><div class="mi">${medals[i]}</div><div class="minfo"><div class="mn">${c.type} · ${c.length}cm</div><div class="md">${sd?fmtDate(sd.date)+' · '+sd.water+(sd.spot?' · '+sd.spot:''):''}</div></div><div class="msc"><div class="msv">${c.fS}</div><div class="msl">Punkte</div></div></div>`;}).join('')}
     </div>`:''}
@@ -9063,9 +9728,10 @@ function rndrStats(){
     ${(()=>{
       const goals=profile?.goals||[];
       if(!goals.length)return'';
-      const yr=_statSeason==='year'?String(curYear):_statSeason;
-      const gCatches=_statSeason==='all'?allC:sessions.filter(s=>s.date?.startsWith(yr)).flatMap(s=>s.catches);
-      return`<div class="slbl">🎯 Saisonziele</div><div class="goal-grid">${goals.map(g=>_goalCardHtml(g,gCatches,true,parseInt(yr))).join('')}</div>`;
+      // v56 Phase 8a: Goals zeigen aktuelle Saison (unabhängig vom Zeitraum-Filter)
+      const yr=String(curYear);
+      const gCatches=sessions.filter(s=>s.date?.startsWith(yr)).flatMap(s=>s.catches);
+      return`<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-target"/></svg>Saisonziele</div><div class="goal-grid">${goals.map(g=>_goalCardHtml(g,gCatches,true,parseInt(yr))).join('')}</div>`;
     })()}
 
     <!-- CTA: Weitere Statistiken (Erfolgsquote + Donut + Ziele) -->
@@ -9139,7 +9805,7 @@ function _renderMoreStats(){
   if(goals.length){
     if(isYear){
       // Saison-Ansicht: nur Fänge des aktuellen Jahres gegen Ziele
-      goalsHtml = `<div class="slbl">🎯 Saisonziele ${curYear}</div><div class="goal-grid">`;
+      goalsHtml = `<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-target"/></svg>Saisonziele ${curYear}</div><div class="goal-grid">`;
       goals.forEach(g => {
         const targetYear = g.year || curYear;
         const gCatches = sessions
@@ -9150,7 +9816,7 @@ function _renderMoreStats(){
       goalsHtml += `</div>`;
     } else {
       // Gesamt-Ansicht: Ziele nach ihrem eigenen Jahr gruppiert
-      goalsHtml = `<div class="slbl">🎯 Historische Zielerfüllung</div>`;
+      goalsHtml = `<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-target"/></svg>Historische Zielerfüllung</div>`;
 
       const goalYears = [...new Set(goals.map(g => g.year || curYear))];
       const sessionYears = [...new Set(sessions.map(s => s.date?.slice(0,4)).filter(Boolean))];
@@ -9172,13 +9838,13 @@ function _renderMoreStats(){
           });
           goalsHtml += `</div></div>`;
         });
-        if(goalsHtml === `<div class="slbl">🎯 Historische Zielerfüllung</div>`){
+        if(goalsHtml === `<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-target"/></svg>Historische Zielerfüllung</div>`){
           goalsHtml += `<div class="card" style="text-align:center;padding:16px;color:var(--text-light);font-size:12px;">Ziele ohne Jahres-Zuordnung. Lege neue Ziele an um sie hier zu sehen.</div>`;
         }
       }
     }
   } else {
-    goalsHtml = `<div class="slbl">🎯 Saisonziele</div>
+    goalsHtml = `<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-target"/></svg>Saisonziele</div>
     <div class="card" style="text-align:center;padding:20px;color:var(--text-light);">
       <div style="font-size:28px;margin-bottom:8px;">🎯</div>
       <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Noch keine Ziele definiert</div>
@@ -9512,7 +10178,7 @@ function openFsHours(){
   const topW=Object.entries(byWater).sort((a,b)=>b[1]-a[1]).slice(0,6);
   const maxW=topW[0]?.[1]||1;
   if(!Object.keys(byMonth).length){
-    document.getElementById('fs-hours-content').innerHTML=`<div class="empty"><div class="empty-ico">⏱️</div><div class="empty-t">Noch keine Zeitdaten</div><div class="empty-s">Trage bei deiner nächsten Session Start- und Endzeit ein.</div></div>`;
+    document.getElementById('fs-hours-content').innerHTML=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-clock"/></svg></div><div class="empty-t">Noch keine Zeitdaten</div><div class="empty-s">Trage bei deiner nächsten Session Start- und Endzeit ein.</div></div>`;
     return;
   }
   document.getElementById('fs-hours-content').innerHTML=`
@@ -9624,7 +10290,7 @@ function openFsBait(bait){
   document.getElementById('fs-bait-meta').textContent=`${rows.length} Fänge mit ${bait}`;
  
   if(!rows.length){
-    document.getElementById('fs-bait-content').innerHTML=`<div class="empty"><div class="empty-ico">🪝</div><div class="empty-t">Keine Fänge mit ${bait}</div><div class="empty-s">Sobald du Fänge mit diesem Köder loggst, erscheinen hier Details und Keywords.</div></div>`;
+    document.getElementById('fs-bait-content').innerHTML=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-hook"/></svg></div><div class="empty-t">Keine Fänge mit ${bait}</div><div class="empty-s">Sobald du Fänge mit diesem Köder loggst, erscheinen hier Details und Keywords.</div></div>`;
     return;
   }
   // Keyword analysis from notes
@@ -11826,7 +12492,15 @@ function calcHrs(s,e){
   const mins=_calcMins(s,e);
   return mins?mins/60:0;
 }
-function showToast(ico,msg,isErr=false){document.getElementById('toast-ico').textContent=ico;document.getElementById('toast-msg').textContent=msg;const t=document.getElementById('toast');t.className='toast'+(isErr?' err':'');t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3200);}
+function showToast(ico,msg,isErr=false){
+  // v56: Akzeptiert sowohl Emoji (legacy) als auch SVG-String (neu)
+  const icoEl=document.getElementById('toast-ico');
+  if(ico&&ico.trim().startsWith('<'))icoEl.innerHTML=ico;
+  else icoEl.textContent=ico||'';
+  document.getElementById('toast-msg').textContent=msg;
+  const t=document.getElementById('toast');t.className='toast'+(isErr?' err':'');
+  t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3200);
+}
 
 // ═══════════════════════════════════════════════════════════
 // LIVE SESSION (v40)
@@ -13823,9 +14497,10 @@ async function _openGroupDetail(gId){
   }
   g._unread=0;
   openFs('group-detail');
-  document.getElementById('grp-detail-title').textContent=`${g.icon||'🎣'} ${g.name}`;
+  document.getElementById('grp-detail-title').textContent=g.name;
   const memberCount=g._memberCount||g.members?.length||0;
-  document.getElementById('grp-detail-meta').textContent=`${memberCount} Mitglieder · ${g.type==='private'?'🔒 Privat':g.type==='elite'?'⭐ Elite':'🌍 Öffentlich'}`;
+  const typeLbl=g.type==='private'?'Privat':g.type==='elite'?'Elite':'Öffentlich';
+  document.getElementById('grp-detail-meta').textContent=`${memberCount} Mitglieder · ${typeLbl}`;
   const subnav=document.getElementById('grp-subnav');
   if(subnav)subnav.style.display='';
 
@@ -14049,27 +14724,40 @@ function _rndrGroupFeed(){
       const likeCount=sc?.likes?.length||0;
       const commentCount=sc?.comments?.length||0;
       const photoUrl=sc?.photoUrl||c.photoUrl||item.photoUrl;
-      const photoHtml=photoUrl?`<div style="position:relative;width:100%;background:var(--cream-dark);aspect-ratio:16/10;overflow:hidden;"><img src="${_esc(photoUrl)}" alt="Fangfoto" style="width:100%;height:100%;object-fit:cover;" loading="lazy"></div>`:'';
-      html+=`<div class="catch-card" style="cursor:pointer;" onclick="_openCatchDetail('${g.id}','${scId}')">
-        ${photoHtml}
+
+      // v56 Phase 8d: Hard-Fact-Chips bauen
+      const chips=[];
+      if(c.bait)chips.push(`<span class="catch-card-chip"><svg class="ic"><use href="#i-hook"/></svg>${_esc(c.bait)}</span>`);
+      if(c.weather||c.temp!=null)chips.push(`<span class="catch-card-chip"><svg class="ic"><use href="#i-cloud-sun"/></svg>${c.temp!=null?Math.round(c.temp)+'°C':''}${c.weather?(c.temp!=null?' · ':'')+_esc(c.weather):''}</span>`);
+      if(c.time)chips.push(`<span class="catch-card-chip"><svg class="ic"><use href="#i-clock"/></svg>${_esc(c.time)}</span>`);
+      if(c.water)chips.push(`<span class="catch-card-chip"><svg class="ic"><use href="#i-water"/></svg>${_esc(c.water)}</span>`);
+
+      const fishLineHtml=`<div class="catch-card-photo-fish">${_esc(c.type||'Fisch')}</div>
+        <div class="catch-card-photo-len">${c.length||'?'}<span class="unit">cm</span></div>`;
+
+      const heroHtml=photoUrl?
+        `<div class="catch-card-photo">
+          <img src="${_esc(photoUrl)}" alt="Fangfoto" loading="lazy">
+          <div class="catch-card-photo-overlay">${fishLineHtml}</div>
+        </div>`:
+        `<div class="catch-card-no-photo"><div class="catch-card-photo-overlay">${fishLineHtml}</div></div>`;
+
+      html+=`<div class="catch-card" onclick="_openCatchDetail('${g.id}','${scId}')">
+        ${heroHtml}
         <div class="catch-card-body">
           <div class="catch-card-user">
-            <div class="catch-card-avatar" style="background:${color};">${memberName.charAt(0)}</div>
-            <div>
+            <div class="catch-card-avatar" style="background:${color};">${memberName.charAt(0).toUpperCase()}</div>
+            <div class="catch-card-user-info">
               <div class="catch-card-uname">${_esc(memberName)}</div>
-              <div class="catch-card-utime">${timeStr} · ${_esc(c.water||'')}</div>
+              <div class="catch-card-utime">${dateStr} · ${timeStr}</div>
             </div>
           </div>
-          <div style="font-family:var(--fs);font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:4px;">${typeof fIco==='function'?fIco(c.type):''} ${_esc(c.type||'')} · ${c.length||'?'}cm${c.weight?' · '+c.weight+'kg':''}</div>
-          <div class="catch-card-bait">
-            <div class="catch-card-chip">🎣 ${_esc(c.bait||'–')}</div>
-            ${c.baitNote?`<div class="catch-card-chip">${_esc(c.baitNote)}</div>`:''}
-          </div>
-          <div class="catch-card-actions" onclick="event.stopPropagation();">
-            <button class="catch-card-act${liked?' liked':''}" id="like-btn-${scId}" onclick="event.stopPropagation();_grpLike('${g.id}','${scId}')"><span class="cc-ico">${liked?'❤️':'🤍'}</span> <span class="like-cnt">${likeCount||''}</span></button>
-            <button class="catch-card-act" onclick="event.stopPropagation();_grpComment('${g.id}','${scId}',event)"><span class="cc-ico">💬</span> ${commentCount||''}</button>
-            <button class="catch-card-act" onclick="event.stopPropagation();_grpCopySetup('${_esc(c.bait||'')}','${_esc(c.baitNote||'')}')"><span class="cc-ico">📋</span> Kopieren</button>
-          </div>
+          ${c.note?`<div class="catch-card-desc">${_esc(c.note)}</div>`:''}
+          ${chips.length?`<div class="catch-card-chips">${chips.join('')}</div>`:''}
+        </div>
+        <div class="catch-card-actions" onclick="event.stopPropagation();">
+          <button class="catch-card-act${liked?' liked':''}" id="like-btn-${scId}" onclick="event.stopPropagation();_grpLike('${g.id}','${scId}')"><svg class="ic"><use href="#i-heart"/></svg>${likeCount||''}</button>
+          <button class="catch-card-act" onclick="event.stopPropagation();_grpComment('${g.id}','${scId}',event)"><svg class="ic"><use href="#i-comment"/></svg>${commentCount||''}</button>
         </div>
       </div>`;
     }
