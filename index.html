@@ -8,9 +8,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Angeln+">
 <link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Angeln%2B%22%2C%22short_name%22%3A%22Angeln%2B%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23F5F3EE%22%2C%22theme_color%22%3A%22%231F3D2E%22%7D">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232D4A35' rx='20'/><text y='72' x='50' font-size='60' text-anchor='middle'>🎣</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231F3D2E' rx='22'/><text y='68' x='50' font-size='52' font-weight='600' font-family='Inter,system-ui,sans-serif' text-anchor='middle' fill='%23A8D5B5'>A</text><text y='68' x='72' font-size='52' font-weight='700' font-family='Inter,system-ui,sans-serif' text-anchor='middle' fill='%23D6A23A'>+</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -37,11 +37,12 @@
   --grau:#6B7280;--grau-lt:#A8AEB5;--line:rgba(31,61,46,.08);--line-strong:rgba(31,61,46,.14);
   --sh-sm:0 2px 8px rgba(31,61,46,.06);--sh-md:0 4px 20px rgba(31,61,46,.12);
   --r:16px;--rs:10px;
-  /* v56 Typografie – Inter durchgehend, Hierarchie via Weight & Größe */
-  --fa:'Inter','DM Sans',system-ui,-apple-system,sans-serif;
-  --fs:'Inter','Playfair Display',Georgia,sans-serif;
-  --f-edit:'Inter','Fraunces',Georgia,sans-serif;
-  --f-edit-text:'Inter','DM Sans',system-ui,sans-serif;
+  /* AP1: Inter only – Hierarchie via Weight & Größe.
+     Alte Variablen-Namen bleiben für Rückwärtskompatibilität, mappen nun alle auf Inter. */
+  --fa:'Inter',system-ui,-apple-system,sans-serif;
+  --fs:'Inter',system-ui,-apple-system,sans-serif;
+  --f-edit:'Inter',system-ui,-apple-system,sans-serif;
+  --f-edit-text:'Inter',system-ui,-apple-system,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
@@ -499,6 +500,693 @@ body{
 .fshdr.fshdr-tinted .fsmeta{color:rgba(255,255,255,.7);}
 .fshdr.fshdr-tinted .xbtn{background:rgba(255,255,255,.18);color:#fff;}
 .fshdr.fshdr-tinted .xbtn:hover{background:rgba(255,255,255,.32);}
+
+/* AP3: Optionales Icon-Wrap im fshdr — analog zu page-hdr-icon-wrap */
+.fshdr-icon-wrap{
+  width:34px;height:34px;border-radius:11px;background:var(--salbei);
+  display:flex;align-items:center;justify-content:center;color:var(--forest);
+  flex-shrink:0;
+}
+.fshdr-icon-wrap.gold-wrap{background:var(--gold-soft);color:#8B6420;}
+.fshdr-icon-wrap .ic{width:18px;height:18px;}
+
+/* AP3: Konsistenter Schließen-Button für Overlays mit dunklem Hintergrund (Foto-Hero etc.) */
+.xbtn-on-photo{
+  position:absolute;top:14px;right:14px;
+  background:rgba(0,0,0,.45);color:#fff;border:none;
+  width:36px;height:36px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  z-index:5;flex-shrink:0;backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  transition:background .15s,transform .1s;
+  font-family:var(--fa);font-weight:500;font-size:14px;
+}
+.xbtn-on-photo:hover{background:rgba(0,0,0,.6);}
+.xbtn-on-photo:active{transform:scale(.94);}
+.xbtn-on-photo .ic{width:16px;height:16px;stroke-width:2;}
+
+/* AP3: Overlay-Body Utility-Padding — sauber, konsistent, optional einsetzbar */
+.overlay-pad{padding:18px 18px max(28px,var(--nav-clearance));}
+.overlay-pad-tight{padding:14px 16px max(24px,var(--nav-clearance));}
+.section-gap{margin-top:18px;}
+.section-gap-lg{margin-top:24px;}
+.section-label-clean{
+  font-size:11px;font-weight:600;letter-spacing:.6px;
+  text-transform:uppercase;color:var(--text-light);
+  margin-bottom:8px;
+}
+
+/* AP4: Form & Button Konsistenz — rein additive Klassen, nutzen Designsystem */
+/* Sekundärer Button (transparent, dezent) — z.B. für „Abbrechen", Helper-Aktionen */
+.btn-sec{
+  width:100%;padding:13px 14px;background:transparent;
+  border:1.5px solid var(--cream-dark);border-radius:var(--rs);
+  font-size:14px;font-weight:600;font-family:var(--fa);
+  color:var(--text-mid);cursor:pointer;
+  transition:background .15s,border-color .15s,color .15s;
+}
+.btn-sec:hover{background:var(--cream);border-color:var(--green-pale);color:var(--green-deep);}
+.btn-sec:active{transform:scale(.98);}
+
+/* Standard-Abstand für aufeinanderfolgende Input-Gruppen in Overlays */
+.ig.ig-mb{margin-bottom:14px;}
+.ig.ig-mb-lg{margin-bottom:20px;}
+
+/* Helper-Text unterhalb von Eingabe-Sektionen */
+.form-helper-text{
+  text-align:center;margin-top:18px;
+  font-size:11px;color:var(--text-light);
+  line-height:1.5;
+}
+
+/* Profil-Edit: Dokumente-Box und Upload-Buttons */
+.profile-doc-box{
+  margin-bottom:20px;padding:14px 16px;
+  background:var(--cream-dark);border-radius:var(--r);
+}
+.profile-doc-box .il{display:block;margin-bottom:10px;}
+.profile-doc-btn{
+  width:100%;padding:12px;background:#fff;
+  border:1.5px dashed var(--green-pale);border-radius:var(--rs);
+  font-size:13px;font-weight:600;font-family:var(--fa);
+  cursor:pointer;color:var(--green-deep);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:background .15s,border-color .15s;
+}
+.profile-doc-btn + .profile-doc-btn{margin-top:8px;}
+.profile-doc-btn:hover{background:var(--green-mist);border-color:var(--green-mid);}
+
+/* Footer-Section in Profil mit Trennlinie und Danger-Block */
+.profile-danger-section{
+  margin-top:40px;padding-top:20px;
+  border-top:1px solid var(--cream-dark);
+}
+.profile-danger-section .form-helper-text{margin-top:6px;}
+
+/* AP5: Statistik & Ziele Konsolidierung — additiv, nutzt Designsystem */
+
+/* Goal-Card: Achieved-State ruhiger und hochwertiger (kein Schimmern, dezenter Goldton) */
+#page-stats .goal-card.achieved,
+#fs-more-stats .goal-card.achieved,
+#fs-stats-details .goal-card.achieved{
+  background:linear-gradient(135deg, #FBF3DE 0%, #F5E9C2 100%);
+  border:1.5px solid #D6A23A;
+  animation:none;
+  box-shadow:0 2px 10px rgba(214,162,58,.18);
+}
+#page-stats .goal-card.achieved .goal-name,
+#fs-more-stats .goal-card.achieved .goal-name,
+#fs-stats-details .goal-card.achieved .goal-name{color:#7a5a00;font-weight:700;}
+#page-stats .goal-card.achieved .goal-progress,
+#fs-more-stats .goal-card.achieved .goal-progress,
+#fs-stats-details .goal-card.achieved .goal-progress{color:#8B6420;font-weight:700;}
+#page-stats .goal-achieved-badge,
+#fs-more-stats .goal-achieved-badge,
+#fs-stats-details .goal-achieved-badge{
+  background:var(--gold);color:var(--green-deep);
+  font-weight:700;letter-spacing:.5px;
+  box-shadow:none;
+}
+
+/* "Weitere Statistiken" CTA — ruhigere, hellere Variante */
+#page-stats .st-mehr-kachel{
+  background:#fff;
+  border:1px solid var(--line);
+  box-shadow:var(--sh-sm);
+  color:var(--text-dark);
+}
+#page-stats .st-mehr-kachel:hover{
+  box-shadow:0 4px 14px rgba(31,61,46,.10);
+  transform:translateY(-1px);
+}
+#page-stats .st-mehr-title{color:var(--text-dark);font-weight:600;font-size:15px;letter-spacing:-.005em;}
+#page-stats .st-mehr-sub{color:var(--text-light);font-size:12px;}
+#page-stats .st-mehr-arrow{color:var(--green-mid);}
+
+/* Goal-Edit Overlay Komponenten */
+.goal-edit-list{padding:16px 16px 0;}
+.goal-edit-empty{
+  text-align:center;padding:40px 24px;
+}
+.goal-edit-empty-ico{
+  width:56px;height:56px;border-radius:18px;
+  background:var(--gold-soft);color:var(--gold-d);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;
+}
+.goal-edit-empty-ico .ic{width:28px;height:28px;}
+.goal-edit-empty-title{font-size:16px;font-weight:700;color:var(--text-dark);margin-bottom:8px;}
+.goal-edit-empty-text{font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:24px;}
+
+.goal-row{
+  background:#fff;border:1px solid var(--line);
+  border-radius:var(--r);padding:14px 16px;margin-bottom:10px;
+  box-shadow:var(--sh-sm);
+  display:flex;align-items:center;gap:14px;
+}
+.goal-row.achieved{
+  background:linear-gradient(135deg,#FBF3DE 0%,#F5E9C2 100%);
+  border:1.5px solid #D6A23A;
+}
+.goal-row-info{flex:1;min-width:0;}
+.goal-row-label{
+  font-size:14px;font-weight:700;color:var(--text-dark);
+  margin-bottom:3px;line-height:1.3;
+}
+.goal-row.achieved .goal-row-label{color:#7a5a00;}
+.goal-row-yr{font-size:10px;color:var(--text-light);margin-left:6px;font-weight:500;}
+.goal-row-meta{
+  font-size:11px;color:var(--text-light);
+  font-weight:600;letter-spacing:.4px;
+}
+.goal-row.achieved .goal-row-meta{color:#8B6420;}
+.goal-row-meta .gr-tag-ach{color:#8B6420;font-weight:700;margin-left:4px;}
+.goal-row-bar{
+  height:4px;background:rgba(200,221,208,.4);
+  border-radius:2px;margin-top:6px;overflow:hidden;
+}
+.goal-row-bar-fill{
+  height:100%;border-radius:2px;
+  background:var(--green-mid);
+  transition:width .3s;
+}
+.goal-row.achieved .goal-row-bar-fill{background:var(--gold);}
+.goal-row-del{
+  background:rgba(180,90,70,.10);border:none;
+  width:34px;height:34px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;color:var(--rose-t);
+  transition:background .15s;
+}
+.goal-row-del:hover{background:rgba(180,90,70,.20);}
+.goal-row-del .ic{width:16px;height:16px;}
+
+.goal-add-row{padding:4px 16px 12px;}
+.goal-add-btn{
+  width:100%;padding:13px 14px;background:var(--green-mist);
+  border:1.5px dashed var(--green-pale);border-radius:var(--rs);
+  font-size:13px;font-weight:600;font-family:var(--fa);
+  cursor:pointer;color:var(--green-deep);
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:background .15s,border-color .15s;
+}
+.goal-add-btn:hover{background:var(--green-pale);border-color:var(--green-mid);}
+
+.goal-save-row{padding:0 16px 24px;}
+
+/* More-Stats: Erfolgsquote-Card ohne dominante Emojis */
+#fs-more-stats .st-rate-num{font-family:var(--fa);font-weight:700;letter-spacing:-.025em;}
+
+/* AP6: Gruppen, Social Feed, Community — additive Konsistenz-Klassen */
+
+/* Gruppen Empty-States (Hub, Discover, Login-Required) */
+.grp-empty-state{
+  text-align:center;padding:40px 24px;
+}
+.grp-empty-ico{
+  width:64px;height:64px;border-radius:18px;
+  background:var(--salbei);color:var(--forest);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;
+}
+.grp-empty-ico .ic{width:30px;height:30px;}
+.grp-empty-ico.cloud-tone{background:var(--blue);color:var(--blue-t);}
+.grp-empty-title{
+  font-size:16px;font-weight:700;color:var(--text-dark);
+  margin-bottom:8px;letter-spacing:-.01em;
+}
+.grp-empty-text{
+  font-size:13px;color:var(--text-light);
+  line-height:1.6;margin-bottom:22px;
+  padding:0 8px;
+}
+.grp-empty-actions{
+  display:flex;flex-direction:column;gap:10px;
+  padding:0 16px;
+}
+.grp-empty-actions .btn{margin-top:0;}
+
+/* Discover-Tab State-Badges (auf Group-Items) */
+.grp-state-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;font-weight:700;
+  padding:3px 9px;border-radius:99px;
+  letter-spacing:.2px;flex-shrink:0;
+  font-family:var(--fa);
+}
+.grp-state-badge.is-member{background:var(--green-mist);color:var(--green-mid);}
+.grp-state-badge.is-pending{background:var(--gold-l);color:var(--gold-d);}
+.grp-state-badge.is-view{background:transparent;color:var(--text-light);font-weight:600;font-size:11px;padding:0;}
+
+/* Discover-Tab Loading & Empty (innerhalb der Discover-Liste) */
+.discover-status{
+  text-align:center;padding:24px;
+  font-size:13px;color:var(--text-light);
+}
+.discover-status.error{color:var(--rose-t);font-size:12px;padding:16px;}
+
+/* Group-Item Icon-Background-Variants — werden über Klassen statt Inline-Style gesetzt */
+.grp-item-ico.ico-elite{background:linear-gradient(135deg,#f6d365,#fda085);}
+.grp-item-ico.ico-public{background:var(--blue);}
+.grp-item-ico.ico-private{background:var(--green-mist);}
+
+/* Group-Hub Discover-Search Wrapper mit i-search Prefix */
+.grp-discover-search{
+  position:relative;margin-bottom:14px;
+}
+.grp-discover-search .if{padding-left:38px;}
+.grp-discover-search .gds-icon{
+  position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  width:16px;height:16px;color:var(--grau);pointer-events:none;
+}
+
+/* Group-Item Admin-Badge (statt Inline-Style) */
+.grp-admin-badge{
+  font-size:9px;padding:1px 6px;background:var(--gold-l);
+  color:var(--gold-d);border-radius:8px;font-weight:700;
+  letter-spacing:.3px;margin-left:4px;
+}
+
+/* Group-Hub Discover-Code-Section: Helper-Text */
+.discover-code-section .dcs-help{
+  font-size:10px;color:var(--text-light);margin-top:8px;
+}
+
+/* AP7: Feed, Catch Cards, Kommentare — additive Politur (rein visuell) */
+
+/* Catch-Card ohne Foto: subtileres Top, klare Trennung */
+.catch-card .catch-card-no-photo{
+  padding:16px 16px 10px;
+  background:linear-gradient(135deg, var(--green-mist) 0%, #fff 65%);
+  align-items:flex-end;gap:10px;
+}
+.catch-card .catch-card-no-photo .catch-card-photo-fish{
+  font-size:11px;font-weight:600;color:var(--text-light);
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.catch-card .catch-card-no-photo .catch-card-photo-len{
+  font-size:26px;font-weight:600;color:var(--gold-d);
+  letter-spacing:-.02em;line-height:1;
+}
+.catch-card .catch-card-no-photo .catch-card-photo-len .unit{
+  font-size:14px;font-weight:500;color:var(--grau);
+}
+
+/* Catch-Card Body: Nur leichte Padding-Konsolidierung (additiv) */
+.catch-card .catch-card-body{padding:14px 14px 0;}
+
+/* Catch-Card Chips: Etwas leichter, weniger Tanne-Last */
+.catch-card .catch-card-chips{gap:6px;margin-bottom:12px;}
+.catch-card .catch-card-chip{
+  background:var(--salbei-lt);color:var(--green-deep);
+  padding:5px 10px;font-weight:500;
+  border:1px solid rgba(31,61,46,.06);
+}
+.catch-card .catch-card-chip .ic{color:var(--green-mid);}
+
+/* Catch-Card Actions: Konsistente Höhe, Hover-State */
+.catch-card .catch-card-actions{
+  padding:8px 14px;gap:18px;
+  background:transparent;
+}
+.catch-card .catch-card-act{
+  font-size:13px;font-weight:500;color:var(--grau);
+  padding:6px 4px;border-radius:8px;
+  transition:color .15s,background .15s;
+}
+.catch-card .catch-card-act:hover{color:var(--text-dark);}
+.catch-card .catch-card-act.liked{color:var(--gold-d);}
+.catch-card .catch-card-act.liked .ic{fill:var(--gold);stroke:var(--gold);}
+
+/* Inline-Comment-Expand: Empty-State moderner */
+.cm-expand-empty{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:12px;color:var(--text-light);
+  padding:14px 8px 10px;
+  text-align:center;
+}
+.cm-expand-empty .ic{
+  width:14px;height:14px;color:var(--grau-lt);stroke-width:1.7;
+}
+
+/* Inline-Comment-Form Input: an .if angleichen (sanft, nicht riskant) */
+.cm-expand-form input{
+  background:#fff;border:1.5px solid var(--cream-dark);
+  color:var(--text-dark);font-weight:500;
+  transition:border-color .2s, background .2s;
+}
+.cm-expand-form input:focus{
+  border-color:var(--green-mid);background:#fff;
+}
+.cm-expand-form input::placeholder{
+  color:var(--text-light);font-weight:400;
+}
+.cm-expand-form button:hover{background:#1f3a26;}
+.cm-expand-form button:active{transform:scale(.92);}
+
+/* Inline-Comment-Row: ruhigere Typografie */
+.cm-expand-row-name{color:var(--green-deep);}
+.cm-expand-row-time{font-weight:500;}
+
+/* Catch-Detail Action-Buttons: Konsistente Größe ohne Inline-Override */
+#fs-catch-detail .catch-card-act{font-size:14px;}
+
+/* AP8: Chat, Reply Quote, Swipe Hint, Chat Eingabe — additive Politur (rein visuell) */
+
+/* Chat-Bubble: subtiler Border, Schatten ruhiger, Time-Hierarchie */
+.feed-msg .feed-msg-bubble{
+  border:1px solid var(--line);
+  box-shadow:0 1px 3px rgba(31,61,46,.04);
+  max-width:80%;
+  padding:10px 14px 8px;
+}
+.feed-msg .feed-msg-name{
+  font-size:11.5px;font-weight:600;
+  color:var(--green-deep);
+  letter-spacing:-.005em;
+  margin-bottom:4px;
+}
+.feed-msg .feed-msg-time{
+  font-size:10px;color:var(--grau);
+  font-weight:500;
+  margin-top:6px;letter-spacing:.02em;
+}
+
+/* Eigene Nachricht: Salbei-Hintergrund mit dezentem Akzent */
+.feed-msg.own .feed-msg-bubble{
+  background:var(--green-mist);
+  border-color:rgba(31,61,46,.10);
+}
+.feed-msg.own .feed-msg-name{color:var(--green-deep);}
+
+/* Reply-Quote: hochwertigere Zitatkarte mit Salbei-Akzent */
+.feed-msg-bubble .feed-msg-quote{
+  background:var(--salbei-lt);
+  border-left:3px solid var(--gold);
+  border-radius:8px;
+  padding:7px 11px;
+  margin:0 0 8px;
+  transition:background .15s;
+}
+.feed-msg-bubble .feed-msg-quote:hover{background:var(--salbei);}
+.feed-msg-bubble .feed-msg-quote-name{
+  color:var(--gold-d);
+  font-size:11px;font-weight:600;
+  letter-spacing:-.005em;
+  margin-bottom:2px;
+}
+.feed-msg-bubble .feed-msg-quote-text{
+  color:var(--text-mid);
+  font-size:12px;line-height:1.45;
+}
+.feed-msg.own .feed-msg-quote{background:rgba(255,255,255,.55);}
+.feed-msg.own .feed-msg-quote:hover{background:rgba(255,255,255,.8);}
+
+/* Swipe-Reply-Indicator: minimal verfeinert (gleiche Position, Touch-Logik unangetastet) */
+.feed-msg .feed-msg-swipe-ico{
+  background:var(--green-deep);
+  box-shadow:0 2px 6px rgba(31,61,46,.20);
+  font-size:13px;
+}
+
+/* Chat-Eingabezeile: an .if-Stil angeglichen, Send-Button verfeinert */
+.grp-chat-wa{
+  background:#fff;
+  border-top:1px solid var(--line);
+  box-shadow:0 -1px 4px rgba(31,61,46,.05);
+}
+.grp-chat-wa-btn{
+  color:var(--grau);
+  transition:background .15s, color .15s;
+}
+.grp-chat-wa-btn .ic{width:18px;height:18px;stroke-width:1.7;}
+.grp-chat-wa-btn:hover{background:var(--cream);color:var(--green-deep);}
+.grp-chat-wa-input{
+  background:var(--beige);
+  border-color:var(--cream-dark);
+  color:var(--text-dark);
+  font-weight:500;
+}
+.grp-chat-wa-input:focus{
+  border-color:var(--green-mid);
+  background:#fff;
+}
+.grp-chat-wa-input::placeholder{
+  color:var(--text-light);font-weight:400;
+}
+.grp-chat-wa-send{
+  box-shadow:0 2px 6px rgba(31,61,46,.20);
+  transition:background .15s, transform .1s, box-shadow .15s;
+}
+.grp-chat-wa-send:hover{background:#1f3a26;box-shadow:0 3px 8px rgba(31,61,46,.30);}
+
+/* Reply-Banner über der Eingabe: ruhiger und konsistenter */
+.grp-chat-reply{
+  background:var(--salbei-lt);
+  border-bottom:none;
+  border-radius:8px;
+  padding:8px 12px;
+  margin:0 4px 6px;
+  position:relative;
+}
+.grp-chat-reply-bar{
+  background:var(--gold);
+}
+.grp-chat-reply-name{
+  color:var(--gold-d);font-weight:600;
+  letter-spacing:-.005em;
+}
+.grp-chat-reply-text{color:var(--text-mid);}
+.grp-chat-reply-x{
+  color:var(--text-mid);
+  transition:background .15s, color .15s;
+}
+.grp-chat-reply-x:hover{background:var(--cream-dark);color:var(--text-dark);}
+
+/* Photo-Preview im Chat-Bar (analog) */
+.grp-chat-photo-preview{
+  background:var(--cream);
+  border-radius:8px;border-bottom:none;
+  padding:8px 10px;
+  margin:0 4px 6px;
+}
+.grp-chat-photo-preview .gpp-x{
+  transition:background .15s, color .15s;
+}
+.grp-chat-photo-preview .gpp-x:hover{background:var(--cream-dark);color:var(--text-dark);}
+
+/* AP9: Catch Detail + Member Profile Politur (rein visuell, additiv) */
+
+/* Catch-Detail Body-Wrapper */
+#fs-catch-detail .cd-body{padding:16px 16px max(16px, var(--nav-clearance));}
+
+/* Catch-Detail Hero ohne Foto: hochwertiger Salbei-Mist-Look (analog AP7 Catch-Card) */
+.cd-hero-no-photo{
+  position:relative;padding:36px 24px 28px;
+  background:linear-gradient(150deg, var(--green-mist) 0%, var(--salbei-lt) 70%, #fff 100%);
+  text-align:center;color:var(--text-dark);
+  border-bottom:1px solid var(--line);
+}
+.cd-hero-no-photo .cd-hero-fish{
+  font-size:48px;margin-bottom:6px;line-height:1;
+  filter:drop-shadow(0 2px 6px rgba(31,61,46,.10));
+}
+.cd-hero-no-photo .cd-hero-name{
+  font-family:var(--fa);font-size:24px;font-weight:600;
+  color:var(--text-dark);letter-spacing:-.02em;line-height:1.1;
+}
+.cd-hero-no-photo .cd-hero-meta{
+  font-size:13px;color:var(--text-mid);margin-top:6px;
+}
+.cd-hero-no-photo .cd-hero-meta strong{color:var(--gold-d);font-weight:600;letter-spacing:-.02em;}
+
+/* Catch-Detail Photo-Hero — Inline-Style-Reduktion */
+.cd-photo-wrap{
+  position:relative;width:100%;background:#1a1d1a;
+  aspect-ratio:4/3;cursor:pointer;overflow:hidden;
+}
+.cd-photo-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.cd-photo-overlay{
+  position:absolute;left:16px;right:16px;bottom:14px;
+  color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.6);
+}
+.cd-photo-overlay .cd-photo-fish{
+  font-size:24px;font-weight:700;font-family:var(--fa);
+  letter-spacing:-.02em;line-height:1.1;
+}
+.cd-photo-overlay .cd-photo-meta{font-size:14px;opacity:.92;margin-top:2px;}
+.cd-zoom-pill{
+  position:absolute;top:14px;left:14px;
+  background:rgba(0,0,0,.45);color:#fff;
+  font-size:11px;padding:6px 11px;border-radius:14px;
+  display:inline-flex;align-items:center;gap:6px;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  font-weight:500;
+}
+.cd-zoom-pill .ic{width:13px;height:13px;stroke-width:1.8;}
+
+/* Catch-Detail User-Row (Avatar + Name + Datum) */
+.cd-user-row{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:18px;
+}
+.cd-user-row .catch-card-avatar{width:36px;height:36px;font-size:14px;}
+.cd-user-row .cd-user-name{
+  font-weight:600;font-size:14px;color:var(--text-dark);
+  letter-spacing:-.005em;
+}
+.cd-user-row .cd-user-meta{
+  font-size:11px;color:var(--text-light);margin-top:1px;
+}
+
+/* Catch-Detail Cards (Gewässer/Spot/Fangdaten/Wetter/Map) */
+.cd-card{
+  background:#fff;padding:14px;
+  border-radius:14px;border:1px solid var(--line);
+  box-shadow:0 1px 3px rgba(31,61,46,.04);
+  margin-bottom:14px;
+}
+.cd-card-label{
+  font-size:10px;color:var(--text-light);
+  text-transform:uppercase;letter-spacing:.6px;
+  font-weight:600;margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;
+}
+.cd-card-label .ic{width:12px;height:12px;color:var(--green-mid);stroke-width:1.7;}
+.cd-card-value{font-size:14px;font-weight:600;color:var(--text-dark);}
+
+/* Catch-Detail 2-Spalt-Grid für Gewässer + Spot */
+.cd-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.cd-grid-2 .cd-card{margin-bottom:0;}
+
+/* Catch-Detail Fangdaten Faktenliste */
+.cd-fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;}
+.cd-fact-grid .cd-fact-lbl{
+  font-size:10.5px;color:var(--text-light);
+  text-transform:uppercase;letter-spacing:.4px;font-weight:600;
+}
+.cd-fact-grid .cd-fact-val{
+  font-size:14px;font-weight:600;color:var(--text-dark);
+  margin-top:2px;
+}
+.cd-bait-note{
+  margin-top:10px;padding:9px 12px;
+  background:var(--green-mist);border-left:3px solid var(--green-mid);
+  border-radius:6px;font-size:12px;
+  color:var(--green-deep);line-height:1.5;
+}
+
+/* Catch-Detail Wetter-Grid */
+.cd-wx-grid{display:flex;gap:8px;align-items:flex-end;}
+.cd-wx-cell{flex:1;text-align:center;}
+.cd-wx-cell .cd-wx-ico{font-size:22px;line-height:1;margin-bottom:2px;}
+.cd-wx-cell .cd-wx-val{
+  font-size:16px;font-weight:700;color:var(--text-dark);
+  letter-spacing:-.01em;
+}
+.cd-wx-cell .cd-wx-val small{font-size:11px;font-weight:500;}
+.cd-wx-cell .cd-wx-lbl{
+  font-size:9.5px;color:var(--text-light);
+  text-transform:uppercase;letter-spacing:.4px;
+  font-weight:600;margin-top:1px;
+}
+.cd-wx-subline{
+  margin-top:10px;padding:8px 10px;
+  background:var(--cream);border-radius:8px;
+  font-size:11px;color:var(--text-mid);
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+}
+
+/* Catch-Detail Smart-Map */
+.cd-map-head{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;
+}
+.cd-map-pill{
+  font-size:9px;color:var(--text-light);
+  background:var(--cream);padding:3px 8px;border-radius:6px;
+  font-weight:500;letter-spacing:.2px;
+}
+.cd-map-frame{
+  width:100%;height:200px;border-radius:8px;
+  overflow:hidden;isolation:isolate;
+}
+.cd-map-foot{
+  font-size:10.5px;color:var(--text-light);
+  margin-top:8px;text-align:center;line-height:1.4;
+}
+
+/* Catch-Detail Kein-Standort-Hinweis */
+.cd-no-loc{
+  background:var(--cream);padding:14px;
+  border-radius:12px;text-align:center;
+  border:1px dashed var(--cream-dark);margin-bottom:14px;
+  font-size:12px;color:var(--text-mid);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.cd-no-loc .ic{width:14px;height:14px;color:var(--grau-lt);stroke-width:1.7;}
+
+/* Catch-Detail Action-Card (Like + Kommentieren-Bar) */
+.cd-action-card{
+  background:#fff;padding:14px;
+  border-radius:14px;border:1px solid var(--line);
+  margin-bottom:24px;
+}
+.cd-action-row{
+  display:flex;align-items:center;gap:18px;
+}
+
+/* Catch-Detail Comment-Bar Konsistenz mit Chat-Eingabe (sticky bleibt) */
+.cd-comment-input{
+  background:var(--beige);border-color:var(--cream-dark);
+}
+.cd-comment-input:focus{background:#fff;}
+.cd-comment-input::placeholder{
+  color:var(--text-light);font-weight:400;
+}
+.cd-comment-clear{
+  transition:background .15s, color .15s;
+}
+.cd-comment-clear:hover{background:var(--text-light);color:#fff;}
+.cd-comment-send{
+  box-shadow:0 2px 6px rgba(31,61,46,.20);
+  transition:background .15s, transform .1s, box-shadow .15s;
+}
+.cd-comment-send:hover{background:#1f3a26;box-shadow:0 3px 8px rgba(31,61,46,.30);}
+
+/* Member-Profile: Avatar mit Salbei-Ring, Role-Pill ruhiger */
+.member-profile-hero{
+  background:linear-gradient(135deg, var(--green-deep) 0%, #2A4D38 100%);
+}
+.member-profile-avatar{
+  border:4px solid rgba(255,255,255,.10);
+  box-shadow:0 8px 24px rgba(0,0,0,.30), inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.member-profile-role{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.14);
+  font-weight:600;letter-spacing:.2px;
+}
+.member-profile-role.is-admin{
+  background:var(--gold-soft);color:var(--gold-d);
+}
+.member-profile-role.is-admin .ic{
+  width:11px;height:11px;color:var(--gold-d);
+}
+
+/* Member-Profile Loading-State (statt ⏳ Emoji) */
+.member-loading{
+  text-align:center;padding:24px;
+  color:var(--text-light);font-size:13px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.member-loading::before{
+  content:'';width:14px;height:14px;
+  border:2px solid var(--cream-dark);
+  border-top-color:var(--green-mid);
+  border-radius:50%;
+  animation:memberSpin 0.8s linear infinite;
+}
+@keyframes memberSpin{to{transform:rotate(360deg);}}
 
 /* v59-Fix: Nur .fsov-scroll wird zum flex:1-Scrollcontainer (nicht jedes div-Kind!)
    → vermeidet, dass z.B. cd-comment-bar oder grp-chat-bar fälschlich flex:1 bekommen */
@@ -1971,6 +2659,48 @@ select.obif{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3
 .obBtn.pulse{animation:pulse 1.4s ease-in-out infinite;}
 .obBtn:disabled{background:#ccc;color:#aaa;cursor:not-allowed;box-shadow:none;}
 
+/* AP2: Onboarding-Vertrauensstrecke (rein visuelle Klassen, keine Logik) */
+.ob-brand-mark{font-family:var(--fa);font-size:22px;font-weight:500;color:#A8D5B5;letter-spacing:-.015em;display:inline-flex;align-items:baseline;}
+.ob-brand-mark .obm-plus{color:var(--gold);font-weight:600;margin-left:1px;}
+.ob-hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.ob-hdr-step{font-size:11px;font-weight:600;letter-spacing:.6px;color:rgba(255,255,255,.55);text-transform:uppercase;}
+.ob-trust-hero{display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-bottom:6px;padding:22px 22px 22px;border-radius:18px;background:linear-gradient(150deg, var(--green-mist), var(--salbei-lt));border:1px solid rgba(31,61,46,.08);}
+.ob-trust-hero-ico{width:44px;height:44px;border-radius:12px;background:#fff;border:1px solid rgba(31,61,46,.08);display:flex;align-items:center;justify-content:center;color:var(--green-mid);box-shadow:var(--sh-sm);}
+.ob-trust-hero-ico svg{width:22px;height:22px;}
+.ob-trust-hero-title{font-family:var(--fa);font-size:17px;font-weight:600;color:var(--text-dark);line-height:1.3;letter-spacing:-.005em;}
+.ob-trust-hero-text{font-size:13.5px;color:var(--text-mid);line-height:1.55;}
+
+.ob-trust-card{background:#fff;border:1px solid rgba(31,61,46,.08);border-radius:18px;padding:18px 18px 16px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:var(--sh-sm);}
+.ob-trust-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold) 0,var(--green-mid) 100%);}
+.ob-trust-card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.ob-trust-card-hdr-ico{width:32px;height:32px;border-radius:9px;background:var(--gold-l);color:var(--gold-d);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ob-trust-card-hdr-ico svg{width:17px;height:17px;}
+.ob-trust-card-hdr-title{font-family:var(--fa);font-size:14px;font-weight:600;color:var(--text-dark);letter-spacing:-.005em;}
+.ob-trust-list{display:flex;flex-direction:column;gap:11px;margin-top:4px;}
+.ob-trust-check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text-mid);line-height:1.5;}
+.ob-trust-check-dot{width:18px;height:18px;border-radius:50%;background:var(--green-mist);color:var(--green-deep);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ob-trust-check-dot svg{width:11px;height:11px;}
+.ob-trust-check b{font-weight:600;color:var(--text-dark);}
+
+.ob-info-pill{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--gold-l);border:1px solid #efd9a3;border-radius:12px;font-size:12.5px;font-weight:500;color:var(--gold-d);line-height:1.4;}
+.ob-info-pill-ico{flex-shrink:0;width:16px;height:16px;color:var(--gold-d);}
+
+.ob-mini-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:14px 0 6px;}
+.ob-mini-card{display:flex;gap:12px;align-items:flex-start;padding:14px;background:#fff;border:1px solid rgba(31,61,46,.08);border-radius:14px;}
+.ob-mini-card-ico{width:36px;height:36px;border-radius:10px;background:var(--green-mist);color:var(--green-mid);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ob-mini-card-ico svg{width:18px;height:18px;}
+.ob-mini-card-body{flex:1;min-width:0;}
+.ob-mini-card-title{font-size:13.5px;font-weight:600;color:var(--text-dark);margin-bottom:2px;letter-spacing:-.005em;}
+.ob-mini-card-text{font-size:12.5px;color:var(--text-light);line-height:1.5;}
+
+.ob-step-cta{font-size:14.5px;font-weight:600;color:var(--text-dark);margin-bottom:8px;letter-spacing:-.005em;}
+.ob-step-help{font-size:12.5px;color:var(--text-light);line-height:1.55;margin-bottom:18px;}
+.ob-section-spacer{height:6px;}
+
+.ob-finish-brand{margin-bottom:24px;display:flex;align-items:center;justify-content:center;gap:0;font-family:var(--fa);font-size:34px;font-weight:500;color:#A8D5B5;letter-spacing:-.02em;animation:obBounce .6s ease .2s both;}
+.ob-finish-brand .obm-plus{color:var(--gold);font-weight:600;margin-left:2px;}
+.ob-finish-hint{margin-top:18px;font-size:12px;color:rgba(255,255,255,.5);line-height:1.5;}
+
 /* SUCCESS */
 .sucov{position:absolute;inset:0;z-index:150;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(15,30,20,.9);opacity:0;pointer-events:none;transition:opacity .4s;}
 .sucov.on{opacity:1;pointer-events:all;}
@@ -2788,7 +3518,7 @@ input[type=file]{display:none;}
 /* ═══════════════════════════════════════════════════════════════
    v55 — VORHERSAGE-UPGRADE (Editorial Nature)
    95% Weiß · 4% Waldgrün · 1% Gold
-   Fraunces für Werte · Inter für Text
+   Inter durchgehend · Hierarchie via Weight
 ═══════════════════════════════════════════════════════════════ */
 
 /* AP2.1: Top-Kachel "14-Tage Vorhersage" mit scroll-snap-x */
@@ -3207,9 +3937,8 @@ input[type=file]{display:none;}
 <!-- ═══ LOGIN / AUTH OVERLAY ═══ -->
 <div class="login-ov hidden" id="login-ov">
   <div style="text-align:center;margin-bottom:24px;">
-    <div style="font-size:48px;margin-bottom:8px;">🎣</div>
-    <div style="font-family:var(--fs);font-size:26px;font-weight:600;color:#fff;">Fishing Buddy</div>
-    <div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:4px;">Dein Cloud-Angelbuch</div>
+    <div style="font-family:var(--fs);font-size:34px;font-weight:600;color:#fff;letter-spacing:-.02em;">angeln<span style="color:var(--gold);font-weight:600;margin-left:1px;">+</span></div>
+    <div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:6px;letter-spacing:.3px;">Dein digitales Fangbuch</div>
   </div>
   <div class="login-card">
     <div class="ltabs">
@@ -3331,36 +4060,102 @@ input[type=file]{display:none;}
   <span id="sync-progress-count" style="white-space:nowrap;font-size:10px;opacity:.8;"></span>
 </div>
   <canvas id="goal-kcanvas" style="position:absolute;inset:0;pointer-events:none;width:100%;height:100%;"></canvas>
-  <div class="goal-walkout-badge" id="gwalk-badge">🏆</div>
+  <div class="goal-walkout-badge" id="gwalk-badge"><svg style="width:80px;height:80px;color:var(--gold);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-trophy"/></svg></div>
   <div class="goal-walkout-label">ZIEL ERREICHT</div>
   <div class="goal-walkout-title" id="gwalk-title"></div>
   <div class="goal-walkout-tap">Tippe um fortzufahren</div>
 </div>
 <div class="offbanner" id="off-banner">📡 Kein Internet – alle Funktionen laufen weiter</div>
 
-<!-- ONBOARDING -->
+<!-- ONBOARDING (AP2: Vertrauensstrecke — 5 Steps: Trust → Name → Angelstil → PLZ → Ziele) -->
 <div class="obov hidden" id="onboarding" role="dialog" aria-modal="true">
   <div class="obhdr">
-    <div class="obdots"><div class="oddot on" id="d0"></div><div class="oddot" id="d1"></div><div class="oddot" id="d2"></div><div class="oddot" id="d3"></div></div>
-    <div class="obtit" id="ob-title">Willkommen beim<br>Fishing Buddy 🎣</div>
-    <div class="obsub" id="ob-sub">Dein persönliches Angelbuch – 100% offline.</div>
+    <div class="ob-hdr-row">
+      <div class="ob-brand-mark">angeln<span class="obm-plus">+</span></div>
+      <div class="ob-hdr-step" id="ob-step-label">Schritt 1 von 5</div>
+    </div>
+    <div class="obdots"><div class="oddot on" id="d0"></div><div class="oddot" id="d1"></div><div class="oddot" id="d2"></div><div class="oddot" id="d3"></div><div class="oddot" id="d4"></div></div>
+    <div class="obtit" id="ob-title">Willkommen bei<br>Angeln+</div>
+    <div class="obsub" id="ob-sub">Dein digitales Fangbuch für bessere Angeltage.</div>
   </div>
   <div class="obbody">
+    <!-- Step 0 (NEU): Welcome + Spot-Schutz Vertrauensstrecke -->
     <div id="obs0">
-      <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;font-weight:500;">Wie sollen wir dich nennen?</p>
+      <div class="ob-trust-hero">
+        <div class="ob-trust-hero-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hook"/></svg>
+        </div>
+        <div>
+          <div class="ob-trust-hero-title">Sessions, Fänge, Wetter — an einem Ort.</div>
+          <div class="ob-trust-hero-text">Dokumentiere deine Angeltage und erkenne Muster, die du sonst übersehen würdest.</div>
+        </div>
+      </div>
+
+      <div class="ob-trust-card" style="margin-top:18px;">
+        <div class="ob-trust-card-hdr">
+          <div class="ob-trust-card-hdr-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-lock"/></svg>
+          </div>
+          <div class="ob-trust-card-hdr-title">Deine Spots bleiben deine Spots.</div>
+        </div>
+        <div class="ob-trust-list">
+          <div class="ob-trust-check">
+            <span class="ob-trust-check-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg></span>
+            <span><b>Du entscheidest</b>, was geteilt wird — nichts wird automatisch öffentlich.</span>
+          </div>
+          <div class="ob-trust-check">
+            <span class="ob-trust-check-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg></span>
+            <span>Exakte Koordinaten <b>bleiben privat</b>, wenn du das willst.</span>
+          </div>
+          <div class="ob-trust-check">
+            <span class="ob-trust-check-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg></span>
+            <span>Fänge in Gruppen teilen <b>auch ohne Spot-Preisgabe</b>.</span>
+          </div>
+          <div class="ob-trust-check">
+            <span class="ob-trust-check-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg></span>
+            <span>Community-Insights basieren auf <b>anonymisierten Mustern</b>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ob-info-pill" style="margin-bottom:6px;">
+        <svg class="ob-info-pill-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-info"/></svg>
+        <span>Angeln+ ist <b>keine öffentliche Spotkarte</b>.</span>
+      </div>
+    </div>
+
+    <!-- Step 1 (war 0): Name -->
+    <div id="obs1" style="display:none;">
+      <div class="ob-step-cta">Wie sollen wir dich nennen?</div>
+      <div class="ob-step-help">Damit wir dich persönlich begrüßen können. Du kannst den Namen jederzeit ändern.</div>
       <div class="obig"><label class="oblbl" for="ob-name">Dein Name</label><input type="text" class="obif" id="ob-name" placeholder="z.B. Klaus Fischer" oninput="obChk()" autocomplete="given-name"></div>
     </div>
-    <div id="obs1" style="display:none;">
-      <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;font-weight:500;">Wie gehst du am liebsten angeln?</p>
-      <div class="oblbl" style="margin-bottom:12px;">Dein Angelstil</div>
+
+    <!-- Step 2 (war 1): Angelstil + Mini-Card "Mehr als ein Fangbuch" -->
+    <div id="obs2" style="display:none;">
+      <div class="ob-step-cta">Wie gehst du am liebsten angeln?</div>
+      <div class="ob-step-help">Wir passen Köder-, Fisch- und Zielvorschläge an deinen Stil an.</div>
+      <div class="oblbl" style="margin-bottom:10px;">Dein Angelstil</div>
       <div class="obtgrid">
         <button class="obtbtn" id="ot-Friedfisch" onclick="selTyp('Friedfisch')"><span class="ico">🐠</span>Friedfisch</button>
         <button class="obtbtn" id="ot-Raubfisch" onclick="selTyp('Raubfisch')"><span class="ico">🦈</span>Raubfisch</button>
         <button class="obtbtn" id="ot-Allround" onclick="selTyp('Allround')"><span class="ico">🎣</span>Allround</button>
       </div>
+      <div class="ob-mini-grid" style="margin-top:22px;">
+        <div class="ob-mini-card">
+          <div class="ob-mini-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#i-trend"/></svg></div>
+          <div class="ob-mini-card-body">
+            <div class="ob-mini-card-title">Mehr sehen als nur den Fang.</div>
+            <div class="ob-mini-card-text">Köder und Gewässer langfristig vergleichen — Muster erkennen, statt nur Fänge zu zählen.</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="obs2" style="display:none;">
-      <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;font-weight:500;">Warum die PLZ? Wir laden Wetter- und Tidekalender-Daten automatisch für dein Revier – ohne GPS-Pflicht.</p>
+
+    <!-- Step 3 (war 2): PLZ + Mini-Card "Crew/Gruppen" -->
+    <div id="obs3" style="display:none;">
+      <div class="ob-step-cta">Wo bist du unterwegs?</div>
+      <div class="ob-step-help">Mit deiner PLZ laden wir Wetter, Mond und Tiden für dein Revier — ohne GPS-Pflicht.</div>
       <div class="obig">
         <label class="oblbl" for="ob-plz">Postleitzahl (PLZ)</label>
         <input type="text" class="obif" id="ob-plz" placeholder="z.B. 49377"
@@ -3368,14 +4163,26 @@ input[type=file]{display:none;}
           oninput="obChk()" autocomplete="postal-code">
         <div id="ob-plz-err" style="display:none;font-size:11px;color:var(--red);font-weight:600;margin-top:6px;"></div>
       </div>
+      <div class="ob-mini-grid" style="margin-top:14px;">
+        <div class="ob-mini-card">
+          <div class="ob-mini-card-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#i-crew"/></svg></div>
+          <div class="ob-mini-card-body">
+            <div class="ob-mini-card-title">Deine Crew. Eure Erkenntnisse.</div>
+            <div class="ob-mini-card-text">Private Gruppen für Freunde oder Verein — Chat, Feed und gemeinsame Insights, ohne geheime Spots offenzulegen.</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- Schritt 3: Ziele -->
-    <div id="obs3" style="display:none;">
-      <p style="font-size:14px;color:var(--text-mid);margin-bottom:16px;line-height:1.6;font-weight:500;">Setze dir deine Ziele für diese Saison. Falls dein Wunschziel nicht dabei ist oder du einen Änderungswunsch hast, kontaktiere uns gerne!</p>
+
+    <!-- Step 4 (war 3): Ziele -->
+    <div id="obs4" style="display:none;">
+      <div class="ob-step-cta">Setze dir deine Ziele.</div>
+      <div class="ob-step-help">Optional. Saisonziele helfen dir, fokussiert zu angeln. Du kannst Ziele jederzeit anpassen oder überspringen.</div>
       <div id="ob-goals-list"></div>
       <button onmousedown="event.preventDefault()" ontouchstart="event.preventDefault();obAddGoal()" onclick="obAddGoal()" style="width:100%;padding:11px;background:var(--green-mist);border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);margin-top:4px;">+ Weiteres Ziel</button>
     </div>
-    <button class="obBtn" id="ob-btn" onclick="obNext()" disabled>Weiter →</button>
+
+    <button class="obBtn" id="ob-btn" onclick="obNext()">Los geht's →</button>
     <p style="font-size:11px;color:var(--text-light);margin-top:16px;line-height:1.6;text-align:center;">Alle Daten bleiben lokal auf deinem Gerät. <a href="#" onclick="showBurgSec('legal');finOb();return false;" style="color:var(--green-mid);">Datenschutz</a></p>
   </div>
 </div>
@@ -3384,7 +4191,7 @@ input[type=file]{display:none;}
 <div class="burg-ov hidden" id="burg-ov">
   <div class="burg-panel">
     <div class="burg-hdr">
-      <div style="font-size:32px;margin-bottom:8px;">🎣</div>
+      <div style="margin-bottom:8px;display:flex;justify-content:center;"><svg style="width:32px;height:32px;color:var(--green-mid);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hook"/></svg></div>
       <div class="burg-n" id="burg-name">Angeln+</div>
       <div class="burg-s" id="burg-sub">v56 · Local-First PWA</div>
     </div>
@@ -3438,11 +4245,12 @@ input[type=file]{display:none;}
 <!-- PROFIL BEARBEITEN OVERLAY (v11) -->
 <div class="fsov" id="fs-profile-edit" role="dialog" aria-modal="true">
   <div class="fshdr">
-    <div><div class="fstitle">Profil bearbeiten</div></div>
-    <button class="xbtn" onclick="closeFs('profile-edit')">✕</button>
+    <div class="fshdr-icon-wrap"><svg class="ic"><use href="#i-users"/></svg></div>
+    <div><div class="fstitle">Profil bearbeiten</div><div class="fsmeta">Name, Angelstil, Dokumente</div></div>
+    <button class="xbtn" onclick="closeFs('profile-edit')" aria-label="Schließen">✕</button>
   </div>
-  <div class="fsov-scroll" style="padding:20px 18px 24px;">
-    <div class="g2" style="margin-bottom:14px;">
+  <div class="fsov-scroll overlay-pad">
+    <div class="g2 ig-mb">
       <div class="ig">
         <label class="il" for="pe-vorname">Vorname</label>
         <input type="text" class="if" id="pe-vorname" placeholder="z.B. Klaus" autocomplete="given-name">
@@ -3452,15 +4260,15 @@ input[type=file]{display:none;}
         <input type="text" class="if" id="pe-nachname" placeholder="z.B. Fischer" autocomplete="family-name">
       </div>
     </div>
-    <div class="ig" style="margin-bottom:14px;">
+    <div class="ig ig-mb">
       <label class="il" for="pe-name">Anzeigename</label>
       <input type="text" class="if" id="pe-name" placeholder="Dein Name" autocomplete="name">
     </div>
-    <div class="ig" style="margin-bottom:14px;">
+    <div class="ig ig-mb">
       <label class="il" for="pe-mitglied">Mitgliedsnummer</label>
       <input type="text" class="if" id="pe-mitglied" placeholder="z.B. FV-2024-0815" autocomplete="off">
     </div>
-    <div style="margin-bottom:14px;">
+    <div class="ig-mb">
       <div class="il" style="margin-bottom:10px;">Angelstil</div>
       <div class="obtgrid">
         <button class="obtbtn" id="pe-Friedfisch" onclick="peSel('Friedfisch')"><span class="ico">🐠</span>Friedfisch</button>
@@ -3468,21 +4276,21 @@ input[type=file]{display:none;}
         <button class="obtbtn" id="pe-Allround" onclick="peSel('Allround')"><span class="ico">🎣</span>Allround</button>
       </div>
     </div>
-    <div class="ig" style="margin-bottom:20px;">
+    <div class="ig ig-mb-lg">
       <label class="il" for="pe-plz">PLZ (für Wetter)</label>
       <input type="text" class="if" id="pe-plz" placeholder="z.B. 49377" inputmode="numeric" maxlength="5">
     </div>
     <!-- AP5: Dokumente mit Upload + Vorschau -->
-    <div style="margin-bottom:20px;padding:14px 16px;background:var(--cream-dark);border-radius:var(--r);">
-      <div class="il" style="margin-bottom:10px;">Dokumente</div>
+    <div class="profile-doc-box">
+      <div class="il">Dokumente</div>
       <div id="pe-doc-previews"></div>
-      <button type="button" onclick="_uploadDoc('fischereischein')" style="width:100%;padding:12px;background:#fff;border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);margin-bottom:8px;display:flex;align-items:center;gap:8px;justify-content:center;">📄 Fischereischein hochladen</button>
-      <button type="button" onclick="_uploadDoc('angelkarte')" style="width:100%;padding:12px;background:#fff;border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);display:flex;align-items:center;gap:8px;justify-content:center;">🎫 Angelkarte hochladen</button>
+      <button type="button" class="profile-doc-btn" onclick="_uploadDoc('fischereischein')">📄 Fischereischein hochladen</button>
+      <button type="button" class="profile-doc-btn" onclick="_uploadDoc('angelkarte')">🎫 Angelkarte hochladen</button>
     </div>
     <button class="btn" onclick="saveProfileEdit()">Änderungen speichern ✓</button>
-    <div style="margin-top:40px;padding-top:20px;border-top:1px solid var(--cream-dark);">
-      <button class="btn" style="background:var(--red);color:#fff;" onclick="delAllData()">🗑️ Alle Daten löschen</button>
-      <div style="text-align:center;font-size:12px;color:var(--text-light);margin-top:6px;">Vorher Backup erstellen!</div>
+    <div class="profile-danger-section">
+      <button class="btn danger" onclick="delAllData()">🗑️ Alle Daten löschen</button>
+      <div class="form-helper-text">Vorher Backup erstellen!</div>
     </div>
   </div>
 </div>
@@ -3780,8 +4588,9 @@ input[type=file]{display:none;}
 <!-- WEITERE STATISTIKEN OVERLAY -->
 <div class="fsov" id="fs-more-stats" role="dialog" aria-modal="true" aria-label="Weitere Statistiken">
   <div class="fshdr">
+    <div class="fshdr-icon-wrap"><svg class="ic"><use href="#i-stats"/></svg></div>
     <div><div class="fstitle">Weitere Statistiken</div><div class="fsmeta" id="fs-more-meta"></div></div>
-    <button class="xbtn" onclick="closeFs('more-stats')">✕</button>
+    <button class="xbtn" onclick="closeFs('more-stats')" aria-label="Schließen">✕</button>
   </div>
   <div class="fsov-scroll" id="fs-more-body"></div>
 </div>
@@ -3829,8 +4638,9 @@ input[type=file]{display:none;}
 <!-- Ziele bearbeiten Overlay -->
 <div class="fsov" id="fs-goals" role="dialog" aria-modal="true" aria-label="Ziele bearbeiten">
   <div class="fshdr">
-    <div><div class="fstitle">Ziele bearbeiten</div><div class="fsmeta" id="fs-goals-meta"></div></div>
-    <button class="xbtn" onclick="closeFs('goals')">✕</button>
+    <div class="fshdr-icon-wrap gold-wrap"><svg class="ic"><use href="#i-target"/></svg></div>
+    <div><div class="fstitle">Ziele bearbeiten</div><div class="fsmeta" id="fs-goals-meta">Saisonziele · PB · Range</div></div>
+    <button class="xbtn" onclick="closeFs('goals')" aria-label="Schließen">✕</button>
   </div>
   <div class="fsov-scroll" id="fs-goals-body"></div>
 </div>
@@ -3945,17 +4755,19 @@ input[type=file]{display:none;}
 <!-- AP1: Session Split Modal -->
 <div class="fsov" id="fs-split-modal" role="dialog" aria-modal="true" style="z-index:118;background:#f5f7f5;">
   <div class="fshdr">
-    <div><div class="fstitle">✂️ Session splitten</div><div class="fsmeta">Fänge auf 2 Sessions verteilen</div></div>
-    <button class="xbtn" onclick="closeFs('split-modal')">✕</button>
+    <div class="fshdr-icon-wrap"><svg class="ic"><use href="#i-list"/></svg></div>
+    <div><div class="fstitle">Session splitten</div><div class="fsmeta">Fänge auf 2 Sessions verteilen</div></div>
+    <button class="xbtn" onclick="closeFs('split-modal')" aria-label="Schließen">✕</button>
   </div>
-  <div class="fsov-scroll" id="split-modal-body" style="padding:16px;"></div>
+  <div class="fsov-scroll overlay-pad-tight" id="split-modal-body"></div>
 </div>
 
 <!-- AP1: Detail Map Overlay -->
 <div class="fsov" id="fs-detail-map" role="dialog" aria-modal="true" style="z-index:117;">
   <div class="fshdr">
-    <div><div class="fstitle">🗺️ Session-Karte</div><div class="fsmeta" id="fs-detmap-meta"></div></div>
-    <button class="xbtn" onclick="_closeDetailMap()">✕</button>
+    <div class="fshdr-icon-wrap"><svg class="ic"><use href="#i-map"/></svg></div>
+    <div><div class="fstitle">Session-Karte</div><div class="fsmeta" id="fs-detmap-meta"></div></div>
+    <button class="xbtn" onclick="_closeDetailMap()" aria-label="Schließen">✕</button>
   </div>
   <div style="flex:1;position:relative;"><div id="detail-map-container" style="position:absolute;inset:0;"></div></div>
 </div>
@@ -3963,19 +4775,21 @@ input[type=file]{display:none;}
 <!-- AP3: Karten-Filter Overlay -->
 <div class="fsov" id="fs-map-filter" role="dialog" aria-modal="true" style="z-index:120;background:#f5f7f5;">
   <div class="fshdr">
+    <div class="fshdr-icon-wrap"><svg class="ic"><use href="#i-filter"/></svg></div>
     <div><div class="fstitle">Karten-Filter</div><div class="fsmeta">Angezeigte Marker filtern</div></div>
-    <button class="xbtn" onclick="closeFs('map-filter')">✕</button>
+    <button class="xbtn" onclick="closeFs('map-filter')" aria-label="Schließen">✕</button>
   </div>
-  <div class="fsov-scroll" id="map-filter-body" style="padding:16px;"></div>
+  <div class="fsov-scroll overlay-pad-tight" id="map-filter-body"></div>
 </div>
 
 <!-- AP2: Session splitten Overlay -->
 <div class="fsov" id="fs-split-sess" role="dialog" aria-modal="true" style="z-index:119;background:#f5f7f5;">
   <div class="fshdr">
-    <div><div class="fstitle">✂️ Session splitten</div><div class="fsmeta" id="fs-split-meta">Fänge auf verschiedene Sessions aufteilen</div></div>
-    <button class="xbtn" onclick="closeFs('split-sess')">✕</button>
+    <div class="fshdr-icon-wrap"><svg class="ic"><use href="#i-list"/></svg></div>
+    <div><div class="fstitle">Session splitten</div><div class="fsmeta" id="fs-split-meta">Fänge auf verschiedene Sessions aufteilen</div></div>
+    <button class="xbtn" onclick="closeFs('split-sess')" aria-label="Schließen">✕</button>
   </div>
-  <div class="fsov-scroll" id="split-sess-body" style="padding:16px;"></div>
+  <div class="fsov-scroll overlay-pad-tight" id="split-sess-body"></div>
 </div>
 
 <!-- PAGE: DETAIL -->
@@ -4188,8 +5002,8 @@ input[type=file]{display:none;}
       <button class="grp-chat-reply-x" onclick="_grpClearReply()" title="Antwort abbrechen">✕</button>
     </div>
     <div class="grp-chat-row">
-      <button class="grp-chat-wa-btn" onclick="_grpAttachPhoto()" title="Foto">📷</button>
-      <button class="grp-chat-wa-btn" onclick="_grpShareLocation()" title="Standort">📍</button>
+      <button class="grp-chat-wa-btn" onclick="_grpAttachPhoto()" title="Foto" aria-label="Foto"><svg class="ic"><use href="#i-camera"/></svg></button>
+      <button class="grp-chat-wa-btn" onclick="_grpShareLocation()" title="Standort" aria-label="Standort"><svg class="ic"><use href="#i-pin"/></svg></button>
       <input type="file" id="grp-chat-photo-input" accept="image/*" style="display:none;" onchange="_grpHandlePhotoSelect(event)">
       <div class="grp-chat-input-wrap">
         <textarea class="grp-chat-wa-input" id="grp-chat-input" rows="1" placeholder="Nachricht schreiben…" autocomplete="off" oninput="_grpAutoResize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();_grpSendMsg();}"></textarea>
@@ -4221,7 +5035,7 @@ input[type=file]{display:none;}
 
 <!-- ═══ CATCH DETAIL OVERLAY (v54: jetzt mit Comment-Bar am Boden) ═══ -->
 <div class="fsov" id="fs-catch-detail" style="z-index:118;">
-  <button class="xbtn" onclick="closeFs('catch-detail')" style="position:absolute;top:16px;right:16px;z-index:5;background:rgba(0,0,0,.4);color:#fff;border-radius:50%;width:36px;height:36px;">✕</button>
+  <button class="xbtn-on-photo" onclick="closeFs('catch-detail')" aria-label="Schließen">✕</button>
   <div class="fsov-scroll" id="catch-detail-scroll" style="padding:0;">
     <div id="catch-detail-content"></div>
   </div>
@@ -4237,7 +5051,7 @@ input[type=file]{display:none;}
 
 <!-- ═══ v54 AP3.3: MEMBER PROFILE OVERLAY ═══ -->
 <div class="fsov" id="fs-member-profile" style="z-index:119;">
-  <button class="xbtn" onclick="closeFs('member-profile')" style="position:absolute;top:14px;right:14px;z-index:5;background:rgba(0,0,0,.4);color:#fff;border-radius:50%;width:36px;height:36px;">✕</button>
+  <button class="xbtn-on-photo" onclick="closeFs('member-profile')" aria-label="Schließen">✕</button>
   <div class="fsov-scroll" id="member-profile-scroll" style="padding:0;">
     <div id="member-profile-content"></div>
   </div>
@@ -4246,15 +5060,16 @@ input[type=file]{display:none;}
 <!-- ═══ GROUP CREATE OVERLAY ═══ -->
 <div class="fsov" id="fs-group-create" style="z-index:117;">
   <div class="fshdr">
-    <div><div class="fstitle">Gruppe erstellen</div></div>
-    <button class="xbtn" onclick="closeFs('group-create')">✕</button>
+    <div class="fshdr-icon-wrap"><svg class="ic"><use href="#i-crew"/></svg></div>
+    <div><div class="fstitle">Gruppe erstellen</div><div class="fsmeta">Privat · öffentlich · Elite</div></div>
+    <button class="xbtn" onclick="closeFs('group-create')" aria-label="Schließen">✕</button>
   </div>
-  <div class="fsov-scroll" style="padding:16px;">
-    <div class="ig" style="margin-bottom:14px;">
+  <div class="fsov-scroll overlay-pad-tight">
+    <div class="ig ig-mb">
       <label class="il" for="gc-name">Gruppenname</label>
       <input type="text" class="if" id="gc-name" placeholder="z.B. Hechtjäger Norddeutschland" autocomplete="off" maxlength="40">
     </div>
-    <div class="ig" style="margin-bottom:14px;">
+    <div class="ig ig-mb">
       <label class="il">Gruppentyp</label>
       <div style="display:flex;gap:8px;margin-top:6px;">
         <button class="seg-btn" id="gc-type-private" onclick="_gcSetType('private')" style="flex:1;padding:10px;border:2px solid var(--green-mid);border-radius:var(--rs);background:var(--green-mist);color:var(--green-deep);font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;">🔒 Privat</button>
@@ -4262,15 +5077,15 @@ input[type=file]{display:none;}
         <button class="seg-btn" id="gc-type-elite" onclick="_gcSetType('elite')" style="flex:1;padding:10px;border:2px solid var(--cream-dark);border-radius:var(--rs);background:#fff;color:var(--text-mid);font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;">⭐ Elite</button>
       </div>
     </div>
-    <div class="ig" style="margin-bottom:14px;">
+    <div class="ig ig-mb">
       <label class="il" for="gc-desc">Beschreibung (optional)</label>
       <input type="text" class="if" id="gc-desc" placeholder="Worum geht es in deiner Gruppe?" autocomplete="off">
     </div>
-    <div class="ig" style="margin-bottom:14px;">
+    <div class="ig ig-mb">
       <label class="il" for="gc-region">Region (optional)</label>
       <input type="text" class="if" id="gc-region" placeholder="z.B. Weser-Ems, Schleswig-Holstein" autocomplete="off">
     </div>
-    <div class="ig" style="margin-bottom:14px;">
+    <div class="ig ig-mb">
       <label class="il">Icon</label>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;" id="gc-icons">
         <button onclick="_gcIcon('🎣')" class="gc-ico-btn on" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--green-mid);background:var(--green-mist);font-size:20px;cursor:pointer;">🎣</button>
@@ -4281,23 +5096,24 @@ input[type=file]{display:none;}
         <button onclick="_gcIcon('⚡')" class="gc-ico-btn" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--cream-dark);background:#fff;font-size:20px;cursor:pointer;">⚡</button>
       </div>
     </div>
-    <button onclick="_grpCreate()" style="width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);margin-top:10px;">Gruppe erstellen</button>
+    <button class="btn" onclick="_grpCreate()">Gruppe erstellen</button>
   </div>
 </div>
 
 <!-- ═══ GROUP JOIN OVERLAY ═══ -->
 <div class="fsov" id="fs-group-join" style="z-index:117;">
   <div class="fshdr">
-    <div><div class="fstitle">Gruppe beitreten</div></div>
-    <button class="xbtn" onclick="closeFs('group-join')">✕</button>
+    <div class="fshdr-icon-wrap"><svg class="ic"><use href="#i-share"/></svg></div>
+    <div><div class="fstitle">Gruppe beitreten</div><div class="fsmeta">Per Einladungscode</div></div>
+    <button class="xbtn" onclick="closeFs('group-join')" aria-label="Schließen">✕</button>
   </div>
-  <div class="fsov-scroll" style="padding:16px;">
-    <div class="ig" style="margin-bottom:14px;">
+  <div class="fsov-scroll overlay-pad-tight">
+    <div class="ig ig-mb">
       <label class="il" for="gj-code">Einladungscode</label>
       <input type="text" class="if" id="gj-code" placeholder="z.B. HECHT-2024-XY" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;font-weight:700;text-align:center;">
     </div>
-    <button onclick="_grpJoinByCode()" style="width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);">Beitreten</button>
-    <div style="text-align:center;margin-top:20px;font-size:11px;color:var(--text-light);">Oder lass dir einen Link von einem Gruppenmitglied schicken.</div>
+    <button class="btn" onclick="_grpJoinByCode()">Beitreten</button>
+    <div class="form-helper-text">Oder lass dir einen Link von einem Gruppenmitglied schicken.</div>
   </div>
 </div>
 
@@ -4312,7 +5128,7 @@ input[type=file]{display:none;}
       <button class="ls-toggle" id="share-gps-toggle" onclick="this.classList.toggle('on')"></button>
     </div>
     <div id="share-grp-list" style="margin-bottom:14px;"></div>
-    <button onclick="_closeShareModal()" style="width:100%;padding:12px;background:transparent;border:1.5px solid var(--cream-dark);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--text-mid);">Abbrechen</button>
+    <button class="btn-sec" onclick="_closeShareModal()">Abbrechen</button>
   </div>
 </div>
 
@@ -4536,10 +5352,8 @@ async function handleAuth(e){
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
         document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`;
-        // Onboarding starten
+        // Onboarding starten (AP2: beginnt mit Trust-Step 0)
         document.getElementById('onboarding').classList.remove('hidden');
-        document.getElementById('ob-btn').disabled=true;
-        setTimeout(()=>document.getElementById('ob-name')?.focus(),400);
       }
     }
   }catch(err){
@@ -4590,9 +5404,8 @@ function skipAuth(){
   document.getElementById('login-ov')?.classList.add('hidden');
   document.getElementById('hdr-sub').textContent='Offline · v56';
   if(!profile){
+    // AP2: Onboarding startet im Trust-Step 0 (kein Eingabefeld nötig)
     document.getElementById('onboarding').classList.remove('hidden');
-    document.getElementById('ob-btn').disabled=true;
-    setTimeout(()=>document.getElementById('ob-name')?.focus(),400);
   }
 }
 
@@ -4909,7 +5722,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='fb-v9-52';const A=['https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='fb-v9-53';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -5540,16 +6353,18 @@ async function fetchWx(){
 }
 
 // ═══════════════════════════════════════════════════════════
-// ONBOARDING (v9: Name → Angeltyp → PLZ)
+// ONBOARDING (AP2: Trust → Name → Angeltyp → PLZ → Ziele, 5 Steps)
+// Step-Indizes wurden gegenüber v61 um +1 verschoben (Trust-Step vorne).
 // ═══════════════════════════════════════════════════════════
-const OB_T=['Wie heißt du?','Dein Angelstil','Dein Standort','Deine Ziele'];
-const OB_S=['Damit wir dich persönlich begrüßen können.','Wir passen Vorschläge an deinen Stil an.','Für automatische Wetterabfragen ohne GPS-Pflicht.','Optional: Saisonziele für Gamification. Überspringen möglich.'];
+const OB_T=['Willkommen bei<br>Angeln+','Wie heißt du?','Dein Angelstil','Dein Revier','Deine Ziele'];
+const OB_S=['Dein digitales Fangbuch für bessere Angeltage.','Damit wir dich persönlich begrüßen können.','Wir passen Vorschläge an deinen Stil an.','Wetter, Mond und Tiden für deine Region — ohne GPS-Pflicht.','Optional. Saisonziele helfen beim Fokus. Überspringen ist okay.'];
 function obChk(){
   const btn=document.getElementById('ob-btn');
   let ok=false;
-  if(obStep===0)ok=!!document.getElementById('ob-name').value.trim();
-  else if(obStep===1)ok=!!obData.angeltyp;
-  else if(obStep===2){
+  if(obStep===0)ok=true; // Trust/Welcome – immer durchklickbar
+  else if(obStep===1)ok=!!document.getElementById('ob-name').value.trim();
+  else if(obStep===2)ok=!!obData.angeltyp;
+  else if(obStep===3){
     const plzVal=document.getElementById('ob-plz').value.trim();
     const errEl=document.getElementById('ob-plz-err');
     const plzInput=document.getElementById('ob-plz');
@@ -5567,7 +6382,7 @@ function obChk(){
       ok=true;
     }
   }
-  else if(obStep===3)ok=true; // Ziele optional
+  else if(obStep===4)ok=true; // Ziele optional
   btn.disabled=!ok;
   btn.setAttribute('aria-disabled',String(!ok));
   if(ok)btn.classList.add('pulse');else btn.classList.remove('pulse');
@@ -5711,12 +6526,12 @@ function obSelType(idx, type){
 }
 
 function obNext(){
-  const btn=document.getElementById('ob-btn');if(btn.disabled&&obStep!==3)return;
-  if(obStep===0)obData.name=document.getElementById('ob-name').value.trim();
-  else if(obStep===2){
+  const btn=document.getElementById('ob-btn');if(btn.disabled&&obStep!==4)return;
+  if(obStep===1)obData.name=document.getElementById('ob-name').value.trim();
+  else if(obStep===3){
     obData.plz=document.getElementById('ob-plz').value.trim();
   }
-  else if(obStep===3){
+  else if(obStep===4){
     // Ziele aus neuem UI sammeln (identisch zu saveNewGoal-Logik)
     const goals=[];
     for(let i=1;i<=_obGoalIdx;i++){
@@ -5750,38 +6565,46 @@ function obNext(){
     finOb();
     return;
   }
-  if(obStep===2){
+  if(obStep===3){
     profile={...obData};
     // PLZ vormerken, dann Ziele-Schritt
   }
   obStep++;
   document.querySelectorAll('[id^=obs]').forEach(el=>el.style.display='none');
   document.getElementById('obs'+obStep).style.display='';
-  document.getElementById('ob-title').textContent=OB_T[obStep];
+  document.getElementById('ob-title').innerHTML=OB_T[obStep];
   document.getElementById('ob-sub').textContent=OB_S[obStep];
   document.querySelectorAll('.oddot').forEach((d,i)=>{d.classList.toggle('on',i===obStep);d.classList.toggle('done',i<obStep);});
-  if(obStep===3){
-    document.getElementById('ob-btn').textContent='Fertig 🎣';
+  const stepLbl=document.getElementById('ob-step-label');
+  if(stepLbl)stepLbl.textContent=`Schritt ${obStep+1} von 5`;
+  if(obStep===4){
+    document.getElementById('ob-btn').textContent='Fertig';
     document.getElementById('ob-btn').disabled=false;
     obAddGoal(); // erstes Ziel vorausfüllen
-  } else if(obStep===2){
+  } else if(obStep===3){
+    document.getElementById('ob-btn').textContent='Weiter →';
+  } else {
     document.getElementById('ob-btn').textContent='Weiter →';
   }
-  obData.angeltyp=obStep===1?'':obData.angeltyp;
+  obData.angeltyp=obStep===2?'':obData.angeltyp;
   obChk();
+  // AP2: Body bei jedem Step-Wechsel nach oben scrollen (rein visuell)
+  const obBody=document.querySelector('#onboarding .obbody');
+  if(obBody)obBody.scrollTop=0;
   setTimeout(()=>document.getElementById('obs'+obStep)?.querySelector('input,select')?.focus(),100);
 }
 function selTyp(t){obData.angeltyp=t;document.querySelectorAll('.obtbtn').forEach(b=>{b.classList.toggle('sel',b.id==='ot-'+t);b.setAttribute('aria-pressed',String(b.id==='ot-'+t));});obChk();}
 function finOb(){
-  // Abschluss-Overlay mit Animation
+  // Abschluss-Overlay mit Animation (AP2: Angeln+ Wortmarke statt 🎣 Emoji)
   const obEl=document.getElementById('onboarding');
   const finish=document.createElement('div');
   finish.className='ob-finish-ov';
   finish.innerHTML=`
-    <div class="ob-finish-ico">🎣</div>
-    <div class="ob-finish-title">Alles bereit!<br>Viel Erfolg beim Angeln.</div>
-    <div class="ob-finish-sub">Trage jetzt deinen ersten Fang ein und beobachte,<br>wie sich dein persönliches Angelbuch füllt.</div>
-    <button class="ob-finish-btn" onclick="_finishOb()">Loslegen →</button>`;
+    <div class="ob-finish-brand">angeln<span class="obm-plus">+</span></div>
+    <div class="ob-finish-title">Alles bereit.</div>
+    <div class="ob-finish-sub">Dein digitales Fangbuch ist eingerichtet.<br>Starte jetzt mit deiner ersten Session oder<br>trage deinen ersten Fang ein.</div>
+    <button class="ob-finish-btn" onclick="_finishOb()">Loslegen</button>
+    <div class="ob-finish-hint">Du kannst alles später in deinem Profil anpassen.</div>`;
   obEl.appendChild(finish);
   obEl.classList.remove('hidden');
   // Konfetti-artiger Hintergrundeffekt
@@ -5834,7 +6657,7 @@ function _obConfetti(container){
 function applyProf(){
   if(!profile)return;
   document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`:`PLZ ${profile.plz||'–'} · v56`;
-  document.getElementById('burg-name').textContent=profile.name||'Fishing Buddy';
+  document.getElementById('burg-name').textContent=profile.name||'Angeln+';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
   const hint=document.getElementById('sz-hint');if(hint)hint.style.display='none';
@@ -7376,7 +8199,7 @@ function showSuc(catches,water){
   document.getElementById('sucov').classList.add('on');launchK();
   setTimeout(()=>animCnt(prev,fin),600);
 }
-function doShare(){const{ft,total,water,count}=_shareData;const name=profile?profile.name.split(' ')[0]+'s':'Mein';const wt=water&&water!=='Unbekanntes Gewässer'?` am ${water}`:'';navigator.share({title:'Fishing Buddy',text:`Petri Heil! 🎣 Gerade ${count} ${ft}${count!==1?'e':''}${wt} geloggt. ${name} ${ft}-Counter: ${total}! – Fishing Buddy 🎣`}).catch(()=>{});}
+function doShare(){const{ft,total,water,count}=_shareData;const name=profile?profile.name.split(' ')[0]+'s':'Mein';const wt=water&&water!=='Unbekanntes Gewässer'?` am ${water}`:'';navigator.share({title:'Angeln+',text:`Petri Heil! Gerade ${count} ${ft}${count!==1?'e':''}${wt} geloggt. ${name} ${ft}-Counter: ${total}! – Angeln+`}).catch(()=>{});}
 function animCnt(cur,tgt){if(cur>=tgt){const n=document.getElementById('cnt-num');n.textContent=tgt;n.classList.add('pulse');setTimeout(()=>n.classList.remove('pulse'),400);return;}const p=document.getElementById('p1');p.textContent='+1';p.style.animation='none';void p.offsetWidth;p.classList.add('fly');setTimeout(()=>{p.classList.remove('fly');const n=document.getElementById('cnt-num');n.textContent=cur+1;n.classList.add('pulse');setTimeout(()=>n.classList.remove('pulse'),350);cAF=setTimeout(()=>animCnt(cur+1,tgt),tgt-cur>5?200:350);},440);}
 function disSuc(){document.getElementById('sucov').classList.remove('on');stopK();if(cAF)clearTimeout(cAF);resetForm();showPage('fangbuch');}
 
@@ -8114,7 +8937,7 @@ const _wxSessionHighlightPlugin={
       ctx.strokeStyle='rgba(196,150,58,0.95)';ctx.lineWidth=2;ctx.setLineDash([]);
       ctx.beginPath();ctx.moveTo(px,chartArea.top);ctx.lineTo(px,chartArea.bottom);ctx.stroke();
       // Fischsymbol oben
-      ctx.font='14px "DM Sans",system-ui,sans-serif';
+      ctx.font='14px "Inter",system-ui,sans-serif';
       ctx.textAlign='center';ctx.textBaseline='top';
       ctx.fillStyle='#fff';ctx.fillRect(px-10,chartArea.top-2,20,18);
       ctx.fillStyle='#C4963A';ctx.fillText(m.icon||'🐟',px,chartArea.top-1);
@@ -8241,7 +9064,7 @@ async function openDayWxDetail(dateKey,metric,sessionId){
           responsive:true,maintainAspectRatio:false,
           layout:{padding:{top:18}}, // Platz für 🐟-Symbole oben
           plugins:{
-            legend:{display:datasets.length>1,labels:{font:{size:11,family:'DM Sans'}}},
+            legend:{display:datasets.length>1,labels:{font:{size:11,family:'Inter'}}},
             tooltip:{mode:'index',intersect:false},
             wxSessionHighlight:{fishStartIdx,fishEndIdx,catchMarks}
           },
@@ -9843,10 +10666,10 @@ function _renderMoreStats(){
     }
   } else {
     goalsHtml = `<div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#i-target"/></svg>Saisonziele</div>
-    <div class="card" style="text-align:center;padding:20px;color:var(--text-light);">
-      <div style="font-size:28px;margin-bottom:8px;">🎯</div>
-      <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Noch keine Ziele definiert</div>
-      <div style="font-size:11px;">Über Menü → Ziele bearbeiten hinzufügen.</div>
+    <div class="card" style="text-align:center;padding:24px 20px;color:var(--text-light);">
+      <div class="goal-edit-empty-ico" style="margin-bottom:10px;"><svg class="ic"><use href="#i-target"/></svg></div>
+      <div style="font-size:13px;font-weight:600;color:var(--text-dark);margin-bottom:4px;">Noch keine Ziele definiert</div>
+      <div style="font-size:11px;line-height:1.5;">Über Menü → Ziele bearbeiten hinzufügen.</div>
     </div>`;
   }
 
@@ -9901,11 +10724,11 @@ function _renderGoalEdit(){
 
   if(!goals.length){
     body.innerHTML = `
-      <div style="text-align:center;padding:40px 24px;">
-        <div style="font-size:48px;margin-bottom:14px;">🎯</div>
-        <div style="font-size:16px;font-weight:700;color:var(--text-dark);margin-bottom:8px;">Noch keine Ziele</div>
-        <div style="font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:24px;">Definiere Saisonziele um deinen Fortschritt zu tracken.</div>
-        <button onclick="openAddGoal()" style="width:100%;padding:15px;background:var(--green-deep);border:none;border-radius:var(--rs);font-size:15px;font-weight:600;font-family:var(--fa);cursor:pointer;color:#fff;box-shadow:0 4px 14px rgba(45,74,53,.3);">+ Erstes Ziel anlegen</button>
+      <div class="goal-edit-empty">
+        <div class="goal-edit-empty-ico"><svg class="ic"><use href="#i-target"/></svg></div>
+        <div class="goal-edit-empty-title">Noch keine Ziele</div>
+        <div class="goal-edit-empty-text">Definiere Saisonziele, um deinen Fortschritt zu tracken.</div>
+        <button class="btn" onclick="openAddGoal()">+ Erstes Ziel anlegen</button>
       </div>`;
     return;
   }
@@ -9914,30 +10737,30 @@ function _renderGoalEdit(){
   const yrCatches = sessions.filter(s => s.date?.startsWith(String(curYear))).flatMap(s => s.catches);
 
   body.innerHTML = `
-    <div style="padding:16px 16px 0;">
+    <div class="goal-edit-list">
       ${goals.map(g => {
         const gType = g.type || 'count';
         const typeBadge = gType==='pb'?'🏆 PB':gType==='range'?'📏 Range':'🎣 Stückzahl';
-        const yrBadge = g.year ? `<span style="font-size:10px;color:var(--text-light);margin-left:6px;">${g.year}</span>` : '';
+        const yrBadge = g.year ? `<span class="goal-row-yr">${g.year}</span>` : '';
         const target = g.count || 1;
         const qualifying = yrCatches.filter(c => _catchQualifiesForGoal(c, g)).reduce((s,c)=>s+_getFishCountForStats(c),0);
         const pct = Math.min(100, Math.round(qualifying / target * 100));
         const achieved = qualifying >= target;
-        return `<div style="background:${achieved?'linear-gradient(120deg,#f5e49e,#e8c84a 50%,#f5e49e)':'#fff'};border-radius:var(--r);padding:14px 16px;margin-bottom:10px;border:${achieved?'1.5px solid #d4a640':'1px solid rgba(200,221,208,.4)'};box-shadow:var(--sh-sm);display:flex;align-items:center;gap:14px;">
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:14px;font-weight:700;color:${achieved?'#7a5a00':'var(--text-dark)'};margin-bottom:3px;line-height:1.3;">${g.label}${yrBadge}</div>
-            <div style="font-size:11px;color:var(--text-light);font-weight:600;letter-spacing:.4px;">${typeBadge} · ${qualifying}/${target} ${achieved?'<span style="color:#7a5a00;">✅ Erreicht!</span>':pct+'%'}</div>
-            <div style="height:4px;background:rgba(200,221,208,.3);border-radius:2px;margin-top:6px;"><div style="height:100%;border-radius:2px;background:${achieved?'#d4a640':'var(--green-mid)'};width:${pct}%;transition:width .3s;"></div></div>
+        return `<div class="goal-row${achieved?' achieved':''}">
+          <div class="goal-row-info">
+            <div class="goal-row-label">${g.label}${yrBadge}</div>
+            <div class="goal-row-meta">${typeBadge} · ${qualifying}/${target} ${achieved?'<span class="gr-tag-ach">Erreicht!</span>':pct+'%'}</div>
+            <div class="goal-row-bar"><div class="goal-row-bar-fill" style="width:${pct}%;"></div></div>
           </div>
-          <button onclick="delGoal('${g.id}')" style="background:rgba(200,60,60,.1);border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;" aria-label="Ziel löschen" onmouseover="this.style.background='rgba(200,60,60,.2)'" onmouseout="this.style.background='rgba(200,60,60,.1)'">🗑️</button>
+          <button class="goal-row-del" onclick="delGoal('${g.id}')" aria-label="Ziel löschen"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
         </div>`;
       }).join('')}
     </div>
-    <div style="padding:4px 16px 12px;">
-      <button onclick="openAddGoal()" style="width:100%;padding:14px;background:var(--green-mist);border:1.5px dashed var(--green-pale);border-radius:var(--rs);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--green-deep);">+ Weiteres Ziel hinzufügen</button>
+    <div class="goal-add-row">
+      <button class="goal-add-btn" onclick="openAddGoal()">+ Weiteres Ziel hinzufügen</button>
     </div>
-    <div style="padding:0 16px 24px;">
-      <button onclick="_saveGoalsAndClose()" style="width:100%;padding:15px;background:var(--green-deep);border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;color:#fff;box-shadow:0 4px 14px rgba(45,74,53,.3);">Ziele speichern</button>
+    <div class="goal-save-row">
+      <button class="btn" onclick="_saveGoalsAndClose()">Ziele speichern</button>
     </div>`;
 }
 
@@ -11159,7 +11982,7 @@ async function _renderTideCal(river,startDate){
         ctx.strokeStyle='rgba(196,150,58,0.95)';ctx.lineWidth=2;ctx.setLineDash([]);
         ctx.beginPath();ctx.moveTo(x,yT);ctx.lineTo(x,yB);ctx.stroke();
         ctx.fillStyle='#fff';ctx.fillRect(x-10,yT-2,20,18);
-        ctx.font='14px "DM Sans",system-ui,sans-serif';
+        ctx.font='14px "Inter",system-ui,sans-serif';
         ctx.textAlign='center';ctx.textBaseline='top';
         ctx.fillStyle='#C4963A';ctx.fillText(c.icon||'🐟',x,yT-1);
       });
@@ -12395,7 +13218,7 @@ function doExp(type){
   closeExp();
   if(type==='all'){
     const dateStr=new Date().toISOString().slice(0,10);
-    dlBlob(new Blob([JSON.stringify({version:13,exportDate:new Date().toISOString(),profile,sessions,favs},null,2)],{type:'application/json'}),`fishing_buddy_${dateStr}_backup.json`);
+    dlBlob(new Blob([JSON.stringify({version:13,exportDate:new Date().toISOString(),profile,sessions,favs},null,2)],{type:'application/json'}),`angeln_plus_${dateStr}_backup.json`);
     localStorage.setItem('fb_last_backup',String(Date.now()));
     _chkBackupReminder(); // Dot sofort ausblenden
     showToast('📦','Backup heruntergeladen!');
@@ -12405,7 +13228,7 @@ function doExp(type){
 }
 function dlBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
 function trigImp(){document.getElementById('imp-inp').click();}
-async function handleImp(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async ev=>{closeExp();let data;try{data=JSON.parse(ev.target.result);}catch(err){showToast('❌','Ungültige JSON-Datei!',true);return;}if(!data.sessions||!Array.isArray(data.sessions)){showToast('❌','Kein gültiges Fishing Buddy Backup!',true);return;}
+async function handleImp(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async ev=>{closeExp();let data;try{data=JSON.parse(ev.target.result);}catch(err){showToast('❌','Ungültige JSON-Datei!',true);return;}if(!data.sessions||!Array.isArray(data.sessions)){showToast('❌','Kein gültiges Angeln+ Backup!',true);return;}
   const ok=await showConf('📥','Backup importieren',`${data.sessions.length} Sessions gefunden.\n\nWie soll importiert werden?`,'Zusammenführen');
   if(!ok){e.target.value='';return;}
   // Merge: bestehende Sessions + importierte, Duplikate nach ID entfernen
@@ -14157,11 +14980,13 @@ function _rndrGroupList(){
   const el=document.getElementById('grp-hub-content');
   if(!_sb||!_sbUser){
     document.getElementById('grp-hub-meta').textContent='Cloud-Login nötig';
-    el.innerHTML=`<div style="text-align:center;padding:40px 24px;">
-      <div style="font-size:48px;margin-bottom:16px;">☁️</div>
-      <div style="font-size:16px;font-weight:600;margin-bottom:8px;">Login erforderlich</div>
-      <p style="font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:20px;">Gruppen sind ein Multiplayer-Feature und benötigen ein Cloud-Konto.</p>
-      <button onclick="closeFs('group-hub');document.getElementById('login-ov').classList.remove('hidden')" style="padding:14px 24px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;">Jetzt einloggen</button>
+    el.innerHTML=`<div class="grp-empty-state">
+      <div class="grp-empty-ico cloud-tone"><svg class="ic"><use href="#i-cloud"/></svg></div>
+      <div class="grp-empty-title">Login erforderlich</div>
+      <div class="grp-empty-text">Gruppen sind ein Multiplayer-Feature und benötigen ein Cloud-Konto.</div>
+      <div class="grp-empty-actions">
+        <button class="btn" onclick="closeFs('group-hub');document.getElementById('login-ov').classList.remove('hidden')">Jetzt einloggen</button>
+      </div>
     </div>`;
     return;
   }
@@ -14169,13 +14994,13 @@ function _rndrGroupList(){
   document.getElementById('grp-hub-meta').textContent=_groups.length?`${_groups.length} Gruppe${_groups.length>1?'n':''}`:'Deine Angel-Crews';
 
   if(!_groups.length){
-    el.innerHTML=`<div style="text-align:center;padding:40px 24px;">
-      <div style="font-size:48px;margin-bottom:16px;">👥</div>
-      <div style="font-size:16px;font-weight:600;margin-bottom:8px;">Noch keine Gruppen</div>
-      <p style="font-size:13px;color:var(--text-light);line-height:1.6;margin-bottom:20px;">Erstelle deine eigene Angel-Crew oder tritt einer bestehenden bei. Du kannst beliebig vielen Gruppen angehören.</p>
-      <div style="display:flex;flex-direction:column;gap:8px;padding:0 16px;">
-        <button onclick="openFs('group-create')" style="padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;">➕ Gruppe erstellen</button>
-        <button onclick="_grpHubTab('discover')" style="padding:14px;background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;">🔍 Gruppen entdecken</button>
+    el.innerHTML=`<div class="grp-empty-state">
+      <div class="grp-empty-ico"><svg class="ic"><use href="#i-crew"/></svg></div>
+      <div class="grp-empty-title">Noch keine Gruppen</div>
+      <div class="grp-empty-text">Erstelle deine eigene Angel-Crew oder tritt einer bestehenden bei. Du kannst beliebig vielen Gruppen angehören.</div>
+      <div class="grp-empty-actions">
+        <button class="btn" onclick="openFs('group-create')">Gruppe erstellen</button>
+        <button class="btn-sec" onclick="_grpHubTab('discover')">Gruppen entdecken</button>
       </div>
     </div>`;
     return;
@@ -14186,16 +15011,17 @@ function _rndrGroupList(){
     const memberCount=g._memberCount||g.members?.length||1;
     const lastActivity=g._lastActivityAt?_relTime(new Date(g._lastActivityAt).getTime()):'Keine Aktivität';
     const pendingBadge=(g._myRole==='admin'&&g._pendingCount>0)?`<div class="grp-item-badge" style="background:var(--gold);">${g._pendingCount}</div>`:'';
+    const icoCls=g.type==='elite'?'ico-elite':g.type==='public'?'ico-public':'ico-private';
     html+=`<div class="grp-item" onclick="_openGroupDetail('${g.id}')">
-      <div class="grp-item-ico" style="background:${g.type==='elite'?'linear-gradient(135deg,#f6d365,#fda085)':g.type==='public'?'var(--blue)':'var(--green-mist)'};">${g.icon||'🎣'}</div>
+      <div class="grp-item-ico ${icoCls}">${g.icon||'🎣'}</div>
       <div class="grp-item-info">
-        <div class="grp-item-name">${_esc(g.name)}${g._myRole==='admin'?' <span style="font-size:9px;padding:1px 6px;background:var(--gold-l);color:var(--gold-d);border-radius:8px;font-weight:700;letter-spacing:.3px;">ADMIN</span>':''}</div>
+        <div class="grp-item-name">${_esc(g.name)}${g._myRole==='admin'?'<span class="grp-admin-badge">ADMIN</span>':''}</div>
         <div class="grp-item-sub">${memberCount} Mitglieder · ${lastActivity}</div>
       </div>
       ${pendingBadge}
     </div>`;
   });
-  html+=`<div class="grp-create-btn" onclick="openFs('group-create')">➕ Neue Gruppe erstellen</div>`;
+  html+=`<div class="grp-create-btn" onclick="openFs('group-create')">+ Neue Gruppe erstellen</div>`;
   html+='</div>';
   el.innerHTML=html;
 }
@@ -14206,21 +15032,22 @@ let _discoverDebounce=null;
 async function _rndrGroupDiscover(){
   const el=document.getElementById('grp-hub-content');
   el.innerHTML=`<div style="padding:16px;">
-    <div class="ig" style="margin-bottom:14px;">
-      <input type="text" class="if" id="grp-search" placeholder="🔍 Gruppen suchen…" oninput="_filterDiscoverGroups(this.value)" autocomplete="off">
+    <div class="grp-discover-search">
+      <svg class="gds-icon ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
+      <input type="text" class="if" id="grp-search" placeholder="Gruppen suchen…" oninput="_filterDiscoverGroups(this.value)" autocomplete="off">
     </div>
-    <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:10px;">Öffentliche Gruppen</div>
+    <div class="section-label-clean">Öffentliche Gruppen</div>
     <div id="discover-list" style="display:flex;flex-direction:column;gap:8px;">
-      <div style="text-align:center;padding:24px;color:var(--text-light);font-size:13px;">⏳ Gruppen werden geladen…</div>
+      <div class="discover-status">Gruppen werden geladen…</div>
     </div>
     <!-- v54 AP1.3: Einladungscode-Sektion am Ende des Discover-Tabs -->
     <div class="discover-code-section">
-      <div class="dcs-title">🔗 Hast du einen Einladungscode?</div>
+      <div class="dcs-title">Hast du einen Einladungscode?</div>
       <div class="dcs-row">
         <input type="text" id="discover-invite-code" placeholder="ABCD-1234" maxlength="9" autocomplete="off" onkeydown="if(event.key==='Enter')_grpJoinByDiscoverCode()">
         <button onclick="_grpJoinByDiscoverCode()">Beitreten</button>
       </div>
-      <div style="font-size:10px;color:var(--text-light);margin-top:8px;">Bei privaten Gruppen wird eine Beitritts-Anfrage gestellt. Der Admin entscheidet dann über die Aufnahme.</div>
+      <div class="dcs-help">Bei privaten Gruppen wird eine Beitritts-Anfrage gestellt. Der Admin entscheidet dann über die Aufnahme.</div>
     </div>
   </div>`;
   await _filterDiscoverGroups('');
@@ -14232,18 +15059,18 @@ async function _filterDiscoverGroups(q){
   _discoverDebounce=setTimeout(async()=>{
     const list=document.getElementById('discover-list');
     if(!list)return;
-    if(!_sb){list.innerHTML='<div style="padding:16px;color:var(--text-light);font-size:12px;text-align:center;">Cloud nicht verfügbar.</div>';return;}
+    if(!_sb){list.innerHTML='<div class="discover-status">Cloud nicht verfügbar.</div>';return;}
     try{
       const{data,error}=await _sb.rpc('search_public_groups',{p_query:q||null,p_limit:30});
       if(error)throw error;
       if(!data||!data.length){
-        list.innerHTML='<div style="padding:24px;color:var(--text-light);font-size:13px;text-align:center;">Keine öffentlichen Gruppen gefunden.</div>';
+        list.innerHTML='<div class="discover-status">Keine öffentlichen Gruppen gefunden.</div>';
         return;
       }
       list.innerHTML=data.map(g=>{
-        const stateBadge=g.is_member?'<div style="font-size:10px;color:var(--green-mid);font-weight:700;background:var(--green-mist);padding:2px 8px;border-radius:8px;">✓ Mitglied</div>':(g.has_pending_request?'<div style="font-size:10px;color:var(--gold-d);font-weight:700;background:var(--gold-l);padding:2px 8px;border-radius:8px;">⏳ Anfrage offen</div>':'<div style="font-size:11px;color:var(--text-light);font-weight:600;">Ansehen ›</div>');
+        const stateBadge=g.is_member?'<div class="grp-state-badge is-member">Mitglied</div>':(g.has_pending_request?'<div class="grp-state-badge is-pending">Anfrage offen</div>':'<div class="grp-state-badge is-view">Ansehen ›</div>');
         return `<div class="grp-item" onclick="_grpPreview('${g.id}')">
-          <div class="grp-item-ico" style="background:var(--blue);">${g.icon||'🎣'}</div>
+          <div class="grp-item-ico ico-public">${g.icon||'🎣'}</div>
           <div class="grp-item-info">
             <div class="grp-item-name">${_esc(g.name)}</div>
             <div class="grp-item-sub">${g.member_count} Mitglieder${g.region?' · '+_esc(g.region):''}</div>
@@ -14253,7 +15080,7 @@ async function _filterDiscoverGroups(q){
       }).join('');
     }catch(e){
       console.warn('discover search:',e);
-      list.innerHTML='<div style="padding:16px;color:var(--rose-t);font-size:12px;text-align:center;">Fehler beim Laden.</div>';
+      list.innerHTML='<div class="discover-status error">Fehler beim Laden.</div>';
     }
   },220);
 }
@@ -15006,7 +15833,7 @@ function _grpComment(gId,catchId,evt){
   expand.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
 
   expand.innerHTML=`
-    ${commentsHtml?`<div class="cm-expand-list">${commentsHtml}</div>`:'<div class="cm-expand-empty">Noch keine Kommentare — sag etwas Nettes 💬</div>'}
+    ${commentsHtml?`<div class="cm-expand-list">${commentsHtml}</div>`:'<div class="cm-expand-empty"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-comment"/></svg><span>Noch keine Kommentare. Sag etwas Nettes.</span></div>'}
     <form class="cm-expand-form" onsubmit="event.preventDefault();_submitComment('${gId}','${catchId}');" autocomplete="off">
       <input type="text" id="cm-input-${catchId}" placeholder="Kommentar schreiben…" maxlength="280" autocomplete="off">
       <button type="submit" id="cm-send-${catchId}" aria-label="Senden">➤</button>
@@ -15552,14 +16379,15 @@ async function _openMemberProfile(gId,memberId){
   if(!m)return;
   openFs('member-profile');
   const el=document.getElementById('member-profile-content');
+  const isAdmin=m.role==='admin';
   el.innerHTML=`<div class="member-profile-hero">
     <div class="member-profile-avatar" style="background:${_userColor(memberId)};">${(m.name||'?').charAt(0).toUpperCase()}</div>
     <div class="member-profile-name">${_esc(m.name||'Angler')}</div>
-    <div class="member-profile-role">${m.role==='admin'?'👑 Admin':'Mitglied'}</div>
+    <div class="member-profile-role${isAdmin?' is-admin':''}">${isAdmin?'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-star"/></svg>Admin':'Mitglied'}</div>
     <div class="member-profile-since">Mitglied seit ${new Date(m.joinedAt).toLocaleDateString('de-DE',{day:'numeric',month:'long',year:'numeric'})}</div>
   </div>
   <div id="member-stats-body" style="padding-top:8px;">
-    <div style="text-align:center;padding:24px;color:var(--text-light);font-size:13px;">⏳ Statistik wird geladen…</div>
+    <div class="member-loading">Statistik wird geladen…</div>
   </div>`;
 
   try{
@@ -15614,65 +16442,65 @@ function _openCatchDetail(gId,catchId){
   let html='';
   // ── Hero: photoUrl von Supabase Storage ──
   if(sc.photoUrl){
-    html+=`<div id="cd-photo-wrap" style="position:relative;width:100%;background:#1a1d1a;aspect-ratio:4/3;cursor:pointer;overflow:hidden;" onclick="_lbOpen('${_esc(sc.photoUrl)}')">
-      <img src="${_esc(sc.photoUrl)}" alt="Fangfoto" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
-      <div style="position:absolute;left:16px;right:16px;bottom:14px;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.6);">
-        <div style="font-size:24px;font-weight:700;font-family:var(--fs);">${_esc(sc.type||'')}</div>
-        <div style="font-size:14px;opacity:.92;">${sc.length||'?'}cm${sc.weight?' · '+sc.weight+'kg':''}</div>
+    html+=`<div id="cd-photo-wrap" class="cd-photo-wrap" onclick="_lbOpen('${_esc(sc.photoUrl)}')">
+      <img src="${_esc(sc.photoUrl)}" alt="Fangfoto" loading="lazy">
+      <div class="cd-photo-overlay">
+        <div class="cd-photo-fish">${_esc(sc.type||'')}</div>
+        <div class="cd-photo-meta">${sc.length||'?'}cm${sc.weight?' · '+sc.weight+'kg':''}</div>
       </div>
-      <div style="position:absolute;top:14px;left:14px;background:rgba(0,0,0,.4);color:#fff;font-size:11px;padding:5px 10px;border-radius:14px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">🔍 Tippen für Vollbild</div>
+      <div class="cd-zoom-pill"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>Tippen für Vollbild</div>
     </div>`;
   }else{
-    html+=`<div style="background:linear-gradient(135deg,var(--green-deep),#1a3522);padding:60px 20px 30px;text-align:center;">
-      <div style="font-size:64px;margin-bottom:8px;">${fIco(sc.type)}</div>
-      <div style="font-size:24px;font-weight:700;color:#fff;font-family:var(--fs);">${_esc(sc.type)}</div>
-      <div style="font-size:14px;color:rgba(255,255,255,.7);margin-top:4px;">${sc.length}cm${sc.weight?' · '+sc.weight+'kg':''}</div>
+    html+=`<div class="cd-hero-no-photo">
+      <div class="cd-hero-fish">${fIco(sc.type)}</div>
+      <div class="cd-hero-name">${_esc(sc.type)}</div>
+      <div class="cd-hero-meta"><strong>${sc.length}cm</strong>${sc.weight?' · <strong>'+sc.weight+'kg</strong>':''}</div>
     </div>`;
   }
 
   // Angler info
-  html+=`<div style="padding:16px;">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-      <div class="catch-card-avatar" style="background:${color};width:36px;height:36px;font-size:16px;">${(member.name||'?').charAt(0)}</div>
+  html+=`<div class="cd-body">
+    <div class="cd-user-row">
+      <div class="catch-card-avatar" style="background:${color};">${(member.name||'?').charAt(0)}</div>
       <div>
-        <div style="font-weight:700;font-size:14px;color:var(--text-dark);">${_esc(member.name||'?')}</div>
-        <div style="font-size:11px;color:var(--text-light);">${sc.date||''}${sc.time?' · '+sc.time:''}</div>
+        <div class="cd-user-name">${_esc(member.name||'?')}</div>
+        <div class="cd-user-meta">${sc.date||''}${sc.time?' · '+sc.time:''}</div>
       </div>
     </div>`;
 
   // Gewässer + Spot
-  html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
-    <div style="background:#fff;padding:12px;border-radius:var(--rs);box-shadow:var(--sh-sm);">
-      <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;">Gewässer</div>
-      <div style="font-size:14px;font-weight:600;margin-top:4px;">${_esc(sc.water||'–')}</div>
+  html+=`<div class="cd-grid-2">
+    <div class="cd-card">
+      <div class="cd-card-label">Gewässer</div>
+      <div class="cd-card-value">${_esc(sc.water||'–')}</div>
     </div>
-    <div style="background:#fff;padding:12px;border-radius:var(--rs);box-shadow:var(--sh-sm);">
-      <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;">Spot</div>
-      <div style="font-size:14px;font-weight:600;margin-top:4px;">${_esc(sc.spot||'–')}</div>
+    <div class="cd-card">
+      <div class="cd-card-label">Spot</div>
+      <div class="cd-card-value">${_esc(sc.spot||'–')}</div>
     </div>
   </div>`;
 
   // Fangdaten
-  html+=`<div style="background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);margin-bottom:16px;">
-    <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Fangdaten</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-      <div><span style="font-size:11px;color:var(--text-light);">Fischart:</span><br><strong>${_esc(sc.type)}</strong></div>
-      <div><span style="font-size:11px;color:var(--text-light);">Länge:</span><br><strong>${sc.length} cm</strong></div>
-      ${sc.weight?`<div><span style="font-size:11px;color:var(--text-light);">Gewicht:</span><br><strong>${sc.weight} kg</strong></div>`:''}
-      <div><span style="font-size:11px;color:var(--text-light);">Köder:</span><br><strong>🎣 ${_esc(sc.bait||'–')}</strong></div>
+  html+=`<div class="cd-card">
+    <div class="cd-card-label">Fangdaten</div>
+    <div class="cd-fact-grid">
+      <div><div class="cd-fact-lbl">Fischart</div><div class="cd-fact-val">${_esc(sc.type)}</div></div>
+      <div><div class="cd-fact-lbl">Länge</div><div class="cd-fact-val">${sc.length} cm</div></div>
+      ${sc.weight?`<div><div class="cd-fact-lbl">Gewicht</div><div class="cd-fact-val">${sc.weight} kg</div></div>`:''}
+      <div><div class="cd-fact-lbl">Köder</div><div class="cd-fact-val">${_esc(sc.bait||'–')}</div></div>
     </div>
-    ${sc.baitNote?`<div style="margin-top:8px;padding:8px 12px;background:var(--green-mist);border-radius:8px;font-size:12px;color:var(--green-deep);">${_esc(sc.baitNote)}</div>`:''}
+    ${sc.baitNote?`<div class="cd-bait-note">${_esc(sc.baitNote)}</div>`:''}
   </div>`;
 
   // ── v51 NEW: Wetter-Block (Druck, Wind, Temp, optional Mond) ──
   const hasWx=(sc.pressure!=null||sc.windSpeed!=null||sc.temp!=null||sc.weather);
   if(hasWx){
     const cells=[];
-    if(sc.temp!=null)cells.push(`<div style="text-align:center;flex:1;"><div style="font-size:22px;">🌡️</div><div style="font-size:16px;font-weight:700;color:var(--text-dark);">${Math.round(sc.temp)}°C</div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.4px;">Temp</div></div>`);
-    if(sc.pressure!=null)cells.push(`<div style="text-align:center;flex:1;"><div style="font-size:22px;">📊</div><div style="font-size:16px;font-weight:700;color:var(--text-dark);">${Math.round(sc.pressure)}</div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.4px;">hPa Druck</div></div>`);
+    if(sc.temp!=null)cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">🌡️</div><div class="cd-wx-val">${Math.round(sc.temp)}°C</div><div class="cd-wx-lbl">Temp</div></div>`);
+    if(sc.pressure!=null)cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">📊</div><div class="cd-wx-val">${Math.round(sc.pressure)}</div><div class="cd-wx-lbl">hPa Druck</div></div>`);
     if(sc.windSpeed!=null){
       const dir=sc.windDir!=null?_compassDir(sc.windDir):'';
-      cells.push(`<div style="text-align:center;flex:1;"><div style="font-size:22px;">💨</div><div style="font-size:16px;font-weight:700;color:var(--text-dark);">${Math.round(sc.windSpeed)} <span style="font-size:11px;font-weight:500;">km/h</span></div><div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.4px;">Wind ${dir}</div></div>`);
+      cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">💨</div><div class="cd-wx-val">${Math.round(sc.windSpeed)} <small>km/h</small></div><div class="cd-wx-lbl">Wind ${dir}</div></div>`);
     }
     const subline=[
       sc.weather?`<span>${_esc(sc.weather)}</span>`:'',
@@ -15681,29 +16509,29 @@ function _openCatchDetail(gId,catchId){
       sc.precip!=null&&sc.precip>0?`<span>🌧 ${sc.precip} mm</span>`:'',
       sc.moonPhase?`<span>🌙 ${_esc(sc.moonPhase)}${sc.moonIllum!=null?' · '+Math.round(sc.moonIllum*100)+'%':''}</span>`:''
     ].filter(Boolean).join(' · ');
-    html+=`<div style="background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);margin-bottom:16px;">
-      <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">🌤 Wetter beim Fang</div>
-      <div style="display:flex;gap:8px;align-items:flex-end;">${cells.join('')}</div>
-      ${subline?`<div style="margin-top:10px;padding:8px 10px;background:var(--cream);border-radius:8px;font-size:11px;color:var(--text-mid);display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">${subline}</div>`:''}
+    html+=`<div class="cd-card">
+      <div class="cd-card-label">Wetter beim Fang</div>
+      <div class="cd-wx-grid">${cells.join('')}</div>
+      ${subline?`<div class="cd-wx-subline">${subline}</div>`:''}
     </div>`;
   }
 
   // ── v51 NEW: Smart-Map (GPS exakt | Approx. via spotMap | None) ──
   if(mapInfo.lat!=null&&mapInfo.lon!=null){
-    const labelEmoji=mapInfo.kind==='exact'?'📍':'📌';
     const labelTxt=mapInfo.kind==='exact'?'Fangspot':(mapInfo.kind==='spot'?'Spot-Approximation':'Gewässer-Approximation');
-    const subText=mapInfo.kind==='exact'?'GPS vom Angler geteilt':(mapInfo.kind==='spot'?`Geschätzt aus „${_esc(sc.water||'')} · ${_esc(sc.spot||'')}“`:`Geschätzt aus „${_esc(sc.water||'')}“`);
-    html+=`<div style="background:#fff;padding:14px;border-radius:var(--rs);box-shadow:var(--sh-sm);margin-bottom:16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <div style="font-size:10px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;">${labelEmoji} ${labelTxt}</div>
-        ${mapInfo.kind!=='exact'?'<div style="font-size:9px;color:var(--text-light);background:var(--cream);padding:3px 7px;border-radius:6px;">≈ Smart-Map</div>':''}
+    const subText=mapInfo.kind==='exact'?'GPS vom Angler geteilt':(mapInfo.kind==='spot'?`Geschätzt aus „${_esc(sc.water||'')} · ${_esc(sc.spot||'')}"`:`Geschätzt aus „${_esc(sc.water||'')}"`);
+    html+=`<div class="cd-card">
+      <div class="cd-map-head">
+        <div class="cd-card-label" style="margin-bottom:0;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pin"/></svg>${labelTxt}</div>
+        ${mapInfo.kind!=='exact'?'<div class="cd-map-pill">≈ Smart-Map</div>':''}
       </div>
-      <div id="catch-detail-map" style="width:100%;height:200px;border-radius:8px;overflow:hidden;isolation:isolate;"></div>
-      <div style="font-size:10px;color:var(--text-light);margin-top:6px;text-align:center;">${subText}</div>
+      <div id="catch-detail-map" class="cd-map-frame"></div>
+      <div class="cd-map-foot">${subText}</div>
     </div>`;
   }else if(sc.water||sc.spot){
-    html+=`<div style="background:var(--cream);padding:14px;border-radius:var(--rs);margin-bottom:16px;text-align:center;border:1px dashed var(--cream-dark);">
-      <div style="font-size:11px;color:var(--text-light);">📍 Kein Standort verfügbar — weder GPS noch Spot-Match in Bibliothek</div>
+    html+=`<div class="cd-no-loc">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pin"/></svg>
+      <span>Kein Standort verfügbar — weder GPS noch Spot-Match in Bibliothek</span>
     </div>`;
   }
 
@@ -15711,19 +16539,19 @@ function _openCatchDetail(gId,catchId){
   const likeCount=sc.likes?.length||0;
   const comments=sc.comments||[];
   const liked=(sc.likes||[]).includes(_sbUser?.id||'me');
-  html+=`<div style="background:#fff;padding:14px;border-radius:14px;border:1px solid var(--line);margin-bottom:24px;">
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:${comments.length?'12':'0'}px;">
-      <button class="catch-card-act${liked?' liked':''}" onclick="_grpLike('${gId}','${catchId}')" style="font-size:14px;">
+  html+=`<div class="cd-action-card">
+    <div class="cd-action-row" style="margin-bottom:${comments.length?'12':'0'}px;">
+      <button class="catch-card-act${liked?' liked':''}" onclick="_grpLike('${gId}','${catchId}')">
         <svg class="ic"><use href="#i-heart"/></svg><span id="cd-like-count">${likeCount}</span>
       </button>
-      <button class="catch-card-act" onclick="_cdShowCommentBar()" style="font-size:14px;">
+      <button class="catch-card-act" onclick="_cdShowCommentBar()">
         <svg class="ic"><use href="#i-comment"/></svg><span id="cd-comment-count">${comments.length}</span> Kommentieren
       </button>
     </div>
     <div id="cd-comment-list">${_cdRenderCommentsHtml(comments,g)}</div>
   </div>`;
 
-  html+=`</div>`; // close padding wrapper
+  html+=`</div>`; // close cd-body wrapper
 
   document.getElementById('catch-detail-content').innerHTML=html;
 
@@ -17000,10 +17828,9 @@ setTimeout(_hideBootLoader,8000);
     if(!localStorage.getItem('fb_skip_auth')){
       document.getElementById('login-ov')?.classList.remove('hidden');
     } else {
-      // User hat "Ohne Account" gewählt → Onboarding
+      // User hat "Ohne Account" gewählt → Onboarding (AP2: startet im Trust-Step 0, keine Pflicht-Eingabe)
       document.getElementById('onboarding').classList.remove('hidden');
-      document.getElementById('ob-btn').disabled=true;
-      setTimeout(()=>document.getElementById('ob-name')?.focus(),400);
+      // Trust-Step braucht keinen Eingabe-Focus — Button bleibt aktiv, Step-Wechsel fokussiert dann das jeweilige Eingabefeld.
     }
     _hideBootLoader();
   }
