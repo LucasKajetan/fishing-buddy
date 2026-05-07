@@ -2122,26 +2122,19 @@ body{
 /* AP16: Neue Session, Fang Eingabe, Formular UX (rein visuell, additiv) */
 
 /* Neue-Session Page-Title */
-#page-new .new-title-row{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:10px;margin-bottom:14px;flex-wrap:wrap;
-}
-#page-new .new-session-title{
-  font-family:var(--fa);
-  font-size:22px;font-weight:600;
-  color:var(--text-dark);letter-spacing:-.02em;
-  line-height:1.15;flex-shrink:0;
-}
+/* v84: page-hdr voice pill */
+#page-new .new-voice-pill{background:var(--green-mist);color:var(--green-deep);gap:4px;}
+#page-new .new-voice-pill svg{stroke:var(--green-deep);}
 
-/* Eingabe-Modus Segmented-Control */
+/* v84: Eingabe-Modus Segmented-Control — volle Breite, klar lesbar */
 #page-new .new-mode-toggle{
   display:flex;background:var(--cream-dark);
-  border-radius:10px;padding:3px;
+  border-radius:12px;padding:3px;gap:0;
 }
 #page-new .new-mode-btn{
-  flex:1;text-align:center;border-radius:8px;
-  padding:8px 0;border:none;font-family:var(--fa);
-  font-size:12px;font-weight:500;letter-spacing:-.005em;
+  flex:1;text-align:center;border-radius:10px;
+  padding:10px 6px;border:none;font-family:var(--fa);
+  font-size:13px;font-weight:500;letter-spacing:-.005em;
   cursor:pointer;background:transparent;
   color:var(--text-mid);
   transition:background .15s, color .15s, font-weight .15s, box-shadow .15s;
@@ -5781,16 +5774,26 @@ input[type=file]{display:none;}
 
 <!-- PAGE: NEU -->
 <div class="page on" id="page-new">
+  <!-- v84: page-hdr wie Fangbuch/Vorhersage -->
+  <div class="page-hdr">
+    <div class="page-hdr-left">
+      <div class="page-hdr-title" id="new-page-title">Fang melden</div>
+      <div class="page-hdr-sub" id="new-page-sub">Neue Session erfassen</div>
+    </div>
+    <div class="page-hdr-actions">
+      <button type="button" class="pill-btn new-voice-pill" id="new-voice-badge" onclick="_whisperPlaceholder()" aria-label="Spracheingabe">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        <span>KI</span>
+      </button>
+    </div>
+  </div>
   <div class="sc">
     <div id="warn-wrap" aria-live="polite"></div>
-    <!-- Seitentitel + Modus-Toggle inline -->
-    <div class="new-title-row">
-      <div id="new-page-title" class="new-session-title">Fang melden</div>
-      <div id="seg-ctrl" class="new-mode-toggle">
-        <button id="mode-raub" onclick="setInputMode('raub')" class="seg-btn new-mode-btn on">Raubfisch</button>
-        <button id="mode-fried" onclick="setInputMode('fried')" class="seg-btn new-mode-btn">Friedfisch</button>
-        <button id="mode-reduced" onclick="setInputMode('reduced')" class="seg-btn new-mode-btn">Reduziert</button>
-      </div>
+    <!-- v84: Modus-Toggle als eigene Zeile, breitere Segmente -->
+    <div id="seg-ctrl" class="new-mode-toggle" style="margin-bottom:14px;">
+      <button id="mode-raub" onclick="setInputMode('raub')" class="seg-btn new-mode-btn on">Raubfisch</button>
+      <button id="mode-fried" onclick="setInputMode('fried')" class="seg-btn new-mode-btn">Friedfisch</button>
+      <button id="mode-reduced" onclick="setInputMode('reduced')" class="seg-btn new-mode-btn">Reduziert</button>
     </div>
     <div class="card">
       <!-- 1. Datum -->
@@ -7158,7 +7161,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v83-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v84-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -7752,6 +7755,21 @@ async function fetchWx(){
   strip.style.display='flex';
   document.getElementById('gps-txt').textContent='Wetter wird geladen…';
   document.getElementById('wx-val').textContent='Lädt…';
+
+  // v84: Strategie 0 — Spot-GPS (Gewässer/Spot hat gespeicherte Koordinaten)
+  const _water=document.getElementById('s-water')?.value?.trim()||'';
+  const _spot=document.getElementById('s-spot')?.value?.trim()||'';
+  if(_water&&typeof findGpsForChipCombo==='function'){
+    const spotHit=findGpsForChipCombo(_water,_spot);
+    if(spotHit&&spotHit.lat&&spotHit.lon){
+      const url=`https://api.open-meteo.com/v1/forecast?latitude=${spotHit.lat.toFixed(4)}&longitude=${spotHit.lon.toFixed(4)}&current=temperature_2m,weathercode,windspeed_10m,winddirection_10m,surface_pressure,relativehumidity_2m,cloudcover,precipitation&timezone=auto`;
+      try{
+        const r=await fetch(url);const data=await r.json();const c=data.current||{};
+        applyWxData(c,`${_spot||_water} 📍`);
+        return;
+      }catch(e){}
+    }
+  }
 
   // Strategie 1: PLZ-Koordinaten
   if(_plzCoords){
@@ -8740,7 +8758,7 @@ function rndrFChips(id,fv){
   el.style.display='flex';
   el.innerHTML=chips.map(f=>{
     const s=f.replace(/'/g,"\\'");
-    return`<button class="chip${isCtx?' cc':''}" ${_chipAttr('fish',f)} onmousedown="fSel(${id},'${s}')">${fIco(f)} ${f}</button>`;
+    return`<button class="chip${isCtx?' cc':''}" ${_chipAttr('fish',f)} onmousedown="fSel(${id},'${s}')">${f}</button>`;
   }).join('');
 }
 
@@ -8796,7 +8814,7 @@ function rndrTruebChips(){
   const filtered=v?TRUEB_OPTS.filter(t=>t.includes(v)):TRUEB_OPTS;
   if(!filtered.length){el.style.display='none';return;}
   el.style.display='flex';
-  el.innerHTML=filtered.map(t=>`<button class="chip" onmousedown="document.getElementById('s-trueb').value='${t}';dHide('trueb-chips')">💧 ${t}</button>`).join('');
+  el.innerHTML=filtered.map(t=>`<button class="chip cw" onmousedown="document.getElementById('s-trueb').value='${t}';dHide('trueb-chips')">${t}</button>`).join('');
 }
 
 // Notiz-Chips – gelernte Phrasen, Top 5, längere Phrasen zuerst
@@ -9343,7 +9361,7 @@ function _rndrSzChips(id){
   el.style.display='flex';
   el.innerHTML=chips.map(c=>{
     const safe=c.replace(/'/g,"\\'");
-    return`<button class="chip ct" onmousedown="document.getElementById('fbsz-${id}').value='${safe}';dHide('szc-${id}')">📏 ${c}</button>`;
+    return`<button class="chip ct" onmousedown="document.getElementById('fbsz-${id}').value='${safe}';dHide('szc-${id}')">${c}</button>`;
   }).join('');
 }
 
@@ -9372,7 +9390,7 @@ function _rndrColChips(id){
   el.style.display='flex';
   el.innerHTML=chips.map(c=>{
     const safe=c.replace(/'/g,"\\'");
-    return`<button class="chip cc" onmousedown="document.getElementById('fbcol-${id}').value='${safe}';dHide('colc-${id}')">🎨 ${c}</button>`;
+    return`<button class="chip cc" onmousedown="document.getElementById('fbcol-${id}').value='${safe}';dHide('colc-${id}')">${c}</button>`;
   }).join('');
 }
 
@@ -9644,6 +9662,8 @@ function resetForm(){
   // Seitentitel zurücksetzen
   const titleEl=document.getElementById('new-page-title');
   if(titleEl)titleEl.textContent='Fang melden';
+  const subEl=document.getElementById('new-page-sub');
+  if(subEl)subEl.textContent='Neue Session erfassen';
   const saveBtn=document.querySelector('#page-new .btn[onclick="saveSess()"]');
   if(saveBtn)saveBtn.textContent='Session speichern ✓';
   document.getElementById('catches-con').innerHTML='';
@@ -11553,6 +11573,8 @@ async function editSess(id){
   // Seitentitel dynamisch ändern
   const titleEl=document.getElementById('new-page-title');
   if(titleEl)titleEl.textContent='Session bearbeiten';
+  const subEl=document.getElementById('new-page-sub');
+  if(subEl)subEl.textContent='Bestehende Session editieren';
   // Save-Button Text anpassen
   const saveBtn=document.querySelector('#page-new .btn[onclick="saveSess()"]');
   if(saveBtn)saveBtn.textContent='Änderungen speichern ✓';
