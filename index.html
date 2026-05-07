@@ -2425,16 +2425,16 @@ body{
 }
 #page-new .fav-btn:active{transform:scale(.96);}
 #page-new .fav-btn-bait{
-  background:var(--purple);color:var(--purple-t);
-  border-color:rgba(60,52,137,.10);
+  background:var(--blue);color:var(--blue-t);
+  border-color:rgba(12,68,124,.10);
 }
-#page-new .fav-btn-bait:hover{background:#e3e0fc;color:var(--purple-t);}
+#page-new .fav-btn-bait:hover{background:#b5d4f4;color:var(--blue-t);}
 #page-new .fav-btn-note{
-  background:var(--teal);color:var(--teal-t);
-  border-color:rgba(8,80,65,.10);
+  background:var(--blue);color:var(--blue-t);
+  border-color:rgba(12,68,124,.10);
   font-size:11px;padding:4px 10px;
 }
-#page-new .fav-btn-note:hover{background:#d2f0e7;color:var(--teal-t);}
+#page-new .fav-btn-note:hover{background:#b5d4f4;color:var(--blue-t);}
 
 /* Add-Catch-Button hochwertiger */
 #page-new .addcatch{
@@ -2888,6 +2888,7 @@ body{
 /* v52 AP3: Datums-Strip mit Kalender-Button daneben (infinite scroll) */
 .tide-strip-row{
   display:flex;align-items:center;gap:6px;padding:0 8px 4px;
+  overflow:hidden;
 }
 .tide-strip-row .tide-cal-btn{
   flex:0 0 auto;width:36px;height:36px;border:1.5px solid var(--green-pale);
@@ -2903,7 +2904,9 @@ body{
   display:flex;gap:4px;overflow-x:auto;
   scrollbar-width:none;-webkit-overflow-scrolling:touch;
   scroll-snap-type:x mandatory;scroll-padding:0 12px;
-  padding:2px 8px 6px;flex:1;
+  padding:2px 8px 6px;flex:1;min-width:0;
+  touch-action:pan-x;
+  overscroll-behavior-x:contain;
 }
 .tide-strip::-webkit-scrollbar{display:none;}
 .tide-strip-day{
@@ -3798,7 +3801,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 /* v59: Session-Stats-Hero-Card (Tanne mit Gold-Counter) */
 .dd-stats-card{
   background:linear-gradient(135deg,var(--tanne) 0%,#2A4D38 100%);
-  border-radius:18px;padding:16px 18px;margin:0 2px 12px;
+  border-radius:18px;padding:16px 18px;margin:10px 2px 12px;
   display:flex;align-items:center;gap:14px;
   position:relative;overflow:hidden;color:#fff;
 }
@@ -4598,7 +4601,7 @@ input[type=file]{display:none;}
 .if-wrap .if:focus ~ .if-clear.vis,.if-wrap .if:not(:placeholder-shown) ~ .if-clear{display:flex;}
 
 /* Chart Scroll Lock */
-.fc-chart-touch{touch-action:none;-ms-touch-action:none;}
+.fc-chart-touch{touch-action:pan-y;-ms-touch-action:pan-y;}
 
 /* Magic Header – replaces tooltips */
 .chart-magic-hdr{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;margin-bottom:6px;background:var(--green-mist);border-radius:8px;font-size:12px;font-weight:600;color:var(--green-deep);}
@@ -5101,11 +5104,90 @@ input[type=file]{display:none;}
 .tide-strip-day{scroll-snap-align:start;font-family:var(--f-edit-text);}
 .tide-strip-day .tide-strip-num{font-family:var(--f-edit);font-weight:600;}
 
-/* AP21-A4: Tages-Wetter Overlay — konsistenter Header */
+/* AP21-A4/v86: Detail-Header sichtbar an den echten Hauptheader angleichen.
+   Die linken Buttons schließen technisch weiterhin das Overlay; optisch bleiben sie
+   ein konsistenter Burger, ohne hier eine neue Navigation einzubauen. */
 #fs-daily-weather{background:#f7f5ef;}
-.dw-green-hdr{background:var(--tanne);position:relative;}
+.hdr-bar.dw-green-hdr{
+  background:var(--green-deep);
+  position:relative;
+  padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px;
+  min-height:62px;
+  box-sizing:border-box;
+  flex-shrink:0;
+}
 .dw-green-hdr .hlogo{color:#fff;}
+.dw-green-hdr .hlogo-t{
+  font-family:var(--fa);
+  font-size:21px;
+  font-weight:500;
+  color:#A8D5B5;
+  letter-spacing:-.015em;
+}
+.dw-green-hdr .hlogo-p{
+  font-family:var(--fa);
+  font-size:21px;
+  font-weight:600;
+  color:var(--gold);
+  margin-left:1px;
+  letter-spacing:-.015em;
+}
+.dw-green-hdr .bbtn{
+  width:38px;
+  height:38px;
+  border:none;
+  border-radius:10px;
+  background:rgba(255,255,255,.15);
+  color:#fff;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  flex-shrink:0;
+  transition:background .15s,transform .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+.dw-green-hdr .bbtn:hover{background:rgba(255,255,255,.25);}
+.dw-green-hdr .bbtn:active{transform:scale(.96);background:rgba(255,255,255,.25);}
+.dw-green-hdr .bbtn .ic{width:18px;height:18px;color:#fff;stroke-width:1.9;}
+.hdr-bar.dw-green-hdr .dw-close-btn{
+  right:16px!important;
+  width:34px!important;
+  height:34px!important;
+  padding:0!important;
+  border-radius:50%!important;
+  border:none!important;
+  background:#C94040!important;
+  color:#fff!important;
+  box-shadow:0 2px 8px rgba(120,20,20,.22);
+}
+.hdr-bar.dw-green-hdr .dw-close-btn .ic{width:16px;height:16px;color:#fff;stroke-width:2;}
 .dw-close-btn{position:absolute!important;right:12px;top:50%;transform:translateY(-50%);}
+#fs-group-hub > .dw-content-hdr,
+#fs-group-detail > .dw-content-hdr{
+  position:absolute;
+  left:0;
+  right:0;
+  top:62px;
+  z-index:320;
+  flex-shrink:0;
+}
+#fs-group-hub > .hdr-bar.dw-green-hdr,
+#fs-group-detail > .hdr-bar.dw-green-hdr{
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  z-index:330;
+}
+#fs-group-hub > .fsov-scroll,
+#fs-group-detail > .fsov-scroll{
+  position:relative;
+  z-index:1;
+  min-height:0;
+  margin-top:126px;
+}
 .dw-content-hdr{
   background:#fff;padding:14px 16px 10px;
   border-bottom:1px solid rgba(45,74,53,.08);
@@ -5199,6 +5281,7 @@ input[type=file]{display:none;}
 <defs>
   <!-- UI / Navigation -->
   <symbol id="i-burger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
   <symbol id="i-arrow-l" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></symbol>
   <symbol id="i-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
   <symbol id="i-arrow-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
@@ -7164,7 +7247,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v85-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v86-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -8797,8 +8880,6 @@ function rndrBChips(id,fv){
   el.style.display='flex';
   el.innerHTML=chips.map(b=>{
     const s=b.replace(/'/g,"\\'");
-    const isSpot=spotChips.includes(b);
-    const icon=isSpot?'📍':(isCtx?'🎯':'🪝');
     return`<button class="chip cw" ${_chipAttr('bait',b)} onmousedown="bSel(${id},'${s}')">${b}</button>`;
   }).join('');
 }
@@ -13353,7 +13434,6 @@ async function _renderTideCal(river,startDate){
     <div class="tide-cockpit">
       <div class="tide-river-seg">${riverSeg}</div>
       <div class="tide-strip-row">
-        <button class="tide-cal-btn" onclick="document.getElementById('tide-date-pick').showPicker?.()||document.getElementById('tide-date-pick').click()" aria-label="Datum wählen"><svg class="ic" style="width:18px;height:18px;"><use href="#i-cal"/></svg></button>
         <input type="date" id="tide-date-pick" value="${startDate}" onchange="_renderTideCal('${river}',this.value)">
         <div class="tide-strip" id="tide-strip-slot">${stripHtml}</div>
       </div>
@@ -13585,22 +13665,24 @@ async function _renderTideCal(river,startDate){
 function _findTideExtrema(values,labels){
   const events=[];
   if(!Array.isArray(values)||values.length<5)return events;
-  // Suche lokale Extrema (mind. 90min = 6 Indizes Abstand zum Vorgänger, abgleicht in Slope)
-  const MIN_GAP=8; // = 2h zwischen Events bei 15min-Auflösung
-  let lastIdx=-MIN_GAP*2;
-  for(let i=2;i<values.length-2;i++){
-    if(values[i]==null)continue;
-    const a=values[i-2],b=values[i-1],v=values[i],d=values[i+1],e=values[i+2];
-    if([a,b,v,d,e].some(x=>x==null))continue;
-    if(i-lastIdx<MIN_GAP)continue;
-    if(b<v&&v>d&&a<v&&v>e){
-      events.push({kind:'hw',time:labels[i]||'',h:v,idx:i});
-      lastIdx=i;
-    } else if(b>v&&v<d&&a>v&&v<e){
-      events.push({kind:'nw',time:labels[i]||'',h:v,idx:i});
-      lastIdx=i;
-    }
+  const MIN_GAP=8; // 2h bei 15min-Auflösung, verhindert Mehrfachtreffer um dieselbe Kuppe.
+  const candidates=[];
+  for(let i=1;i<values.length-1;i++){
+    const p=values[i-1],v=values[i],n=values[i+1];
+    if([p,v,n].some(x=>x==null))continue;
+    // v86: Gleichstände/Plateaus mitnehmen; die alte strikte Prüfung hat runde
+    // Hochwasserkuppen sichtbar im Chart, aber nicht in der Ereignisliste gezeigt.
+    if((p<v&&v>=n)||(p<=v&&v>n))candidates.push({kind:'hw',time:labels[i]||'',h:v,idx:i});
+    else if((p>v&&v<=n)||(p>=v&&v<n))candidates.push({kind:'nw',time:labels[i]||'',h:v,idx:i});
   }
+  candidates.forEach(c=>{
+    const last=events[events.length-1];
+    if(!last||c.idx-last.idx>=MIN_GAP){events.push(c);return;}
+    if(last.kind===c.kind){
+      const better=c.kind==='hw'?c.h>last.h:c.h<last.h;
+      if(better)events[events.length-1]=c;
+    }
+  });
   return events;
 }
 
@@ -14447,7 +14529,7 @@ function openDailyWeather(dateStr){
     if(e.target.closest('.fc-chart-wrap'))_chartActive=true;
   };
   scrollEl.ontouchend=e=>{
-    if(_chartActive)return;
+    if(_chartActive||window._chartGestureBlockSwipe||e.target.closest('.fc-chart-wrap'))return;
     const dx=e.changedTouches[0].clientX-_swX;
     const dy=Math.abs(e.changedTouches[0].clientY-_swY);
     if(Math.abs(dx)>60&&dy<Math.abs(dx)){
@@ -14548,17 +14630,26 @@ function _dwAttachTouchReset(){
       _dwSyncActive=-1;
       _dwCharts.forEach(other=>{
         if(!other)return;
+        other._cursorIdx=null;
         other.setActiveElements([]);
         if(other.tooltip)other.tooltip.setActiveElements([],{x:0,y:0});
         other.draw();
       });
-      // Magic-Header/Info-Leisten leeren
+      // Magic-Header/Info-Leisten leeren und statische Min/Max-Chips zurückholen
       ['dw-temp-hover','dw-wind-hover','dw-rain-hover','dw-pres-hover'].forEach(id=>{
-        const el=document.getElementById(id);if(el)el.textContent='';
+        const el=document.getElementById(id);
+        if(!el)return;
+        el.textContent='';
+        const parent=el.parentElement;
+        if(parent)parent.querySelectorAll('.dw-chip:not(.dw-chip-live)').forEach(c=>{c.style.display='';});
       });
     };
     ch.canvas.addEventListener('touchend',reset,{passive:true});
     ch.canvas.addEventListener('touchcancel',reset,{passive:true});
+    ch.canvas.addEventListener('pointerup',reset);
+    ch.canvas.addEventListener('pointercancel',reset);
+    ch.canvas.addEventListener('pointerleave',reset);
+    ch.canvas.addEventListener('mouseup',reset);
     ch.canvas.addEventListener('mouseleave',reset);
     ch._touchResetBound=true;
   });
@@ -15917,8 +16008,10 @@ async function startVoiceInput(catchId){
     _voiceMediaRec.start();
     showToast('🎤','Aufnahme läuft – nochmal tippen zum Stoppen');
 
-    // Auto-Stop nach 15 Sekunden
-    setTimeout(()=>{if(_voiceRecording&&_voiceMediaRec)_voiceMediaRec.stop();},15000);
+    // v86: etwas längeres, weiterhin risikoarmes Zeitfenster für komplette Fang-Notizen.
+    // Die Erkennung bleibt Catch-orientiert; globale strukturierte Session-Befüllung
+    // braucht später einen eigenen Parser statt einer UI-Kosmetik.
+    setTimeout(()=>{if(_voiceRecording&&_voiceMediaRec)_voiceMediaRec.stop();},30000);
   }catch(e){
     showToast('❌','Mikrofon-Zugriff verweigert',true);
   }
@@ -19056,12 +19149,19 @@ function _initChartScrollLock(){
       // Horizontale Geste → stoppen, damit Page nicht seitlich wischt
       if(dx>dy&&dx>6){
         locked=true;
+        window._chartGestureBlockSwipe=true;
         e.stopPropagation();
         if(e.cancelable)e.preventDefault();
       }
     },{passive:false});
-    el.addEventListener('touchend',()=>{locked=false;},{passive:true});
-    el.addEventListener('touchcancel',()=>{locked=false;},{passive:true});
+    el.addEventListener('touchend',()=>{
+      locked=false;
+      setTimeout(()=>{window._chartGestureBlockSwipe=false;},120);
+    },{passive:true});
+    el.addEventListener('touchcancel',()=>{
+      locked=false;
+      setTimeout(()=>{window._chartGestureBlockSwipe=false;},120);
+    },{passive:true});
     el._scrollLockBound=true;
   });
 }
