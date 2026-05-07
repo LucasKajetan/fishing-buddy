@@ -5027,8 +5027,11 @@ input[type=file]{display:none;}
 .tide-events-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:6px;
+  gap:10px;
 }
+.tide-col{display:flex;flex-direction:column;gap:6px;}
+.tide-col-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-light);margin-bottom:2px;}
+.tide-event-empty{font-size:11px;color:var(--text-light);font-style:italic;padding:8px 0;}
 .tide-event-chip{
   display:flex;
   align-items:center;
@@ -8758,7 +8761,7 @@ function rndrFChips(id,fv){
   el.style.display='flex';
   el.innerHTML=chips.map(f=>{
     const s=f.replace(/'/g,"\\'");
-    return`<button class="chip${isCtx?' cc':''}" ${_chipAttr('fish',f)} onmousedown="fSel(${id},'${s}')">${f}</button>`;
+    return`<button class="chip cw" ${_chipAttr('fish',f)} onmousedown="fSel(${id},'${s}')">${f}</button>`;
   }).join('');
 }
 
@@ -8796,7 +8799,7 @@ function rndrBChips(id,fv){
     const s=b.replace(/'/g,"\\'");
     const isSpot=spotChips.includes(b);
     const icon=isSpot?'📍':(isCtx?'🎯':'🪝');
-    return`<button class="chip" ${_chipAttr('bait',b)} onmousedown="bSel(${id},'${s}')">${b}</button>`;
+    return`<button class="chip cw" ${_chipAttr('bait',b)} onmousedown="bSel(${id},'${s}')">${b}</button>`;
   }).join('');
 }
 function bSel(id,v){
@@ -8848,7 +8851,7 @@ function rndrNChips(id,fv){
   el.style.display='flex';
   el.innerHTML=chips.map(n=>{
     const s=n.replace(/'/g,"\\'").replace(/"/g,'&quot;');
-    return`<button class="chip" ${_chipAttr('notes',n)} onmousedown="nSel(${id},'${s}')">${n}</button>`;
+    return`<button class="chip cw" ${_chipAttr('notes',n)} onmousedown="nSel(${id},'${s}')">${n}</button>`;
   }).join('');
 }
 
@@ -9361,7 +9364,7 @@ function _rndrSzChips(id){
   el.style.display='flex';
   el.innerHTML=chips.map(c=>{
     const safe=c.replace(/'/g,"\\'");
-    return`<button class="chip ct" onmousedown="document.getElementById('fbsz-${id}').value='${safe}';dHide('szc-${id}')">${c}</button>`;
+    return`<button class="chip cw" onmousedown="document.getElementById('fbsz-${id}').value='${safe}';dHide('szc-${id}')">${c}</button>`;
   }).join('');
 }
 
@@ -9390,7 +9393,7 @@ function _rndrColChips(id){
   el.style.display='flex';
   el.innerHTML=chips.map(c=>{
     const safe=c.replace(/'/g,"\\'");
-    return`<button class="chip cc" onmousedown="document.getElementById('fbcol-${id}').value='${safe}';dHide('colc-${id}')">${c}</button>`;
+    return`<button class="chip cw" onmousedown="document.getElementById('fbcol-${id}').value='${safe}';dHide('colc-${id}')">${c}</button>`;
   }).join('');
 }
 
@@ -13387,17 +13390,18 @@ async function _renderTideCal(river,startDate){
   // v55: HW/NW-Events finden (lokale Maxima/Minima)
   const events=_findTideExtrema(values,gridLabels);
 
-  // v85: HW/NW als 2-Spalten-Grid (HW1/NW1 links, HW2/NW2 rechts)
   let chipsHtml='';
   if(events.length){
-    const hwEvts=events.filter(e=>e.kind==='hw').slice(0,2);
-    const nwEvts=events.filter(e=>e.kind==='nw').slice(0,2);
+    const nwEvts=events.filter(e=>e.kind==='nw');
+    const hwEvts=events.filter(e=>e.kind==='hw');
     const _ec=(e)=>`<span class="tide-event-chip ${e.kind}"><span class="te-icon">${e.kind==='hw'?'⬆':'⬇'}</span><span class="te-time">${e.time}</span><span class="te-h">${e.h>=0?'+':''}${Math.round(e.h)} cm</span></span>`;
+    const nwCol=nwEvts.length?nwEvts.map(_ec).join(''):'<span class="tide-event-empty">Keine Daten</span>';
+    const hwCol=hwEvts.length?hwEvts.map(_ec).join(''):'<span class="tide-event-empty">Keine Daten</span>';
     chipsHtml=`<div class="tide-events-flow">
       <div class="tide-events-flow-title">Hoch- & Niedrigwasser am ${new Date(startDate+'T12:00:00').toLocaleDateString('de-DE',{day:'numeric',month:'short'})}</div>
       <div class="tide-events-grid">
-        ${hwEvts[0]?_ec(hwEvts[0]):''}${hwEvts[1]?_ec(hwEvts[1]):''}
-        ${nwEvts[0]?_ec(nwEvts[0]):''}${nwEvts[1]?_ec(nwEvts[1]):''}
+        <div class="tide-col"><div class="tide-col-label">Niedrigwasser</div>${nwCol}</div>
+        <div class="tide-col"><div class="tide-col-label">Hochwasser</div>${hwCol}</div>
       </div>
     </div>`;
   }
@@ -14265,16 +14269,20 @@ const _dwInfoPlugin={
     const evt=args.event;
     const el=document.getElementById(chart._infoId);
     if(!el)return;
-    if((evt.type==='mousemove'||evt.type==='click')&&args.inChartArea){
+    const parent=el.parentElement;
+    const staticChips=parent?parent.querySelectorAll('.dw-chip:not(.dw-chip-live)'):[];
+    if((evt.type==='mousemove'||evt.type==='click'||evt.type==='touchmove'||evt.type==='touchstart')&&args.inChartArea){
       const els=chart.getElementsAtEventForMode(evt,'index',{intersect:false},true);
       if(els.length){
         const idx=els[0].index;
         const label=chart.data.labels?.[idx]||'';
         const vals=chart.data.datasets.map(ds=>`${ds.label}: ${ds.data[idx]!=null?ds.data[idx]:'–'}${chart._infoUnit||''}`).join(' | ');
         el.textContent=`${label} Uhr · ${vals}`;
+        staticChips.forEach(c=>c.style.display='none');
       }
     } else if(evt.type==='mouseout'||!args.inChartArea){
       el.textContent='';
+      staticChips.forEach(c=>c.style.display='');
     }
   }
 };
@@ -14376,7 +14384,7 @@ function openDailyWeather(dateStr){
   const _chipHtml=(items)=>items.map(([l,v])=>`<span class="dw-chip">${l}: ${v}</span>`).join('');
   document.getElementById('fs-dw-body').innerHTML=`
     <!-- KPIs -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:12px 16px;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px 16px 12px;">
       <div style="text-align:center;background:#fff;border-radius:var(--rs);padding:10px 4px;box-shadow:var(--sh-sm);">
         <div style="font-size:18px;font-weight:700;color:var(--text-dark);">${tmin!=null?Math.round(tmin):'–'}°/${tmax!=null?Math.round(tmax):'–'}°</div>
         <div style="font-size:10px;color:var(--text-light);margin-top:2px;">Temp</div>
@@ -15630,7 +15638,12 @@ function closeLiveCatch(){
 }
 
 function _whisperPlaceholder(){
-  showToast('🎙️','Whisper-Spracherkennung wird in einem zukünftigen Update verfügbar sein.');
+  const firstCard=document.querySelector('#catches-con [id^="catch-"]');
+  if(firstCard){
+    const id=parseInt(firstCard.id.replace('catch-',''),10);
+    if(id&&typeof startVoiceInput==='function'){startVoiceInput(id);return;}
+  }
+  showToast('🎙️','Erst einen Fang anlegen, dann Spracheingabe nutzen.');
 }
 
 // AP8: Live-Session — Bei Fischart-Wechsel Köder/Farbe/Größe leeren
