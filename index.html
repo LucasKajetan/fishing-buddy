@@ -1188,6 +1188,1355 @@ body{
 }
 @keyframes memberSpin{to{transform:rotate(360deg);}}
 
+/* AP10: Mitgliederlisten, Join Requests, Rollen UI Politur (rein visuell, additiv) */
+
+/* Members-Tab Body-Wrapper */
+.grp-members-pad{padding:16px 16px max(20px, var(--nav-clearance));}
+
+/* Beitrittsanfragen-Sektion */
+.grp-req-section{margin-bottom:22px;}
+.grp-req-section-title{
+  display:flex;align-items:center;gap:7px;
+  font-size:11px;font-weight:700;letter-spacing:.6px;
+  text-transform:uppercase;color:var(--gold-d);
+  margin-bottom:10px;
+}
+.grp-req-section-title .ic{
+  width:13px;height:13px;color:var(--gold-d);stroke-width:1.8;
+}
+
+/* Join-Request-Cards Verfeinerung (.join-req-card existiert bereits) */
+.join-req-card{
+  background:linear-gradient(135deg, var(--gold-l) 0%, #fff 70%);
+  border:1px solid #efd9a3;
+  box-shadow:0 1px 3px rgba(180,140,60,.06);
+  padding:13px 14px;
+  border-radius:14px;
+}
+.join-req-card .jrc-avatar{
+  border:2px solid #fff;
+  box-shadow:0 1px 3px rgba(180,140,60,.18);
+}
+.join-req-card .jrc-name{
+  font-size:13.5px;font-weight:600;letter-spacing:-.005em;
+}
+.join-req-card .jrc-meta{font-size:11px;color:var(--text-mid);}
+.join-req-card .jrc-actions{gap:8px;}
+
+/* Approve/Reject-Buttons konsistenter */
+.jrc-btn{
+  padding:8px 14px;border-radius:99px;
+  font-size:12px;font-weight:600;letter-spacing:-.005em;
+  transition:background .15s, color .15s, transform .1s;
+}
+.jrc-btn.acc{
+  background:var(--green-deep);color:#fff;
+  box-shadow:0 1px 4px rgba(31,61,46,.20);
+  display:inline-flex;align-items:center;gap:5px;
+}
+.jrc-btn.acc:hover{background:#1f3a26;}
+.jrc-btn.acc:active{transform:scale(.96);}
+.jrc-btn.rej{
+  background:transparent;color:var(--text-mid);
+  border:1px solid var(--cream-dark);
+}
+.jrc-btn.rej:hover{background:var(--cream);border-color:var(--text-light);color:var(--text-dark);}
+.jrc-btn.rej:active{transform:scale(.96);}
+
+/* Mitglieder-Header-Zeile */
+.grp-members-head{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:14px;
+}
+.grp-members-count{
+  font-size:11px;font-weight:700;letter-spacing:.6px;
+  text-transform:uppercase;color:var(--text-light);
+}
+.grp-invite-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;background:var(--green-mist);
+  border:1px solid var(--green-pale);border-radius:99px;
+  font-size:11px;font-weight:600;color:var(--green-mid);
+  font-family:var(--fa);cursor:pointer;
+  transition:background .15s, border-color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.grp-invite-btn:hover{background:var(--green-pale);border-color:var(--green-mid);}
+.grp-invite-btn:active{transform:scale(.97);}
+.grp-invite-btn .ic{width:11px;height:11px;stroke-width:1.8;}
+
+/* Member-Rows Override: konsistente Card-Sprache */
+.grp-members-list{display:flex;flex-direction:column;gap:6px;}
+.grp-members-list .grp-item{
+  margin-bottom:0;
+  border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(31,61,46,.03);
+  transition:background .15s, transform .1s;
+}
+.grp-members-list .grp-item:hover{background:var(--cream);}
+.grp-members-list .grp-item:active{transform:scale(.99);}
+
+/* Inline-Role-Pill in Member-Liste (analog AP9 Member-Profile) */
+.grp-role-pill{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:1px 7px;border-radius:99px;
+  font-size:10.5px;font-weight:600;letter-spacing:-.005em;
+  background:var(--cream-dark);color:var(--text-mid);
+  margin-right:5px;
+}
+.grp-role-pill.is-admin{
+  background:var(--gold-l);color:var(--gold-d);
+}
+.grp-role-pill.is-admin .ic{
+  width:10px;height:10px;color:var(--gold-d);stroke-width:1.8;
+}
+
+/* Member-Sub mit ruhiger Trennung */
+.grp-members-list .grp-item-sub{
+  display:flex;align-items:center;gap:0;
+  font-size:11px;color:var(--text-light);
+}
+.grp-members-list .grp-item-sub .grp-role-pill + .grp-since{
+  color:var(--text-light);
+}
+.grp-since{font-size:11px;color:var(--text-light);}
+
+/* Chevron rechts in Member-Row */
+.grp-member-chevron{
+  display:flex;align-items:center;justify-content:center;
+  width:24px;height:24px;color:var(--grau-lt);
+  flex-shrink:0;
+}
+.grp-member-chevron .ic{width:14px;height:14px;stroke-width:2;}
+
+/* "Gruppe verlassen"-Sektion */
+.grp-leave-section{
+  margin-top:24px;padding-top:18px;
+  border-top:1px solid var(--cream-dark);
+}
+.grp-leave-btn{
+  width:100%;padding:13px 14px;
+  background:var(--rose);color:var(--rose-t);
+  border:1.5px solid var(--rose-b);border-radius:var(--rs);
+  font-size:14px;font-weight:600;font-family:var(--fa);
+  cursor:pointer;letter-spacing:-.005em;
+  transition:background .15s, border-color .15s;
+}
+.grp-leave-btn:hover{background:#f8d8d2;border-color:#e09684;}
+.grp-leave-btn:active{transform:scale(.99);}
+.grp-leave-help{
+  font-size:10.5px;color:var(--text-light);
+  text-align:center;margin-top:8px;line-height:1.5;
+}
+
+/* Preview-Banner Override: Inline-Info-Look mit SVG */
+.preview-restriction-banner{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;margin:8px 16px;
+  background:var(--yellow);border:1px solid var(--yellow-b);
+  border-radius:8px;color:var(--yellow-t);
+  font-size:11px;font-weight:600;line-height:1.4;
+}
+.preview-restriction-banner .ic{
+  flex-shrink:0;width:14px;height:14px;color:var(--yellow-t);
+  stroke-width:1.8;
+}
+
+/* Member-Empty-State im Mitgliederbereich */
+.grp-members-empty{
+  text-align:center;padding:32px 20px;
+  color:var(--text-light);font-size:13px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.grp-members-empty .empty-ico{
+  width:44px;height:44px;border-radius:14px;
+  background:var(--cream);color:var(--grau-lt);
+  display:flex;align-items:center;justify-content:center;
+}
+.grp-members-empty .empty-ico .ic{
+  width:22px;height:22px;stroke-width:1.6;
+}
+
+/* AP11: Gruppen Insights Dashboard Politur (rein visuell, additiv) */
+
+/* Insights-Tab Body-Wrapper */
+.grp-insights-pad{padding:12px 8px max(20px, var(--nav-clearance));}
+
+/* Dashboard-Section Override: Border + ruhiger Schatten + konsistentes Padding */
+.grp-insights-pad .dash-section{
+  margin:0 0 12px 0;
+  border:1px solid var(--line);
+  box-shadow:0 1px 3px rgba(31,61,46,.04);
+  padding:14px 16px;border-radius:14px;
+}
+
+/* Section-Title mit SVG-Icon-Support (analog grp-req-section-title) */
+.grp-insights-pad .dash-section-title{
+  display:flex;align-items:center;gap:7px;
+  font-size:11px;font-weight:600;letter-spacing:.5px;
+  text-transform:uppercase;color:var(--text-light);
+  margin-bottom:12px;
+}
+.grp-insights-pad .dash-section-title .ic{
+  width:13px;height:13px;color:var(--green-mid);stroke-width:1.7;
+  flex-shrink:0;
+}
+.grp-insights-pad .dash-section-title.is-gold .ic{color:var(--gold-d);}
+
+/* Trend-Chips Override: ruhiger, mit kleinem SVG-Icon-Support */
+.grp-insights-pad .dash-trend-chips{gap:6px;}
+.grp-insights-pad .dash-trend-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 11px;border-radius:99px;
+  font-size:11.5px;font-weight:500;letter-spacing:-.005em;
+  border:1px solid transparent;
+  transition:transform .1s;
+}
+.grp-insights-pad .dash-trend-chip .ic{
+  width:11px;height:11px;stroke-width:1.8;
+  color:currentColor;opacity:.7;
+}
+.grp-insights-pad .dash-trend-chip.hot{
+  background:var(--rose);color:var(--rose-t);
+  border-color:rgba(160,74,56,.12);
+}
+.grp-insights-pad .dash-trend-chip.warm{
+  background:var(--gold-l);color:var(--gold-d);
+  border-color:rgba(139,100,32,.14);
+}
+.grp-insights-pad .dash-trend-chip.cool{
+  background:var(--blue);color:var(--blue-t);
+  border-color:rgba(12,68,124,.10);
+}
+.grp-insights-pad .dash-trend-chip.nature{
+  background:var(--salbei-lt);color:var(--green-deep);
+  border-color:rgba(31,61,46,.08);
+}
+
+/* Leaderboard Override: analog AP10 Member-Row */
+.grp-insights-pad .dash-leaderboard{gap:4px;}
+.grp-insights-pad .dash-lb-row{
+  background:transparent;
+  padding:8px 10px;border-radius:10px;
+  transition:background .15s;
+}
+.grp-insights-pad .dash-lb-row:nth-child(-n+3){
+  background:var(--salbei-lt);
+}
+.grp-insights-pad .dash-lb-row:hover{background:var(--cream);}
+
+/* Rang-Pill: hochwertige Gold-/Silber-/Bronze-Pille statt Medaillen-Emojis */
+.grp-insights-pad .dash-lb-rank{
+  display:flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:99px;
+  font-size:11px;font-weight:700;letter-spacing:-.005em;
+  background:var(--cream);color:var(--text-light);
+  flex-shrink:0;text-align:center;
+}
+.grp-insights-pad .dash-lb-rank.is-1{
+  background:linear-gradient(135deg, #fff3cf, var(--gold-l));
+  color:var(--gold-d);
+  box-shadow:inset 0 0 0 1px rgba(214,162,58,.30);
+}
+.grp-insights-pad .dash-lb-rank.is-2{
+  background:linear-gradient(135deg, #f0f0f0, #e3e3e3);
+  color:#5b5b5b;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+}
+.grp-insights-pad .dash-lb-rank.is-3{
+  background:linear-gradient(135deg, #f3dfc7, #e6c5a3);
+  color:#7a4a1a;
+  box-shadow:inset 0 0 0 1px rgba(122,74,26,.18);
+}
+
+/* Leaderboard Avatar / Name / Wert hochwertiger */
+.grp-insights-pad .dash-lb-avatar{
+  width:30px;height:30px;border:2px solid #fff;
+  box-shadow:0 1px 3px rgba(31,61,46,.10);
+  font-size:13px;
+}
+.grp-insights-pad .dash-lb-name{
+  font-size:13px;font-weight:600;color:var(--text-dark);
+  letter-spacing:-.005em;
+}
+.grp-insights-pad .dash-lb-val{
+  font-size:12px;font-weight:500;color:var(--text-mid);
+}
+
+/* Datenexport-Button als Ghost-Button */
+.grp-insights-export-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:12px 14px;
+  background:var(--green-mist);color:var(--green-mid);
+  border:1.5px solid var(--green-pale);border-radius:var(--rs);
+  font-size:13px;font-weight:600;font-family:var(--fa);
+  cursor:pointer;letter-spacing:-.005em;
+  transition:background .15s, border-color .15s;
+}
+.grp-insights-export-btn:hover{background:var(--green-pale);border-color:var(--green-mid);}
+.grp-insights-export-btn:active{transform:scale(.99);}
+.grp-insights-export-btn .ic{width:14px;height:14px;stroke-width:1.7;}
+.grp-insights-export-help{
+  font-size:10.5px;color:var(--text-light);
+  margin-top:8px;text-align:center;line-height:1.4;
+}
+
+/* Empty-State für Insights-Tab */
+.grp-insights-empty{
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding:48px 24px 32px;
+  color:var(--text-mid);
+}
+.grp-insights-empty .empty-ico{
+  width:56px;height:56px;border-radius:16px;
+  background:linear-gradient(150deg, var(--green-mist), var(--salbei-lt));
+  color:var(--green-mid);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:14px;
+  border:1px solid rgba(31,61,46,.08);
+}
+.grp-insights-empty .empty-ico .ic{
+  width:26px;height:26px;stroke-width:1.6;
+}
+.grp-insights-empty .empty-title{
+  font-size:15px;font-weight:600;color:var(--text-dark);
+  letter-spacing:-.01em;margin-bottom:6px;
+}
+.grp-insights-empty .empty-text{
+  font-size:13px;color:var(--text-mid);line-height:1.55;
+  max-width:280px;
+}
+
+/* AP12: Insights-Spezialmodule (Bait Science, Pressure, Bite Times) Politur */
+
+/* Modul-internes Empty (kleine Boxen innerhalb dash-section) */
+.insights-empty-mini{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 14px;
+  background:var(--salbei-lt);
+  border:1px dashed rgba(31,61,46,.12);
+  border-radius:12px;
+  font-size:12.5px;color:var(--text-mid);line-height:1.5;
+}
+.insights-empty-mini .ic{
+  flex-shrink:0;width:18px;height:18px;
+  color:var(--green-mid);stroke-width:1.7;
+}
+
+/* ── Bait Science ── */
+.insights-bs{display:flex;flex-direction:column;gap:12px;}
+.grp-insights-pad .bs-row{
+  background:#fff;border:1px solid var(--line);
+  border-radius:12px;padding:11px 13px;
+}
+.grp-insights-pad .bs-fish{
+  font-size:13.5px;color:var(--text-dark);
+  font-weight:500;margin-bottom:9px;
+  display:flex;align-items:center;gap:6px;
+  letter-spacing:-.005em;
+}
+.grp-insights-pad .bs-fish strong{font-weight:600;}
+.grp-insights-pad .bs-cnt{
+  margin-left:auto;font-size:11px;
+  color:var(--text-light);font-weight:500;
+}
+.grp-insights-pad .bs-grid{gap:6px;}
+.grp-insights-pad .bs-cell{
+  background:var(--cream);border-radius:9px;
+  padding:8px 8px;text-align:center;
+  border:1px solid transparent;
+}
+.grp-insights-pad .bs-cell-lbl{
+  font-size:9px;color:var(--text-light);
+  font-weight:600;letter-spacing:.4px;
+  text-transform:uppercase;margin-bottom:3px;
+}
+.grp-insights-pad .bs-cell-val{
+  font-size:11.5px;font-weight:600;color:var(--text-dark);
+  display:flex;align-items:center;justify-content:center;
+  gap:4px;line-height:1.3;
+}
+.grp-insights-pad .bs-cell-val .ic{
+  width:11px;height:11px;color:var(--green-mid);
+  stroke-width:1.8;flex-shrink:0;
+}
+.grp-insights-pad .bs-cell-val small{
+  font-size:9.5px;color:var(--text-light);
+  font-weight:500;
+}
+.grp-insights-pad .bs-na{color:var(--text-light);font-weight:400;}
+
+/* ── Pressure Influence ── */
+.grp-insights-pad .insights-pr-summary{
+  background:var(--salbei-lt);
+  border-radius:10px;
+  padding:10px 12px;
+  margin-bottom:12px;
+  text-align:center;
+}
+.grp-insights-pad .insights-pr-summary .pr-summary-line{
+  font-size:12px;color:var(--text-mid);
+}
+.grp-insights-pad .insights-pr-summary .pr-summary-line strong{
+  color:var(--green-deep);font-weight:600;
+}
+.grp-insights-pad .insights-pr-summary .pr-summary-sub{
+  font-size:11px;color:var(--text-light);margin-top:2px;
+}
+.grp-insights-pad .insights-pr-bars{display:flex;flex-direction:column;gap:10px;}
+.grp-insights-pad .insights-pr-bar-head{
+  display:flex;align-items:center;gap:8px;
+  font-size:12.5px;color:var(--text-dark);
+  margin-bottom:5px;
+  letter-spacing:-.005em;
+}
+.grp-insights-pad .insights-pr-bar-head .pr-trend-ico{
+  display:flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:7px;
+  background:var(--cream);color:var(--text-mid);
+  flex-shrink:0;
+}
+.grp-insights-pad .insights-pr-bar-head .pr-trend-ico.is-low{background:var(--blue);color:var(--blue-t);}
+.grp-insights-pad .insights-pr-bar-head .pr-trend-ico.is-mid{background:var(--cream);color:var(--text-mid);}
+.grp-insights-pad .insights-pr-bar-head .pr-trend-ico.is-high{background:var(--gold-l);color:var(--gold-d);}
+.grp-insights-pad .insights-pr-bar-head .pr-trend-ico .ic{
+  width:13px;height:13px;stroke-width:2;
+}
+.grp-insights-pad .insights-pr-bar-head .pr-trend-name{font-weight:600;}
+.grp-insights-pad .insights-pr-bar-head .insights-pr-bar-val{
+  margin-left:auto;font-size:11px;
+  color:var(--text-light);font-weight:600;
+}
+.grp-insights-pad .insights-pr-bar-track{
+  height:6px;background:var(--cream);border-radius:6px;
+  overflow:hidden;
+}
+.grp-insights-pad .insights-pr-bar-fill{
+  height:100%;border-radius:6px;
+}
+.grp-insights-pad .insights-pr-bar-sub{
+  font-size:10.5px;color:var(--text-light);
+  margin-top:4px;
+}
+.grp-insights-pad .insights-pr-takeaway{
+  margin-top:14px;padding:11px 13px;
+  background:var(--gold-l);border-left:3px solid var(--gold);
+  border-radius:8px;font-size:12.5px;
+  color:var(--gold-d);line-height:1.5;
+  display:flex;align-items:flex-start;gap:9px;
+}
+.grp-insights-pad .insights-pr-takeaway .ic{
+  flex-shrink:0;width:14px;height:14px;
+  color:var(--gold-d);stroke-width:1.8;margin-top:1px;
+}
+.grp-insights-pad .insights-pr-takeaway strong{
+  font-weight:600;color:var(--gold-d);
+}
+
+/* ── Bite Times Profile ── */
+.grp-insights-pad .insights-bt{display:block;}
+.grp-insights-pad .bt-chart{
+  background:var(--salbei-lt);
+  border-radius:12px 12px 0 0;
+  padding:6px 6px 0;
+  height:96px;
+  border:1px solid rgba(31,61,46,.06);
+  border-bottom:none;
+}
+.grp-insights-pad .bt-fill{
+  border-radius:3px 3px 0 0;
+}
+.grp-insights-pad .bt-labels{
+  background:var(--salbei-lt);
+  border-radius:0 0 12px 12px;
+  padding:5px 8px 8px;
+  border:1px solid rgba(31,61,46,.06);
+  border-top:none;
+  font-size:9.5px;color:var(--text-light);
+  font-weight:600;letter-spacing:.4px;
+}
+.grp-insights-pad .bt-summary{
+  margin-top:12px;display:flex;flex-direction:column;gap:10px;
+}
+.grp-insights-pad .bt-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;background:var(--gold-l);
+  color:var(--gold-d);font-size:11.5px;font-weight:600;
+  border-radius:99px;letter-spacing:-.005em;
+  border:1px solid rgba(214,162,58,.20);
+}
+.grp-insights-pad .bt-pill .ic{
+  width:11px;height:11px;color:var(--gold-d);stroke-width:1.8;
+}
+.grp-insights-pad .bt-periods{gap:6px;}
+.grp-insights-pad .bt-period{
+  background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:8px 4px;
+  color:var(--text-mid);
+  transition:background .15s, border-color .15s;
+}
+.grp-insights-pad .bt-period strong{
+  color:var(--text-dark);font-weight:600;
+  letter-spacing:-.005em;
+}
+.grp-insights-pad .bt-period.top{
+  background:var(--green-mist);
+  border-color:var(--green-pale);
+  color:var(--green-deep);
+}
+.grp-insights-pad .bt-period.top strong{color:var(--green-deep);}
+
+/* ── Phänologie-Card (falls verwendet) ── */
+.grp-insights-pad .phaeno-card{
+  margin:0;border-radius:14px;
+  background:linear-gradient(135deg, var(--salbei-lt) 0%, var(--gold-l) 100%);
+  border:1px solid rgba(31,61,46,.08);
+  box-shadow:0 1px 3px rgba(31,61,46,.04);
+}
+.grp-insights-pad .phaeno-title{
+  color:var(--green-deep);font-weight:600;
+  letter-spacing:-.005em;
+}
+.grp-insights-pad .phaeno-phase{
+  font-family:var(--fa);color:var(--gold-d);
+  font-weight:600;letter-spacing:-.01em;
+}
+.grp-insights-pad .phaeno-desc{color:var(--text-mid);}
+
+/* AP13: Gruppen Erstellen, Beitreten, Invite, Verwaltung Politur (rein visuell, additiv) */
+
+/* Type-Selector (Privat/Öffentlich/Elite) als saubere Pill-Row */
+#fs-group-create .gc-type-row{
+  display:flex;gap:8px;margin-top:6px;
+}
+#fs-group-create .gc-seg{
+  flex:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  padding:11px 8px;
+  border:1.5px solid var(--cream-dark);
+  border-radius:var(--rs);
+  background:#fff;color:var(--text-mid);
+  font-size:12px;font-weight:600;font-family:var(--fa);
+  cursor:pointer;letter-spacing:-.005em;
+  transition:background .15s, border-color .15s, color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+#fs-group-create .gc-seg:hover{
+  background:var(--cream);border-color:var(--green-pale);
+}
+#fs-group-create .gc-seg.on{
+  background:var(--green-mist);border-color:var(--green-mid);color:var(--green-deep);
+  box-shadow:inset 0 0 0 1px rgba(74,124,89,.08);
+}
+#fs-group-create .gc-seg .ic{
+  width:13px;height:13px;color:currentColor;
+  stroke-width:1.8;flex-shrink:0;
+}
+
+/* Icon-Picker (Gruppen-Avatar-Auswahl) als saubere Tile-Grid */
+#fs-group-create .gc-icon-grid{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;
+}
+#fs-group-create .gc-ico{
+  width:42px;height:42px;border-radius:11px;
+  border:1.5px solid var(--cream-dark);
+  background:#fff;font-size:20px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s, border-color .15s, transform .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+#fs-group-create .gc-ico:hover{background:var(--cream);border-color:var(--green-pale);}
+#fs-group-create .gc-ico.on{
+  background:var(--green-mist);border-color:var(--green-mid);
+  box-shadow:inset 0 0 0 1px rgba(74,124,89,.10);
+}
+#fs-group-create .gc-ico:active{transform:scale(.96);}
+
+/* Group-Join Code Input — hochwertiger Monospace-Look */
+#fs-group-join .gj-code-input{
+  text-transform:uppercase;letter-spacing:2.5px;
+  font-weight:700;text-align:center;
+  font-family:'Courier New', 'Monaco', monospace;
+  font-size:16px;
+}
+
+/* Discover-Code-Section Override: aufgewertet zur Invite-Card */
+.discover-code-section{
+  background:linear-gradient(135deg, var(--green-mist) 0%, var(--salbei-lt) 100%);
+  border:1px solid var(--green-pale);
+  border-radius:14px;padding:16px;
+}
+.discover-code-section .dcs-title{
+  display:flex;align-items:center;gap:7px;
+  font-size:11.5px;font-weight:600;letter-spacing:.4px;
+  text-transform:uppercase;color:var(--green-deep);
+  margin-bottom:11px;
+}
+.discover-code-section .dcs-title .ic{
+  width:13px;height:13px;color:var(--green-mid);stroke-width:1.7;
+}
+.discover-code-section .dcs-row{display:flex;gap:8px;}
+.discover-code-section input{
+  flex:1;padding:11px 14px;
+  border:1.5px solid var(--green-pale);
+  border-radius:10px;font-size:13px;
+  font-family:var(--fa);
+  text-transform:uppercase;letter-spacing:1.5px;
+  font-weight:600;text-align:center;
+  background:#fff;outline:none;color:var(--text-dark);
+  transition:border-color .15s;
+}
+.discover-code-section input:focus{border-color:var(--green-mid);}
+.discover-code-section input::placeholder{
+  color:var(--text-light);font-weight:400;letter-spacing:.5px;
+}
+.discover-code-section button{
+  padding:11px 18px;background:var(--green-deep);color:#fff;
+  border:none;border-radius:10px;
+  font-size:13px;font-weight:600;font-family:var(--fa);
+  cursor:pointer;letter-spacing:-.005em;
+  transition:background .15s, transform .1s;
+}
+.discover-code-section button:hover{background:#1f3a26;}
+.discover-code-section button:active{transform:scale(.97);}
+.discover-code-section .dcs-help{
+  font-size:11px;color:var(--text-mid);
+  margin-top:9px;line-height:1.5;
+}
+
+/* Group-Hub Loading-Spinner (statt ⏳ Emoji) */
+.grp-loading{
+  text-align:center;padding:40px 20px;
+  color:var(--text-light);font-size:13px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.grp-loading::before{
+  content:'';width:18px;height:18px;
+  border:2px solid var(--cream-dark);
+  border-top-color:var(--green-mid);
+  border-radius:50%;
+  animation:grpSpin 0.8s linear infinite;
+}
+@keyframes grpSpin{to{transform:rotate(360deg);}}
+
+/* Hub-Empty-Actions: konsistente Vertikalabstände */
+.grp-empty-actions{
+  display:flex;flex-direction:column;gap:8px;width:100%;
+}
+
+/* Preview-Join-FAB — etwas ruhiger, gleiche Logik */
+.preview-join-fab{
+  display:none;align-items:center;justify-content:center;gap:8px;
+  font-weight:600;letter-spacing:-.005em;
+  font-size:14.5px;
+  box-shadow:0 8px 22px rgba(45,74,53,.30);
+}
+.preview-join-fab .ic{
+  width:14px;height:14px;color:#fff;stroke-width:2;
+}
+.preview-join-fab:hover{background:#1f3a26;}
+
+/* ADMIN-Badge in der Group-Liste (rückwärtskompatibel) */
+.grp-admin-badge{
+  display:inline-block;margin-left:6px;
+  padding:1px 6px;border-radius:99px;
+  font-size:9px;font-weight:700;letter-spacing:.4px;
+  background:var(--gold-l);color:var(--gold-d);
+  vertical-align:middle;
+}
+
+/* AP14: Gruppenkarte, Map Filter, Marker Popups Politur (rein visuell, additiv) */
+
+/* Floating-Banner unten in der Karte (Preview / Spot-Schutz / Empty) */
+.gm-banner{
+  position:absolute;bottom:8px;left:8px;right:8px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:11.5px;font-weight:500;line-height:1.4;
+  text-align:center;
+  padding:8px 12px;
+  border-radius:10px;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  box-shadow:0 2px 8px rgba(31,61,46,.10);
+  z-index:500;pointer-events:none;
+  color:var(--text-mid);
+  border:1px solid rgba(31,61,46,.06);
+}
+.gm-banner .ic{
+  width:13px;height:13px;flex-shrink:0;stroke-width:1.8;
+}
+.gm-banner.is-preview{
+  background:rgba(248,238,205,.94);
+  color:var(--gold-d);
+  border-color:rgba(214,162,58,.22);
+  font-weight:600;
+}
+.gm-banner.is-preview .ic{color:var(--gold-d);}
+.gm-banner.is-safe{
+  background:rgba(255,255,255,.86);
+  color:var(--text-light);
+  font-size:10.5px;font-weight:500;
+  padding:6px 12px;
+}
+.gm-banner.is-safe .ic{color:var(--green-mid);width:12px;height:12px;}
+.gm-banner.is-empty .ic{color:var(--grau-lt);}
+
+/* Filter-FAB in der Karte (oben rechts) */
+.grp-map-fab{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.95);
+  border:1px solid rgba(31,61,46,.08);
+  color:var(--text-dark);font-weight:600;
+  font-size:12px;letter-spacing:-.005em;
+  padding:8px 14px;border-radius:99px;
+  box-shadow:var(--sh-md);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .15s, transform .1s;
+}
+.grp-map-fab:hover{background:#fff;}
+.grp-map-fab:active{transform:scale(.96);}
+.grp-map-fab .ic{
+  width:13px;height:13px;color:var(--green-mid);
+  stroke-width:1.8;flex-shrink:0;
+}
+
+/* Filter-Dropdown */
+.grp-map-filter-dd{
+  border:1px solid rgba(31,61,46,.08);
+  border-radius:14px;padding:14px;
+  box-shadow:0 8px 24px rgba(31,61,46,.16);
+}
+.grp-map-filter-dd .gmf-row{margin-bottom:12px;}
+.grp-map-filter-dd .gmf-row:last-child{margin-bottom:0;}
+.grp-map-filter-dd .gmf-lbl{
+  font-size:10.5px;font-weight:600;letter-spacing:.4px;
+  text-transform:uppercase;color:var(--text-light);
+  margin-bottom:5px;
+}
+.grp-map-filter-dd select{
+  width:100%;padding:9px 12px;
+  border:1.5px solid var(--cream-dark);border-radius:10px;
+  font-size:12.5px;font-family:var(--fa);
+  background:#fff;color:var(--text-dark);
+  font-weight:500;letter-spacing:-.005em;
+  transition:border-color .15s;
+  -webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%231F3D2E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:30px;
+}
+.grp-map-filter-dd select:focus{
+  border-color:var(--green-mid);outline:none;
+}
+
+/* Marker-Popup Karte (innerhalb leaflet popup) */
+.gm-popup{min-width:180px;font-family:var(--fa);}
+.gm-popup-name{
+  font-weight:700;font-size:13px;
+  letter-spacing:-.005em;line-height:1.2;
+  display:block;margin-bottom:4px;
+}
+.gm-popup-fish{
+  font-size:12px;color:var(--text-dark);
+  margin-bottom:4px;line-height:1.4;
+}
+.gm-popup-fish strong{font-weight:600;}
+.gm-popup-bait{
+  display:flex;align-items:center;gap:5px;
+  font-size:11.5px;color:var(--text-mid);
+  margin-bottom:5px;
+}
+.gm-popup-bait .ic{
+  width:11px;height:11px;color:var(--green-mid);
+  stroke-width:1.8;flex-shrink:0;
+}
+.gm-popup-meta{
+  font-size:10px;color:var(--text-light);line-height:1.4;
+}
+.gm-popup-alias{
+  margin-top:6px;padding:5px 9px;
+  background:var(--green-mist);
+  border-radius:6px;font-size:10.5px;
+  color:var(--green-deep);
+  display:flex;align-items:center;gap:5px;
+  line-height:1.4;
+}
+.gm-popup-alias .ic{
+  width:11px;height:11px;color:var(--green-mid);
+  stroke-width:1.8;flex-shrink:0;
+}
+.gm-popup-alias strong{font-weight:600;}
+.gm-popup-alias span.dist{opacity:.7;font-weight:500;}
+.gm-popup-btn{
+  margin-top:8px;padding:7px 12px;
+  background:var(--green-deep);color:#fff;
+  border:none;border-radius:8px;
+  font-size:11.5px;font-weight:600;letter-spacing:-.005em;
+  cursor:pointer;width:100%;
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  transition:background .15s, transform .1s;
+}
+.gm-popup-btn:hover{background:#1f3a26;}
+.gm-popup-btn:active{transform:scale(.97);}
+
+/* AP15: Fangbuch, Kalender, Tagesdetail, Session Detail Politur (rein visuell, additiv) */
+
+/* Fangbuch-Card Verfeinerung — ruhigerer Hover */
+.fb-card{
+  border:1px solid var(--line);
+  transition:transform .12s, box-shadow .15s, border-color .15s;
+}
+.fb-card:hover{
+  border-color:rgba(31,61,46,.14);
+  box-shadow:0 4px 14px rgba(31,61,46,.08);
+}
+
+/* Monats-Separator hochwertiger */
+.fb-month-sep{margin:24px 0 12px;}
+.fb-month-sep:first-child{margin-top:4px;}
+.fb-month-label{
+  font-size:11.5px;font-weight:600;
+  letter-spacing:.6px;color:var(--green-deep);
+}
+.fb-month-line{background:var(--line);}
+.fb-month-count{
+  font-size:11px;font-weight:500;color:var(--text-light);
+}
+
+/* View-Toggle-Pille hochwertiger */
+.fb-view-toggle{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px;background:var(--cream-dark);
+  border-radius:99px;
+}
+.fb-view-toggle .fbvt-btn{
+  padding:6px 14px;border:none;background:transparent;
+  font-size:12px;font-weight:600;letter-spacing:-.005em;
+  color:var(--text-mid);font-family:var(--fa);
+  border-radius:99px;cursor:pointer;
+  transition:background .15s, color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.fb-view-toggle .fbvt-btn.on{
+  background:#fff;color:var(--green-deep);
+  box-shadow:0 1px 3px rgba(31,61,46,.10);
+}
+.fb-view-toggle .fbvt-btn:not(.on):hover{color:var(--text-dark);}
+
+/* Calendar-Day-States verfeinern (additiv zu existing CSS) */
+.fb-cal-day{
+  font-weight:500;letter-spacing:-.005em;
+  transition:background .15s, color .15s, transform .1s;
+}
+.fb-cal-day:active:not(.empty){transform:scale(.94);}
+.fb-cal-day.has-catch{
+  font-weight:700;
+  box-shadow:inset 0 0 0 1px rgba(74,124,89,.20);
+}
+.fb-cal-day.skunked{
+  font-weight:600;color:var(--rose-t);
+  box-shadow:inset 0 0 0 1px rgba(180,90,70,.22);
+}
+.fb-cal-day.today{
+  position:relative;
+}
+.fb-cal-day.today::before{
+  content:'';position:absolute;
+  left:50%;bottom:5px;transform:translateX(-50%);
+  width:4px;height:4px;border-radius:50%;
+  background:currentColor;opacity:.5;
+}
+.fb-cal-day.today.has-catch::before,
+.fb-cal-day.today.skunked::before{display:none;}
+
+/* Calendar Day-of-Week Header */
+/* Tagesdetail Session-Tile (Sub-Section in dd-body) */
+.dd-session-tile{
+  background:#fff;border-radius:14px;
+  border:1px solid var(--line);
+  margin-bottom:12px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(31,61,46,.04);
+}
+.dd-session-tile-head{
+  background:var(--green-mist);
+  padding:11px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;
+}
+.dd-session-tile-head-info{flex:1;min-width:0;}
+.dd-session-tile-head-water{
+  font-size:12.5px;font-weight:600;
+  color:var(--green-deep);letter-spacing:-.005em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dd-session-tile-head-time{
+  font-size:11px;color:var(--text-mid);
+  margin-top:1px;
+}
+.dd-session-tile-head-actions{
+  display:flex;gap:6px;flex-shrink:0;
+}
+.dd-session-tile-action-btn{
+  width:30px;height:30px;
+  background:#fff;border:1px solid rgba(31,61,46,.08);
+  border-radius:99px;cursor:pointer;
+  color:var(--tanne);
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:background .15s, border-color .15s, transform .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+.dd-session-tile-action-btn:hover{
+  background:var(--salbei);border-color:rgba(31,61,46,.14);
+}
+.dd-session-tile-action-btn:active{transform:scale(.94);}
+.dd-session-tile-action-btn .ic{
+  width:13px;height:13px;stroke-width:1.8;
+}
+.dd-session-tile-action-btn.is-danger{
+  background:var(--rose);color:var(--rose-t);
+  border-color:rgba(180,90,70,.18);
+}
+.dd-session-tile-action-btn.is-danger:hover{
+  background:#f8d8d2;border-color:#e09684;
+}
+.dd-session-tile-empty{
+  padding:14px;font-size:12px;
+  color:var(--text-light);text-align:center;
+}
+
+/* Day Detail Section-Label ruhiger */
+.dd-body-pad .slbl{
+  font-size:11px;font-weight:600;letter-spacing:.4px;
+  color:var(--text-light);
+  display:flex;align-items:center;gap:6px;
+  margin:6px 0 10px;text-transform:uppercase;
+}
+.dd-body-pad .slbl .ic{
+  color:var(--green-mid);width:13px;height:13px;
+  stroke-width:1.7;
+}
+
+/* AP16: Neue Session, Fang Eingabe, Formular UX (rein visuell, additiv) */
+
+/* Neue-Session Page-Title */
+#page-new .new-session-title{
+  font-family:var(--fa);
+  font-size:22px;font-weight:600;
+  color:var(--text-dark);letter-spacing:-.02em;
+  margin-bottom:14px;line-height:1.15;
+}
+
+/* Eingabe-Modus Segmented-Control */
+#page-new .new-mode-section{margin-bottom:16px;}
+#page-new .new-mode-label{
+  font-size:11px;font-weight:600;letter-spacing:.5px;
+  text-transform:uppercase;color:var(--text-light);
+  margin-bottom:8px;
+}
+#page-new .new-mode-toggle{
+  display:flex;background:var(--cream-dark);
+  border-radius:10px;padding:3px;
+}
+#page-new .new-mode-btn{
+  flex:1;text-align:center;border-radius:8px;
+  padding:8px 0;border:none;font-family:var(--fa);
+  font-size:12px;font-weight:500;letter-spacing:-.005em;
+  cursor:pointer;background:transparent;
+  color:var(--text-mid);
+  transition:background .15s, color .15s, font-weight .15s, box-shadow .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+#page-new .new-mode-btn:hover{color:var(--text-dark);}
+#page-new .new-mode-btn.on{
+  background:#fff;color:var(--green-deep);
+  font-weight:600;
+  box-shadow:0 1px 3px rgba(31,61,46,.10);
+}
+
+/* Wetter-Karte (.ec) Override im Neue-Session-Scope */
+#page-new .ec{
+  border:1px solid var(--line);
+  transition:border-color .15s, background .15s;
+}
+#page-new .ec:hover{
+  border-color:rgba(31,61,46,.14);
+  background:var(--cream);
+}
+#page-new .ec .ei{
+  background:var(--salbei);color:var(--green-mid);
+  display:flex;align-items:center;justify-content:center;
+}
+#page-new .ec .ei .ic{
+  width:18px;height:18px;stroke-width:1.7;
+}
+
+/* Silent-Wx-Hint */
+#page-new .silent-wx-hint{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 0 6px;
+  font-size:11px;color:var(--green-mid);font-weight:600;
+}
+#page-new .silent-wx-hint .ic{
+  width:13px;height:13px;color:var(--green-mid);
+  stroke-width:2.2;flex-shrink:0;
+}
+
+/* GPS-Strip Override — hochwertige Hinweisbox */
+#page-new .gps-strip{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;border-radius:10px;
+  background:var(--blue);color:var(--blue-t);
+  font-size:12px;font-weight:500;letter-spacing:-.005em;
+  border:1px solid rgba(12,68,124,.10);
+  margin-bottom:10px;line-height:1.4;
+}
+#page-new .gps-strip .ic{
+  width:13px;height:13px;color:var(--blue-t);
+  stroke-width:1.8;flex-shrink:0;
+}
+#page-new .gps-strip.is-ok{
+  background:var(--green-mist);color:var(--green-deep);
+  border-color:rgba(74,124,89,.16);
+}
+#page-new .gps-strip.is-ok .ic{color:var(--green-mid);}
+
+/* Schonzeit-Banner */
+#page-new .sz-banner{
+  display:flex;align-items:flex-start;gap:9px;
+  padding:10px 12px;border-radius:12px;
+  background:var(--gold-l);color:var(--gold-d);
+  border:1px solid rgba(214,162,58,.20);
+  font-size:12px;line-height:1.5;font-weight:500;
+  margin-bottom:10px;
+}
+#page-new .sz-banner .ic{
+  width:14px;height:14px;color:var(--gold-d);
+  stroke-width:1.8;flex-shrink:0;margin-top:1px;
+}
+#page-new .sz-banner .sz-text{flex:1;}
+#page-new .sz-banner .sz-close{
+  width:22px;height:22px;border-radius:99px;
+  border:none;background:transparent;color:var(--gold-d);
+  cursor:pointer;font-size:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+#page-new .sz-banner .sz-close:hover{background:rgba(214,162,58,.18);}
+
+/* Erfolgreich-gewesen-Toggle (.ssbtn / .ssb) Override */
+#page-new .ssbtn{
+  display:flex;gap:8px;
+}
+#page-new .ssb{
+  flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 8px;
+  background:#fff;color:var(--text-mid);
+  border:1.5px solid var(--cream-dark);border-radius:var(--rs);
+  font-family:var(--fa);font-size:13px;font-weight:600;
+  letter-spacing:-.005em;cursor:pointer;
+  transition:background .15s, border-color .15s, color .15s, transform .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+#page-new .ssb .ic{
+  width:14px;height:14px;color:currentColor;
+  stroke-width:1.8;flex-shrink:0;
+}
+#page-new .ssb:hover{border-color:var(--green-pale);background:var(--cream);}
+#page-new .ssb:active{transform:scale(.98);}
+#page-new .ssb.sc2{
+  background:var(--green-mist);color:var(--green-deep);
+  border-color:var(--green-mid);
+  box-shadow:inset 0 0 0 1px rgba(74,124,89,.10);
+}
+#page-new .ssb.ss2{
+  background:var(--rose);color:var(--rose-t);
+  border-color:var(--rose-b);
+  box-shadow:inset 0 0 0 1px rgba(180,90,70,.12);
+}
+
+/* AP17: Fang Eingabe Cards, Foto Upload, Status Pills (rein visuell, additiv) */
+
+/* Catch-Card Container */
+#page-new .cc{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;padding:14px 14px 12px;
+  box-shadow:0 1px 3px rgba(31,61,46,.04);
+  margin-bottom:10px;
+  transition:border-color .15s, box-shadow .15s;
+}
+#page-new .cc:focus-within{
+  border-color:var(--green-pale);
+  box-shadow:0 2px 8px rgba(31,61,46,.06);
+}
+
+/* Catch-Card Header */
+#page-new .ch{margin-bottom:12px;}
+#page-new .cn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:600;
+  letter-spacing:.5px;text-transform:uppercase;
+  color:var(--green-mid);
+}
+#page-new .cn .ic{
+  width:12px;height:12px;color:var(--green-mid);
+  stroke-width:1.8;flex-shrink:0;
+}
+
+/* Remove-Button (Rose-Pill) */
+#page-new .cc .rm{
+  width:30px;height:30px;border-radius:99px;
+  background:var(--rose);color:var(--rose-t);
+  border:1px solid rgba(180,90,70,.16);
+  font-size:13px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:background .15s, border-color .15s, transform .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+#page-new .cc .rm:hover{background:#f8d8d2;border-color:#e09684;}
+#page-new .cc .rm:active{transform:scale(.94);}
+#page-new .cc .rm .ic{
+  width:13px;height:13px;color:var(--rose-t);
+  stroke-width:2;
+}
+
+/* Voice-Button im Catch-Header (subtler) */
+#page-new .cc .voice-btn{
+  width:30px;height:30px;
+  border:1px solid var(--green-pale);
+}
+
+/* Mindestmaß-Warning */
+#page-new .mmw{
+  display:none;
+  margin-top:6px;padding:7px 11px;border-radius:8px;
+  background:var(--rose);color:var(--rose-t);
+  border:1px solid rgba(180,90,70,.16);
+  font-size:11.5px;font-weight:500;line-height:1.4;
+}
+#page-new .mmw.on{display:flex;align-items:flex-start;gap:7px;}
+#page-new .mmw.on::before{
+  content:'';flex-shrink:0;
+  width:14px;height:14px;margin-top:1px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a04a38' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><line x1='12' y1='8' x2='12' y2='12'/><line x1='12' y1='16' x2='12' y2='16'/></svg>");
+  background-repeat:no-repeat;background-size:contain;
+}
+
+/* Catch-Time-Warning (Gold) */
+#page-new #catches-con [id^="ct-warn-"]{
+  font-size:11.5px;color:var(--gold-d);
+  margin-top:4px;
+}
+
+/* C&R-Toggle Card */
+#page-new .crr{
+  background:var(--cream);
+  border:1px solid var(--line);border-radius:12px;
+  padding:11px 13px;margin-top:12px;
+  transition:background .15s, border-color .15s;
+}
+#page-new .crr.tk{
+  background:var(--gold-l);
+  border-color:rgba(214,162,58,.20);
+}
+#page-new .crm{
+  font-size:13.5px;font-weight:600;
+  color:var(--text-dark);letter-spacing:-.005em;
+}
+#page-new .crr.tk .crm{color:var(--gold-d);}
+#page-new .crs{
+  font-size:11px;color:var(--text-light);
+  margin-top:2px;font-weight:500;
+}
+#page-new .crr.tk .crs{color:var(--gold-d);opacity:.85;}
+
+/* C&R Switch */
+#page-new .tw{width:48px;height:28px;}
+#page-new .tsl{
+  background:#D0CBC0;border-radius:14px;
+  transition:background .25s;
+}
+
+/* Photo Add-Tile (Drop-Zone-Look) */
+#page-new .phadd{
+  width:60px;height:60px;border-radius:12px;
+  border:1.5px dashed var(--green-pale);
+  background:var(--green-mist);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  cursor:pointer;color:var(--green-mid);
+  gap:2px;font-size:0;
+  transition:background .15s, border-color .15s, transform .1s;
+}
+#page-new .phadd:hover{
+  background:var(--green-pale);border-color:var(--green-mid);
+}
+#page-new .phadd:active{transform:scale(.96);}
+#page-new .phadd .ic{
+  width:18px;height:18px;color:var(--green-mid);
+  stroke-width:1.7;
+}
+#page-new .phlbl{
+  font-size:9px;font-weight:600;
+  letter-spacing:.4px;text-transform:uppercase;
+  color:var(--green-mid);
+}
+
+/* Photo Preview */
+#page-new .phpr{
+  width:60px;height:60px;border-radius:12px;
+  border:1.5px solid var(--green-pale);
+  box-shadow:0 1px 3px rgba(31,61,46,.10);
+}
+
+/* Status-Pills (.crp) — innerhalb des Catch-Detail-Renders, nicht in addCatch */
+/* Bewusst keine globale .crp-Override, da Klasse auch in Tagesdetail genutzt */
+
+/* AP18: Friedfisch-Sektion, Notiz-Favoriten, Foto-Choice-Sheet, Add-Catch, Share-Buttons */
+
+/* Friedfisch-Sektion als ruhige Untergruppe in der Catch-Card */
+#page-new .ff-section{
+  margin-top:10px;padding:12px;
+  background:var(--salbei-lt);
+  border:1px solid rgba(31,61,46,.06);
+  border-radius:12px;
+}
+#page-new .ff-section-label{
+  font-size:10.5px;font-weight:600;letter-spacing:.4px;
+  text-transform:uppercase;color:var(--green-deep);
+  margin:0 0 9px;
+  display:flex;align-items:center;gap:6px;
+}
+#page-new .ff-section-label .ic{
+  width:12px;height:12px;color:var(--green-mid);
+  stroke-width:1.7;flex-shrink:0;
+}
+#page-new .ff-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+#page-new .ff-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;}
+#page-new .ff-grid-2-1{display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-bottom:8px;}
+#page-new .ff-pre-row{display:flex;gap:6px;margin-top:5px;}
+
+/* Notiz-Favoriten-Chips ruhiger im Scope */
+#page-new .fav-row{gap:6px;margin-top:6px;}
+#page-new .fav-btn{
+  background:var(--salbei-lt);color:var(--green-deep);
+  font-size:11.5px;font-weight:500;padding:5px 10px;
+  border:1px solid rgba(31,61,46,.06);
+  border-radius:99px;letter-spacing:-.005em;
+  transition:background .15s, border-color .15s, transform .1s;
+}
+#page-new .fav-btn:hover{
+  background:var(--green-mist);border-color:var(--green-pale);
+  color:var(--green-deep);
+}
+#page-new .fav-btn:active{transform:scale(.96);}
+#page-new .fav-btn-bait{
+  background:var(--purple);color:var(--purple-t);
+  border-color:rgba(60,52,137,.10);
+}
+#page-new .fav-btn-bait:hover{background:#e3e0fc;color:var(--purple-t);}
+#page-new .fav-btn-note{
+  background:var(--teal);color:var(--teal-t);
+  border-color:rgba(8,80,65,.10);
+  font-size:11px;padding:4px 10px;
+}
+#page-new .fav-btn-note:hover{background:#d2f0e7;color:var(--teal-t);}
+
+/* Add-Catch-Button hochwertiger */
+#page-new .addcatch{
+  margin-top:14px;margin-bottom:14px;
+  padding:14px;letter-spacing:-.005em;
+  border-style:dashed;border-width:1.5px;
+  transition:background .15s, border-color .15s, transform .1s;
+}
+#page-new .addcatch:hover{
+  background:var(--green-mist);border-color:var(--green-mid);
+}
+#page-new .addcatch:active{transform:scale(.99);}
+#page-new .addcatch .aplus{
+  width:24px;height:24px;border-radius:7px;
+  background:var(--green-mid);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+#page-new .addcatch .aplus .ic{
+  width:12px;height:12px;color:#fff;stroke-width:2.4;
+}
+
+/* Save-Button-Bereich Konsistenz */
+#page-new .btn[onclick*="saveSess"]{
+  margin-top:6px;
+  letter-spacing:-.005em;
+}
+
+/* Share-Buttons (Success-Overlay) — Override Markdown im Scope nicht möglich, daher nur global im Sucov */
+.sucov .bshare{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  letter-spacing:-.005em;
+  border-radius:99px;padding:11px 16px;
+  width:auto;
+}
+.sucov .bshare .ic{
+  width:13px;height:13px;color:currentColor;
+  stroke-width:1.8;flex-shrink:0;
+}
+
+/* Foto-Choice-Sheet (Mobile Bottom-Sheet) */
+.photo-choice-sheet{
+  position:absolute;inset:0;z-index:260;
+  display:flex;align-items:flex-end;
+  background:rgba(15,25,18,.55);
+  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+  animation:pcsFadeIn .15s ease-out;
+}
+@keyframes pcsFadeIn{from{opacity:0;}to{opacity:1;}}
+.photo-choice-card{
+  width:100%;background:var(--cream);
+  border-radius:22px 22px 0 0;
+  padding:22px 20px max(28px,env(safe-area-inset-bottom,18px));
+  display:flex;flex-direction:column;gap:8px;
+  box-shadow:0 -8px 24px rgba(31,61,46,.18);
+  animation:pcsSlideUp .25s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes pcsSlideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.photo-choice-handle{
+  width:38px;height:4px;background:var(--cream-dark);
+  border-radius:99px;margin:-6px auto 12px;
+}
+.photo-choice-title{
+  font-size:14px;font-weight:600;letter-spacing:-.005em;
+  color:var(--text-dark);margin-bottom:6px;text-align:center;
+}
+.photo-choice-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:13px 14px;
+  background:#fff;border:1px solid var(--cream-dark);
+  border-radius:12px;
+  font-size:14px;font-weight:600;letter-spacing:-.005em;
+  font-family:var(--fa);cursor:pointer;color:var(--text-dark);
+  transition:background .15s, border-color .15s, transform .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+.photo-choice-btn:hover{background:var(--cream);border-color:var(--green-pale);}
+.photo-choice-btn:active{transform:scale(.98);}
+.photo-choice-btn .ic{
+  width:15px;height:15px;color:var(--green-mid);
+  stroke-width:1.7;flex-shrink:0;
+}
+.photo-choice-btn.is-primary{
+  background:var(--green-deep);color:#fff;
+  border-color:var(--green-deep);
+}
+.photo-choice-btn.is-primary:hover{background:#1f3a26;border-color:#1f3a26;}
+.photo-choice-btn.is-primary .ic{color:#fff;}
+.photo-choice-btn.is-cancel{
+  background:transparent;border-color:transparent;
+  color:var(--text-mid);font-weight:500;padding:10px;
+}
+.photo-choice-btn.is-cancel:hover{background:var(--cream-dark);color:var(--text-dark);}
+
 /* v59-Fix: Nur .fsov-scroll wird zum flex:1-Scrollcontainer (nicht jedes div-Kind!)
    → vermeidet, dass z.B. cd-comment-bar oder grp-chat-bar fälschlich flex:1 bekommen */
 .fsov > .fsov-scroll,
@@ -1693,14 +3042,6 @@ body{
   border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;
   color:var(--green-deep);cursor:pointer;font-family:var(--fa);
   transition:background .15s,border-color .15s;white-space:nowrap;
-}
-
-/* ── FANGBUCH: Kalender-Grid-Ansicht ── */
-
-.fb-cal-dow{
-  font-size:10px;font-weight:700;color:var(--text-light);
-  text-align:center;padding:2px 0;
-  letter-spacing:.3px;text-transform:uppercase;
 }
 
 /* fb-cal-day → siehe Layout Engine (Fix 3) weiter unten */
@@ -3363,17 +4704,6 @@ input[type=file]{display:none;}
 .preview-join-fab:active{transform:scale(.97);}
 .preview-join-fab:hover{background:#1f3a26;}
 
-/* AP9.1: Restriktions-Hinweis im Preview-Modus */
-.preview-restriction-banner{
-  background:var(--yellow);
-  border:1px solid var(--yellow-b);
-  color:var(--yellow-t);
-  padding:8px 12px;border-radius:8px;
-  font-size:11px;font-weight:600;
-  text-align:center;
-  margin:8px 16px;
-}
-
 /* AP2: Gruppen-Subnav als schwebende Pille, wie die Hauptnavigation */
 .grp-subnav{position:absolute;bottom:max(16px,env(safe-area-inset-bottom,16px));left:8%;right:8%;width:84%;display:flex;gap:2px;padding:6px 8px;background:rgba(248,245,239,.90);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(200,221,208,.60);border-radius:28px;box-shadow:0 10px 30px rgba(45,74,53,.18);z-index:130;}
 .grp-subnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px 5px;border:none;border-radius:20px;background:transparent;font-size:10px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--text-light);transition:all .15s;-webkit-tap-highlight-color:transparent;}
@@ -3914,6 +5244,7 @@ input[type=file]{display:none;}
   <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5-7-12a4 4 0 0 1 7-3 4 4 0 0 1 7 3c0 7-7 12-7 12z"/></symbol>
   <symbol id="i-comment" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-12 7l-5 1 1-5a8 8 0 1 1 16-3z"/></symbol>
   <symbol id="i-skunk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 8l8 8M16 8l-8 8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.2L1.7 18a2 2 0 0 0 1.7 3h17.2a2 2 0 0 0 1.7-3L13.7 3.2a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
   <!-- Fisch-Silhouetten (32×18 viewBox, in Inhaltszeilen 28×16 verwendet) -->
   <symbol id="f-default" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 Q5 5 11 5 Q18 4 22 8 L28 5 L26 9 L28 13 L22 10 Q18 14 11 13 Q5 13 3 9 Z"/><circle cx="7" cy="8.5" r=".7" fill="currentColor" stroke="none"/></symbol>
   <symbol id="f-hecht" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9 L7 6 Q14 3 22 7 L28 5 L26 9 L28 13 L22 11 Q14 15 7 12 Z"/><path d="M18 5 L20 2 L22 5"/><circle cx="6" cy="8" r=".7" fill="currentColor" stroke="none"/></symbol>
@@ -4356,8 +5687,8 @@ input[type=file]{display:none;}
     <div class="cntlbl" id="cnt-lbl">Hecht insgesamt</div>
     <div class="suclist" id="suc-list"></div>
     <button class="sucdis" onclick="disSuc()">Weiter →</button>
-    <button class="bshare" id="share-btn" onclick="doShare()" style="display:none;">📤 Erfolg teilen</button>
-    <button class="bshare" id="grp-share-btn" onclick="disSuc();_openShareModal(_lastSavedId)" style="display:none;background:var(--green-mist);color:var(--green-deep);border:1.5px solid var(--green-pale);margin-top:6px;">👥 In Gruppe teilen</button>
+    <button class="bshare" id="share-btn" onclick="doShare()" style="display:none;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-share"/></svg>Erfolg teilen</button>
+    <button class="bshare" id="grp-share-btn" onclick="disSuc();_openShareModal(_lastSavedId)" style="display:none;background:var(--green-mist);color:var(--green-deep);border:1.5px solid var(--green-pale);margin-top:6px;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-crew"/></svg>In Gruppe teilen</button>
   </div>
 </div>
 
@@ -4425,13 +5756,13 @@ input[type=file]{display:none;}
   <div class="sc">
     <div id="warn-wrap" aria-live="polite"></div>
     <!-- Seitentitel (dynamisch: "Fang melden" vs. "Session bearbeiten") -->
-    <div id="new-page-title" style="font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:12px;font-family:var(--fs);">Fang melden</div>
-    <div style="margin-bottom:12px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;">Eingabe-Modus</div>
-      <div id="seg-ctrl" style="display:flex;background:#e8ece9;border-radius:8px;padding:4px;">
-        <button id="mode-raub" onclick="setInputMode('raub')" class="seg-btn seg-on" style="flex:1;text-align:center;border-radius:6px;padding:6px 0;border:none;font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;transition:all .2s;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.1);color:var(--text-dark);">Raubfisch</button>
-        <button id="mode-fried" onclick="setInputMode('fried')" class="seg-btn" style="flex:1;text-align:center;border-radius:6px;padding:6px 0;border:none;font-size:12px;font-weight:500;font-family:var(--fa);cursor:pointer;transition:all .2s;background:transparent;color:var(--text-mid);">Friedfisch</button>
-        <button id="mode-reduced" onclick="setInputMode('reduced')" class="seg-btn" style="flex:1;text-align:center;border-radius:6px;padding:6px 0;border:none;font-size:12px;font-weight:500;font-family:var(--fa);cursor:pointer;transition:all .2s;background:transparent;color:var(--text-mid);">Reduziert</button>
+    <div id="new-page-title" class="new-session-title">Fang melden</div>
+    <div class="new-mode-section">
+      <div class="new-mode-label">Eingabe-Modus</div>
+      <div id="seg-ctrl" class="new-mode-toggle">
+        <button id="mode-raub" onclick="setInputMode('raub')" class="seg-btn new-mode-btn on">Raubfisch</button>
+        <button id="mode-fried" onclick="setInputMode('fried')" class="seg-btn new-mode-btn">Friedfisch</button>
+        <button id="mode-reduced" onclick="setInputMode('reduced')" class="seg-btn new-mode-btn">Reduziert</button>
       </div>
     </div>
     <div class="card">
@@ -4445,23 +5776,22 @@ input[type=file]{display:none;}
       <!-- Wetter-Karte (nur wenn nicht Reduziert) -->
       <div id="new-moon-wx-row" style="margin-bottom:10px;">
         <div class="ec" onclick="fetchWx()" role="button" tabindex="0" id="wx-card">
-          <div class="ei" id="wx-ico">🌡️</div>
+          <div class="ei" id="wx-ico"><svg class="ic"><use href="#i-thermo"/></svg></div>
           <div><div class="elbl">Wetter</div><div class="ev" id="wx-val" style="font-size:11px;color:var(--text-light);line-height:1.5;">Tippen zum Laden</div></div>
         </div>
       </div>
       <!-- Silent Weather Bestätigung (Reduziert-Modus) -->
-      <div id="silent-wx-hint" style="display:none;padding:4px 0 6px;">
-        <div style="font-size:11px;color:var(--green-mid);font-weight:600;display:flex;align-items:center;gap:6px;">
-          <span>✓</span><span id="silent-wx-txt">Wetterdaten automatisch im Hintergrund erfasst</span>
-        </div>
+      <div id="silent-wx-hint" class="silent-wx-hint" style="display:none;">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg>
+        <span id="silent-wx-txt">Wetterdaten automatisch im Hintergrund erfasst</span>
       </div>
       <!-- GPS: hidden after load -->
       <div id="gps-strip" class="gps-strip" style="display:none;">
-        <span id="gps-ico">📍</span><span id="gps-txt">GPS wird ermittelt…</span>
+        <span id="gps-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pin"/></svg></span><span id="gps-txt">GPS wird ermittelt…</span>
       </div>
       <!-- Schonzeit static banner (closeable, persistent) -->
       <div id="sz-hint" style="display:none;" class="sz-banner">
-        <div style="font-size:18px;flex-shrink:0;">📋</div>
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-info"/></svg>
         <div class="sz-text" id="sz-text"></div>
         <button class="sz-close" onclick="disSzHint()" aria-label="Schließen">✕</button>
       </div>
@@ -4529,15 +5859,15 @@ input[type=file]{display:none;}
     <div class="slbl">Erfolgreich gewesen?</div>
     <div class="card" style="padding:14px 16px;">
       <div class="ssbtn" role="group">
-        <button class="ssb sc2" id="btn-catch" onclick="setSuc('catch')" aria-pressed="true">🐟 Fisch gefangen</button>
-        <button class="ssb" id="btn-sk" onclick="setSuc('sk')" aria-pressed="false">🪝 Schneider</button>
+        <button class="ssb sc2" id="btn-catch" onclick="setSuc('catch')" aria-pressed="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg>Fang gemacht</button>
+        <button class="ssb" id="btn-sk" onclick="setSuc('sk')" aria-pressed="false"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-skunk"/></svg>Schneider</button>
       </div>
     </div>
 
     <div id="catches-area">
       <div class="slbl">Fänge</div>
       <div id="catches-con"></div>
-      <button class="addcatch" onclick="addCatch()"><div class="aplus">+</div>Fang hinzufügen</button>
+      <button class="addcatch" onclick="addCatch()"><div class="aplus"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-plus"/></svg></div>Fang hinzufügen</button>
     </div>
     <!-- v52 AP1: Gruppen-Teilen-Section (nur in Edit-Mode sichtbar) -->
     <div id="edit-share-wrap" style="display:none;margin-top:14px;">
@@ -4726,7 +6056,7 @@ input[type=file]{display:none;}
 <!-- AP3: Spot-GPS-Verknüpfung Overlay – Karte nimmt max. Platz -->
 <div class="fsov" id="fs-spot-gps" role="dialog" aria-modal="true" style="z-index:118;display:flex;flex-direction:column;">
   <div class="fshdr" style="flex-shrink:0;">
-    <div><div class="fstitle">📌 Spot markieren</div><div class="fsmeta">Gewässer wählen, dann auf Karte tippen</div></div>
+    <div><div class="fstitle"><svg class="ic" style="width:15px;height:15px;vertical-align:-2px;margin-right:4px;"><use href="#i-pin"/></svg>Spot markieren</div><div class="fsmeta">Gewässer wählen, dann auf Karte tippen</div></div>
     <button class="xbtn" onclick="_closeSpotGps()">✕</button>
   </div>
   <!-- AP3: Floating Dropdown über der Karte -->
@@ -5071,10 +6401,10 @@ input[type=file]{display:none;}
     </div>
     <div class="ig ig-mb">
       <label class="il">Gruppentyp</label>
-      <div style="display:flex;gap:8px;margin-top:6px;">
-        <button class="seg-btn" id="gc-type-private" onclick="_gcSetType('private')" style="flex:1;padding:10px;border:2px solid var(--green-mid);border-radius:var(--rs);background:var(--green-mist);color:var(--green-deep);font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;">🔒 Privat</button>
-        <button class="seg-btn" id="gc-type-public" onclick="_gcSetType('public')" style="flex:1;padding:10px;border:2px solid var(--cream-dark);border-radius:var(--rs);background:#fff;color:var(--text-mid);font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;">🌍 Öffentlich</button>
-        <button class="seg-btn" id="gc-type-elite" onclick="_gcSetType('elite')" style="flex:1;padding:10px;border:2px solid var(--cream-dark);border-radius:var(--rs);background:#fff;color:var(--text-mid);font-size:12px;font-weight:700;font-family:var(--fa);cursor:pointer;">⭐ Elite</button>
+      <div class="gc-type-row">
+        <button class="seg-btn gc-seg on" id="gc-type-private" onclick="_gcSetType('private')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-lock"/></svg>Privat</button>
+        <button class="seg-btn gc-seg" id="gc-type-public" onclick="_gcSetType('public')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-globe"/></svg>Öffentlich</button>
+        <button class="seg-btn gc-seg" id="gc-type-elite" onclick="_gcSetType('elite')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-star"/></svg>Elite</button>
       </div>
     </div>
     <div class="ig ig-mb">
@@ -5087,13 +6417,13 @@ input[type=file]{display:none;}
     </div>
     <div class="ig ig-mb">
       <label class="il">Icon</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;" id="gc-icons">
-        <button onclick="_gcIcon('🎣')" class="gc-ico-btn on" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--green-mid);background:var(--green-mist);font-size:20px;cursor:pointer;">🎣</button>
-        <button onclick="_gcIcon('🐟')" class="gc-ico-btn" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--cream-dark);background:#fff;font-size:20px;cursor:pointer;">🐟</button>
-        <button onclick="_gcIcon('🐋')" class="gc-ico-btn" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--cream-dark);background:#fff;font-size:20px;cursor:pointer;">🐋</button>
-        <button onclick="_gcIcon('🦈')" class="gc-ico-btn" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--cream-dark);background:#fff;font-size:20px;cursor:pointer;">🦈</button>
-        <button onclick="_gcIcon('🏆')" class="gc-ico-btn" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--cream-dark);background:#fff;font-size:20px;cursor:pointer;">🏆</button>
-        <button onclick="_gcIcon('⚡')" class="gc-ico-btn" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--cream-dark);background:#fff;font-size:20px;cursor:pointer;">⚡</button>
+      <div class="gc-icon-grid" id="gc-icons">
+        <button onclick="_gcIcon('🎣')" class="gc-ico-btn gc-ico on">🎣</button>
+        <button onclick="_gcIcon('🐟')" class="gc-ico-btn gc-ico">🐟</button>
+        <button onclick="_gcIcon('🐋')" class="gc-ico-btn gc-ico">🐋</button>
+        <button onclick="_gcIcon('🦈')" class="gc-ico-btn gc-ico">🦈</button>
+        <button onclick="_gcIcon('🏆')" class="gc-ico-btn gc-ico">🏆</button>
+        <button onclick="_gcIcon('⚡')" class="gc-ico-btn gc-ico">⚡</button>
       </div>
     </div>
     <button class="btn" onclick="_grpCreate()">Gruppe erstellen</button>
@@ -5110,7 +6440,7 @@ input[type=file]{display:none;}
   <div class="fsov-scroll overlay-pad-tight">
     <div class="ig ig-mb">
       <label class="il" for="gj-code">Einladungscode</label>
-      <input type="text" class="if" id="gj-code" placeholder="z.B. HECHT-2024-XY" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;font-weight:700;text-align:center;">
+      <input type="text" class="if gj-code-input" id="gj-code" placeholder="HECHT-2024-XY" autocomplete="off">
     </div>
     <button class="btn" onclick="_grpJoinByCode()">Beitreten</button>
     <div class="form-helper-text">Oder lass dir einen Link von einem Gruppenmitglied schicken.</div>
@@ -5135,15 +6465,15 @@ input[type=file]{display:none;}
 <!-- ═══ SCHONZEIT WARNING MODAL ═══ -->
 <div class="schon-warn" id="schon-warn">
   <div class="schon-warn-card">
-    <div class="schon-warn-ico">⚠️</div>
+    <div class="schon-warn-ico"><svg class="ic" style="width:40px;height:40px;color:var(--red);"><use href="#i-alert"/></svg></div>
     <div class="schon-warn-title" id="schon-warn-title">Schonzeit-Hinweis</div>
     <div class="schon-warn-text" id="schon-warn-text">Dieser Fisch befindet sich möglicherweise in der Nähe der Schonzeit.</div>
     <div class="ig" style="margin-bottom:14px;">
       <label class="il">Wies der Fisch Laichmerkmale auf?</label>
     </div>
     <div class="schon-warn-btns">
-      <button class="schon-warn-btn yes" onclick="_schonAnswer('laich')">🥚 Ja – Laichkleid/Laichverhärtung erkennbar</button>
-      <button class="schon-warn-btn no" onclick="_schonAnswer('ok')">✅ Nein – Fisch war unauffällig</button>
+      <button class="schon-warn-btn yes" onclick="_schonAnswer('laich')">Ja – Laichkleid/Laichverhärtung erkennbar</button>
+      <button class="schon-warn-btn no" onclick="_schonAnswer('ok')">Nein – Fisch war unauffällig</button>
       <button class="schon-warn-btn cancel" onclick="_schonAnswer('skip')">Überspringen</button>
     </div>
   </div>
@@ -5222,6 +6552,10 @@ const LS_SESSIONS='fb_sessions_v50';
 const LS_PROFILE='fb_profile_v50';
 const LS_FAVS='fb_favs_v50';
 const LS_GROUPS='fb_groups_v50';
+// AP19: Pending-Delete-Tombstones für Sessions, deren Cloud-Delete noch nicht bestätigt ist.
+// Verhindert, dass eine lokal gelöschte Session beim nächsten authoritative syncFromCloud
+// wieder rehydratisiert wird. Liste enthält ausschließlich Session-ID-Strings.
+const LS_DELETED_SESSIONS='fb_deleted_sessions_v50';
 
 // v50: Sicherer localStorage-Setter (handhabt QuotaExceeded ohne Crash).
 function _lsSet(key,obj){
@@ -5235,6 +6569,50 @@ function _lsSet(key,obj){
   }
 }
 function _lsRemove(key){try{localStorage.removeItem(key);}catch(e){}}
+
+// AP19: Pending-Delete-Helper für Session-Tombstones (verhindert Wiederauferstehung
+// gelöschter Sessions nach syncFromCloud({authoritative:true}) oder Logout/Login).
+function _pendingDeletesGet(){
+  try{const raw=localStorage.getItem(LS_DELETED_SESSIONS);if(!raw)return [];
+    const arr=JSON.parse(raw);return Array.isArray(arr)?arr.map(String):[];
+  }catch(e){return [];}
+}
+function _pendingDeletesAdd(id){
+  if(id==null)return;
+  const sId=String(id);
+  const list=_pendingDeletesGet();
+  if(list.includes(sId))return;
+  list.push(sId);
+  _lsSet(LS_DELETED_SESSIONS,list);
+}
+function _pendingDeletesRemove(id){
+  if(id==null)return;
+  const sId=String(id);
+  const list=_pendingDeletesGet().filter(x=>x!==sId);
+  if(list.length)_lsSet(LS_DELETED_SESSIONS,list);
+  else _lsRemove(LS_DELETED_SESSIONS);
+}
+function _pendingDeletesHas(id){
+  return _pendingDeletesGet().includes(String(id));
+}
+// AP19: Versucht alle pending Deletes gegen Supabase zu flushen.
+// Bei Erfolg wird der jeweilige Eintrag aus der Liste entfernt; bei Fehler bleibt er.
+async function _flushPendingDeletes(){
+  if(!_sb||!_sbUser||_authMode!=='online')return;
+  const pending=_pendingDeletesGet();
+  if(!pending.length)return;
+  for(const sId of pending){
+    try{
+      const{error}=await _sb.from('sessions').delete()
+        .eq('user_id',_sbUser.id).eq('session_id',sId);
+      if(error)throw error;
+      _pendingDeletesRemove(sId);
+    }catch(e){
+      console.warn('flushPendingDeletes failed for',sId,e);
+      // Eintrag bleibt — wird beim nächsten Sync erneut versucht
+    }
+  }
+}
 
 // v50: Force-Push aller lokalen Daten in die Cloud — synchron, mit Timeout-Fallback.
 // Wird vom Logout-Flow und nach Backup-Import aufgerufen. Cancelt Auto-Push-Debounce.
@@ -5413,9 +6791,15 @@ function skipAuth(){
 // v50: Batch-Upsert (nicht mehr 1-Request-pro-Session). spot-Spalte existiert nun.
 async function syncToCloud(){
   if(!_sb||!_sbUser||_authMode!=='online')return;
+  // AP19: Pending-Deletes zuerst flushen, damit zwischenzeitlich gelöschte Sessions
+  // nicht wieder durch parallelen Upsert geschützt werden müssen.
+  await _flushPendingDeletes();
   if(!sessions||!sessions.length)return;
   try{
-    const rows=sessions.map(s=>({
+    // AP19: Sicherheitsfilter — falls eine pending-deleted Session noch im sessions[] schwebt
+    // (z.B. durch Race Condition), wird sie nicht upsertet.
+    const pendingSet=new Set(_pendingDeletesGet());
+    const rows=sessions.filter(s=>!pendingSet.has(String(s.id))).map(s=>({
       user_id:_sbUser.id,
       session_id:String(s.id),
       date:s.date||null,
@@ -5423,6 +6807,7 @@ async function syncToCloud(){
       spot:s.spot||null,
       metadata:s
     }));
+    if(!rows.length){_lsSet(LS_SESSIONS,sessions);return;}
     // Chunk-weise upserten damit grosse Bibliotheken nicht in Request-Size-Limits laufen
     const CHUNK=50;
     for(let i=0;i<rows.length;i+=CHUNK){
@@ -5450,6 +6835,12 @@ async function syncFromCloud(opts={}){
     //    Sessions referenzieren Spot-/Wetter-Maps, die im Profil-Bundle liegen.
     await syncProfileFromCloud({authoritative,silent});
 
+    // AP19: Pending-Deletes zuerst flushen — entfernt bestätigte Tombstones aus der Cloud
+    // BEVOR wir Cloud-Daten lesen. So sehen wir keine "Untoten" mehr.
+    await _flushPendingDeletes();
+    // Aktuelle Tombstones-Liste (nach Flush) für Filter beim Hydrate
+    const pendingSet=new Set(_pendingDeletesGet());
+
     // 2. Sessions
     const{data,error}=await _sb.from('sessions').select('*').eq('user_id',_sbUser.id);
     if(error)throw error;
@@ -5471,6 +6862,8 @@ async function syncFromCloud(opts={}){
       const fresh=[];
       for(const row of data){
         if(!row.metadata)continue;
+        // AP19: Pending-Delete-Tombstone respektieren — nicht rehydratisieren.
+        if(pendingSet.has(String(row.session_id)))continue;
         const sess=row.metadata;
         sess.id=row.session_id;
         fresh.push(sess);
@@ -5487,6 +6880,8 @@ async function syncFromCloud(opts={}){
       const localIds=new Set(sessions.map(s=>String(s.id)));
       let newCount=0;
       for(const row of data){
+        // AP19: Pending-Delete-Tombstone respektieren auch im inkrementellen Modus.
+        if(pendingSet.has(String(row.session_id)))continue;
         if(!localIds.has(String(row.session_id))&&row.metadata){
           const sess=row.metadata;
           sess.id=row.session_id;
@@ -5722,7 +7117,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='fb-v9-53';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v80-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -5971,13 +7366,9 @@ function setInputMode(mode){
   const reduced=mode==='reduced';
   const fried=mode==='fried';
 
-  // Segmented-Control updaten
+  // Segmented-Control updaten — AP16: Visual-State via classList statt Inline-Styles
   document.querySelectorAll('#seg-ctrl .seg-btn').forEach(b=>{
-    const isOn=b.id==='mode-'+mode;
-    b.style.background=isOn?'#fff':'transparent';
-    b.style.boxShadow=isOn?'0 2px 4px rgba(0,0,0,.1)':'none';
-    b.style.fontWeight=isOn?'700':'500';
-    b.style.color=isOn?'var(--text-dark)':'var(--text-mid)';
+    b.classList.toggle('on',b.id==='mode-'+mode);
   });
 
   // Wetter-Karte + manuelle Felder ausblenden im reduzierten Modus
@@ -6082,7 +7473,7 @@ function fSvgInline(name,w,h){
   return`<svg width="${w||20}" height="${h||14}" viewBox="0 0 32 18"><use href="#${fSvgId(name)}"/></svg>`;
 }
 function fScore(t,l){return Math.round((FMULT[t]||1.0)*l*10)/10;}
-function chkMM(type,len){const mm=MMM[type];if(!mm||!len||len<=0)return null;if(len<mm)return{ok:false,mm,msg:`⚠️ Unter Mindestmaß (${mm}cm) – C&R empfohlen`};return{ok:true,mm};}
+function chkMM(type,len){const mm=MMM[type];if(!mm||!len||len<=0)return null;if(len<mm)return{ok:false,mm,msg:`Unter Mindestmaß (${mm}cm) – C&R empfohlen`};return{ok:true,mm};}
 
 // ═══════════════════════════════════════════════════════════
 // SCHONZEITEN – all 16 BL
@@ -7450,12 +8841,13 @@ function trigPhoto(id){
   if(existing)existing.remove();
   const sheet=document.createElement('div');
   sheet.id='photo-choice-sheet';
-  sheet.style.cssText='position:absolute;inset:0;z-index:260;display:flex;align-items:flex-end;background:rgba(15,25,18,.6);';
-  sheet.innerHTML=`<div style="width:100%;background:var(--cream);border-radius:20px 20px 0 0;padding:20px 18px 32px;display:flex;flex-direction:column;gap:10px;">
-    <div style="font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:4px;text-align:center;">Foto hinzufügen</div>
-    <button onclick="document.getElementById('photo-inp').click();document.getElementById('photo-choice-sheet').remove();" style="width:100%;padding:14px;background:var(--green-deep);border:none;border-radius:var(--rs);color:#fff;font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;">🖼️ Aus Mediathek wählen</button>
-    <button onclick="document.getElementById('photo-cam').click();document.getElementById('photo-choice-sheet').remove();" style="width:100%;padding:14px;background:var(--cream-dark);border:none;border-radius:var(--rs);color:var(--text-dark);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;">📷 Kamera aufnehmen</button>
-    <button onclick="document.getElementById('photo-choice-sheet').remove();" style="width:100%;padding:12px;background:transparent;border:none;color:var(--text-light);font-size:13px;font-family:var(--fa);cursor:pointer;">Abbrechen</button>
+  sheet.className='photo-choice-sheet';
+  sheet.innerHTML=`<div class="photo-choice-card">
+    <div class="photo-choice-handle"></div>
+    <div class="photo-choice-title">Foto hinzufügen</div>
+    <button class="photo-choice-btn is-primary" onclick="document.getElementById('photo-inp').click();document.getElementById('photo-choice-sheet').remove();"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-6-6-7 8"/></svg>Aus Mediathek wählen</button>
+    <button class="photo-choice-btn" onclick="document.getElementById('photo-cam').click();document.getElementById('photo-choice-sheet').remove();"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-camera"/></svg>Kamera aufnehmen</button>
+    <button class="photo-choice-btn is-cancel" onclick="document.getElementById('photo-choice-sheet').remove();">Abbrechen</button>
   </div>`;
   document.getElementById('frame').appendChild(sheet);
   sheet.addEventListener('click',e=>{if(e.target===sheet)sheet.remove();});
@@ -7534,12 +8926,12 @@ function addCatch(){
   const div=document.createElement('div');div.className='cc';div.id='catch-'+id;
   div.innerHTML=`
     <div class="ch">
-      <span class="cn">🐟 Fang #${id}</span>
+      <span class="cn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hook"/></svg>Fang #${id}</span>
       <div style="display:flex;gap:6px;align-items:center;">
         <button type="button" class="voice-btn" id="voice-btn-${id}" onclick="startVoiceInput(${id})" aria-label="Spracheingabe" title="Spracheingabe">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
         </button>
-        ${id>1?`<button class="rm" onclick="rmCatch(${id})" aria-label="Fang ${id} entfernen">×</button>`:'<div style="width:32px"></div>'}
+        ${id>1?`<button class="rm" onclick="rmCatch(${id})" aria-label="Fang ${id} entfernen"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-x"/></svg></button>`:'<div style="width:30px"></div>'}
       </div>
     </div>
 
@@ -7618,15 +9010,16 @@ function addCatch(){
     <!-- Foto – nur im Raubfisch-Modus -->
     <div id="catch-photo-row-${id}" style="display:${_inputMode==='raub'?'':'none'};">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <div id="pa-${id}" class="phadd" onclick="trigPhoto(${id})" role="button" tabindex="0"><span>📷</span><span class="phlbl">Foto</span></div>
+        <div id="pa-${id}" class="phadd" onclick="trigPhoto(${id})" role="button" tabindex="0"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-camera"/></svg><span class="phlbl">Foto</span></div>
         <img id="pp-${id}" class="phpr" src="" alt="Fangfoto" style="display:none;" onclick="trigPhoto(${id})">
         <div style="flex:1;font-size:11px;color:var(--text-light);line-height:1.5;cursor:pointer;" onclick="trigPhoto(${id})">Foto hinzufügen</div>
       </div>
     </div>
 
     <!-- Friedfisch-Felder – nur im Friedfisch-Modus -->
-    <div id="catch-fried-${id}" style="display:${_inputMode==='fried'?'':'none'};margin-top:8px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+    <div id="catch-fried-${id}" class="ff-section" style="display:${_inputMode==='fried'?'':'none'};">
+      <div class="ff-section-label"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-fb"/></svg>Friedfisch-Details</div>
+      <div class="ff-grid-2">
         <div class="ig">
           <label class="il" for="ff-cnt-${id}">Gesamtanzahl</label>
           <input type="number" class="if" id="ff-cnt-${id}" placeholder="z.B. 12" min="0" inputmode="numeric">
@@ -7636,7 +9029,7 @@ function addCatch(){
           <input type="number" class="if" id="ff-wt-${id}" placeholder="z.B. 3.5" min="0" step="0.1" inputmode="decimal">
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
+      <div class="ff-grid-3">
         <div class="ig">
           <label class="il" for="ff-rig-${id}">Montage</label>
           <input type="text" class="if" id="ff-rig-${id}" placeholder="z.B. Laufblei" autocomplete="off">
@@ -7650,7 +9043,7 @@ function addCatch(){
           <input type="number" class="if" id="ff-dist-${id}" placeholder="z.B. 40" min="0" inputmode="numeric">
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:2fr 1fr;gap:6px;margin-bottom:6px;">
+      <div class="ff-grid-2-1">
         <div class="ig">
           <label class="il" for="ff-feed-${id}">Futter</label>
           <input type="text" class="if" id="ff-feed-${id}" placeholder="z.B. Paniermehl-Mix" autocomplete="off">
@@ -7662,7 +9055,7 @@ function addCatch(){
       </div>
       <div class="ig" style="margin-bottom:4px;">
         <label class="il">Spot vorbehandelt?</label>
-        <div style="display:flex;gap:6px;margin-top:4px;">
+        <div class="ff-pre-row">
           <button type="button" class="chip cf" id="ff-pre-y-${id}" onclick="setFfPre(${id},true)" style="font-size:11px;padding:4px 12px;">Ja</button>
           <button type="button" class="chip cf" id="ff-pre-n-${id}" onclick="setFfPre(${id},false)" style="font-size:11px;padding:4px 12px;">Nein</button>
         </div>
@@ -7674,7 +9067,7 @@ function addCatch(){
       </div>
       <!-- Foto – im Friedfisch-Modus -->
       <div style="display:flex;align-items:center;gap:12px;margin:8px 0 4px;">
-        <div id="ff-pa-${id}" class="phadd" onclick="trigPhoto(${id})" role="button" tabindex="0"><span>📷</span><span class="phlbl">Foto</span></div>
+        <div id="ff-pa-${id}" class="phadd" onclick="trigPhoto(${id})" role="button" tabindex="0"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-camera"/></svg><span class="phlbl">Foto</span></div>
         <img id="ff-pp-${id}" class="phpr" src="" alt="Fangfoto" style="display:none;" onclick="trigPhoto(${id})">
         <div style="flex:1;font-size:11px;color:var(--text-light);line-height:1.5;cursor:pointer;" onclick="trigPhoto(${id})">Foto hinzufügen</div>
       </div>
@@ -8095,8 +9488,24 @@ async function saveSess(){
     // Edit-Safety: Original erst JETZT löschen
     const wasEditing=!!_editPendingId;
     if(_editPendingId){
-      sessions=sessions.filter(x=>String(x.id)!==String(_editPendingId));
-      await idbD('sessions',String(_editPendingId));
+      const oldEditId=String(_editPendingId);
+      sessions=sessions.filter(x=>String(x.id)!==oldEditId);
+      try{await idbD('sessions',oldEditId);}catch(e){console.warn('idbD edit:',e);}
+      // AP19: Konsistenter Delete in Cloud + Tombstone — sonst kommt die alte
+      // Edit-Vorgänger-Session beim nächsten authoritative Sync wieder zurück.
+      _pendingDeletesAdd(oldEditId);
+      _lsSet(LS_SESSIONS,sessions);
+      if(_sb&&_sbUser&&_authMode==='online'){
+        try{
+          const{error}=await _sb.from('sessions').delete()
+            .eq('user_id',_sbUser.id).eq('session_id',oldEditId);
+          if(error)throw error;
+          _pendingDeletesRemove(oldEditId);
+        }catch(e){
+          console.warn('edit cloud delete:',e);
+          // Tombstone bleibt — schützt vor Wiedereinspielen
+        }
+      }
       _editPendingId=null;
     }
 
@@ -8774,7 +10183,7 @@ async function openDayDetail(dateKey){
 
       let catchRows='';
       if(s.skunked||!sCatches.length){
-        catchRows=`<div style="padding:10px 14px;font-size:12px;color:var(--text-light);">Kein Fang</div>`;
+        catchRows=`<div class="dd-session-tile-empty">Kein Fang</div>`;
       } else {
         catchRows=sCatches.map((c,i)=>{
           const mm=chkMM(c.type,c.length);
@@ -8799,20 +10208,20 @@ async function openDayDetail(dateKey){
         }).join('');
       }
 
-      // Session-Kachel mit eigenem Edit/Delete
-      sessionsHtml+=`<div style="background:#fff;border-radius:var(--rs);margin-bottom:10px;overflow:hidden;border:1px solid rgba(200,221,208,.3);box-shadow:var(--sh-sm);">
-        <div style="background:var(--green-mist);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:12px;font-weight:700;color:var(--green-deep);">${s.water||'–'}${s.spot?' · '+s.spot:''}</div>
-            <div style="font-size:11px;color:var(--text-mid);margin-top:1px;">${sessTimeLabel}</div>
+      // Session-Kachel mit eigenem Edit/Delete (AP15: saubere Klassen statt Inline-Styles)
+      sessionsHtml+=`<div class="dd-session-tile">
+        <div class="dd-session-tile-head">
+          <div class="dd-session-tile-head-info">
+            <div class="dd-session-tile-head-water">${s.water||'–'}${s.spot?' · '+s.spot:''}</div>
+            <div class="dd-session-tile-head-time">${sessTimeLabel}</div>
           </div>
-          <div style="display:flex;gap:6px;">
-            <button onclick="splitSession('${s.id}','${dateKey}')" style="padding:6px;width:32px;height:32px;background:var(--salbei);border:none;border-radius:99px;cursor:pointer;color:var(--tanne);display:inline-flex;align-items:center;justify-content:center;" title="Session splitten"><svg class="ic" style="width:14px;height:14px;"><use href="#i-split"/></svg></button>
-            <button onclick="editSess('${s.id}')" style="padding:6px;width:32px;height:32px;background:var(--salbei);border:none;border-radius:99px;cursor:pointer;color:var(--tanne);display:inline-flex;align-items:center;justify-content:center;" title="Bearbeiten"><svg class="ic" style="width:14px;height:14px;"><use href="#i-edit"/></svg></button>
-            <button onclick="delSessFromDetail('${s.id}','${dateKey}')" style="padding:6px;width:32px;height:32px;background:var(--rose);border:none;border-radius:99px;cursor:pointer;color:var(--rose-t);display:inline-flex;align-items:center;justify-content:center;" title="Löschen"><svg class="ic" style="width:14px;height:14px;"><use href="#i-trash"/></svg></button>
+          <div class="dd-session-tile-head-actions">
+            <button class="dd-session-tile-action-btn" onclick="splitSession('${s.id}','${dateKey}')" title="Session splitten" aria-label="Session splitten"><svg class="ic"><use href="#i-split"/></svg></button>
+            <button class="dd-session-tile-action-btn" onclick="editSess('${s.id}')" title="Bearbeiten" aria-label="Bearbeiten"><svg class="ic"><use href="#i-edit"/></svg></button>
+            <button class="dd-session-tile-action-btn is-danger" onclick="delSessFromDetail('${s.id}','${dateKey}')" title="Löschen" aria-label="Löschen"><svg class="ic"><use href="#i-trash"/></svg></button>
           </div>
         </div>
-        <div style="padding:0;">${catchRows}</div>
+        <div>${catchRows}</div>
       </div>`;
     });
   }
@@ -9609,8 +11018,21 @@ function _viewCatchGps(sessId,catchIdx){
 async function delSessFromDetail(id,dateKey){
   const ok=await showConf('🗑️','Session löschen','Wirklich löschen?\nKann nicht rückgängig gemacht werden.','Ja, löschen','danger');
   if(!ok)return;
+  // AP19: Konsistenter Delete über alle Persistenz-Schichten + Pending-Delete-Tombstone
+  _pendingDeletesAdd(id);
   sessions=sessions.filter(s=>String(s.id)!==String(id));
-  await idbD('sessions',String(id));
+  try{await idbD('sessions',String(id));}catch(e){console.warn('idbD:',e);}
+  _lsSet(LS_SESSIONS,sessions);
+  if(_sb&&_sbUser&&_authMode==='online'){
+    try{
+      const{error}=await _sb.from('sessions').delete()
+        .eq('user_id',_sbUser.id).eq('session_id',String(id));
+      if(error)throw error;
+      _pendingDeletesRemove(id);
+    }catch(e){
+      console.warn('delSessFromDetail cloud:',e);
+    }
+  }
   showToast('🗑️','Session gelöscht');
   const remaining=sessions.filter(s=>String(s.date)===String(dateKey));
   if(remaining.length){openDayDetail(dateKey);}
@@ -9909,7 +11331,31 @@ function showDetail(id,returnPage){
     if(av)av.innerHTML=`<img src="${ph}" alt="Fangfoto" style="width:100%;height:100%;object-fit:cover;border-radius:9px;">`;
   });
 }
-async function delSess(id){const ok=await showConf('🗑️','Session löschen','Wirklich löschen?\nKann nicht rückgängig gemacht werden.','Ja, löschen','danger');if(!ok)return;sessions=sessions.filter(s=>String(s.id)!==String(id));await idbD('sessions',String(id));if(_sb&&_sbUser)_sb.from('sessions').delete().eq('user_id',_sbUser.id).eq('session_id',String(id)).then(()=>{}).catch(()=>{});showToast('🗑️','Session gelöscht');showPage('fangbuch');}
+async function delSess(id){
+  const ok=await showConf('🗑️','Session löschen','Wirklich löschen?\nKann nicht rückgängig gemacht werden.','Ja, löschen','danger');
+  if(!ok)return;
+  // AP19: Tombstone setzen BEVOR irgendetwas anderes — verhindert Rehydrate bei Race Conditions.
+  _pendingDeletesAdd(id);
+  // Lokal sofort entfernen (sessions, IDB, localStorage Mirror — alle drei konsistent)
+  sessions=sessions.filter(s=>String(s.id)!==String(id));
+  try{await idbD('sessions',String(id));}catch(e){console.warn('idbD:',e);}
+  _lsSet(LS_SESSIONS,sessions);
+  // Supabase-Delete: awaited, mit Fehlerbehandlung. Bei Erfolg Tombstone entfernen,
+  // bei Fehler bleibt er bestehen — _flushPendingDeletes wiederholt den Versuch später.
+  if(_sb&&_sbUser&&_authMode==='online'){
+    try{
+      const{error}=await _sb.from('sessions').delete()
+        .eq('user_id',_sbUser.id).eq('session_id',String(id));
+      if(error)throw error;
+      _pendingDeletesRemove(id);
+    }catch(e){
+      console.warn('delSess cloud:',e);
+      // Tombstone bleibt → schützt vor Rehydrate bis Cloud-Delete erfolgreich
+    }
+  }
+  showToast('🗑️','Session gelöscht');
+  showPage('fangbuch');
+}
 // ── Edit-State: ID der Session die gerade bearbeitet wird (v13 Safety) ──
 let _editPendingId=null; // ID der Original-Session – erst beim Speichern löschen
 
@@ -12866,7 +14312,7 @@ function openDailyWeather(dateStr){
     </div>
     <!-- AP4: Niederschlag mit Magic Header -->
     <div class="fc-sec" style="margin:0 0 8px;">
-      <div class="fc-sec-title">🌧 Regenwahrscheinlichkeit · stündlich</div>
+      <div class="fc-sec-title"><svg class="ic" style="width:14px;height:14px;vertical-align:-2px;margin-right:3px;"><use href="#i-rain"/></svg>Regenwahrscheinlichkeit · stündlich</div>
       <div id="dw-rain-info" style="font-size:11px;font-weight:600;color:var(--text-mid);padding:2px 10px 4px;display:flex;gap:12px;">
         <span>Max: ${Math.max(...hRain.filter(v=>v!=null))}%</span>
         <span id="dw-rain-hover" style="color:var(--green-mid);"></span>
@@ -14962,7 +16408,8 @@ async function _openGroupHub(){
   openFs('group-hub');
   // Cloud-State ziehen — auch wenn vorher v53-Local-Blobs vorhanden waren, sind die jetzt irrelevant
   if(_sb&&_sbUser){
-    document.getElementById('grp-hub-content').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-light);font-size:13px;">⏳ Gruppen laden…</div>';
+    // AP13: Hochwertiger Spinner statt ⏳ Emoji
+    document.getElementById('grp-hub-content').innerHTML='<div class="grp-loading">Gruppen laden…</div>';
     await _loadGroups();
   }
   _rndrGroupList();
@@ -15042,7 +16489,7 @@ async function _rndrGroupDiscover(){
     </div>
     <!-- v54 AP1.3: Einladungscode-Sektion am Ende des Discover-Tabs -->
     <div class="discover-code-section">
-      <div class="dcs-title">Hast du einen Einladungscode?</div>
+      <div class="dcs-title"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-share"/></svg>Hast du einen Einladungscode?</div>
       <div class="dcs-row">
         <input type="text" id="discover-invite-code" placeholder="ABCD-1234" maxlength="9" autocomplete="off" onkeydown="if(event.key==='Enter')_grpJoinByDiscoverCode()">
         <button onclick="_grpJoinByDiscoverCode()">Beitreten</button>
@@ -15152,7 +16599,8 @@ function _showPreviewJoinFab(realId){
     fab.className='preview-join-fab';
     document.getElementById('fs-group-detail')?.appendChild(fab);
   }
-  fab.textContent='✓ Gruppe beitreten';
+  // AP13: SVG-Plus-Icon statt ✓ Unicode (konsistente Visual-Sprache)
+  fab.innerHTML='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-plus"/></svg>Gruppe beitreten';
   fab.onclick=()=>_grpJoinFromPreview(realId);
   fab.style.display='flex';
 }
@@ -15181,22 +16629,18 @@ async function _grpJoinFromPreview(realId){
 
 function _gcSetType(type){
   _gcType=type;
+  // AP13: Visual-State via classList statt Inline-Styles (gleiche Logik, sauberer)
   ['private','public','elite'].forEach(t=>{
     const btn=document.getElementById('gc-type-'+t);
-    if(btn){
-      btn.style.borderColor=t===type?'var(--green-mid)':'var(--cream-dark)';
-      btn.style.background=t===type?'var(--green-mist)':'#fff';
-      btn.style.color=t===type?'var(--green-deep)':'var(--text-mid)';
-    }
+    if(btn)btn.classList.toggle('on',t===type);
   });
 }
 
 function _gcIcon(ico){
   _gcIcon_=ico;
+  // AP13: Visual-State via classList statt Inline-Styles (gleiche Logik, sauberer)
   document.querySelectorAll('#gc-icons .gc-ico-btn').forEach(b=>{
     const isOn=b.textContent.trim()===ico;
-    b.style.borderColor=isOn?'var(--green-mid)':'var(--cream-dark)';
-    b.style.background=isOn?'var(--green-mist)':'#fff';
     b.classList.toggle('on',isOn);
   });
 }
@@ -15878,7 +17322,7 @@ async function _submitComment(gId,catchId){
     if(expand)expand.remove();
     _grpComment(gId,catchId);
     const commentBtn=document.querySelector(`.catch-card-act[onclick*="_grpComment('${gId}','${catchId}'"]`);
-    if(commentBtn)commentBtn.innerHTML=`<span class="cc-ico">💬</span> ${sc.comments.length||''}`;
+    if(commentBtn)commentBtn.innerHTML=`<svg class="ic"><use href="#i-comment"/></svg>${sc.comments.length||''}`;
   }
 }
 
@@ -15928,20 +17372,35 @@ function _rndrGroupInsights(){
   const pressureCorr = _insightsPressureInfluence(catches);
   const biteTimes    = _insightsBiteTimes(catches);
 
-  let html=`
+  // AP11: Empty-State, wenn noch keine Daten da sind
+  if(!catches.length){
+    el.innerHTML=`<div class="grp-insights-pad">
+      <div class="grp-insights-empty">
+        <div class="empty-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-trend"/></svg></div>
+        <div class="empty-title">Noch zu wenig Daten</div>
+        <div class="empty-text">Crew-Insights bauen sich mit euren geteilten Sessions auf. Sobald eure Crew mehr Fänge teilt, entstehen hier gemeinsame Muster.</div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  // AP11: SVG-Helper für Section-Titles
+  const _ic=(name)=>`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-${name}"/></svg>`;
+
+  let html=`<div class="grp-insights-pad">
     <div class="dash-section">
-      <div class="dash-section-title">📊 Trends der letzten 7 Tage</div>
+      <div class="dash-section-title">${_ic('trend')}Trends der letzten 7 Tage</div>
       <div class="dash-trend-chips">
-        ${topBaits.map(([b,c])=>`<div class="dash-trend-chip hot">🎣 ${_esc(b)} (${c}x)</div>`).join('')}
-        ${week.length?`<div class="dash-trend-chip cool">📈 ${week.length} Fänge diese Woche</div>`:''}
+        ${topBaits.map(([b,c])=>`<div class="dash-trend-chip warm">${_ic('hook')}${_esc(b)} · ${c}×</div>`).join('')}
+        ${week.length?`<div class="dash-trend-chip cool">${_ic('trend')}${week.length} Fänge diese Woche</div>`:''}
       </div>
     </div>
 
     <div class="dash-section">
-      <div class="dash-section-title">🏆 Leaderboard – Aktivste Angler</div>
+      <div class="dash-section-title is-gold">${_ic('trophy')}Leaderboard · Aktivste Angler</div>
       <div class="dash-leaderboard">
         ${leaderboard.map(([uid,s],i)=>`<div class="dash-lb-row">
-          <div class="dash-lb-rank">${i<3?['🥇','🥈','🥉'][i]:(i+1)}</div>
+          <div class="dash-lb-rank${i<3?' is-'+(i+1):''}">${i+1}</div>
           <div class="dash-lb-avatar" style="background:${_userColor(uid)};">${s.name.charAt(0)}</div>
           <div class="dash-lb-name">${_esc(s.name)}</div>
           <div class="dash-lb-val">${s.count} Fänge · ⌀${s.count?Math.round(s.totalLen/s.count):0}cm</div>
@@ -15950,36 +17409,36 @@ function _rndrGroupInsights(){
     </div>
 
     <div class="dash-section">
-      <div class="dash-section-title">🐟 Top-Zielfische der Gruppe</div>
+      <div class="dash-section-title">${_ic('star')}Top-Zielfische der Gruppe</div>
       <div class="dash-trend-chips">
-        ${topFish.map(([f,c])=>`<div class="dash-trend-chip nature">${fIco(f)} ${_esc(f)} (${c}x)</div>`).join('')}
+        ${topFish.map(([f,c])=>`<div class="dash-trend-chip nature">${fIco(f)} ${_esc(f)} · ${c}×</div>`).join('')}
       </div>
     </div>
 
     <!-- v51: Köder-Wissenschaft (Size+Color × Fish) -->
     <div class="dash-section">
-      <div class="dash-section-title">🔬 Köder-Wissenschaft</div>
+      <div class="dash-section-title">${_ic('target')}Köder-Wissenschaft</div>
       ${baitScience}
     </div>
 
     <!-- v51: Wetter-Einfluss (Pressure-Trend × Catch-Rate) -->
     <div class="dash-section">
-      <div class="dash-section-title">🌤 Wetter-Einfluss · Luftdruck-Trend</div>
+      <div class="dash-section-title">${_ic('cloud-sun')}Wetter-Einfluss · Luftdruck-Trend</div>
       ${pressureCorr}
     </div>
 
     <!-- v51: Zeitfenster (24h Bite-Times Histogramm) -->
     <div class="dash-section">
-      <div class="dash-section-title">⏰ Aktive Beißzeiten · 24h-Profil</div>
+      <div class="dash-section-title">${_ic('clock')}Aktive Beißzeiten · 24h-Profil</div>
       ${biteTimes}
     </div>
 
     <div class="dash-section">
-      <div class="dash-section-title">📤 Datenexport</div>
-      <button onclick="_exportGroupData('${g.id}')" style="width:100%;padding:12px;background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);border-radius:var(--rs);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;">🔬 Anonymisierten Datensatz exportieren (CSV)</button>
-      <div style="font-size:10px;color:var(--text-light);margin-top:6px;text-align:center;">Ohne GPS · Nur aggregierte Köder-/Wetterdaten</div>
+      <div class="dash-section-title">${_ic('share')}Datenexport</div>
+      <button class="grp-insights-export-btn" onclick="_exportGroupData('${g.id}')">${_ic('share')}Anonymisierten Datensatz (CSV)</button>
+      <div class="grp-insights-export-help">Ohne GPS · Nur aggregierte Köder- und Wetterdaten</div>
     </div>
-  `;
+  </div>`;
   el.innerHTML=html;
 }
 
@@ -16022,12 +17481,14 @@ function _insightsBaitScience(catches){
     const topColor=Object.entries(d.colors).sort((a,b)=>b[1]-a[1])[0];
     const topSize =Object.entries(d.sizes ).sort((a,b)=>b[1]-a[1])[0];
     const avgLen=d.count?Math.round(d.totalLen/d.count):0;
+    // AP12: SVG-Hook für Top-Köder-Cell
+    const hookSvg=`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hook"/></svg>`;
     return `<div class="bs-row">
       <div class="bs-fish">${fIco(fish)} <strong>${_esc(fish)}</strong> <span class="bs-cnt">${d.count}× · ⌀${avgLen}cm</span></div>
       <div class="bs-grid">
-        <div class="bs-cell"><div class="bs-cell-lbl">Top-Köder</div><div class="bs-cell-val">${topBait?'🎣 '+_esc(topBait[0])+' <small>('+topBait[1]+')</small>':'<span class="bs-na">–</span>'}</div></div>
-        <div class="bs-cell"><div class="bs-cell-lbl">Top-Größe</div><div class="bs-cell-val">${topSize?'📏 '+_esc(topSize[0])+' <small>('+topSize[1]+')</small>':'<span class="bs-na">–</span>'}</div></div>
-        <div class="bs-cell"><div class="bs-cell-lbl">Top-Farbe</div><div class="bs-cell-val">${topColor?'🎨 '+_esc(topColor[0])+' <small>('+topColor[1]+')</small>':'<span class="bs-na">–</span>'}</div></div>
+        <div class="bs-cell"><div class="bs-cell-lbl">Top-Köder</div><div class="bs-cell-val">${topBait?hookSvg+_esc(topBait[0])+' <small>('+topBait[1]+')</small>':'<span class="bs-na">–</span>'}</div></div>
+        <div class="bs-cell"><div class="bs-cell-lbl">Top-Größe</div><div class="bs-cell-val">${topSize?_esc(topSize[0])+' <small>('+topSize[1]+')</small>':'<span class="bs-na">–</span>'}</div></div>
+        <div class="bs-cell"><div class="bs-cell-lbl">Top-Farbe</div><div class="bs-cell-val">${topColor?_esc(topColor[0])+' <small>('+topColor[1]+')</small>':'<span class="bs-na">–</span>'}</div></div>
       </div>
     </div>`;
   }).join('');
@@ -16052,17 +17513,18 @@ function _insightsPressureInfluence(catches){
     else buckets.mid.push(c);
   });
   const total=wxCatches.length;
+  // AP12: SVG-Pfeile statt Emoji-Trends, Klassen-Variants statt Inline-Style
   const rows=[
-    {key:'low' ,lbl:'Fallender Druck' ,sub:'Tief / unter Median',ico:'⬇️',color:'#3498db',data:buckets.low },
-    {key:'mid' ,lbl:'Stabiler Druck'  ,sub:'Median ±3 hPa',      ico:'➡️',color:'#95a5a6',data:buckets.mid },
-    {key:'high',lbl:'Steigender Druck',sub:'Hoch / über Median', ico:'⬆️',color:'#e67e22',data:buckets.high}
+    {key:'low' ,lbl:'Fallender Druck' ,sub:'Tief / unter Median',svg:'i-arrow-dn',cls:'is-low' ,color:'var(--blue-t)'   ,data:buckets.low },
+    {key:'mid' ,lbl:'Stabiler Druck'  ,sub:'Median ±3 hPa',      svg:'i-arrow-rt',cls:'is-mid' ,color:'var(--text-light)',data:buckets.mid },
+    {key:'high',lbl:'Steigender Druck',sub:'Hoch / über Median', svg:'i-arrow-up',cls:'is-high',color:'var(--gold-d)'   ,data:buckets.high}
   ];
   // beste Zone identifizieren (höchste Erfolgsquote)
   const best=rows.slice().sort((a,b)=>b.data.length-a.data.length)[0];
   const html=`
     <div class="insights-pr-summary">
-      <div style="font-size:12px;color:var(--text-mid);">Median-Druck der Gruppe: <strong>${Math.round(med)} hPa</strong></div>
-      <div style="font-size:11px;color:var(--text-light);margin-top:2px;">${total} Fänge mit Wetterdaten ausgewertet</div>
+      <div class="pr-summary-line">Median-Druck der Gruppe: <strong>${Math.round(med)} hPa</strong></div>
+      <div class="pr-summary-sub">${total} Fänge mit Wetterdaten ausgewertet</div>
     </div>
     <div class="insights-pr-bars">
       ${rows.map(r=>{
@@ -16070,16 +17532,16 @@ function _insightsPressureInfluence(catches){
         const avgLen=r.data.length?Math.round(r.data.reduce((s,c)=>s+(c.length||0),0)/r.data.length):0;
         return `<div class="insights-pr-bar">
           <div class="insights-pr-bar-head">
-            <span style="font-size:14px;">${r.ico}</span>
-            <span style="font-weight:600;">${r.lbl}</span>
-            <span class="insights-pr-bar-val">${r.data.length} (${pct}%)</span>
+            <span class="pr-trend-ico ${r.cls}"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#${r.svg}"/></svg></span>
+            <span class="pr-trend-name">${r.lbl}</span>
+            <span class="insights-pr-bar-val">${r.data.length} · ${pct}%</span>
           </div>
           <div class="insights-pr-bar-track"><div class="insights-pr-bar-fill" style="width:${pct}%;background:${r.color};"></div></div>
           <div class="insights-pr-bar-sub">${r.sub} · ⌀${avgLen}cm</div>
         </div>`;
       }).join('')}
     </div>
-    <div class="insights-pr-takeaway">💡 <strong>Erkenntnis:</strong> ${best.data.length>0?best.lbl.toLowerCase()+' liefert mit '+best.data.length+' Fängen die meisten Bisse in dieser Gruppe.':'Noch keine signifikante Druck-Korrelation.'}</div>
+    <div class="insights-pr-takeaway"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-info"/></svg><span><strong>Erkenntnis:</strong> ${best.data.length>0?best.lbl.toLowerCase()+' liefert mit '+best.data.length+' Fängen die meisten Bisse in dieser Gruppe.':'Noch keine signifikante Druck-Korrelation.'}</span></div>
   `;
   return html;
 }
@@ -16123,14 +17585,15 @@ function _insightsBiteTimes(catches){
       <div class="bt-chart">${bars}</div>
       ${labels}
       <div class="bt-summary">
-        <div><span class="bt-pill">🎯 Peak: ${peakRange}</span></div>
+        <div><span class="bt-pill"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-target"/></svg>Peak: ${peakRange}</span></div>
         <div class="bt-periods">${periodCounts.map(p=>`<div class="bt-period${p===topPeriod?' top':''}"><span>${p.emoji}</span><span>${p.label}</span><strong>${p.cnt}</strong></div>`).join('')}</div>
       </div>
     </div>`;
 }
 
 function _insightsEmpty(msg){
-  return `<div style="padding:14px;background:var(--cream);border-radius:10px;font-size:12px;color:var(--text-light);text-align:center;line-height:1.6;">${msg}</div>`;
+  // AP12: hochwertiger Empty-State mit Salbei-Mist-Box + i-info SVG
+  return `<div class="insights-empty-mini"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-info"/></svg><span>${msg}</span></div>`;
 }
 
 function _exportGroupData(gId){
@@ -16162,7 +17625,9 @@ function _rndrGroupMap(){
   // Vorher wurde bei catches.length===0 nur ein Text gerendert → Karte leer/abwesend.
   const allGrpFish=[...new Set(catches.map(c=>c.type).filter(Boolean))].sort();
   const allGrpMembers=[...new Set(catches.map(c=>c.userName).filter(Boolean))].sort();
-  const filterUI=isPreview?'':`<button class="grp-map-fab" onclick="document.getElementById('grp-map-dd').classList.toggle('on')">🔍 Filter</button>
+  // AP14: SVG-Helper für Filter + Banner
+  const _svg=(name)=>`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-${name}"/></svg>`;
+  const filterUI=isPreview?'':`<button class="grp-map-fab" onclick="document.getElementById('grp-map-dd').classList.toggle('on')">${_svg('filter')}Filter</button>
       <div class="grp-map-filter-dd" id="grp-map-dd">
         <div class="gmf-row"><div class="gmf-lbl">Zeitraum</div>
           <select id="grp-map-f-date" onchange="_grpMapApplyFilter()"><option value="">Alle Zeiten</option><option value="7">Letzte 7 Tage</option><option value="30">Letzte 30 Tage</option><option value="90">Letzte 90 Tage</option></select></div>
@@ -16173,10 +17638,12 @@ function _rndrGroupMap(){
         <div class="gmf-row"><div class="gmf-lbl">Mitglied</div>
           <select id="grp-map-f-member" onchange="_grpMapApplyFilter()"><option value="">Alle Mitglieder</option>${allGrpMembers.map(m=>`<option value="${_esc(m)}">${_esc(m)}</option>`).join('')}</select></div>
       </div>`;
+  // AP14: Banner mit Klassen-Variants statt Inline-Styles
   const banner=isPreview
-    ?'<div style="position:absolute;bottom:8px;left:8px;right:8px;font-size:11px;color:var(--text-light);text-align:center;padding:6px 10px;background:rgba(255,255,255,.92);border-radius:8px;backdrop-filter:blur(4px);z-index:500;pointer-events:none;font-weight:600;">🔒 Spot-Karte nur für Mitglieder · Tritt bei, um die Spots zu sehen</div>'
-    :(catches.length?'<div style="position:absolute;bottom:8px;left:8px;right:8px;font-size:10px;color:var(--text-light);text-align:center;padding:4px 10px;background:rgba(255,255,255,.85);border-radius:6px;backdrop-filter:blur(4px);z-index:500;pointer-events:none;">🛡️ GPS nur bei expliziter Freigabe</div>'
-      :'<div style="position:absolute;bottom:8px;left:8px;right:8px;font-size:11px;color:var(--text-light);text-align:center;padding:6px 10px;background:rgba(255,255,255,.92);border-radius:8px;backdrop-filter:blur(4px);z-index:500;pointer-events:none;">📍 Noch keine GPS-Freigaben in dieser Gruppe</div>');
+    ?`<div class="gm-banner is-preview">${_svg('lock')}<span>Spot-Karte nur für Mitglieder · Tritt bei, um die Spots zu sehen</span></div>`
+    :(catches.length
+      ?`<div class="gm-banner is-safe">${_svg('lock')}<span>GPS nur bei expliziter Freigabe</span></div>`
+      :`<div class="gm-banner is-empty">${_svg('pin')}<span>Noch keine GPS-Freigaben in dieser Gruppe</span></div>`);
 
   el.innerHTML=`<div class="grp-map-wrap" style="position:absolute;inset:0;">
     ${filterUI}
@@ -16223,14 +17690,22 @@ function _grpMapRender(catches){
       });
       // AP4: Alias-Erkennung — wenn der fremde GPS-Punkt ±25m zu einem
       // eigenen Spot liegt, zeige dem Nutzer "seinen" Namen dafür an.
+      // AP14: Popup-HTML mit sauberen Klassen + SVG-Icons
       let aliasHtml='';
       try{
         const alias=findLocalSpotAlias(lat,lon,c.water,c.spot,25);
         if(alias&&alias.isAlias){
-          aliasHtml=`<div style="margin-top:4px;padding:4px 8px;background:rgba(74,124,89,.1);border-radius:6px;font-size:10px;color:var(--green-deep);"><strong>📍 Dein Spot:</strong> ${_esc(alias.localSpot||alias.localWater)} <span style="opacity:.7;">(${alias.distance}m)</span></div>`;
+          aliasHtml=`<div class="gm-popup-alias"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pin"/></svg><span><strong>Dein Spot:</strong> ${_esc(alias.localSpot||alias.localWater)} <span class="dist">(${alias.distance}m)</span></span></div>`;
         }
       }catch(e){}
-      marker.bindPopup(`<div style="min-width:150px;"><strong style="color:${_userColor(c.userId)};">${_esc(c.userName)}</strong><br>${fIco(c.type)} ${c.type} · ${c.length}cm<br>🎣 ${_esc(c.bait||'–')}<br><span style="font-size:10px;color:#888;">${c.date||''} · ${c.water||''}${c.spot?' · '+_esc(c.spot):''}</span>${aliasHtml}<br><button onclick="_openCatchDetail('${gId}','${c.id||''}')" style="margin-top:6px;padding:6px 10px;background:var(--green-deep);color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;">Details öffnen →</button></div>`);
+      marker.bindPopup(`<div class="gm-popup">
+        <strong class="gm-popup-name" style="color:${_userColor(c.userId)};">${_esc(c.userName)}</strong>
+        <div class="gm-popup-fish">${fIco(c.type)} <strong>${c.type}</strong> · ${c.length}cm</div>
+        <div class="gm-popup-bait"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hook"/></svg>${_esc(c.bait||'–')}</div>
+        <div class="gm-popup-meta">${c.date||''} · ${c.water||''}${c.spot?' · '+_esc(c.spot):''}</div>
+        ${aliasHtml}
+        <button class="gm-popup-btn" onclick="_openCatchDetail('${gId}','${c.id||''}')">Details öffnen</button>
+      </div>`);
       bounds.push([lat,lon]);
     });
     if(bounds.length>1)_grpLeafletMap.fitBounds(bounds,{padding:[30,30],maxZoom:13});
@@ -16267,9 +17742,10 @@ function _rndrGroupMembers(){
   // v54 AP1.4: Beitrittsanfragen-Block (nur Admin sieht)
   const reqs=isAdmin?(g.pendingRequests||[]):[];
   const reqsHtml=reqs.length?`
-    <div style="margin-bottom:18px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
-        ⏳ ${reqs.length} Beitrittsanfrage${reqs.length>1?'n':''}
+    <div class="grp-req-section">
+      <div class="grp-req-section-title">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-clock"/></svg>
+        ${reqs.length} Beitrittsanfrage${reqs.length>1?'n':''}
       </div>
       ${reqs.map(r=>`<div class="join-req-card">
         <div class="jrc-avatar" style="background:${_userColor(r.userId)};">${(r.name||'?').charAt(0).toUpperCase()}</div>
@@ -16279,32 +17755,48 @@ function _rndrGroupMembers(){
         </div>
         <div class="jrc-actions">
           <button class="jrc-btn rej" onclick="_grpRejectRequest('${r.id}')">Ablehnen</button>
-          <button class="jrc-btn acc" onclick="_grpAcceptRequest('${r.id}')">✓ Aufnehmen</button>
+          <button class="jrc-btn acc" onclick="_grpAcceptRequest('${r.id}')">Aufnehmen</button>
         </div>
       </div>`).join('')}
     </div>
   `:'';
 
-  let html=`<div class="grp-tab-pad" style="padding-top:16px;padding-bottom:0;">
-    ${isPreview?'<div class="preview-restriction-banner">👀 Vorschau · Du bist noch kein Mitglied</div>':''}
-    ${reqsHtml}
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-light);">${g.members?.length||0} Mitglieder</div>
-      ${(isAdmin&&g.inviteCode)?`<button onclick="_copyInvite('${g.inviteCode}')" style="padding:6px 12px;background:var(--green-mist);border:1px solid var(--green-pale);border-radius:20px;font-size:11px;font-weight:600;color:var(--green-mid);font-family:var(--fa);cursor:pointer;">🔗 Einladen: ${g.inviteCode}</button>`:''}
-    </div>
-    ${(g.members||[]).map(m=>`<div class="grp-item" style="margin-bottom:6px;cursor:pointer;" onclick="_openMemberProfile('${g.id}','${m.id}')">
+  const previewHtml=isPreview?`<div class="preview-restriction-banner"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-info"/></svg>Vorschau · Du bist noch kein Mitglied</div>`:'';
+
+  const membersHtml=(g.members||[]).map(m=>{
+    const isAdminRole=m.role==='admin';
+    const rolePill=isAdminRole
+      ? `<span class="grp-role-pill is-admin"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-star"/></svg>Admin</span>`
+      : `<span class="grp-role-pill">Mitglied</span>`;
+    return `<div class="grp-item" onclick="_openMemberProfile('${g.id}','${m.id}')">
       <div class="catch-card-avatar" style="background:${_userColor(m.id)};">${(m.name||'?').charAt(0).toUpperCase()}</div>
       <div class="grp-item-info">
         <div class="grp-item-name">${_esc(m.name||'Angler')}${(!isPreview&&m.id===myId)?' (Du)':''}</div>
-        <div class="grp-item-sub">${m.role==='admin'?'👑 Admin':'Mitglied'} · seit ${new Date(m.joinedAt).toLocaleDateString('de-DE')}</div>
+        <div class="grp-item-sub">${rolePill}<span class="grp-since">seit ${new Date(m.joinedAt).toLocaleDateString('de-DE')}</span></div>
       </div>
-      <div style="font-size:13px;color:var(--text-light);">›</div>
-    </div>`).join('')}
-    ${isPreview?'':`
-    <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--cream-dark);">
-      <button onclick="_grpLeave('${g.id}')" style="width:100%;padding:14px;background:var(--rose);color:var(--rose-t);border:1.5px solid var(--rose-b);border-radius:var(--rs);font-size:14px;font-weight:700;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">🚪 Gruppe verlassen</button>
-      <div style="font-size:10px;color:var(--text-light);text-align:center;margin-top:6px;">Beim Verlassen wirst du aus der Mitgliederliste entfernt. Wenn du der letzte Admin bist, wird das ältest registrierte Mitglied automatisch zum neuen Admin.</div>
-    </div>`}
+      <div class="grp-member-chevron"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-arrow-r"/></svg></div>
+    </div>`;
+  }).join('');
+
+  const inviteBtnHtml=(isAdmin&&g.inviteCode)
+    ? `<button class="grp-invite-btn" onclick="_copyInvite('${g.inviteCode}')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-share"/></svg>Einladen: ${g.inviteCode}</button>`
+    : '';
+
+  const leaveHtml=isPreview?'':`
+    <div class="grp-leave-section">
+      <button class="grp-leave-btn" onclick="_grpLeave('${g.id}')">Gruppe verlassen</button>
+      <div class="grp-leave-help">Beim Verlassen wirst du aus der Mitgliederliste entfernt. Wenn du der letzte Admin bist, wird das ältest registrierte Mitglied automatisch zum neuen Admin.</div>
+    </div>`;
+
+  let html=`<div class="grp-tab-pad grp-members-pad">
+    ${previewHtml}
+    ${reqsHtml}
+    <div class="grp-members-head">
+      <div class="grp-members-count">${g.members?.length||0} Mitglieder</div>
+      ${inviteBtnHtml}
+    </div>
+    <div class="grp-members-list">${membersHtml}</div>
+    ${leaveHtml}
   </div>`;
   el.innerHTML=html;
 }
