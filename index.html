@@ -171,10 +171,11 @@ body{
 .hdr-bar{display:flex;align-items:center;justify-content:space-between;padding:0;}
 .hbtn{width:38px;height:38px;background:rgba(255,255,255,.15);border:none;border-radius:10px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0;}
 .hbtn:hover{background:rgba(255,255,255,.25);}
-.hlogo{text-align:center;flex:1;}
+.hlogo{text-align:center;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;}
 .hlogo-n{font-family:var(--fa);font-size:21px;font-weight:500;color:#A8D5B5;letter-spacing:-.015em;}
 .hlogo-n .hlogo-plus{color:var(--gold);font-weight:600;margin-left:1px;}
 .hlogo-s{font-size:10px;color:rgba(255,255,255,.55);margin-top:1px;}
+.hdr-bar{position:relative;}
 .hplus{background:var(--gold);font-size:18px;font-weight:600;border-radius:50%;width:32px;height:32px;color:#fff;box-shadow:0 2px 8px rgba(214,162,58,.25);}
 .hplus:hover{background:#E0AE48;}
 @keyframes plusTap{0%{transform:scale(1);}40%{transform:scale(1.25);background:#E8B856;}100%{transform:scale(1);background:var(--gold);}}
@@ -815,8 +816,8 @@ body{
   transition:color .15s,background .15s;
 }
 .catch-card .catch-card-act:hover{color:var(--text-dark);}
-.catch-card .catch-card-act.liked{color:var(--gold-d);}
-.catch-card .catch-card-act.liked .ic{fill:var(--gold);stroke:var(--gold);}
+.catch-card .catch-card-act.liked{color:#d44;font-weight:700;}
+.catch-card .catch-card-act.liked .ic{fill:#d44;stroke:#d44;}
 
 /* Inline-Comment-Expand: Empty-State moderner */
 .cm-expand-empty{
@@ -2121,20 +2122,18 @@ body{
 /* AP16: Neue Session, Fang Eingabe, Formular UX (rein visuell, additiv) */
 
 /* Neue-Session Page-Title */
+#page-new .new-title-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:14px;flex-wrap:wrap;
+}
 #page-new .new-session-title{
   font-family:var(--fa);
   font-size:22px;font-weight:600;
   color:var(--text-dark);letter-spacing:-.02em;
-  margin-bottom:14px;line-height:1.15;
+  line-height:1.15;flex-shrink:0;
 }
 
 /* Eingabe-Modus Segmented-Control */
-#page-new .new-mode-section{margin-bottom:16px;}
-#page-new .new-mode-label{
-  font-size:11px;font-weight:600;letter-spacing:.5px;
-  text-transform:uppercase;color:var(--text-light);
-  margin-bottom:8px;
-}
 #page-new .new-mode-toggle{
   display:flex;background:var(--cream-dark);
   border-radius:10px;padding:3px;
@@ -2471,12 +2470,12 @@ body{
   letter-spacing:-.005em;
 }
 
-/* Share-Buttons (Success-Overlay) — Override Markdown im Scope nicht möglich, daher nur global im Sucov */
+/* Share-Buttons (Success-Overlay) — konsistenter Look */
 .sucov .bshare{
-  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  display:flex;align-items:center;justify-content:center;gap:7px;
   letter-spacing:-.005em;
-  border-radius:99px;padding:11px 16px;
-  width:auto;
+  border-radius:99px;padding:13px 16px;
+  width:100%;font-size:14px;margin-top:6px;
 }
 .sucov .bshare .ic{
   width:13px;height:13px;color:currentColor;
@@ -2637,6 +2636,7 @@ body{
 .fc-mini-day.today{background:var(--tanne);}
 .fc-mini-day.today *{color:#fff!important;}
 .fc-mini-dow{font-size:10px;font-weight:600;color:var(--grau);text-transform:uppercase;letter-spacing:.05em;}
+.fc-mini-date{font-size:9px;font-weight:500;color:var(--text-light);margin-top:-1px;}
 .fc-mini-ico{font-size:18px;color:var(--forest);display:flex;align-items:center;justify-content:center;}
 .fc-mini-ico .ic{width:18px;height:18px;stroke-width:1.7;}
 .fc-mini-day.today .fc-mini-ico{color:#fff;}
@@ -3470,6 +3470,34 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .chip:active{transform:scale(.97);}
 #trueb-chips{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;width:100%;}
 #spot-chips{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;}
+/* AP21: Chip-Container in 2-Spalten-Grids über volle Breite */
+#page-new .g2{overflow:visible;}
+#page-new .g2 > .ig{overflow:visible;}
+#page-new .g2 > .ig:first-child .crow{
+  width:calc(200% + 10px);
+}
+#page-new .g2 > .ig:last-child .crow{
+  width:calc(200% + 10px);
+  margin-left:calc(-100% - 10px);
+}
+/* AP21: Chip-Container in 3-Spalten-Grids (Köder-Zeile) über volle Breite */
+#page-new .cc [style*="grid-template-columns"]{overflow:visible;}
+#page-new .cc [style*="grid-template-columns"] > .ig{overflow:visible;}
+#page-new .cc [style*="grid-template-columns"] > .ig:nth-child(1) .crow{
+  width:calc(300% + 12px);
+}
+#page-new .cc [style*="grid-template-columns"] > .ig:nth-child(2) .crow{
+  width:calc(300% + 12px);margin-left:calc(-100% - 6px);
+}
+#page-new .cc [style*="grid-template-columns"] > .ig:nth-child(3) .crow{
+  width:calc(300% + 12px);margin-left:calc(-200% - 12px);
+}
+/* AP21: Sichttiefe/Trübung Chips volle Breite */
+#new-sicht-row [style*="grid-template-columns"]{overflow:visible;}
+#new-sicht-row [style*="grid-template-columns"] > .ig{overflow:visible;}
+#new-sicht-row .ig:last-child .crow{
+  width:calc(200% + 8px);margin-left:calc(-100% - 8px);
+}
 
 /* AP3: Floating Edit-Save Button */
 .edit-save-fab{
@@ -3662,7 +3690,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
   margin-bottom:8px;border:1px solid var(--line);
   cursor:pointer;transition:transform .15s,box-shadow .15s;
   overflow:hidden;display:flex;align-items:center;
-  padding:13px 16px;
+  padding:11px 16px;
 }
 .fb-card:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(31,61,46,.10);}
 .fb-card:active{transform:scale(.99);}
@@ -3745,7 +3773,7 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 .dd-hero-v16-stat-val{font-size:15px;font-weight:700;}
 .dd-hero-v16-stat-lbl{font-size:9px;opacity:.55;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
 /* Kein seitliches Padding im Day-Detail Body */
-.dd-body-pad{padding:12px 0 0;}
+.dd-body-pad{padding:14px 0 0;}
 /* Wetter-Kacheln anklickbar */
 
 /* v59: Bedingungen-Kacheln im fc-square-Look (konsistent mit Vorhersage-Seite) */
@@ -4060,7 +4088,8 @@ select.obif{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3
 .cntlbl{font-size:13px;color:var(--text-light);margin-bottom:6px;}
 .suclist{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:14px;}
 .succhip{background:var(--green-pale);color:var(--green-deep);font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;}
-.sucdis{width:100%;padding:15px;background:var(--green-deep);border:none;border-radius:var(--rs);color:#fff;font-size:15px;font-weight:600;font-family:var(--fa);cursor:pointer;}
+.sucdis{width:100%;padding:13px;background:transparent;border:1.5px solid var(--cream-dark);border-radius:99px;color:var(--text-mid);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;transition:background .15s;margin-top:6px;}
+.sucdis:hover{background:var(--cream);}
 
 /* EXPORT */
 .expov{position:absolute;inset:0;z-index:120;display:flex;flex-direction:column;background:rgba(20,40,25,.7);opacity:0;pointer-events:none;transition:opacity .3s;justify-content:flex-end;}
@@ -4705,26 +4734,25 @@ input[type=file]{display:none;}
 .preview-join-fab:hover{background:#1f3a26;}
 
 /* AP2: Gruppen-Subnav als schwebende Pille, wie die Hauptnavigation */
-.grp-subnav{position:absolute;bottom:max(16px,env(safe-area-inset-bottom,16px));left:8%;right:8%;width:84%;display:flex;gap:2px;padding:6px 8px;background:rgba(248,245,239,.90);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(200,221,208,.60);border-radius:28px;box-shadow:0 10px 30px rgba(45,74,53,.18);z-index:130;}
-.grp-subnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px 5px;border:none;border-radius:20px;background:transparent;font-size:10px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--text-light);transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.grp-subnav{position:absolute;bottom:0;left:0;right:0;display:flex;gap:0;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--line);z-index:130;}
+.grp-subnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px 5px;border:none;border-radius:12px;background:transparent;font-size:10px;font-weight:600;font-family:var(--fa);cursor:pointer;color:var(--text-light);transition:all .15s;-webkit-tap-highlight-color:transparent;}
 .grp-subnav-btn .grp-sn-ico{font-size:16px;line-height:1;}
-/* v54 AP3.1: SVG-Icons in der Subnav, gleicher Stroke-Stil wie Hauptnavigation */
 .grp-subnav-btn .grp-sn-svg{width:20px;height:20px;color:currentColor;}
 .grp-subnav-btn.on .grp-sn-svg{transform:scale(1.06);transition:transform .15s;}
-.grp-subnav-btn.on{background:var(--green-deep);color:#fff;box-shadow:0 2px 8px rgba(45,74,53,.25);}
+.grp-subnav-btn.on{background:var(--green-mist);color:var(--green-deep);}
 .grp-subnav-btn:active{transform:scale(.92);}
 /* Content-Bereich bekommt Platz für die Subnav */
 /* AP2: Gruppen-Detail Default = Subnav-Höhe.
    Im Feed-Tab kommt zusätzlich die Chat-Bar oben drauf — extra Platz wenn .has-chat */
-#fs-group-detail .fsov-scroll{padding-bottom:calc(var(--nav-clearance) + 8px)!important;}
-#fs-group-detail.has-chat .fsov-scroll{padding-bottom:calc(var(--nav-clearance) + 64px)!important;}
+#fs-group-detail .fsov-scroll{padding-bottom:72px!important;}
+#fs-group-detail.has-chat .fsov-scroll{padding-bottom:120px!important;}
 
 /* ── AP4: WhatsApp-style Chat Input ── */
 /* AP2: Chat-Bar schwebt direkt über der Subnav, niemals dahinter.
    bottom = Subnav-Position (16px+safe) + Subnav-Höhe (~56px) + 8px Abstand */
 /* v54 AP2.1/2.2: WhatsApp-style Chat-Bar mit Auto-Resize-Textarea, Clear-Button und Reply-Banner */
 /* v59: Chat-Bar als flache Edge-to-Edge-Leiste über der Bottom-Nav (nicht mehr schwebend) */
-.grp-chat-wa{position:absolute;left:0;right:0;bottom:60px;z-index:135;flex:0 0 auto!important;overflow:visible!important;display:flex;flex-direction:column;gap:0;padding:8px 12px max(8px,env(safe-area-inset-bottom,8px));background:#fff;border-top:1px solid var(--line);border-radius:0;box-shadow:0 -2px 8px rgba(31,61,46,.06);}
+.grp-chat-wa{position:absolute;left:0;right:0;bottom:calc(50px + env(safe-area-inset-bottom,0px));z-index:135;flex:0 0 auto!important;overflow:visible!important;display:flex;flex-direction:column;gap:0;padding:8px 12px 8px;background:#fff;border-top:1px solid var(--line);border-radius:0;box-shadow:0 -2px 8px rgba(31,61,46,.06);}
 .grp-chat-row{display:flex;align-items:flex-end;gap:6px;}
 .grp-chat-wa-btn{width:32px;height:32px;border:none;border-radius:50%;background:transparent;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-mid);-webkit-tap-highlight-color:transparent;margin-bottom:2px;}
 .grp-chat-wa-btn:active{background:var(--cream-dark);}
@@ -4873,6 +4901,31 @@ input[type=file]{display:none;}
 }
 .fc-mini-day .fc-mini-tmp{font-family:var(--f-edit);font-weight:600;font-size:13px;}
 
+/* AP21-A2: Inline PLZ-Eingabe auf Vorhersage-Seite */
+.fc-plz-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 16px;background:#fff;
+  border-bottom:1px solid rgba(45,74,53,.08);
+}
+.fc-plz-input{
+  flex:1;min-width:0;
+  font-size:14px;font-family:var(--f-edit-text);
+  padding:8px 12px;border-radius:99px;
+  border:1.5px solid var(--green-pale);
+  background:var(--sand);color:var(--text-dark);
+  outline:none;transition:border-color .15s;
+}
+.fc-plz-input:focus{border-color:var(--green-mid);}
+.fc-plz-go,.fc-plz-reset{
+  flex-shrink:0;padding:8px 14px;border-radius:99px;
+  font-size:12px;font-weight:600;font-family:var(--f-edit-text);
+  border:none;cursor:pointer;transition:background .15s;
+}
+.fc-plz-go{background:var(--tanne);color:#fff;}
+.fc-plz-go:active{background:var(--green-deep);}
+.fc-plz-reset{background:var(--cream-dark);color:var(--text-mid);}
+.fc-plz-reset:active{background:var(--green-pale);}
+
 /* AP2.2/2.3: 3-Spalten-Grid für Mond/Tide/Wind/Regen/Temp/Pressure */
 .fc-grid3{
   display:grid;
@@ -4884,7 +4937,7 @@ input[type=file]{display:none;}
   background:#fff;
   border:1px solid rgba(45,74,53,.06);
   border-radius:18px;
-  padding:14px 8px 12px;
+  padding:12px 6px 10px;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -4935,12 +4988,13 @@ input[type=file]{display:none;}
 }
 .fc-square-sub{
   font-family:var(--f-edit-text);
-  font-size:10px;
+  font-size:9px;
   font-weight:400;
   color:var(--text-light);
-  line-height:1.3;
-  margin-top:4px;
+  line-height:1.2;
+  margin-top:2px;
   padding:0 2px;
+  word-break:break-word;
   display:-webkit-box;
   -webkit-line-clamp:2;
   -webkit-box-orient:vertical;
@@ -4950,12 +5004,7 @@ input[type=file]{display:none;}
 .fc-square.gold{background:linear-gradient(180deg,#fff 0%,#fdf8ec 100%);border-color:rgba(196,150,58,.25);}
 .fc-square.gold .fc-square-lbl{color:var(--gold-d);}
 
-/* AP1.1: Tide-Overlay — Top-Kachel zieht sich über volle Breite, kein L/R-Padding */
 #fs-tide-cal .fsov-scroll{padding:0!important;}
-#fs-tide-cal .fshdr{background:#fff;color:var(--text-dark);border-bottom:1px solid rgba(45,74,53,.08);}
-#fs-tide-cal .fshdr .fstitle{font-family:var(--f-edit);font-weight:600;color:var(--text-dark);}
-#fs-tide-cal .fshdr .fsmeta{color:var(--text-light);}
-#fs-tide-cal .xbtn{color:#000!important;}
 .tide-cockpit{
   margin:0;
   padding:14px 14px 12px;
@@ -5069,86 +5118,56 @@ input[type=file]{display:none;}
 .tide-strip-day{scroll-snap-align:start;font-family:var(--f-edit-text);}
 .tide-strip-day .tide-strip-num{font-family:var(--f-edit);font-weight:600;}
 
-/* AP3.1/3.2: Day-Detail Header — weiß, schwarzes Schließen-X, links Datum/Wetter, rechts Strip */
+/* AP21-A4: Tages-Wetter Overlay — konsistenter Header */
 #fs-daily-weather{background:#f7f5ef;}
-#fs-dw-hdr{
-  background:#fff;
-  color:var(--text-dark);
-  padding:0;
+.dw-green-hdr{background:var(--tanne);position:relative;}
+.dw-green-hdr .hlogo{color:#fff;}
+.dw-close-btn{position:absolute!important;right:12px;top:50%;transform:translateY(-50%);}
+.dw-content-hdr{
+  background:#fff;padding:14px 16px 10px;
   border-bottom:1px solid rgba(45,74,53,.08);
 }
-#fs-dw-hdr .xbtn{
-  color:#000!important;
-  background:rgba(0,0,0,.04);
-  border-radius:50%;
-  width:36px;height:36px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;
-  font-weight:600;
-  z-index:5;
+.dw-content-hdr .dw-hdr-date{
+  font-family:var(--f-edit);font-size:18px;font-weight:700;
+  color:var(--text-dark);line-height:1.2;margin-bottom:4px;
 }
-#fs-dw-hdr .xbtn:active{background:rgba(0,0,0,.10);}
-.dw-hdr-row{
-  display:flex;
-  gap:14px;
-  padding:14px 14px 8px;
-  align-items:flex-start;
+.dw-content-hdr .dw-hdr-summary{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  font-size:13px;color:var(--text-mid);
 }
-.dw-hdr-left{
-  flex:0 0 auto;
-  min-width:120px;
-  max-width:46%;
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  padding-right:12px;
-  border-right:1px solid rgba(45,74,53,.08);
-}
-.dw-hdr-date{
-  font-family:var(--f-edit);
-  font-size:14px;
-  font-weight:600;
+.dw-content-hdr .dw-hdr-summary .dw-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:99px;
+  background:var(--sand);font-weight:600;font-size:12px;
   color:var(--text-dark);
-  letter-spacing:-.005em;
-  line-height:1.2;
 }
-.dw-hdr-wx-row{
-  display:flex;
-  align-items:flex-end;
-  gap:6px;
-  margin-top:2px;
+.dw-strip-row{
+  background:#fff;padding:6px 8px;overflow:hidden;
+  border-bottom:1px solid rgba(45,74,53,.08);
 }
-.dw-hdr-wx-ico{font-size:32px;line-height:1;}
-.dw-hdr-temps{
-  font-family:var(--f-edit);
-  font-size:18px;
-  font-weight:600;
-  color:var(--text-dark);
-  line-height:1;
-  letter-spacing:-.01em;
+.dw-strip-row .dw-strip{
+  display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;
 }
-.dw-hdr-temps .tmin{color:var(--text-light);font-weight:500;margin-left:3px;}
-.dw-hdr-wind{
-  font-family:var(--f-edit-text);
-  font-size:11px;
-  color:var(--text-mid);
-  font-weight:600;
+.dw-strip-row .dw-strip::-webkit-scrollbar{display:none;}
+.dw-strip-row .dw-strip-day{
+  scroll-snap-align:center;flex:0 0 auto;min-width:42px;
+  padding:6px 6px;border-radius:10px;text-align:center;
+  font-family:var(--f-edit-text);background:transparent;
+  border:none;cursor:pointer;transition:background .15s;
 }
-.dw-hdr-right{
-  flex:1;
-  min-width:0;
-  align-self:stretch;
-  display:flex;
-  align-items:center;
-}
-/* Strip rechts mit scroll-snap, am aktuellen Tag in der Mitte */
+.dw-strip-row .dw-strip-day.on{background:var(--tanne);color:#fff;}
+.dw-strip-row .dw-strip-day.on *{color:#fff!important;}
+.dw-strip-row .dw-strip-dow{display:block;font-size:10px;font-weight:600;color:var(--grau);text-transform:uppercase;}
+.dw-strip-row .dw-strip-num{display:block;font-family:var(--f-edit);font-weight:600;font-size:13px;color:var(--text-dark);}
+.dw-chart-chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:4px 16px 6px;}
+.dw-chart-chips .dw-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;background:var(--sand);font-weight:600;font-size:11px;color:var(--text-dark);font-family:var(--f-edit-text);}
+.dw-chip-live{display:none;background:var(--green-mist)!important;color:var(--tanne)!important;font-weight:700!important;}
+.dw-chip-live:not(:empty){display:inline-flex;}
+/* Legacy compat (old .dw-hdr-right references) */
 .dw-hdr-right .dw-strip{
-  margin:0;
-  padding:0 38px 0 0;
-  scroll-snap-type:x mandatory;
-  background:transparent;
-  border:none;
-  width:100%;
+  margin:0;padding:0 38px 0 0;scroll-snap-type:x mandatory;
+  background:transparent;border:none;width:100%;
   overflow-x:auto;
   -webkit-overflow-scrolling:touch;
   display:flex;
@@ -5215,6 +5234,7 @@ input[type=file]{display:none;}
   <!-- Bottom-Nav (entsprechen den existierenden btab-Icons) -->
   <symbol id="i-fb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h20M2 12h20M2 18h20"/><circle cx="20" cy="6" r="3" fill="currentColor" stroke="none"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21c3-3 3-9 9-12 1.5 6-3 9-6 12"/><path d="M12 13C9 9 7 6 3 3c6 0 12 3 14 8"/></symbol>
   <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
   <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 3 22 9 18 15 22 21 18 21 2 15 6 9 2 3 6"/><line x1="9" y1="2" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="22"/></symbol>
   <symbol id="i-stats" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="13" width="4" height="8" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></symbol>
@@ -5245,6 +5265,9 @@ input[type=file]{display:none;}
   <symbol id="i-comment" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-12 7l-5 1 1-5a8 8 0 1 1 16-3z"/></symbol>
   <symbol id="i-skunk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 8l8 8M16 8l-8 8"/></symbol>
   <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.2L1.7 18a2 2 0 0 0 1.7 3h17.2a2 2 0 0 0 1.7-3L13.7 3.2a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></symbol>
+  <symbol id="i-split" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M8 3H3v5"/><path d="M21 3l-7 7M3 3l7 7"/><line x1="12" y1="12" x2="12" y2="21"/></symbol>
   <!-- Fisch-Silhouetten (32×18 viewBox, in Inhaltszeilen 28×16 verwendet) -->
   <symbol id="f-default" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 Q5 5 11 5 Q18 4 22 8 L28 5 L26 9 L28 13 L22 10 Q18 14 11 13 Q5 13 3 9 Z"/><circle cx="7" cy="8.5" r=".7" fill="currentColor" stroke="none"/></symbol>
   <symbol id="f-hecht" viewBox="0 0 32 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9 L7 6 Q14 3 22 7 L28 5 L26 9 L28 13 L22 11 Q14 15 7 12 Z"/><path d="M18 5 L20 2 L22 5"/><circle cx="6" cy="8" r=".7" fill="currentColor" stroke="none"/></symbol>
@@ -5288,7 +5311,7 @@ input[type=file]{display:none;}
       <button type="submit" class="lbtn lbtn-p" id="auth-submit">Registrieren</button>
       <button type="button" class="lbtn lbtn-s" id="auth-skip" onclick="skipAuth()">Ohne Account fortfahren →</button>
       <!-- AP3: Passwort vergessen Link -->
-      <button type="button" id="auth-forgot" onclick="handlePasswordReset()" style="display:block;margin:10px auto 0;background:none;border:none;color:rgba(255,255,255,.7);font-size:12px;font-family:var(--fa);cursor:pointer;text-decoration:underline;">Passwort vergessen?</button>
+      <button type="button" id="auth-forgot" onclick="handlePasswordReset()" style="display:block;margin:10px auto 0;background:none;border:none;color:var(--text-light);font-size:12px;font-family:var(--fa);cursor:pointer;text-decoration:underline;">Passwort vergessen?</button>
       <div class="lerr" id="auth-err"></div>
     </form>
   </div>
@@ -5524,7 +5547,7 @@ input[type=file]{display:none;}
     <div class="burg-hdr">
       <div style="margin-bottom:8px;display:flex;justify-content:center;"><svg style="width:32px;height:32px;color:var(--green-mid);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hook"/></svg></div>
       <div class="burg-n" id="burg-name">Angeln+</div>
-      <div class="burg-s" id="burg-sub">v56 · Local-First PWA</div>
+      <div class="burg-s" id="burg-sub">Local-First PWA</div>
     </div>
     <div class="burg-body">
       <div class="burg-sec">
@@ -5568,7 +5591,7 @@ input[type=file]{display:none;}
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-info"/></svg></span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
-    <div class="burg-ver">Angeln+ v56 · Editorial Nature · Realtime · PWA</div>
+    <div class="burg-ver">Angeln+ · Editorial Nature · Realtime · PWA</div>
   </div>
   <div class="burg-back" onclick="closeBurg()"></div>
 </div>
@@ -5667,7 +5690,12 @@ input[type=file]{display:none;}
 </div>
 
 <div class="fsov" id="fs-info" role="dialog">
-  <div class="fshdr"><div><div class="fstitle" id="fs-info-title">Info</div></div><button class="xbtn" onclick="closeFs('info')">✕</button></div>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeFs('info')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('info')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr"><div class="dw-hdr-date" id="fs-info-title">Info</div></div>
   <div class="fsov-scroll"><div id="fs-info-body"></div></div>
 </div>
 
@@ -5677,7 +5705,7 @@ input[type=file]{display:none;}
   <canvas class="kcanvas" id="kcanvas"></canvas>
   <div class="succard">
     <div class="suchdr">
-      <div class="sucico" id="suc-ico">🐟</div>
+      <div class="sucico" id="suc-ico"><svg viewBox="0 0 32 18" style="width:48px;height:28px;stroke:#fff;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;"><use href="#f-default"/></svg></div>
       <div class="suchl" id="suc-hl">Toller Fang!</div>
     </div>
     <div class="cntwrap" aria-live="polite">
@@ -5686,9 +5714,9 @@ input[type=file]{display:none;}
     </div>
     <div class="cntlbl" id="cnt-lbl">Hecht insgesamt</div>
     <div class="suclist" id="suc-list"></div>
-    <button class="sucdis" onclick="disSuc()">Weiter →</button>
+    <button class="bshare" id="grp-share-btn" onclick="disSuc();_openShareModal(_lastSavedId)" style="display:none;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-crew"/></svg>In Gruppe teilen</button>
     <button class="bshare" id="share-btn" onclick="doShare()" style="display:none;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-share"/></svg>Erfolg teilen</button>
-    <button class="bshare" id="grp-share-btn" onclick="disSuc();_openShareModal(_lastSavedId)" style="display:none;background:var(--green-mist);color:var(--green-deep);border:1.5px solid var(--green-pale);margin-top:6px;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-crew"/></svg>In Gruppe teilen</button>
+    <button class="sucdis" onclick="disSuc()">Weiter</button>
   </div>
 </div>
 
@@ -5738,7 +5766,7 @@ input[type=file]{display:none;}
     </button>
     <div class="hlogo">
       <div class="hlogo-n">angeln<span class="hlogo-plus">+</span></div>
-      <div class="hlogo-s" id="hdr-sub">PLZ 27568 · v56</div>
+      <div class="hlogo-s" id="hdr-sub"></div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
@@ -5755,10 +5783,9 @@ input[type=file]{display:none;}
 <div class="page on" id="page-new">
   <div class="sc">
     <div id="warn-wrap" aria-live="polite"></div>
-    <!-- Seitentitel (dynamisch: "Fang melden" vs. "Session bearbeiten") -->
-    <div id="new-page-title" class="new-session-title">Fang melden</div>
-    <div class="new-mode-section">
-      <div class="new-mode-label">Eingabe-Modus</div>
+    <!-- Seitentitel + Modus-Toggle inline -->
+    <div class="new-title-row">
+      <div id="new-page-title" class="new-session-title">Fang melden</div>
       <div id="seg-ctrl" class="new-mode-toggle">
         <button id="mode-raub" onclick="setInputMode('raub')" class="seg-btn new-mode-btn on">Raubfisch</button>
         <button id="mode-fried" onclick="setInputMode('fried')" class="seg-btn new-mode-btn">Friedfisch</button>
@@ -5766,37 +5793,26 @@ input[type=file]{display:none;}
       </div>
     </div>
     <div class="card">
-      <!-- Datum -->
+      <!-- 1. Datum -->
       <div class="ig" style="margin-bottom:10px;">
         <label class="il" for="s-date">Datum</label>
         <input type="date" class="if" id="s-date"
           oninput="updMoon();_onDateChange(this.value)"
           onchange="updMoon()">
       </div>
-      <!-- Wetter-Karte (nur wenn nicht Reduziert) -->
-      <div id="new-moon-wx-row" style="margin-bottom:10px;">
-        <div class="ec" onclick="fetchWx()" role="button" tabindex="0" id="wx-card">
-          <div class="ei" id="wx-ico"><svg class="ic"><use href="#i-thermo"/></svg></div>
-          <div><div class="elbl">Wetter</div><div class="ev" id="wx-val" style="font-size:11px;color:var(--text-light);line-height:1.5;">Tippen zum Laden</div></div>
+      <!-- 2. Start + Endzeit -->
+      <div class="g2" style="margin-bottom:10px;">
+        <div class="ig">
+          <label class="il" for="s-start">Startzeit</label>
+          <input type="time" class="if" id="s-start" onfocus="rndrStartChips()" onblur="dHide('start-chips')">
+          <div class="crow" id="start-chips" style="display:none;" role="listbox"></div>
+        </div>
+        <div class="ig">
+          <label class="il" for="s-end">Endzeit</label>
+          <input type="time" class="if" id="s-end">
         </div>
       </div>
-      <!-- Silent Weather Bestätigung (Reduziert-Modus) -->
-      <div id="silent-wx-hint" class="silent-wx-hint" style="display:none;">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg>
-        <span id="silent-wx-txt">Wetterdaten automatisch im Hintergrund erfasst</span>
-      </div>
-      <!-- GPS: hidden after load -->
-      <div id="gps-strip" class="gps-strip" style="display:none;">
-        <span id="gps-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pin"/></svg></span><span id="gps-txt">GPS wird ermittelt…</span>
-      </div>
-      <!-- Schonzeit static banner (closeable, persistent) -->
-      <div id="sz-hint" style="display:none;" class="sz-banner">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-info"/></svg>
-        <div class="sz-text" id="sz-text"></div>
-        <button class="sz-close" onclick="disSzHint()" aria-label="Schließen">✕</button>
-      </div>
-
-      <!-- Session-Details (zusammengeführt) -->
+      <!-- 3. Gewässer + Spot -->
       <div class="g2" style="margin-bottom:10px;">
         <div class="ig">
           <label class="il" for="s-water">Gewässer</label>
@@ -5811,31 +5827,27 @@ input[type=file]{display:none;}
           <div class="crow" id="spot-chips" style="display:none;" role="listbox"></div>
         </div>
       </div>
-      <!-- Sichttiefe + Trübung – Session-Level, unter Gewässer/Spot -->
-      <div id="new-sicht-row" style="display:none;margin-bottom:10px;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <div class="ig">
-            <label class="il" for="s-sicht">Sichttiefe (cm)</label>
-            <input type="number" class="if" id="s-sicht" placeholder="z.B. 80" min="0" inputmode="numeric">
-          </div>
-          <div class="ig">
-            <label class="il" for="s-trueb">Trübung</label>
-            <input type="text" class="if" id="s-trueb" placeholder="z.B. milchig" autocomplete="off"
-              onfocus="rndrTruebChips()" oninput="rndrTruebChips()" onblur="setTimeout(()=>dHide('trueb-chips'),150)">
-            <div class="crow" id="trueb-chips" style="display:none;" role="listbox"></div>
-          </div>
+      <!-- GPS: hidden after load -->
+      <div id="gps-strip" class="gps-strip" style="display:none;">
+        <span id="gps-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pin"/></svg></span><span id="gps-txt">GPS wird ermittelt…</span>
+      </div>
+      <!-- Schonzeit static banner (closeable, persistent) -->
+      <div id="sz-hint" style="display:none;" class="sz-banner">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><use href="#i-info"/></svg>
+        <div class="sz-text" id="sz-text"></div>
+        <button class="sz-close" onclick="disSzHint()" aria-label="Schließen">✕</button>
+      </div>
+      <!-- 4. Wetter + Temperatur -->
+      <div id="new-moon-wx-row" style="margin-bottom:10px;">
+        <div class="ec" onclick="fetchWx()" role="button" tabindex="0" id="wx-card">
+          <div class="ei" id="wx-ico"><svg class="ic"><use href="#i-thermo"/></svg></div>
+          <div><div class="elbl">Wetter</div><div class="ev" id="wx-val" style="font-size:11px;color:var(--text-light);line-height:1.5;">Tippen zum Laden</div></div>
         </div>
       </div>
-      <div class="g2" style="margin-bottom:10px;">
-        <div class="ig">
-          <label class="il" for="s-start">Startzeit</label>
-          <input type="time" class="if" id="s-start" onfocus="rndrStartChips()" onblur="dHide('start-chips')">
-          <div class="crow" id="start-chips" style="display:none;" role="listbox"></div>
-        </div>
-        <div class="ig">
-          <label class="il" for="s-end">Endzeit</label>
-          <input type="time" class="if" id="s-end">
-        </div>
+      <!-- Silent Weather Bestätigung (Reduziert-Modus) -->
+      <div id="silent-wx-hint" class="silent-wx-hint" style="display:none;">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg>
+        <span id="silent-wx-txt">Wetterdaten automatisch im Hintergrund erfasst</span>
       </div>
       <!-- Manual weather – fallback (hidden when auto-loaded, hidden in reduced mode) -->
       <div id="new-manual-wx-wrap">
@@ -5854,6 +5866,21 @@ input[type=file]{display:none;}
           </div>
         </div>
       </div><!-- /new-manual-wx-wrap -->
+      <!-- 5. Sichttiefe + Trübung -->
+      <div id="new-sicht-row" style="display:none;margin-bottom:10px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="ig">
+            <label class="il" for="s-sicht">Sichttiefe (cm)</label>
+            <input type="number" class="if" id="s-sicht" placeholder="z.B. 80" min="0" inputmode="numeric">
+          </div>
+          <div class="ig">
+            <label class="il" for="s-trueb">Trübung</label>
+            <input type="text" class="if" id="s-trueb" placeholder="z.B. milchig" autocomplete="off"
+              onfocus="rndrTruebChips()" oninput="rndrTruebChips()" onblur="setTimeout(()=>dHide('trueb-chips'),150)">
+            <div class="crow" id="trueb-chips" style="display:none;" role="listbox"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="slbl">Erfolgreich gewesen?</div>
@@ -5901,14 +5928,13 @@ input[type=file]{display:none;}
 <!-- v59: DAY DETAIL OVERLAY mit Page-Header + Stats-Card + fc-square Bedingungen-Kacheln -->
 <div class="fsov" id="fs-day-detail" role="dialog" aria-modal="true" aria-label="Tages-Details" style="background:var(--sand);">
   <div class="page-hdr" id="dd-page-hdr">
-    <button class="page-hdr-back" onclick="closeDayDetail()" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
-    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-water"/></svg></div>
     <div class="page-hdr-left">
       <div class="page-hdr-title" id="dd-page-title">Tag</div>
       <div class="page-hdr-sub" id="dd-page-sub"></div>
     </div>
     <div class="page-hdr-actions">
       <button class="pill-btn icon-only" id="dd-edit-btn" aria-label="Bearbeiten" style="display:none;"><svg class="ic"><use href="#i-info"/></svg></button>
+      <button class="pill-btn icon-only" onclick="closeDayDetail()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
     </div>
   </div>
   <div id="dd-hero-wrap" style="display:none;"></div>
@@ -5951,16 +5977,17 @@ input[type=file]{display:none;}
 
 <!-- v56: Mondkalender Overlay – neues Page-Header-Pattern (Gold-Icon-Box) -->
 <div class="fsov" id="fs-moon-cal" role="dialog" aria-modal="true" style="z-index:115;background:var(--sand);">
-  <div class="page-hdr">
-    <button class="page-hdr-back" onclick="closeFs('moon-cal')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
-    <div class="page-hdr-icon-wrap gold-wrap"><svg class="ic"><use href="#i-moon"/></svg></div>
-    <div class="page-hdr-left">
-      <div class="page-hdr-title">Mond</div>
-      <div class="page-hdr-sub" id="fs-moon-meta">Kalender · Phasen</div>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeFs('moon-cal')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('moon-cal')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr" style="display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div class="dw-hdr-date"><svg class="ic" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px;color:var(--gold);"><use href="#i-moon"/></svg>Mondkalender</div>
+      <div id="fs-moon-meta" style="font-size:12px;color:var(--text-light);margin-top:2px;">2020 – 2030</div>
     </div>
-    <div class="page-hdr-actions">
-      <button class="pill-btn icon-only" aria-label="Heute"><svg class="ic"><use href="#i-cal"/></svg></button>
-    </div>
+    <button class="pill-btn" onclick="_moonScrollToday()" style="font-size:11px;padding:6px 12px;">Heute</button>
   </div>
   <div class="fsov-scroll" id="fs-moon-body"></div>
 </div>
@@ -5976,71 +6003,67 @@ input[type=file]{display:none;}
 </div>
 <!-- v56: Tidenkalender Overlay – neues Page-Header-Pattern -->
 <div class="fsov" id="fs-tide-cal" role="dialog" aria-modal="true" style="z-index:115;background:var(--sand);">
-  <div class="page-hdr">
-    <button class="page-hdr-back" onclick="closeFs('tide-cal')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
-    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-wave"/></svg></div>
-    <div class="page-hdr-left">
-      <div class="page-hdr-title">Tide</div>
-      <div class="page-hdr-sub" id="fs-tide-meta">Weser · Elbe · Ems</div>
-    </div>
-    <div class="page-hdr-actions">
-      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
-    </div>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeFs('tide-cal')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('tide-cal')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr">
+    <div class="dw-hdr-date"><svg class="ic" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px;"><use href="#i-wave"/></svg>Tidenkalender</div>
+    <div style="font-size:12px;color:var(--text-light);margin-top:2px;">Weser · Elbe · Ems</div>
   </div>
   <div class="fsov-scroll" id="fs-tide-body"></div>
 </div>
 
 <!-- v56: Wind Overlay – neues Page-Header-Pattern -->
 <div class="fsov" id="fs-wx-wind" role="dialog" aria-modal="true" style="z-index:115;background:var(--sand);">
-  <div class="page-hdr">
-    <button class="page-hdr-back" onclick="closeFs('wx-wind')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
-    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-wind"/></svg></div>
-    <div class="page-hdr-left">
-      <div class="page-hdr-title">Wind</div>
-      <div class="page-hdr-sub" id="fs-wind-meta">14 Tage</div>
-    </div>
-    <div class="page-hdr-actions">
-      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
-    </div>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeFs('wx-wind')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('wx-wind')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr">
+    <div class="dw-hdr-date"><svg class="ic" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px;"><use href="#i-wind"/></svg>Wind</div>
+    <div id="fs-wind-meta" style="font-size:12px;color:var(--text-light);margin-top:2px;">14 Tage</div>
   </div>
   <div class="fsov-scroll" id="fs-wind-body"></div>
 </div>
 
-<!-- v56: Regen Overlay – neues Page-Header-Pattern -->
 <div class="fsov" id="fs-wx-rain" role="dialog" aria-modal="true" style="z-index:115;background:var(--sand);">
-  <div class="page-hdr">
-    <button class="page-hdr-back" onclick="closeFs('wx-rain')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
-    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-rain"/></svg></div>
-    <div class="page-hdr-left">
-      <div class="page-hdr-title">Regen</div>
-      <div class="page-hdr-sub" id="fs-rain-meta">14 Tage</div>
-    </div>
-    <div class="page-hdr-actions">
-      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
-    </div>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeFs('wx-rain')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('wx-rain')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr">
+    <div class="dw-hdr-date"><svg class="ic" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px;"><use href="#i-rain"/></svg>Regen</div>
+    <div id="fs-rain-meta" style="font-size:12px;color:var(--text-light);margin-top:2px;">14 Tage</div>
   </div>
   <div class="fsov-scroll" id="fs-rain-body"></div>
 </div>
 
-<!-- v56: Temperatur/Druck Overlay – neues Page-Header-Pattern (Titel/Icon werden per JS gesetzt) -->
 <div class="fsov" id="fs-wx-temp" role="dialog" aria-modal="true" style="z-index:115;background:var(--sand);">
-  <div class="page-hdr">
-    <button class="page-hdr-back" onclick="closeFs('wx-temp')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
-    <div class="page-hdr-icon-wrap" id="fs-temp-icon-wrap"><svg class="ic"><use href="#i-thermo" id="fs-temp-icon-use"/></svg></div>
-    <div class="page-hdr-left">
-      <div class="page-hdr-title" id="fs-temp-title">Temperatur</div>
-      <div class="page-hdr-sub" id="fs-temp-meta">14 Tage</div>
-    </div>
-    <div class="page-hdr-actions">
-      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
-    </div>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeFs('wx-temp')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('wx-temp')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr">
+    <div class="dw-hdr-date" id="fs-temp-title"><svg class="ic" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px;"><use href="#i-thermo" id="fs-temp-icon-use"/></svg><span id="fs-temp-title-text">Temperatur</span></div>
+    <div id="fs-temp-meta" style="font-size:12px;color:var(--text-light);margin-top:2px;">14 Tage</div>
   </div>
   <div class="fsov-scroll" id="fs-temp-body"></div>
 </div>
 
 <!-- Tages-Wetter Overlay -->
 <div class="fsov" id="fs-daily-weather" role="dialog" aria-modal="true" style="z-index:116;background:#f5f7f5;">
-  <div class="fshdr" id="fs-dw-hdr"></div>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="_dwDestroy();closeFs('daily-weather')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="_dwDestroy();closeFs('daily-weather')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div id="fs-dw-content-hdr" class="dw-content-hdr"></div>
+  <div id="fs-dw-strip-row" class="dw-strip-row"></div>
   <div class="fsov-scroll" id="fs-dw-body"></div>
 </div>
 
@@ -6150,8 +6173,13 @@ input[type=file]{display:none;}
       <div class="page-hdr-sub" id="fc-hdr-sub">14 Tage</div>
     </div>
     <div class="page-hdr-actions">
-      <button class="pill-btn icon-only" onclick="openBurg()" aria-label="Standort"><svg class="ic"><use href="#i-pin"/></svg></button>
+      <button class="pill-btn icon-only" id="fc-plz-toggle" onclick="_toggleFcPlzInput()" aria-label="Standort"><svg class="ic"><use href="#i-pin"/></svg></button>
     </div>
+  </div>
+  <div class="fc-plz-bar" id="fc-plz-bar" style="display:none;">
+    <input type="text" id="fc-plz-input" class="fc-plz-input" inputmode="numeric" maxlength="5" pattern="[0-9]*" placeholder="PLZ eingeben…" autocomplete="off" onkeydown="if(event.key==='Enter')_applyTempPlz()">
+    <button class="fc-plz-go" id="fc-plz-go" onclick="_applyTempPlz()">Laden</button>
+    <button class="fc-plz-reset" id="fc-plz-reset" onclick="_resetTempPlz()" style="display:none;">Zurücksetzen</button>
   </div>
   <div class="sc"><div id="fc-con"></div></div>
 </div>
@@ -6285,17 +6313,16 @@ input[type=file]{display:none;}
 
 <!-- v56 POLISH: GROUP HUB OVERLAY mit Page-Header-Pattern -->
 <div class="fsov" id="fs-group-hub" style="z-index:115;background:var(--sand);">
-  <div class="page-hdr">
-    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-users"/></svg></div>
-    <div class="page-hdr-left">
-      <div class="page-hdr-title">Gruppen</div>
-      <div class="page-hdr-sub" id="grp-hub-meta">Deine Angel-Crews</div>
-    </div>
-    <div class="page-hdr-actions">
-      <button class="pill-btn icon-only" onclick="closeFs('group-hub')" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
-    </div>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeFs('group-hub')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('group-hub')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
   </div>
-  <div class="fsov-scroll" style="padding-top:12px;">
+  <div class="dw-content-hdr" style="padding-bottom:6px;">
+    <div class="dw-hdr-date"><svg class="ic" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px;"><use href="#i-users"/></svg>Gruppen</div>
+    <div id="grp-hub-meta" style="font-size:12px;color:var(--text-light);margin-top:2px;">Deine Angel-Crews</div>
+  </div>
+  <div class="fsov-scroll" style="padding-top:8px;">
     <div class="grp-tabs" id="grp-hub-tabs">
       <button class="grp-tab on" onclick="_grpHubTab('list')">Gruppen</button>
       <button class="grp-tab" onclick="_grpHubTab('discover')">Entdecken</button>
@@ -6306,16 +6333,14 @@ input[type=file]{display:none;}
 
 <!-- v56 POLISH: GROUP DETAIL / FEED OVERLAY mit Page-Header-Pattern -->
 <div class="fsov" id="fs-group-detail" style="z-index:116;background:var(--sand);">
-  <div class="page-hdr" id="grp-detail-hdr">
-    <button class="page-hdr-back" onclick="closeFs('group-detail')" aria-label="Zurück"><svg class="ic" style="width:16px;height:16px;"><use href="#i-arrow-l"/></svg></button>
-    <div class="page-hdr-icon-wrap"><svg class="ic"><use href="#i-crew"/></svg></div>
-    <div class="page-hdr-left">
-      <div class="page-hdr-title" id="grp-detail-title">Gruppe</div>
-      <div class="page-hdr-sub" id="grp-detail-meta">0 Mitglieder</div>
-    </div>
-    <div class="page-hdr-actions">
-      <button class="pill-btn icon-only" aria-label="Info"><svg class="ic"><use href="#i-info"/></svg></button>
-    </div>
+  <div class="hdr-bar dw-green-hdr" id="grp-detail-hdr">
+    <button class="bbtn" onclick="closeFs('group-detail')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('group-detail')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr">
+    <div class="dw-hdr-date" id="grp-detail-title">Gruppe</div>
+    <div id="grp-detail-meta" style="font-size:12px;color:var(--text-light);margin-top:2px;">0 Mitglieder</div>
   </div>
   <div class="fsov-scroll" id="grp-detail-scroll">
     <div id="grp-detail-content"></div>
@@ -6365,7 +6390,11 @@ input[type=file]{display:none;}
 
 <!-- ═══ CATCH DETAIL OVERLAY (v54: jetzt mit Comment-Bar am Boden) ═══ -->
 <div class="fsov" id="fs-catch-detail" style="z-index:118;">
-  <button class="xbtn-on-photo" onclick="closeFs('catch-detail')" aria-label="Schließen">✕</button>
+  <div class="hdr-bar dw-green-hdr" style="position:relative;z-index:5;">
+    <button class="bbtn" onclick="closeFs('catch-detail')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('catch-detail')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
   <div class="fsov-scroll" id="catch-detail-scroll" style="padding:0;">
     <div id="catch-detail-content"></div>
   </div>
@@ -6381,7 +6410,11 @@ input[type=file]{display:none;}
 
 <!-- ═══ v54 AP3.3: MEMBER PROFILE OVERLAY ═══ -->
 <div class="fsov" id="fs-member-profile" style="z-index:119;">
-  <button class="xbtn-on-photo" onclick="closeFs('member-profile')" aria-label="Schließen">✕</button>
+  <div class="hdr-bar dw-green-hdr" style="position:relative;z-index:5;">
+    <button class="bbtn" onclick="closeFs('member-profile')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('member-profile')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
   <div class="fsov-scroll" id="member-profile-scroll" style="padding:0;">
     <div id="member-profile-content"></div>
   </div>
@@ -6389,10 +6422,14 @@ input[type=file]{display:none;}
 
 <!-- ═══ GROUP CREATE OVERLAY ═══ -->
 <div class="fsov" id="fs-group-create" style="z-index:117;">
-  <div class="fshdr">
-    <div class="fshdr-icon-wrap"><svg class="ic"><use href="#i-crew"/></svg></div>
-    <div><div class="fstitle">Gruppe erstellen</div><div class="fsmeta">Privat · öffentlich · Elite</div></div>
-    <button class="xbtn" onclick="closeFs('group-create')" aria-label="Schließen">✕</button>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeFs('group-create')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('group-create')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr">
+    <div class="dw-hdr-date"><svg class="ic" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px;"><use href="#i-crew"/></svg>Gruppe erstellen</div>
+    <div style="font-size:12px;color:var(--text-light);margin-top:2px;">Privat · öffentlich · Elite</div>
   </div>
   <div class="fsov-scroll overlay-pad-tight">
     <div class="ig ig-mb">
@@ -6432,10 +6469,14 @@ input[type=file]{display:none;}
 
 <!-- ═══ GROUP JOIN OVERLAY ═══ -->
 <div class="fsov" id="fs-group-join" style="z-index:117;">
-  <div class="fshdr">
-    <div class="fshdr-icon-wrap"><svg class="ic"><use href="#i-share"/></svg></div>
-    <div><div class="fstitle">Gruppe beitreten</div><div class="fsmeta">Per Einladungscode</div></div>
-    <button class="xbtn" onclick="closeFs('group-join')" aria-label="Schließen">✕</button>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeFs('group-join')" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeFs('group-join')" aria-label="Schließen" style="background:rgba(204,64,64,.9);color:#fff;"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr">
+    <div class="dw-hdr-date"><svg class="ic" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px;"><use href="#i-share"/></svg>Gruppe beitreten</div>
+    <div style="font-size:12px;color:var(--text-light);margin-top:2px;">Per Einladungscode</div>
   </div>
   <div class="fsov-scroll overlay-pad-tight">
     <div class="ig ig-mb">
@@ -6451,9 +6492,9 @@ input[type=file]{display:none;}
 <div class="share-modal" id="share-modal">
   <div style="flex:1;" onclick="_closeShareModal()"></div>
   <div class="share-modal-card">
-    <div class="share-modal-title">📤 In Gruppe teilen</div>
+    <div class="share-modal-title"><svg class="ic" style="width:16px;height:16px;vertical-align:-2px;margin-right:4px;"><use href="#i-share"/></svg>In Gruppe teilen</div>
     <div class="share-gps-toggle" id="share-gps-row">
-      <span>📍</span>
+      <svg class="ic" style="width:16px;height:16px;"><use href="#i-pin"/></svg>
       <span style="flex:1;">GPS-Koordinaten teilen</span>
       <button class="ls-toggle" id="share-gps-toggle" onclick="this.classList.toggle('on')"></button>
     </div>
@@ -6644,7 +6685,7 @@ function sbInit(){
       if(session?.user){
         _sbUser=session.user;
         _authMode='online';
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'}`;
       } else {
         _sbUser=null;
       }
@@ -6660,7 +6701,7 @@ async function _checkAuthSession(){
     if(data?.session?.user){
       _sbUser=data.session.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'}`;
       return true;
     }
   }catch(e){console.warn('Auth-Check Fehler:',e);}
@@ -6706,7 +6747,7 @@ async function handleAuth(e){
       //   5. ERST jetzt Login-Overlay weg + auf Fangbuch wechseln
       _sbUser=result.data.user;
       _authMode='online';
-      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`;
+      document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'}`;
       // Cloud = Single Source of Truth bei Login. _renderAll() läuft am Ende.
       await syncFromCloud({authoritative:true});
       // Sicherheits-Re-Render falls syncFromCloud früh ausstieg (z.B. offline mid-flight)
@@ -6729,7 +6770,7 @@ async function handleAuth(e){
         _sbUser=result.data.user;
         _authMode='online';
         document.getElementById('login-ov')?.classList.add('hidden');
-        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`;
+        document.getElementById('hdr-sub').textContent=`${_sbUser.email?.split('@')[0]||'Cloud'}`;
         // Onboarding starten (AP2: beginnt mit Trust-Step 0)
         document.getElementById('onboarding').classList.remove('hidden');
       }
@@ -6780,7 +6821,7 @@ function skipAuth(){
   localStorage.setItem('fb_skip_auth','1');
   _authMode='offline';
   document.getElementById('login-ov')?.classList.add('hidden');
-  document.getElementById('hdr-sub').textContent='Offline · v56';
+  document.getElementById('hdr-sub').textContent='Offline';
   if(!profile){
     // AP2: Onboarding startet im Trust-Step 0 (kein Eingabefeld nötig)
     document.getElementById('onboarding').classList.remove('hidden');
@@ -7089,7 +7130,7 @@ async function sbLogout(){
   _lsRemove(LS_FAVS);
   _lsRemove(LS_GROUPS);
   localStorage.removeItem('fb_skip_auth');
-  document.getElementById('hdr-sub').textContent='Offline · v56';
+  document.getElementById('hdr-sub').textContent='Offline';
   showToast('👋','Abgemeldet');
 }
 
@@ -7117,7 +7158,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v80-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v83-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -8047,7 +8088,7 @@ function _obConfetti(container){
 }
 function applyProf(){
   if(!profile)return;
-  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'} · v56`:`PLZ ${profile.plz||'–'} · v56`;
+  document.getElementById('hdr-sub').textContent=_sbUser?`${_sbUser.email?.split('@')[0]||'Cloud'}`:`PLZ ${profile.plz||'–'}`;
   document.getElementById('burg-name').textContent=profile.name||'Angeln+';
   document.getElementById('burg-pname').textContent=profile.name||'–';
   document.getElementById('burg-psub').textContent=`${profile.angeltyp||''} · PLZ ${profile.plz||''}`;
@@ -8183,6 +8224,45 @@ async function _deleteDoc(type){
 // PLZ → KOORDINATEN (OpenStreetMap Nominatim)
 // Vorbereitung für Auto-Wetter via PLZ (Paket 4 Logik)
 // ═══════════════════════════════════════════════════════════
+
+// AP21-A2: Temporäre PLZ-Eingabe auf Vorhersage-Seite
+let _fcTempPlz=null;
+function _toggleFcPlzInput(){
+  const bar=document.getElementById('fc-plz-bar');
+  if(!bar)return;
+  const vis=bar.style.display!=='none';
+  bar.style.display=vis?'none':'flex';
+  if(!vis){
+    const inp=document.getElementById('fc-plz-input');
+    if(inp){inp.value=_fcTempPlz||'';inp.focus();}
+  }
+}
+async function _applyTempPlz(){
+  const inp=document.getElementById('fc-plz-input');
+  const plz=(inp?.value||'').trim();
+  if(!plz||plz.length<4||!/^\d+$/.test(plz)){showToast('⚠️','Bitte gültige PLZ eingeben');return;}
+  _fcTempPlz=plz;
+  _plzCoords=null;_fcData=null;_fcHourlyData=null;
+  try{
+    const r=await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(plz)}&country=DE&format=json&limit=1`,{headers:{'User-Agent':'FishingBuddyApp/9'}});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const data=await r.json();
+    if(!data||!data[0]){showToast('⚠️','PLZ nicht gefunden');return;}
+    _plzCoords={lat:parseFloat(data[0].lat).toFixed(4),lon:parseFloat(data[0].lon).toFixed(4),city:(data[0].display_name||'').split(',')[0]||plz};
+  }catch(e){showToast('⚠️','PLZ-Auflösung fehlgeschlagen');return;}
+  document.getElementById('fc-plz-bar').style.display='none';
+  document.getElementById('fc-plz-reset').style.display='inline-block';
+  showToast('📍',`Vorhersage für ${_plzCoords.city}`);
+  rndrForecast();
+}
+function _resetTempPlz(){
+  _fcTempPlz=null;_plzCoords=null;_fcData=null;_fcHourlyData=null;
+  document.getElementById('fc-plz-bar').style.display='none';
+  document.getElementById('fc-plz-reset').style.display='none';
+  if(profile?.plz)resolvePlzCoords(profile.plz).then(()=>rndrForecast());
+  else rndrForecast();
+}
+
 async function resolvePlzCoords(plz){
   if(!plz||_plzCoords)return;
   try{
@@ -8698,7 +8778,7 @@ function rndrBChips(id,fv){
     const s=b.replace(/'/g,"\\'");
     const isSpot=spotChips.includes(b);
     const icon=isSpot?'📍':(isCtx?'🎯':'🪝');
-    return`<button class="chip${isCtx||isSpot?' cc':''}" ${_chipAttr('bait',b)} onmousedown="bSel(${id},'${s}')">${icon} ${b}</button>`;
+    return`<button class="chip" ${_chipAttr('bait',b)} onmousedown="bSel(${id},'${s}')">${b}</button>`;
   }).join('');
 }
 function bSel(id,v){
@@ -8750,7 +8830,7 @@ function rndrNChips(id,fv){
   el.style.display='flex';
   el.innerHTML=chips.map(n=>{
     const s=n.replace(/'/g,"\\'").replace(/"/g,'&quot;');
-    return`<button class="chip cc" ${_chipAttr('notes',n)} onmousedown="nSel(${id},'${s}')">${n}</button>`;
+    return`<button class="chip" ${_chipAttr('notes',n)} onmousedown="nSel(${id},'${s}')">${n}</button>`;
   }).join('');
 }
 
@@ -8969,7 +9049,7 @@ function addCatch(){
     <div class="mmw" id="mm-${id}" role="alert"></div>
     <div class="mmw" id="ct-warn-${id}" role="alert" style="color:var(--gold-d);"></div>
 
-    <!-- Köder/Größe/Farbe – Reihenfolge: Köder → Größe → Farbe -->
+    <!-- Köder/Farbe/Größe – AP21: Reihenfolge Köder → Farbe → Größe -->
     <div id="catch-bait-row-${id}" style="display:${_inputMode==='raub'?'':'none'};margin-top:8px;">
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
         <div class="ig">
@@ -8980,18 +9060,18 @@ function addCatch(){
           <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
         </div>
         <div class="ig">
-          <label class="il" for="fbsz-${id}">Größe</label>
-          <input type="text" class="if" id="fbsz-${id}" placeholder="12cm" autocomplete="off"
-            value="${presetSz}"
-            onfocus="_rndrSzChips(${id})" onblur="dHide('szc-${id}')">
-          <div class="crow" id="szc-${id}" style="display:none;" role="listbox"></div>
-        </div>
-        <div class="ig">
           <label class="il" for="fbcol-${id}">Farbe</label>
           <input type="text" class="if" id="fbcol-${id}" placeholder="Motoroil" autocomplete="off"
             value="${presetCol}"
             onfocus="_rndrColChips(${id})" onblur="dHide('colc-${id}')">
           <div class="crow" id="colc-${id}" style="display:none;" role="listbox"></div>
+        </div>
+        <div class="ig">
+          <label class="il" for="fbsz-${id}">Größe</label>
+          <input type="text" class="if" id="fbsz-${id}" placeholder="12cm" autocomplete="off"
+            value="${presetSz}"
+            onfocus="_rndrSzChips(${id})" onblur="dHide('szc-${id}')">
+          <div class="crow" id="szc-${id}" style="display:none;" role="listbox"></div>
         </div>
       </div>
     </div>
@@ -9000,10 +9080,11 @@ function addCatch(){
     <div id="catch-note-row-${id}" style="display:${_inputMode==='raub'?'':'none'};">
       <div class="ig" style="margin-bottom:10px;">
         <label class="il" for="fn-${id}">Notizen</label>
-        <div class="fav-row" id="nc-${id}" style="margin-bottom:${noteChipsHtml?'6px':'0'};display:${noteChipsHtml?'flex':'none'};">${noteChipsHtml}</div>
         <input type="text" class="if" id="fn-${id}" placeholder='z.B. Buhne 6 · Fox Rage Zander'
           autocomplete="off" autocorrect="off" autocapitalize="none"
+          onfocus="rndrNChips(${id},'')" onblur="setTimeout(()=>{const e=document.getElementById('nc-${id}');if(e)e.style.display='none';},180)"
           style="font-size:15px;">
+        <div class="crow" id="nc-${id}" style="display:none;"></div>
       </div>
     </div>
 
@@ -9191,10 +9272,11 @@ function addNoteChip(id,val){
 }
 
 // Notiz-Chips aktualisieren wenn Köder gewechselt wird
+// AP21: Chips nicht sofort anzeigen, nur Daten zurücksetzen
 function updNoteChips(id){
-  // _usedNoteChips für diesen Block zurücksetzen (neuer Köder = neue Vorschläge)
   delete _usedNoteChips[id];
-  rndrNChips(id,'');
+  const el=document.getElementById('nc-'+id);
+  if(el)el.style.display='none';
 }
 
 // ── AP2: Smart Catch Time – Session-Zeitfenster statt Systemzeit ──
@@ -9951,10 +10033,12 @@ function rndrFangbuch(){
       const timeSpan=starts.length&&ends.length?starts[0]+'–'+ends[ends.length-1]:'–';
 
       // Zweite Zeile: Uhrzeit + Fischarten als Text (kein Chip-Design)
-      // AP2: Bei Schneider trotzdem Uhrzeit anzeigen wenn manuell gesetzt
-      let timeLabel=isSkunked?(timeSpan!=='–'?timeSpan+' · Schneider':'Schneider'):timeSpan;
+      // AP21: Schneider bündig unter Gewässer anzeigen (wie Fischarten bei Fang-Sessions)
+      let timeLabel=timeSpan!=='–'?timeSpan:'–';
       let fishLabel='';
-      if(!isSkunked){
+      if(isSkunked){
+        fishLabel='Schneider';
+      } else {
         const freq={};allCatches.forEach(c=>{const n=_getFishCountForStats(c);if(c.type)freq[c.type]=(freq[c.type]||0)+n;});
         fishLabel=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([f])=>f).join(' · ');
       }
@@ -9976,7 +10060,7 @@ function rndrFangbuch(){
           '</div>'+
           '<div class="fb-card-row2">'+
             '<span class="fb-time">'+timeLabel+'</span>'+
-            (fishLabel?'<span class="fb-fish">'+fishLabel+'</span>':'<span></span>')+
+            '<span class="fb-fish">'+fishLabel+'</span>'+
           '</div>'+
         '</div>'+
         '<div class="fb-cnt-col">'+
@@ -12667,10 +12751,13 @@ function _renderFcDashboard(){
   // Mini-Tage für Vorhersage-Kachel
   const miniDays=days.slice(0,14).map((day,i)=>{
     const isToday=i===0;
-    const dow=isToday?'Heu':DOW[new Date(day.date+'T12:00:00').getDay()];
+    const dt=new Date(day.date+'T12:00:00');
+    const dow=isToday?'Heu':DOW[dt.getDay()];
+    const dayDate=String(dt.getDate()).padStart(2,'0')+'.'+String(dt.getMonth()+1).padStart(2,'0');
     const bp=calcBiteProb(day);
     return`<div class="fc-mini-day${isToday?' today':''}" onclick="openFcDayDetail(${i},'${day.date}')">
       <div class="fc-mini-dow">${dow}</div>
+      <div class="fc-mini-date">${dayDate}</div>
       <div class="fc-mini-ico"><svg class="ic"><use href="#${wxIcoId(day.wc)}"/></svg></div>
       <div class="fc-mini-tmp">${Math.round(day.tmax??0)}°</div>
       <div class="fc-mini-bite" style="color:${bp.pct>=70?'var(--green-mid)':bp.pct>=40?'var(--gold)':'var(--text-light)'};">${bp.pct}%</div>
@@ -12698,7 +12785,7 @@ function _renderFcDashboard(){
   el.innerHTML=`<div class="fc-dash">
     <!-- AP2.1: Top-Kachel "14-Tage Vorhersage" mit scroll-snap -->
     <div class="fc-kachel wide">
-      <div class="fc-kachel-head">
+      <div class="fc-kachel-head" onclick="openFcDayDetail(0,'${today.date}')" style="cursor:pointer;">
         <div>
           <div class="fc-kachel-title">14-Tage Vorhersage</div>
           <div class="fc-kachel-sub">Tippe einen Tag für Details</div>
@@ -12826,12 +12913,14 @@ function openMoonCal(){
   document.getElementById('fs-moon-meta').textContent='2020 – 2030';
   document.getElementById('fs-moon-body').innerHTML=html;
 
-  // Scroll zum aktuellen Monat
-  requestAnimationFrame(()=>{
-    const target=document.getElementById(todayBlockId);
-    const scroll=document.querySelector('#fs-moon-cal .fsov-scroll');
-    if(target&&scroll)scroll.scrollTop=target.offsetTop-80;
-  });
+  requestAnimationFrame(()=>_moonScrollToday());
+}
+function _moonScrollToday(){
+  const now=new Date();
+  const id=`moon-${now.getFullYear()}-${now.getMonth()}`;
+  const target=document.getElementById(id);
+  const scroll=document.querySelector('#fs-moon-cal .fsov-scroll');
+  if(target&&scroll)scroll.scrollTop=target.offsetTop-80;
 }
 
 // ── Tidenkalender Overlay ───────────────────────────────────
@@ -13236,7 +13325,7 @@ async function _renderTideCal(river,startDate){
     <div class="tide-cockpit">
       <div class="tide-river-seg">${riverSeg}</div>
       <div class="tide-strip-row">
-        <button class="tide-cal-btn" onclick="document.getElementById('tide-date-pick').showPicker?.()||document.getElementById('tide-date-pick').click()" aria-label="Datum wählen">📅</button>
+        <button class="tide-cal-btn" onclick="document.getElementById('tide-date-pick').showPicker?.()||document.getElementById('tide-date-pick').click()" aria-label="Datum wählen"><svg class="ic" style="width:18px;height:18px;"><use href="#i-cal"/></svg></button>
         <input type="date" id="tide-date-pick" value="${startDate}" onchange="_renderTideCal('${river}',this.value)">
         <div class="tide-strip" id="tide-strip-slot">${stripHtml}</div>
       </div>
@@ -13300,7 +13389,7 @@ async function _renderTideCal(river,startDate){
       <canvas id="tide-main-chart"></canvas>
     </div>
     <div class="tide-cursor-readout" id="tide-readout">
-      <span class="label">Berühre den Chart für Uhrzeit & Höhe</span>
+      <span class="label"></span>
       <span class="val">—</span>
     </div>`;
   _tideStripScrollIntoView(startDate);
@@ -13355,7 +13444,7 @@ async function _renderTideCal(river,startDate){
           }
         } else if(evt.type==='mouseout'||!args.inChartArea){
           chart._cursorX=null;
-          if(lblEl)lblEl.textContent='Berühre den Chart für Uhrzeit & Höhe';
+          if(lblEl)lblEl.textContent='';
           if(valEl)valEl.textContent='—';
         }
       },
@@ -13377,7 +13466,7 @@ async function _renderTideCal(river,startDate){
           if(ro){
             const lblEl=ro.querySelector('.label');
             const valEl=ro.querySelector('.val');
-            if(lblEl)lblEl.textContent='Berühre den Chart für Uhrzeit & Höhe';
+            if(lblEl)lblEl.textContent='';
             if(valEl)valEl.textContent='—';
           }
           chart.draw();
@@ -13845,14 +13934,13 @@ async function openWxChart(type,opts={}){
 
   openFs(ovId2);
   if(metaId&&document.getElementById(metaId))document.getElementById(metaId).textContent='14 Tage';
-  // v56: Title + Icon im neuen Page-Header-Pattern setzen (Temp/Druck teilen sich das Overlay)
-  const titleEl=document.getElementById('fs-temp-title');
+  const titleTextEl=document.getElementById('fs-temp-title-text');
   const iconUseEl=document.getElementById('fs-temp-icon-use');
   if(type==='pressure'){
-    if(titleEl)titleEl.textContent='Luftdruck';
+    if(titleTextEl)titleTextEl.textContent='Luftdruck';
     if(iconUseEl)iconUseEl.setAttribute('href','#i-pressure');
   }else if(type==='temp'){
-    if(titleEl)titleEl.textContent='Temperatur';
+    if(titleTextEl)titleTextEl.textContent='Temperatur';
     if(iconUseEl)iconUseEl.setAttribute('href','#i-thermo');
   }
 
@@ -13927,7 +14015,7 @@ async function openWxChart(type,opts={}){
     bodyEl.innerHTML=`
       ${_chartMagicHeader('wind',' km/h',winds.filter(v=>v!=null))}
       <div class="fc-sec" style="margin:0 0 12px;padding:4px 8px 8px;">
-        <div class="fc-sec-title" style="margin:6px 0 4px;">💨 Wind + Böen · 14 Tage</div>
+        <div class="fc-sec-title" style="margin:6px 0 4px;"><svg class="ic" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;"><use href="#i-wind"/></svg>Wind + Böen · 14 Tage</div>
         <div class="fc-chart-wrap cw-xxl"><canvas id="wx-wind-chart"></canvas></div>
       </div>
       <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
@@ -13962,7 +14050,7 @@ async function openWxChart(type,opts={}){
     bodyEl.innerHTML=`
       ${_chartMagicHeader('rain',' mm',precip.filter(v=>v!=null))}
       <div class="fc-sec" style="margin:0 0 12px;">
-        <div class="fc-sec-title">🌧 Niederschlag · 14 Tage</div>
+        <div class="fc-sec-title"><svg class="ic" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;"><use href="#i-rain"/></svg>Niederschlag · 14 Tage</div>
         <div class="fc-chart-wrap cw-xxl"><canvas id="wx-rain-chart"></canvas></div>
       </div>
       <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
@@ -14018,7 +14106,7 @@ async function openWxChart(type,opts={}){
     bodyEl.innerHTML=`
       ${_chartMagicHeader('temp','°',tmax.filter(v=>v!=null))}
       <div class="fc-sec" style="margin:0 0 12px;">
-        <div class="fc-sec-title">🌡 Temperatur · 14 Tage</div>
+        <div class="fc-sec-title"><svg class="ic" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;"><use href="#i-thermo"/></svg>Temperatur · 14 Tage</div>
         <div class="fc-chart-wrap cw-xxl"><canvas id="wx-temp-chart"></canvas></div>
       </div>
       <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
@@ -14059,7 +14147,7 @@ async function openWxChart(type,opts={}){
     bodyEl.innerHTML=`
       ${_chartMagicHeader('pres','hPa',pres.filter(v=>v!=null))}
       <div class="fc-sec" style="margin:0 0 12px;">
-        <div class="fc-sec-title">🔵 Luftdruck · 14 Tage</div>
+        <div class="fc-sec-title"><svg class="ic" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;"><use href="#i-pressure"/></svg>Luftdruck · 14 Tage</div>
         <div class="fc-chart-wrap cw-xxl"><canvas id="wx-pres-chart"></canvas></div>
       </div>
       <div class="fc-sec" style="margin:0 0 12px;padding:0;overflow:hidden;">
@@ -14201,9 +14289,8 @@ function openDailyWeather(dateStr){
   const MON=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
   const dt=new Date(dateStr+'T12:00:00');
   const isToday=idx===0;
-  const dateLabel=isToday?'Heute':DOW[dt.getDay()]+', '+dt.getDate()+'. '+MON[dt.getMonth()]+' '+dt.getFullYear();
+  const dateLabel=isToday?'Heute':DOW[dt.getDay()]+', '+dt.getDate()+'. '+MON[dt.getMonth()];
 
-  // Daily KPIs
   const dd=_fcData.daily;
   const tmax=dd.temperature_2m_max?.[idx];
   const tmin=dd.temperature_2m_min?.[idx];
@@ -14211,13 +14298,23 @@ function openDailyWeather(dateStr){
   const windDir=dd.winddirection_10m_dominant?.[idx];
   const rainPct=dd.precipitation_probability_max?.[idx];
   const wc=dd.weathercode?.[idx];
-  const bp=calcBiteProb({date:dateStr,wc,tmax,wind,windDir,pres:dd.surface_pressure_mean?.[idx]});
+  const pres=dd.surface_pressure_mean?.[idx];
+  const bp=calcBiteProb({date:dateStr,wc,tmax,wind,windDir,pres});
   const biteCol=bp.pct>=70?'var(--green-mid)':bp.pct>=40?'var(--gold)':'var(--text-light)';
 
   const hasPrev=idx>0;
   const hasNext=idx<dates.length-1;
 
-  // AP2: Neuer Header = Hero + horizontal scrollbare Datums-Leiste
+  // AP21-A4: Content header with date + summary chips
+  document.getElementById('fs-dw-content-hdr').innerHTML=`
+    <div class="dw-hdr-date">${dateLabel}</div>
+    <div class="dw-hdr-summary">
+      <span class="dw-chip">${wxIco(wc)} ${wxDesc(wc)}</span>
+      <span class="dw-chip"><svg class="ic" style="width:12px;height:12px;"><use href="#i-thermo"/></svg> ${tmin!=null?Math.round(tmin):'–'}° / ${tmax!=null?Math.round(tmax):'–'}°</span>
+      <span class="dw-chip"><svg class="ic" style="width:12px;height:12px;"><use href="#i-wind"/></svg> ${wind!=null?Math.round(wind):'–'} km/h ${windLabel(windDir)||''}</span>
+    </div>`;
+
+  // AP21-A4: Horizontal day strip
   const DOW_S=['So','Mo','Di','Mi','Do','Fr','Sa'];
   const dateStrip=dates.map((d,i)=>{
     const dObj=new Date(d+'T12:00:00');
@@ -14229,25 +14326,8 @@ function openDailyWeather(dateStr){
       <span class="dw-strip-num">${dayNum}.</span>
     </button>`;
   }).join('');
+  document.getElementById('fs-dw-strip-row').innerHTML=`<div class="dw-strip" id="dw-strip">${dateStrip}</div>`;
 
-  // v55 AP3.1/3.2: Header weiß, schwarzes X, Layout: links Datum+Wetter+Tmin/Tmax+Wind, rechts scrollbarer Strip
-  document.getElementById('fs-dw-hdr').innerHTML=`
-    <button class="xbtn" onclick="_dwDestroy();closeFs('daily-weather')" style="position:absolute;top:10px;right:12px;z-index:5;">✕</button>
-    <div class="dw-hdr-row">
-      <div class="dw-hdr-left">
-        <div class="dw-hdr-date">${dateLabel}</div>
-        <div class="dw-hdr-wx-row">
-          <span class="dw-hdr-wx-ico">${wxIco(wc)}</span>
-          <span class="dw-hdr-temps">${tmax!=null?Math.round(tmax):'–'}°<span class="tmin"> / ${tmin!=null?Math.round(tmin):'–'}°</span></span>
-        </div>
-        <div class="dw-hdr-wind">💨 ${wind!=null?Math.round(wind):'–'} km/h ${windLabel(windDir)||''}</div>
-      </div>
-      <div class="dw-hdr-right">
-        <div class="dw-strip" id="dw-strip">${dateStrip}</div>
-      </div>
-    </div>`;
-
-  // AP3.2: Aktiven Tag in die Mitte des rechten Strips scrollen
   requestAnimationFrame(()=>{
     const strip=document.getElementById('dw-strip');
     const active=strip?.querySelector('.dw-strip-day.on');
@@ -14257,7 +14337,7 @@ function openDailyWeather(dateStr){
     }
   });
 
-  // Hourly data for this day
+  // Hourly data
   const h=_fcHourlyData.hourly;
   const hIdx=[];
   h.time.forEach((t,i)=>{if(t.startsWith(dateStr))hIdx.push(i);});
@@ -14269,7 +14349,8 @@ function openDailyWeather(dateStr){
   const hWDir=hIdx.map(i=>h.winddirection_10m?.[i]);
   const hPres=hIdx.map(i=>h.surface_pressure?.[i]!=null?Math.round(h.surface_pressure[i]):null);
 
-  // Body
+  // AP21-A6: Chart order: Luftdruck → Wind → Temp → Regen; SVG icons; chip-style min/max
+  const _chipHtml=(items)=>items.map(([l,v])=>`<span class="dw-chip">${l}: ${v}</span>`).join('');
   document.getElementById('fs-dw-body').innerHTML=`
     <!-- KPIs -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:12px 16px;">
@@ -14290,53 +14371,55 @@ function openDailyWeather(dateStr){
         <div style="font-size:10px;color:var(--text-light);margin-top:2px;">Beißindex</div>
       </div>
     </div>
-    <!-- AP4: Temperatur mit Magic Header -->
-    <div class="fc-sec" style="margin:0 0 8px;">
-      <div class="fc-sec-title">🌡 Temperatur · stündlich</div>
-      <div id="dw-temp-info" style="font-size:11px;font-weight:600;color:var(--text-mid);padding:2px 10px 4px;display:flex;gap:12px;">
-        <span>Min: ${Math.min(...hTemp.filter(v=>v!=null))}°</span>
-        <span>Max: ${Math.max(...hTemp.filter(v=>v!=null))}°</span>
-        <span id="dw-temp-hover" style="color:var(--green-mid);"></span>
+    <!-- 1. Luftdruck -->
+    ${hPres.some(v=>v!=null)?`<div class="fc-sec" style="margin:0 0 8px;">
+      <div class="fc-sec-title"><svg class="ic" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;"><use href="#i-pressure"/></svg>Luftdruck</div>
+      <div id="dw-pres-info" class="dw-chart-chips">
+        ${_chipHtml([['Min',Math.min(...hPres.filter(v=>v!=null))+' hPa'],['Max',Math.max(...hPres.filter(v=>v!=null))+' hPa']])}
+        <span class="dw-chip dw-chip-live" id="dw-pres-hover"></span>
       </div>
-      <div class="fc-chart-wrap cw-lg"><canvas id="dw-temp-chart"></canvas></div>
-    </div>
-    <!-- AP4: Wind mit Magic Header -->
+      <div class="fc-chart-wrap cw-lg"><canvas id="dw-pres-chart"></canvas></div>
+    </div>`:''}
+    <!-- 2. Wind -->
     <div class="fc-sec" style="margin:0 0 8px;">
-      <div class="fc-sec-title">💨 Wind & Böen · stündlich</div>
-      <div id="dw-wind-info" style="font-size:11px;font-weight:600;color:var(--text-mid);padding:2px 10px 4px;display:flex;gap:12px;">
-        <span>Min: ${Math.min(...hWind.filter(v=>v!=null))} km/h</span>
-        <span>Max: ${Math.max(...hWind.filter(v=>v!=null))} km/h</span>
-        <span id="dw-wind-hover" style="color:var(--green-mid);"></span>
+      <div class="fc-sec-title"><svg class="ic" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;"><use href="#i-wind"/></svg>Wind & Böen</div>
+      <div id="dw-wind-info" class="dw-chart-chips">
+        ${_chipHtml([['Min',Math.min(...hWind.filter(v=>v!=null))+' km/h'],['Max',Math.max(...hWind.filter(v=>v!=null))+' km/h']])}
+        <span class="dw-chip dw-chip-live" id="dw-wind-hover"></span>
       </div>
       <div class="fc-chart-wrap cw-lg"><canvas id="dw-wind-chart"></canvas></div>
     </div>
-    <!-- AP4: Niederschlag mit Magic Header -->
+    <!-- 3. Temperatur -->
     <div class="fc-sec" style="margin:0 0 8px;">
-      <div class="fc-sec-title"><svg class="ic" style="width:14px;height:14px;vertical-align:-2px;margin-right:3px;"><use href="#i-rain"/></svg>Regenwahrscheinlichkeit · stündlich</div>
-      <div id="dw-rain-info" style="font-size:11px;font-weight:600;color:var(--text-mid);padding:2px 10px 4px;display:flex;gap:12px;">
-        <span>Max: ${Math.max(...hRain.filter(v=>v!=null))}%</span>
-        <span id="dw-rain-hover" style="color:var(--green-mid);"></span>
+      <div class="fc-sec-title"><svg class="ic" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;"><use href="#i-thermo"/></svg>Temperatur</div>
+      <div id="dw-temp-info" class="dw-chart-chips">
+        ${_chipHtml([['Min',Math.min(...hTemp.filter(v=>v!=null))+'°'],['Max',Math.max(...hTemp.filter(v=>v!=null))+'°']])}
+        <span class="dw-chip dw-chip-live" id="dw-temp-hover"></span>
+      </div>
+      <div class="fc-chart-wrap cw-lg"><canvas id="dw-temp-chart"></canvas></div>
+    </div>
+    <!-- 4. Regen -->
+    <div class="fc-sec" style="margin:0 0 24px;">
+      <div class="fc-sec-title"><svg class="ic" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;"><use href="#i-rain"/></svg>Regenwahrscheinlichkeit</div>
+      <div id="dw-rain-info" class="dw-chart-chips">
+        ${_chipHtml([['Max',Math.max(...hRain.filter(v=>v!=null))+'%']])}
+        <span class="dw-chip dw-chip-live" id="dw-rain-hover"></span>
       </div>
       <div class="fc-chart-wrap cw-lg"><canvas id="dw-rain-chart"></canvas></div>
-    </div>
-    <!-- AP3: Luftdruck stündlich -->
-    ${hPres.some(v=>v!=null)?`<div class="fc-sec" style="margin:0 0 24px;">
-      <div class="fc-sec-title">🔵 Luftdruck · stündlich</div>
-      <div id="dw-pres-info" style="font-size:11px;font-weight:600;color:var(--text-mid);padding:2px 10px 4px;display:flex;gap:12px;">
-        <span>Min: ${Math.min(...hPres.filter(v=>v!=null))} hPa</span>
-        <span>Max: ${Math.max(...hPres.filter(v=>v!=null))} hPa</span>
-        <span id="dw-pres-hover" style="color:var(--green-mid);"></span>
-      </div>
-      <div class="fc-chart-wrap cw-lg"><canvas id="dw-pres-chart"></canvas></div>
-    </div>`:''}`;
+    </div>`;
 
-  // Swipe gesture
+  // AP21-A5: Swipe with chart-interaction guard
   const scrollEl=document.getElementById('fs-dw-body');
-  let _swX=0;
-  scrollEl.ontouchstart=e=>{_swX=e.touches[0].clientX;};
+  let _swX=0,_swY=0,_chartActive=false;
+  scrollEl.ontouchstart=e=>{_swX=e.touches[0].clientX;_swY=e.touches[0].clientY;_chartActive=false;};
+  scrollEl.ontouchmove=e=>{
+    if(e.target.closest('.fc-chart-wrap'))_chartActive=true;
+  };
   scrollEl.ontouchend=e=>{
+    if(_chartActive)return;
     const dx=e.changedTouches[0].clientX-_swX;
-    if(Math.abs(dx)>60){
+    const dy=Math.abs(e.changedTouches[0].clientY-_swY);
+    if(Math.abs(dx)>60&&dy<Math.abs(dx)){
       if(dx>0&&hasPrev)openDailyWeather(dates[idx-1]);
       else if(dx<0&&hasNext)openDailyWeather(dates[idx+1]);
     }
@@ -14353,9 +14436,8 @@ function openDailyWeather(dateStr){
 
     const DW_PLUGINS=[_dwCrosshairPlugin,_dwNowPlugin,_dwInfoPlugin];
 
-    // AP3: Ermittle welcher Chart als unterster gerendert wird (bekommt X-Achse)
-    const hasPres=hPres.some(v=>v!=null)&&document.getElementById('dw-pres-chart');
-    const lastChartId=hasPres?'dw-pres-chart':'dw-rain-chart';
+    // AP21-A6: Rain is always last chart → always gets the visible X-axis
+    const lastChartId='dw-rain-chart';
     const xFor=id=>id===lastChartId?XOPT_VISIBLE:XOPT_HIDDEN;
 
     // Temp chart
@@ -16578,7 +16660,7 @@ async function _grpPreview(realGroupId){
     _previewGroupId=previewGroup.id;
     openFs('group-detail');
     document.getElementById('grp-detail-title').textContent=`${previewGroup.icon} ${previewGroup.name}`;
-    document.getElementById('grp-detail-meta').textContent=`${previewGroup._previewMeta.members} Mitglieder · 🌍 Öffentlich${previewGroup.region?' · '+_esc(previewGroup.region):''}`;
+    document.getElementById('grp-detail-meta').textContent=`${previewGroup._previewMeta.members} Mitglieder · Öffentlich${previewGroup.region?' · '+_esc(previewGroup.region):''}`;
     const subnav=document.getElementById('grp-subnav');
     if(subnav)subnav.style.display='';
     const chatBar=document.getElementById('grp-chat-bar');
@@ -16847,7 +16929,7 @@ function _grpRTSubscribe(gId){
     if(_activeMemberTab())_rndrGroupMembers();
     // Header-Meta aktualisieren
     const g=_groups.find(x=>x.id===gId);
-    if(g)document.getElementById('grp-detail-meta').textContent=`${g.members?.length||0} Mitglieder · ${g.type==='private'?'🔒 Privat':g.type==='elite'?'⭐ Elite':'🌍 Öffentlich'}`;
+    if(g)document.getElementById('grp-detail-meta').textContent=`${g.members?.length||0} Mitglieder · ${g.type==='private'?'Privat':g.type==='elite'?'Elite':'Öffentlich'}`;
   });
 
   // group_join_requests: Admin sieht neue Anfragen live
@@ -16956,7 +17038,7 @@ function _rndrGroupFeed(){
 
   let html='';
   if(isPreview){
-    html+=`<div class="preview-restriction-banner">👀 Vorschau · Letzte ${feedSrc.length} Nachrichten · Tritt bei, um voll teilzunehmen</div>`;
+    html+=`<div class="preview-restriction-banner">Vorschau · Letzte ${feedSrc.length} Nachrichten · Tritt bei, um voll teilzunehmen</div>`;
   }
   html+='<div class="feed-stream">';
   let lastDate='';
@@ -17980,31 +18062,35 @@ function _openCatchDetail(gId,catchId){
       <div><div class="cd-fact-lbl">Länge</div><div class="cd-fact-val">${sc.length} cm</div></div>
       ${sc.weight?`<div><div class="cd-fact-lbl">Gewicht</div><div class="cd-fact-val">${sc.weight} kg</div></div>`:''}
       <div><div class="cd-fact-lbl">Köder</div><div class="cd-fact-val">${_esc(sc.bait||'–')}</div></div>
+      ${sc.baitColor?`<div><div class="cd-fact-lbl">Farbe</div><div class="cd-fact-val">${_esc(sc.baitColor)}</div></div>`:''}
+      ${sc.baitSize?`<div><div class="cd-fact-lbl">Größe</div><div class="cd-fact-val">${_esc(sc.baitSize)}</div></div>`:''}
+      ${sc.time?`<div><div class="cd-fact-lbl">Uhrzeit</div><div class="cd-fact-val">${_esc(sc.time)}</div></div>`:''}
+      <div><div class="cd-fact-lbl">Status</div><div class="cd-fact-val">${sc.taken?'Entnommen':'C&R'}</div></div>
     </div>
     ${sc.baitNote?`<div class="cd-bait-note">${_esc(sc.baitNote)}</div>`:''}
   </div>`;
 
-  // ── v51 NEW: Wetter-Block (Druck, Wind, Temp, optional Mond) ──
   const hasWx=(sc.pressure!=null||sc.windSpeed!=null||sc.temp!=null||sc.weather);
   if(hasWx){
+    const _wxIc=(href,sz)=>`<svg class="ic" style="width:${sz||20}px;height:${sz||20}px;"><use href="#${href}"/></svg>`;
     const cells=[];
-    if(sc.temp!=null)cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">🌡️</div><div class="cd-wx-val">${Math.round(sc.temp)}°C</div><div class="cd-wx-lbl">Temp</div></div>`);
-    if(sc.pressure!=null)cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">📊</div><div class="cd-wx-val">${Math.round(sc.pressure)}</div><div class="cd-wx-lbl">hPa Druck</div></div>`);
+    if(sc.temp!=null)cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">${_wxIc('i-thermo')}</div><div class="cd-wx-val">${Math.round(sc.temp)}°C</div><div class="cd-wx-lbl">Temp</div></div>`);
+    if(sc.pressure!=null)cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">${_wxIc('i-pressure')}</div><div class="cd-wx-val">${Math.round(sc.pressure)}</div><div class="cd-wx-lbl">hPa</div></div>`);
     if(sc.windSpeed!=null){
       const dir=sc.windDir!=null?_compassDir(sc.windDir):'';
-      cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">💨</div><div class="cd-wx-val">${Math.round(sc.windSpeed)} <small>km/h</small></div><div class="cd-wx-lbl">Wind ${dir}</div></div>`);
+      cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">${_wxIc('i-wind')}</div><div class="cd-wx-val">${Math.round(sc.windSpeed)} <small>km/h</small></div><div class="cd-wx-lbl">Wind ${dir}</div></div>`);
     }
-    const subline=[
+    if(sc.humidity!=null)cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">${_wxIc('i-water')}</div><div class="cd-wx-val">${Math.round(sc.humidity)}%</div><div class="cd-wx-lbl">Feuchte</div></div>`);
+    if(sc.clouds!=null)cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">${_wxIc('i-cloud')}</div><div class="cd-wx-val">${Math.round(sc.clouds)}%</div><div class="cd-wx-lbl">Wolken</div></div>`);
+    if(sc.precip!=null&&sc.precip>0)cells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">${_wxIc('i-rain')}</div><div class="cd-wx-val">${sc.precip} mm</div><div class="cd-wx-lbl">Regen</div></div>`);
+    const subParts=[
       sc.weather?`<span>${_esc(sc.weather)}</span>`:'',
-      sc.humidity!=null?`<span>💧 ${Math.round(sc.humidity)}%</span>`:'',
-      sc.clouds!=null?`<span>☁️ ${Math.round(sc.clouds)}%</span>`:'',
-      sc.precip!=null&&sc.precip>0?`<span>🌧 ${sc.precip} mm</span>`:'',
-      sc.moonPhase?`<span>🌙 ${_esc(sc.moonPhase)}${sc.moonIllum!=null?' · '+Math.round(sc.moonIllum*100)+'%':''}</span>`:''
+      sc.moonPhase?`<span>${_wxIc('i-moon',14)} ${_esc(sc.moonPhase)}${sc.moonIllum!=null?' · '+Math.round(sc.moonIllum*100)+'%':''}</span>`:''
     ].filter(Boolean).join(' · ');
     html+=`<div class="cd-card">
       <div class="cd-card-label">Wetter beim Fang</div>
       <div class="cd-wx-grid">${cells.join('')}</div>
-      ${subline?`<div class="cd-wx-subline">${subline}</div>`:''}
+      ${subParts?`<div class="cd-wx-subline">${subParts}</div>`:''}
     </div>`;
   }
 
@@ -18458,7 +18544,7 @@ function _openPhaenoDetail(){
     </div>`;
   });
   html+='</div>';
-  document.getElementById('fs-info-title').textContent='🌿 Phänologischer Kalender';
+  document.getElementById('fs-info-title').innerHTML='<svg class="ic" style="width:18px;height:18px;vertical-align:-3px;margin-right:6px;"><use href="#i-leaf"/></svg>Phänologischer Kalender';
   el.innerHTML=html;
   openFs('info');
 }
