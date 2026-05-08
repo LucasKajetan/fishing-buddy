@@ -4169,7 +4169,8 @@ input[type=file]{display:none;}
 @keyframes livePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.3);}}
 .hlive-btn{font-size:11px!important;font-weight:700;padding:5px 12px!important;border-radius:14px;background:var(--green-deep);color:#fff;border:none;cursor:pointer;letter-spacing:.3px;font-family:var(--fa);transition:all .25s;}
 .hlive-btn.active{background:#cc0000;animation:livePulse 1.4s infinite;}
-.live-fab{position:absolute;bottom:calc(var(--footer-h) + max(32px, env(safe-area-inset-bottom, 32px)) + 8px);left:50%;transform:translateX(-50%);z-index:102;display:none;background:#cc0000;color:#fff;border:none;border-radius:24px;padding:8px 20px;font-size:13px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(204,0,0,.35);animation:liveFab 2s infinite;}
+.live-fab{position:absolute;bottom:calc(var(--footer-h) + max(32px, env(safe-area-inset-bottom, 32px)) + 8px);left:50%;transform:translateX(-50%);z-index:102;display:none;align-items:center;gap:7px;background:#cc0000;color:#fff;border:none;border-radius:24px;padding:8px 18px;font-size:13px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(204,0,0,.35);animation:liveFab 2s infinite;}
+.live-fab .ic{width:15px;height:15px;color:#fff;}
 @keyframes liveFab{0%,100%{box-shadow:0 4px 16px rgba(204,0,0,.35);}50%{box-shadow:0 4px 24px rgba(204,0,0,.55);}}
 
 /* Live-Overlay */
@@ -4318,10 +4319,222 @@ input[type=file]{display:none;}
 .le-recap-cell .lbl{font-size:9px;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700;}
 .le-recap-cell .val{font-size:14px;color:var(--text-dark);font-weight:700;margin-top:2px;}
 
+/* v87: Live-Session Flow im konsistenten App-Header- und Kartenstil */
+#fs-live-start,#fs-live-catch{background:#f7f5ef;}
+.live-content-hdr{flex-shrink:0;}
+.live-start-scroll{padding:16px 16px max(24px,var(--nav-clearance));}
+.live-start-fields{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;overflow:visible;}
+#fs-live-start .ig,#fs-live-catch .ig{overflow:visible;}
+#fs-live-start .crow,#fs-live-catch .crow{
+  position:relative!important;left:auto!important;right:auto!important;top:auto!important;
+  width:100%!important;margin-top:6px;display:flex;flex-wrap:wrap;gap:6px;z-index:2;
+}
+#fs-live-start .chip,#fs-live-catch .chip,#fs-live-catch .fav-btn{
+  background:var(--blue);color:var(--blue-t);font-size:11.5px;font-weight:600;
+  padding:6px 11px;border-radius:99px;border:none;line-height:1.15;max-width:100%;
+  white-space:normal;text-align:left;box-shadow:none;
+}
+#fs-live-start .chip:hover,#fs-live-catch .chip:hover,#fs-live-catch .fav-btn:hover{
+  background:#b5d4f4;color:var(--blue-t);transform:none;
+}
+.ls-start-wx{
+  background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;
+  margin:0 0 16px;box-shadow:0 3px 12px rgba(31,61,46,.05);font-size:13px;
+}
+.ls-wx-card{display:flex;align-items:center;gap:12px;}
+.ls-wx-icon,.live-input-icon{
+  width:42px;height:42px;border-radius:12px;background:var(--salbei);color:var(--tanne);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.ls-wx-icon .ic,.live-input-icon .ic{width:22px;height:22px;}
+.ls-wx-body{flex:1;min-width:0;}
+.ls-wx-kicker{font-size:11px;color:var(--grau);font-weight:600;margin-bottom:2px;}
+.ls-wx-main{font-size:18px;color:var(--text-dark);font-weight:700;letter-spacing:-.02em;}
+.ls-wx-sub{font-size:12px;color:var(--text-mid);line-height:1.45;margin-top:2px;}
+.ls-wx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);}
+.ls-wx-mini{text-align:center;font-size:11px;color:var(--grau);}
+.ls-wx-mini strong{display:block;font-size:13px;color:var(--text-dark);margin-bottom:2px;}
+.ls-track-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px;background:#fff;border:1px solid var(--line);border-radius:16px;
+  margin:2px 0 12px;box-shadow:0 3px 12px rgba(31,61,46,.04);
+}
+.ls-track-copy{display:flex;align-items:center;gap:10px;min-width:0;}
+.ls-track-copy .ic{width:20px;height:20px;color:var(--green-mid);flex-shrink:0;}
+.ls-track-copy span{display:block;font-size:14px;font-weight:700;color:var(--text-dark);}
+.ls-track-copy small{display:block;font-size:11.5px;color:var(--grau);line-height:1.35;margin-top:2px;font-weight:500;}
+.live-note-field{margin-bottom:16px;}
+.live-note-field textarea.if{resize:none;line-height:1.45;min-height:78px;}
+.live-primary-cta{
+  width:100%;min-height:56px;padding:16px 18px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,var(--green-deep),#163321);color:#fff;
+  font-size:16px;font-weight:800;font-family:var(--fa);cursor:pointer;
+  box-shadow:0 9px 22px rgba(31,61,46,.25);display:flex;align-items:center;
+  justify-content:center;gap:10px;
+}
+.live-primary-cta:active{transform:scale(.985);}
+.live-play-mark{
+  width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;
+  border-left:13px solid var(--gold);display:inline-block;
+}
+.live-cancel-row{text-align:center;margin-top:12px;}
+.live-cancel-row button{background:none;border:none;color:var(--grau);font-size:13px;font-weight:600;font-family:var(--fa);cursor:pointer;}
+
+.live-ov{background:#f7f5ef;}
+.live-body{flex:1;overflow-y:auto;padding:16px 16px max(24px,var(--nav-clearance));-webkit-overflow-scrolling:touch;}
+.live-hero-card{
+  position:relative;overflow:hidden;border-radius:18px;padding:16px;
+  background:linear-gradient(135deg,#153623,#244d35);color:#fff;
+  box-shadow:0 10px 24px rgba(22,51,33,.22);margin-bottom:14px;
+}
+.live-hero-card::after{
+  content:'';position:absolute;right:-34px;top:-34px;width:170px;height:170px;
+  border:1px solid rgba(255,255,255,.09);border-radius:50%;box-shadow:0 0 0 16px rgba(255,255,255,.025),0 0 0 32px rgba(255,255,255,.018);
+  pointer-events:none;
+}
+.live-hero-top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:1;margin-bottom:14px;}
+.live-status-pill{
+  display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;border-radius:999px;
+  background:var(--gold);color:#fff;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;
+}
+.live-status-pill span{width:7px;height:7px;border-radius:50%;background:#fff;animation:livePulse 1.4s infinite;}
+.live-hero-elapsed{font-size:13px;color:rgba(255,255,255,.82);}
+.live-hero-elapsed strong{font-size:18px;color:#fff;font-weight:700;letter-spacing:-.02em;margin-left:4px;}
+.live-hero-rows{display:flex;flex-direction:column;gap:9px;position:relative;z-index:1;}
+.live-hero-row{display:grid;grid-template-columns:22px 72px 1fr;gap:8px;align-items:center;font-size:13px;color:rgba(255,255,255,.78);}
+.live-hero-row .ic{width:19px;height:19px;color:#dcebe1;}
+.live-hero-row strong{font-size:14px;color:#fff;font-weight:700;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.live-hero-divider{height:1px;background:rgba(255,255,255,.28);margin:14px 0 12px;position:relative;z-index:1;}
+.live-hero-wx{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;position:relative;z-index:1;}
+.live-hero-wx-cell{text-align:center;border-right:1px solid rgba(255,255,255,.18);}
+.live-hero-wx-cell:last-child{border-right:none;}
+.live-hero-wx-cell .ic{width:21px;height:21px;color:#fff;margin-bottom:3px;}
+.live-hero-wx-cell strong{display:block;font-size:14px;color:#fff;}
+.live-hero-wx-cell span{display:block;font-size:11px;color:rgba(255,255,255,.72);margin-top:1px;}
+.live-coords{font-size:11px;color:rgba(255,255,255,.66);text-align:center;margin-top:10px;position:relative;z-index:1;}
+.live-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.live-summary-card{
+  background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px 8px;text-align:center;
+  box-shadow:0 3px 12px rgba(31,61,46,.04);
+}
+.live-summary-card strong{display:block;font-size:20px;color:var(--text-dark);letter-spacing:-.02em;}
+.live-summary-card span{display:block;font-size:10.5px;color:var(--grau);font-weight:600;margin-top:2px;}
+.live-wx-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;}
+.live-wx-tile{
+  background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;
+}
+.live-wx-tile .ic{width:18px;height:18px;color:var(--green-mid);flex-shrink:0;}
+.live-wx-tile strong{font-size:13px;color:var(--text-dark);}
+.live-wx-tile span{display:block;font-size:11px;color:var(--grau);margin-top:1px;}
+.live-section-title{font-size:13px;font-weight:800;color:var(--text-dark);margin:14px 2px 8px;letter-spacing:-.01em;}
+.live-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.live-action-btn{
+  min-height:72px;border:1px solid var(--line);border-radius:16px;background:#fff;color:var(--text-dark);
+  font-family:var(--fa);font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 3px 12px rgba(31,61,46,.04);cursor:pointer;
+}
+.live-action-btn .ic{width:24px;height:24px;color:var(--green-deep);}
+.live-action-btn:active{transform:scale(.985);}
+.live-catches-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
+.live-empty{
+  background:#fff;border:1px dashed var(--line);border-radius:16px;padding:18px 14px;text-align:center;
+  color:var(--grau);font-size:12.5px;
+}
+.live-catch-card{
+  background:#fff;border-radius:16px;padding:10px 12px;border:1px solid var(--line);
+  box-shadow:0 3px 12px rgba(31,61,46,.04);display:flex;align-items:center;gap:12px;margin-bottom:0;
+}
+.live-catch-ico{
+  width:52px;height:52px;border-radius:14px;background:var(--salbei);color:var(--green-deep);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0;overflow:hidden;
+}
+.live-catch-ico img{width:100%;height:100%;object-fit:cover;display:block;}
+.live-catch-ico svg{width:30px;height:20px;}
+.live-catch-name{font-size:14px;font-weight:800;color:var(--text-dark);}
+.live-catch-meta{font-size:11.5px;color:var(--grau);line-height:1.35;margin-top:2px;}
+.live-catch-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.live-catch-act-btn{
+  width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--green-deep);
+  display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;
+}
+.live-catch-act-btn .ic{width:15px;height:15px;}
+.live-timeline{
+  background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px 10px 8px 14px;
+  box-shadow:0 3px 12px rgba(31,61,46,.04);margin-bottom:14px;
+}
+.live-timeline-empty{padding:10px 0;color:var(--grau);font-size:12px;text-align:center;}
+.live-timeline-row{display:grid;grid-template-columns:54px 18px 1fr 28px;gap:8px;align-items:center;position:relative;min-height:38px;}
+.live-timeline-row::before{content:'';position:absolute;left:70px;top:0;bottom:0;width:1px;background:var(--line);}
+.live-timeline-row:first-child::before{top:50%;}
+.live-timeline-row:last-child::before{bottom:50%;}
+.live-timeline-time{font-size:12px;color:var(--grau);font-weight:600;text-align:right;}
+.live-timeline-text{font-size:13px;color:var(--text-dark);font-weight:600;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.live-timeline-dot{width:10px;height:10px;border-radius:50%;background:var(--green-deep);box-shadow:0 0 0 4px #fff;justify-self:center;z-index:1;}
+.live-timeline-ico{
+  width:28px;height:28px;border-radius:50%;background:var(--salbei);color:var(--green-deep);
+  display:flex;align-items:center;justify-content:center;justify-self:end;
+}
+.live-timeline-ico .ic{width:15px;height:15px;}
+.live-bottom-actions{display:grid;grid-template-columns:1fr 1.25fr;gap:8px;margin-top:10px;}
+.live-bottom-actions .ls-end-btn{
+  margin:0;display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border-radius:14px;
+}
+.live-bottom-actions .ls-end-btn .ic{width:17px;height:17px;}
+.live-bottom-actions .ls-end-btn.warn{background:#C43629;box-shadow:0 6px 14px rgba(196,54,41,.22);}
+.live-bottom-actions .ls-end-btn.ghost{background:#fff;color:var(--green-deep);border:1px solid var(--line);}
+
+.ls-end-ov{
+  position:absolute;inset:0;z-index:131;background:#f7f5ef;display:none;
+  flex-direction:column;align-items:stretch;justify-content:flex-start;font-family:var(--fa);
+}
+.ls-end-ov.on{display:flex;}
+.ls-end-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px max(24px,var(--nav-clearance));}
+.ls-end-card{
+  background:transparent;width:100%;max-width:none;max-height:none;border-radius:0;padding:0;box-shadow:none;
+  display:flex;flex-direction:column;overflow:visible;text-align:left;
+}
+.ls-end-card h3,.ls-end-card .le-sub{display:none;}
+.ls-end-card .le-body{overflow:visible;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
+.ls-end-card .le-actions{border-top:none;margin-top:0;padding-top:12px;}
+.le-recap{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:0;}
+.le-recap-cell{
+  background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center;
+  box-shadow:0 3px 12px rgba(31,61,46,.04);
+}
+.le-recap-cell .lbl{font-size:10px;color:var(--grau);letter-spacing:.03em;}
+.le-recap-cell .val{font-size:16px;letter-spacing:-.02em;}
+.le-recap-cell.wide{grid-column:span 3;text-align:left;display:flex;align-items:center;gap:10px;padding:13px 14px;}
+.le-recap-cell.wide .live-input-icon{width:38px;height:38px;}
+.le-recap-cell.wide .val{font-size:14px;}
+.live-track-card,.live-end-catches,.live-end-note-card{
+  background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 3px 12px rgba(31,61,46,.04);overflow:hidden;
+}
+.live-track-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:13px 14px 9px;}
+.live-track-title{font-size:13px;font-weight:800;color:var(--text-dark);display:flex;align-items:center;gap:7px;}
+.live-track-title .ic{width:17px;height:17px;color:var(--green-deep);}
+.live-track-meta{font-size:11px;color:var(--grau);font-weight:600;}
+.live-track-preview{height:150px;background:linear-gradient(135deg,#eaf0ec,#f7f5ef);position:relative;overflow:hidden;}
+.live-track-preview svg{width:100%;height:100%;display:block;}
+.live-track-empty{height:150px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--grau);font-size:12px;padding:18px;}
+.live-end-catches{padding:13px 14px;}
+.live-end-catch-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);}
+.live-end-catch-row:last-child{border-bottom:none;}
+.live-end-catch-thumb{width:42px;height:42px;border-radius:12px;background:var(--salbei);color:var(--green-deep);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.live-end-catch-thumb img{width:100%;height:100%;object-fit:cover;}
+.live-end-catch-thumb svg{width:26px;height:17px;}
+.live-end-catch-body{flex:1;min-width:0;}
+.live-end-catch-name{font-size:13px;font-weight:800;color:var(--text-dark);}
+.live-end-catch-meta{font-size:11.5px;color:var(--grau);margin-top:2px;}
+.live-end-note-card{padding:13px 14px;font-size:13px;color:var(--text-mid);line-height:1.45;}
+.ls-end-btn.primary{background:linear-gradient(135deg,var(--green-deep),#163321);box-shadow:0 7px 16px rgba(31,61,46,.22);min-height:52px;border-radius:14px;}
+.ls-end-btn.ghost{border:1px solid var(--line);background:#fff;color:var(--green-deep);border-radius:14px;}
+.ls-end-btn.warn{border-radius:14px;}
+
 /* v52 AP1: Share-Section im End-Overlay + Edit-Session */
 .share-section{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px;border:1px solid var(--cream-dark);}
 .share-toggle-row{display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .share-toggle-row .ico{font-size:22px;flex-shrink:0;}
+.share-toggle-row .ico .ic,.share-loc-banner .ico .ic{width:20px;height:20px;color:var(--green-deep);}
 .share-toggle-row .body{flex:1;min-width:0;}
 .share-toggle-row .ttl{font-size:13px;font-weight:700;color:var(--text-dark);}
 .share-toggle-row .sub{font-size:11px;color:var(--text-light);margin-top:1px;}
@@ -4474,6 +4687,37 @@ input[type=file]{display:none;}
 .catch-card-act .ic{width:18px;height:18px;stroke-width:1.7;}
 .catch-card-act.liked{color:var(--gold);}
 .catch-card-act.liked .ic{fill:var(--gold);stroke:var(--gold);}
+
+/* v87: Eine geteilte Live-Session wird als ein hochwertiger Session-Post dargestellt */
+.session-post-card{
+  border-radius:18px;overflow:hidden;background:#fff;border:1px solid var(--line);
+  position:relative;transition:transform .15s,box-shadow .2s;margin-bottom:8px;
+  -webkit-tap-highlight-color:transparent;
+}
+.session-post-card:active{transform:scale(.99);}
+.session-post-card:hover{box-shadow:0 6px 18px rgba(31,61,46,.12);}
+.session-post-hero{position:relative;width:100%;aspect-ratio:4/3;background:#173523;overflow:hidden;}
+.session-post-hero.detail{border-radius:0;aspect-ratio:4/3;}
+.session-post-gallery{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;}
+.session-post-gallery::-webkit-scrollbar{display:none;}
+.session-post-slide{min-width:100%;height:100%;scroll-snap-align:start;}
+.session-post-slide img{width:100%;height:100%;object-fit:cover;display:block;}
+.session-post-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.58),rgba(0,0,0,0) 48%);pointer-events:none;}
+.session-post-hero-overlay{position:absolute;left:16px;right:16px;bottom:18px;z-index:2;color:#fff;}
+.session-post-kicker{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.85;}
+.session-post-title{font-size:26px;font-weight:800;line-height:1.05;letter-spacing:-.025em;color:var(--gold);margin-top:4px;}
+.session-post-dots{position:absolute;left:0;right:0;bottom:8px;z-index:3;display:flex;justify-content:center;gap:5px;}
+.session-post-dots span{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.48);}
+.session-post-dots span.on{background:#fff;width:14px;border-radius:99px;}
+.session-post-placeholder{
+  padding:18px 16px;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#e9f0ec,#fff);
+  border-bottom:1px solid var(--line);color:var(--text-dark);
+}
+.session-post-placeholder.detail{border-radius:0;min-height:160px;}
+.session-post-placeholder-icon{width:54px;height:54px;border-radius:16px;background:var(--salbei);color:var(--green-deep);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.session-post-placeholder-icon .ic{width:27px;height:27px;}
+.session-post-placeholder .session-post-title{color:var(--text-dark);font-size:23px;}
+.session-post-name{font-size:15px;font-weight:800;color:var(--text-dark);margin:-2px 0 10px;letter-spacing:-.01em;}
 
 /* ── Live Alert Banner ── */
 .feed-live-alert{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,#1a3522,#2D4A35);border-radius:var(--rs);color:#fff;}
@@ -4634,7 +4878,8 @@ input[type=file]{display:none;}
 .ls-summary{position:absolute;inset:0;z-index:150;background:var(--green-deep);color:#fff;display:none;flex-direction:column;overflow-y:auto;}
 .ls-summary.on{display:flex;}
 .ls-sum-hero{padding:28px 20px 16px;text-align:center;}
-.ls-sum-badge{font-size:56px;margin-bottom:8px;}
+.ls-sum-badge{width:64px;height:64px;margin:0 auto 10px;border-radius:20px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:var(--gold);}
+.ls-sum-badge .ic{width:36px;height:36px;}
 .ls-sum-title{font-family:var(--fs);font-size:24px;font-weight:700;margin-bottom:4px;}
 .ls-sum-sub{font-size:13px;opacity:.7;}
 .ls-sum-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.1);margin:0 16px 16px;border-radius:12px;overflow:hidden;}
@@ -4644,7 +4889,8 @@ input[type=file]{display:none;}
 .ls-sum-map{height:200px;margin:0 16px 16px;border-radius:12px;overflow:hidden;background:rgba(255,255,255,.1);}
 .ls-sum-catches{padding:0 16px 20px;}
 .ls-sum-catch{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,.08);border-radius:8px;margin-bottom:6px;}
-.ls-sum-catch-ico{font-size:20px;}
+.ls-sum-catch-ico{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;}
+.ls-sum-catch-ico .ic{width:19px;height:19px;}
 .ls-sum-catch-info{flex:1;}
 .ls-sum-catch-name{font-size:14px;font-weight:600;}
 .ls-sum-catch-meta{font-size:11px;opacity:.6;margin-top:2px;}
@@ -5196,6 +5442,60 @@ input[type=file]{display:none;}
   font-family:var(--f-edit);font-size:18px;font-weight:700;
   color:var(--text-dark);line-height:1.2;margin-bottom:4px;
 }
+#fs-live-start > .hdr-bar.dw-green-hdr,
+#fs-live-catch > .hdr-bar.dw-green-hdr,
+#live-ov > .hdr-bar.dw-green-hdr,
+#ls-end-ov > .hdr-bar.dw-green-hdr{
+  display:flex!important;
+  height:62px!important;
+  min-height:62px!important;
+  flex:0 0 auto!important;
+  background:var(--green-deep)!important;
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  z-index:20!important;
+}
+#fs-live-start > .hdr-bar.dw-green-hdr,
+#fs-live-catch > .hdr-bar.dw-green-hdr{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+}
+#fs-live-start > .dw-content-hdr,
+#fs-live-catch > .dw-content-hdr{margin-top:62px!important;}
+#fs-live-catch > .hdr-bar.dw-green-hdr{display:none!important;}
+#fs-live-catch > .dw-content-hdr.live-catch-head{
+  margin-top:0!important;
+  padding:0!important;
+  border-bottom:1px solid rgba(45,74,53,.08);
+  background:transparent;
+}
+#fs-live-catch .live-catch-top{
+  height:62px!important;
+  min-height:62px!important;
+  padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px!important;
+  background:var(--green-deep)!important;
+}
+#fs-live-catch .live-catch-title-wrap{background:#fff;padding:0;}
+#fs-live-catch .live-catch-visible-top{
+  height:62px;min-height:62px;background:var(--green-deep);padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px;
+  display:flex;align-items:center;justify-content:space-between;position:relative;
+}
+#fs-live-catch .live-catch-visible-top .hlogo{color:#fff;}
+#fs-live-catch .live-catch-visible-top .bbtn{
+  width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;
+  display:flex;align-items:center;justify-content:center;padding:0;
+}
+#fs-live-catch .live-catch-visible-top .bbtn .ic{width:18px;height:18px;color:#fff;}
+#fs-live-catch .live-catch-visible-top .dw-close-btn{
+  position:absolute!important;right:16px!important;top:50%!important;transform:translateY(-50%)!important;
+  width:34px!important;height:34px!important;background:#C94040!important;color:#fff!important;border:none!important;border-radius:50%!important;
+}
+#fs-live-catch .live-catch-visible-top .dw-close-btn .ic{width:16px;height:16px;color:#fff;}
+#fs-live-catch .live-catch-white-title{padding:14px 16px 10px;background:#fff;}
 .dw-content-hdr .dw-hdr-summary{
   display:flex;align-items:center;gap:8px;flex-wrap:wrap;
   font-size:13px;color:var(--text-mid);
@@ -5385,40 +5685,75 @@ input[type=file]{display:none;}
 
 <!-- ═══ LIVE SESSION OVERLAY ═══ -->
 <div class="live-ov" id="live-ov">
-  <div class="live-hdr">
-    <div style="display:flex;align-items:center;justify-content:space-between;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.8;">🔴 Live Session</div>
-      <button style="background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:15px;cursor:pointer;" onclick="closeLiveOv()">✕</button>
-    </div>
-    <div class="live-timer" id="live-timer">00:00:00</div>
-    <div class="live-coords" id="live-coords">GPS wird ermittelt…</div>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeLiveOv()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveOv()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr live-content-hdr">
+    <div class="dw-hdr-date">Live Session läuft</div>
+    <div class="dw-hdr-sub">Session aktiv</div>
   </div>
   <div class="live-body">
-    <div style="font-size:13px;font-weight:700;color:var(--text-mid);margin-bottom:8px;">Schnell-Fänge</div>
-    <div class="live-catches-list" id="live-catches-list">
-      <div style="text-align:center;padding:24px;color:var(--text-light);font-size:12px;">Noch keine Fänge – nutze den Button unten</div>
+    <section class="live-hero-card">
+      <div class="live-hero-top">
+        <span class="live-status-pill"><span></span>Live</span>
+        <span class="live-hero-elapsed">Seit <strong id="live-timer">00:00:00</strong></span>
+      </div>
+      <div class="live-hero-rows">
+        <div class="live-hero-row"><svg class="ic"><use href="#i-water"/></svg><span>Gewässer</span><strong id="live-water-label">-</strong></div>
+        <div class="live-hero-row"><svg class="ic"><use href="#i-pin"/></svg><span>Spot</span><strong id="live-spot-label">-</strong></div>
+        <div class="live-hero-row"><svg class="ic"><use href="#i-clock"/></svg><span>Start</span><strong id="live-start-label">--:--</strong></div>
+      </div>
+      <div class="live-hero-divider"></div>
+      <div class="live-hero-wx" id="live-hero-wx"></div>
+      <div class="live-coords" id="live-coords">GPS wird ermittelt...</div>
+    </section>
+
+    <div class="live-summary-grid" id="live-summary-grid"></div>
+    <div class="live-wx-grid" id="live-wx-grid"></div>
+
+    <div class="live-section-title">Schnellaktionen</div>
+    <div class="live-action-grid">
+      <button class="live-action-btn" onclick="openLiveCatchOv()"><svg class="ic"><use href="#i-plus"/></svg><span>Fang</span></button>
+      <button class="live-action-btn" onclick="liveAddBite()"><svg class="ic"><use href="#i-hook"/></svg><span>Biss</span></button>
+      <button class="live-action-btn" onclick="liveAddNote()"><svg class="ic"><use href="#i-edit"/></svg><span>Notiz</span></button>
+      <button class="live-action-btn" onclick="openLiveCatchOv()"><svg class="ic"><use href="#i-camera"/></svg><span>Foto</span></button>
     </div>
-    <button class="live-quick-btn" onclick="openLiveCatchOv()">🐟 Fang melden</button>
-    <div style="display:flex;gap:8px;margin-top:8px;">
-      <button class="ls-end-btn ghost" style="flex:1;" onclick="pauseLiveSession()">⏸ Pausieren</button>
-      <button class="ls-end-btn warn" style="flex:1;" onclick="closeLiveOv();confirmEndLive()">⏹ Beenden</button>
+
+    <div class="live-section-title">Fänge</div>
+    <div class="live-catches-list" id="live-catches-list">
+      <div class="live-empty">Noch keine Fänge gespeichert.</div>
+    </div>
+
+    <div class="live-section-title">Aktivitäten</div>
+    <div class="live-timeline" id="live-timeline"></div>
+
+    <div class="live-bottom-actions">
+      <button class="ls-end-btn ghost" onclick="pauseLiveSession()"><svg class="ic"><use href="#i-clock"/></svg><span>Pausieren</span></button>
+      <button class="ls-end-btn warn" onclick="closeLiveOv();confirmEndLive()"><svg class="ic"><use href="#i-x"/></svg><span>Session beenden</span></button>
     </div>
   </div>
 </div>
 
 <!-- ═══ LIVE SESSION START OVERLAY ═══ -->
 <div class="fsov" id="fs-live-start" role="dialog" aria-modal="true" style="z-index:130;background:#f5f7f5;">
-  <div class="fshdr fshdr-tinted" style="background:linear-gradient(135deg,var(--tanne),#2A4D38);">
-    <div><div class="fstitle">Live Session starten</div><div class="fsmeta">Echtzeit-Tracking mit GPS</div></div>
-    <button class="xbtn" onclick="closeLiveStartOv()">✕</button>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeLiveStartOv()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveStartOv()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
   </div>
-  <div class="fsov-scroll" style="padding:16px;">
+  <div class="dw-content-hdr live-content-hdr">
+    <div class="dw-hdr-date">Live Session starten</div>
+    <div class="dw-hdr-sub">Direkt am Wasser dokumentieren</div>
+  </div>
+  <div class="fsov-scroll live-start-scroll">
     <div class="ls-start-wx" id="ls-start-wx">
-      <div id="ls-wx-content">🌤️ Wetter wird geladen…</div>
+      <div id="ls-wx-content">Wetter wird geladen...</div>
     </div>
 
     <div class="slbl" style="margin-top:14px;margin-bottom:6px;">Gewässer & Spot</div>
-    <div class="g2" style="margin-bottom:14px;">
+    <div class="live-start-fields">
       <div class="ig">
         <label class="il" for="ls-water">Gewässer</label>
         <input type="text" class="if" id="ls-water" placeholder="z.B. Dümmer See"
@@ -5433,31 +5768,47 @@ input[type=file]{display:none;}
       </div>
     </div>
 
-    <div class="ls-track-row" style="margin-bottom:16px;">
-      <span>📍 Strecke tracken?</span>
+    <div class="ls-track-row">
+      <div class="ls-track-copy"><svg class="ic"><use href="#i-pin"/></svg><span>Strecke tracken</span><small>Standardmäßig aktiv für Route und Fangpins</small></div>
       <button class="ls-toggle on" id="ls-track-toggle" onclick="this.classList.toggle('on')"></button>
     </div>
 
-    <button onclick="_doStartLive()" style="width:100%;padding:16px;background:#cc0000;color:#fff;border:none;border-radius:var(--rs);font-size:16px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:0 4px 16px rgba(204,0,0,.3);display:flex;align-items:center;justify-content:center;gap:8px;">
-      <span style="width:12px;height:12px;border-radius:50%;background:#fff;display:inline-block;animation:livePulse 1.4s infinite;"></span> Live Session starten
+    <div class="ig live-note-field">
+      <label class="il" for="ls-note">Notizen optional</label>
+      <textarea class="if" id="ls-note" rows="3" placeholder="z.B. Bedingungen, Vorhaben, Besonderheiten ..."></textarea>
+    </div>
+
+    <button class="live-primary-cta" onclick="_doStartLive()">
+      <span class="live-play-mark"></span>Live-Session starten
     </button>
-    <div style="text-align:center;margin-top:12px;">
-      <button onclick="closeLiveStartOv()" style="background:none;border:none;color:var(--text-light);font-size:13px;font-family:var(--fa);cursor:pointer;">Abbrechen</button>
+    <div class="live-cancel-row">
+      <button onclick="closeLiveStartOv()">Abbrechen</button>
     </div>
   </div>
 </div>
 
 <!-- ═══ LIVE SESSION END OVERLAY ═══ -->
 <div class="ls-end-ov" id="ls-end-ov">
-  <div class="ls-end-card" id="ls-end-card">
-    <!-- Content filled dynamically -->
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeLiveEndOv()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveEndOv()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr live-content-hdr">
+    <div class="dw-hdr-date" id="ls-end-title">Live Session beenden</div>
+    <div class="dw-hdr-sub" id="ls-end-sub">Zusammenfassung prüfen</div>
+  </div>
+  <div class="ls-end-scroll">
+    <div class="ls-end-card" id="ls-end-card">
+      <!-- Content filled dynamically -->
+    </div>
   </div>
 </div>
 
 <!-- v45: Live Session Summary (Fitness-App-Style) -->
 <div class="ls-summary" id="ls-summary">
   <div class="ls-sum-hero">
-    <div class="ls-sum-badge" id="ls-sum-badge">🎣</div>
+    <div class="ls-sum-badge" id="ls-sum-badge"><svg class="ic"><use href="#i-hook"/></svg></div>
     <div class="ls-sum-title" id="ls-sum-title">Session beendet!</div>
     <div class="ls-sum-sub" id="ls-sum-sub">Dümmer See · Steg Nord</div>
   </div>
@@ -5468,7 +5819,7 @@ input[type=file]{display:none;}
 </div>
 
 <!-- Live-Session FAB -->
-<button class="live-fab" id="live-fab" onclick="openLiveCatchOv()">🔴 Fang melden (Live)</button>
+<button class="live-fab" id="live-fab" onclick="openLiveCatchOv()"><svg class="ic"><use href="#i-plus"/></svg><span>Fang melden (Live)</span></button>
 
 <!-- GOAL WALKOUT OVERLAY -->
 <div id="goal-walkout" onclick="dismissGoalWalkout()" role="dialog" aria-modal="true" aria-label="Ziel erreicht">
@@ -5835,7 +6186,7 @@ input[type=file]{display:none;}
       <div class="hlogo-s" id="hdr-sub"></div>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
-      <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">🔴 Live</button>
+      <button class="hbtn hlive-btn" id="hdr-live-btn" onclick="_liveSession?openLiveOv():startLiveSession()">Live</button>
       <button class="hbtn hplus" onclick="_hdrPlusClick()" aria-label="Neue Session erfassen" id="hdr-plus" style="position:relative;">+<div class="live-dot" id="hdr-live-dot"></div></button>
     </div>
   </div>
@@ -6310,12 +6661,31 @@ input[type=file]{display:none;}
 
 <!-- ═══ LIVE CATCH OVERLAY (reduziert) ═══ -->
 <div class="fsov" id="fs-live-catch" style="z-index:121;">
-  <div class="fshdr fshdr-tinted" style="background:linear-gradient(135deg,#A04A38,#7A3A2C);">
-    <div><div class="fstitle">Fang melden</div></div>
-    <button class="xbtn" onclick="closeLiveCatch()">✕</button>
+  <div class="hdr-bar dw-green-hdr">
+    <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+    <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="dw-content-hdr live-content-hdr live-catch-head">
+    <div class="hdr-bar dw-green-hdr live-catch-top">
+      <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+      <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+      <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="live-catch-title-wrap">
+      <div class="live-catch-visible-top">
+        <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+        <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+        <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="live-catch-white-title">
+        <div class="dw-hdr-date">Fang hinzufügen</div>
+        <div class="dw-hdr-sub">Schnellfang in der Live Session</div>
+      </div>
+    </div>
   </div>
   <div class="fsov-scroll" style="padding:16px;">
-    <div style="font-size:11px;color:var(--text-light);margin-bottom:12px;text-align:center;" id="lc-time-hint">⏱️ Uhrzeit wird automatisch erfasst</div>
+    <div style="font-size:11px;color:var(--text-light);margin-bottom:12px;text-align:center;" id="lc-time-hint">Uhrzeit wird automatisch erfasst</div>
 
     <div class="ig" style="margin-bottom:10px;">
       <label class="il" for="lc-fish">Fischart</label>
@@ -6377,17 +6747,17 @@ input[type=file]{display:none;}
     </div>
 
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-      <div id="lc-pa" class="phadd" onclick="trigLivePhoto()" role="button" tabindex="0"><span>📷</span><span class="phlbl">Foto</span></div>
+      <div id="lc-pa" class="phadd" onclick="trigLivePhoto()" role="button" tabindex="0"><svg class="ic"><use href="#i-camera"/></svg><span class="phlbl">Foto</span></div>
       <img id="lc-pp" class="phpr" src="" alt="Fangfoto" style="display:none;" onclick="trigLivePhoto()">
       <input type="file" id="lc-photo-input" accept="image/*" capture="environment" style="display:none;" onchange="_handleLivePhoto(this)">
       <input type="file" id="lc-photo-gal" accept="image/*" style="display:none;" onchange="_handleLivePhoto(this)">
       <div style="flex:1;font-size:11px;color:var(--text-light);line-height:1.5;cursor:pointer;" onclick="trigLivePhoto()">Foto hinzufügen</div>
     </div>
 
-    <button onclick="saveLiveCatch()" style="width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);margin-bottom:10px;">✅ Fang speichern</button>
+    <button onclick="saveLiveCatch()" style="width:100%;padding:14px;background:var(--green-deep);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;font-family:var(--fa);cursor:pointer;box-shadow:var(--sh-md);margin-bottom:10px;">Fang speichern</button>
 
     <button onclick="_whisperPlaceholder()" style="width:100%;padding:14px;background:rgba(74,124,89,.08);color:var(--green-deep);border:1.5px solid rgba(74,124,89,.2);border-radius:var(--rs);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-      <span style="font-size:18px;">🎙️</span> Fang per Sprache eintragen <span style="font-size:10px;opacity:.5;font-weight:400;">(OpenAI Whisper)</span>
+      <svg class="ic" style="width:18px;height:18px;"><use href="#i-edit"/></svg> Fang per Sprache eintragen <span style="font-size:10px;opacity:.5;font-weight:400;">(OpenAI Whisper)</span>
     </button>
   </div>
 </div>
@@ -7247,7 +7617,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v86-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v87-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -14970,19 +15340,241 @@ let _liveSession=null; // {startTime, catches:[], gpsTrack:[], watchId}
 let _liveTimer=null;
 let _liveGpsWatch=null;
 
+function _liveIcon(name,cls='ic'){
+  return`<svg class="${cls}"><use href="#i-${name}"/></svg>`;
+}
+function _liveClock(ts=Date.now()){
+  const d=new Date(ts);
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+function _liveTimerText(){
+  if(!_liveSession)return'00:00:00';
+  const elapsed=(_liveSession.paused&&_liveSession._elapsedAtPause!=null)?_liveSession._elapsedAtPause:(Date.now()-_liveSession.startTime);
+  const h=Math.floor(elapsed/3600000);
+  const m=Math.floor((elapsed%3600000)/60000);
+  const s=Math.floor((elapsed%60000)/1000);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+function _liveDurationShort(){
+  const t=_liveTimerText().split(':').map(Number);
+  if(t[0]>0)return`${t[0]}:${String(t[1]).padStart(2,'0')} h`;
+  return`${t[1]}:${String(t[2]).padStart(2,'0')} min`;
+}
+function _plainWxText(v){
+  return String(v||'').replace(/^[^\p{L}\p{N}]+/u,'').trim()||'Aktuelle Bedingungen';
+}
+function _liveWeatherStartHtml(){
+  const wx=_lastWx||{};
+  const temp=wx.temp!=null?Math.round(wx.temp)+'°C':'--';
+  const wind=wx.windSpeed!=null?Math.round(wx.windSpeed)+' km/h':'--';
+  const pressure=wx.pressure!=null?Math.round(wx.pressure)+' hPa':'--';
+  const hum=wx.humidity!=null?Math.round(wx.humidity)+'%':'--';
+  const title=_lastWx?_plainWxText(wx.weather):'Wetter nicht verfügbar';
+  return`<div class="ls-wx-card">
+    <div class="ls-wx-icon">${_liveIcon(_lastWx?'cloud-sun':'cloud')}</div>
+    <div class="ls-wx-body">
+      <div class="ls-wx-kicker">Bedingungen</div>
+      <div class="ls-wx-main">${_esc(title)}</div>
+      <div class="ls-wx-sub">${_lastWx?'Automatisch erkannt':'Offline oder noch keine Wetterdaten geladen'}</div>
+    </div>
+  </div>
+  <div class="ls-wx-grid">
+    <div class="ls-wx-mini"><strong>${temp}</strong>Temp</div>
+    <div class="ls-wx-mini"><strong>${wind}</strong>Wind</div>
+    <div class="ls-wx-mini"><strong>${pressure}</strong>Druck</div>
+  </div>${_lastWx?`<div class="ls-wx-sub" style="margin-top:10px;">Luftfeuchte ${hum}${wx.clouds!=null?' · Bewölkung '+Math.round(wx.clouds)+'%':''}</div>`:''}`;
+}
+function _liveSave(){
+  try{if(_liveSession)localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));}catch(e){}
+}
+function _ensureLiveGpsHelper(){
+  if(typeof window._pushLiveGpsPoint==='function')return;
+  window._pushLiveGpsPoint=function(pos){
+    if(!_liveSession||!pos||!pos.coords)return;
+    const lat=pos.coords.latitude,lon=pos.coords.longitude;
+    const acc=pos.coords.accuracy||999;
+    if(acc>35)return;
+    const last=_liveSession.gpsTrack[_liveSession.gpsTrack.length-1];
+    if(last){
+      const dLat=(lat-parseFloat(last.lat))*111320;
+      const dLon=(lon-parseFloat(last.lon))*111320*Math.cos(lat*Math.PI/180);
+      const dist=Math.sqrt(dLat*dLat+dLon*dLon);
+      if(dist<3)return;
+      const dt=(Date.now()-(last.ts||0))/1000;
+      if(dt>0&&dist/dt>200)return;
+    }
+    const coord={lat:lat.toFixed(6),lon:lon.toFixed(6),ts:Date.now(),acc:Math.round(acc)};
+    _liveSession.gpsTrack.push(coord);
+    gpsCoords={lat:coord.lat,lon:coord.lon};
+    const el=document.getElementById('live-coords');
+    if(el)el.textContent=`GPS ${coord.lat}, ${coord.lon} · +/- ${coord.acc}m`;
+    _renderLiveStatus();
+    if(!window._liveSaveThrottle||Date.now()-window._liveSaveThrottle>2000){
+      _liveSave();
+      window._liveSaveThrottle=Date.now();
+    }
+  };
+}
+function _ensureLiveEvents(){
+  if(!_liveSession)return[];
+  if(!Array.isArray(_liveSession.events))_liveSession.events=[];
+  return _liveSession.events;
+}
+function _addLiveEvent(kind,text,data={}){
+  if(!_liveSession)return;
+  const ev={kind,text,ts:data.ts||Date.now(),time:data.time||_liveClock(data.ts||Date.now()),...data};
+  _ensureLiveEvents().push(ev);
+  _liveSave();
+  _renderLiveTimeline();
+}
+function _liveCatchThumb(c,cls='live-catch-ico'){
+  let img='';
+  if(c?.photoKey){
+    try{img=localStorage.getItem('fb_photo_'+c.photoKey)||'';}catch(e){}
+  }
+  if(img)return`<div class="${cls}"><img src="${img}" alt="Fangfoto"></div>`;
+  return`<div class="${cls}">${fSvgInline(c?.type||'Fisch',30,20)}</div>`;
+}
+function _renderLiveStatus(){
+  if(!_liveSession)return;
+  const timer=_liveTimerText();
+  const water=_liveSession.water||'Noch nicht gesetzt';
+  const spot=_liveSession.spot||'Kein Spot';
+  const set=(id,txt)=>{const el=document.getElementById(id);if(el)el.textContent=txt;};
+  set('live-timer',timer);
+  set('live-water-label',water);
+  set('live-spot-label',spot);
+  set('live-start-label',_liveClock(_liveSession.startTime));
+  const wx=_lastWx||{};
+  const hero=document.getElementById('live-hero-wx');
+  if(hero){
+    hero.innerHTML=`
+      <div class="live-hero-wx-cell">${_liveIcon('thermo')}<strong>${wx.temp!=null?Math.round(wx.temp)+'°C':'--'}</strong><span>Temp</span></div>
+      <div class="live-hero-wx-cell">${_liveIcon('wind')}<strong>${wx.windSpeed!=null?Math.round(wx.windSpeed)+' km/h':'--'}</strong><span>${wx.windDir!=null?_compassDir(wx.windDir):'Wind'}</span></div>
+      <div class="live-hero-wx-cell">${_liveIcon('pressure')}<strong>${wx.pressure!=null?Math.round(wx.pressure):'--'}</strong><span>hPa</span></div>`;
+  }
+  const sum=document.getElementById('live-summary-grid');
+  if(sum){
+    const bites=_ensureLiveEvents().filter(e=>e.kind==='bite').length;
+    sum.innerHTML=`
+      <div class="live-summary-card"><strong>${_liveSession.catches?.length||0}</strong><span>Fänge</span></div>
+      <div class="live-summary-card"><strong>${bites}</strong><span>Bisse</span></div>
+      <div class="live-summary-card"><strong>${_liveSession.gpsTrack?.length||0}</strong><span>GPS-Punkte</span></div>`;
+  }
+  const wxGrid=document.getElementById('live-wx-grid');
+  if(wxGrid){
+    wxGrid.innerHTML=`
+      <div class="live-wx-tile">${_liveIcon('cloud')}<div><strong>${_esc(_plainWxText(wx.weather))}</strong><span>Wetter</span></div></div>
+      <div class="live-wx-tile">${_liveIcon('water')}<div><strong>${wx.humidity!=null?Math.round(wx.humidity)+'%':'--'}</strong><span>Luftfeuchte</span></div></div>`;
+  }
+}
+function _renderLiveTimeline(){
+  const el=document.getElementById('live-timeline');
+  if(!el||!_liveSession)return;
+  const rows=[];
+  rows.push({kind:'start',time:_liveClock(_liveSession.startTime),ts:_liveSession.startTime,text:'Session gestartet'});
+  (_liveSession.catches||[]).forEach((c,i)=>rows.push({kind:'catch',time:c.time||_liveClock(c.ts),ts:c.ts||_liveSession.startTime+i,text:`${c.type||'Fang'}${c.length?' '+c.length+' cm':''}`}));
+  _ensureLiveEvents().forEach(e=>{if(e.kind!=='start')rows.push(e);});
+  rows.sort((a,b)=>(a.ts||0)-(b.ts||0));
+  if(!rows.length){el.innerHTML='<div class="live-timeline-empty">Noch keine Aktivität.</div>';return;}
+  const ico={start:'clock',catch:'plus',bite:'hook',note:'edit',pause:'clock',resume:'clock'};
+  el.innerHTML=rows.map(r=>`<div class="live-timeline-row">
+    <div class="live-timeline-time">${_esc(r.time||'--:--')}</div>
+    <span class="live-timeline-dot"></span>
+    <div class="live-timeline-text">${_esc(r.text||'')}</div>
+    <div class="live-timeline-ico">${_liveIcon(ico[r.kind]||'info')}</div>
+  </div>`).join('');
+}
+function liveAddBite(){
+  if(!_liveSession)return;
+  _addLiveEvent('bite','Biss notiert');
+  _renderLiveStatus();
+  showToast('','Biss notiert');
+}
+function liveAddNote(){
+  if(!_liveSession)return;
+  const txt=prompt('Notiz zur Live-Session:');
+  if(!txt||!txt.trim())return;
+  _addLiveEvent('note',txt.trim());
+  showToast('','Notiz gespeichert');
+}
+function _setLiveEndHeader(title,sub){
+  const t=document.getElementById('ls-end-title');
+  const s=document.getElementById('ls-end-sub');
+  if(t)t.textContent=title;
+  if(s)s.textContent=sub;
+}
+function _liveDistanceKm(track){
+  if(!Array.isArray(track)||track.length<2)return 0;
+  let total=0;
+  for(let i=1;i<track.length;i++){
+    const a=track[i-1],b=track[i];
+    const lat1=parseFloat(a.lat),lon1=parseFloat(a.lon),lat2=parseFloat(b.lat),lon2=parseFloat(b.lon);
+    if([lat1,lon1,lat2,lon2].some(Number.isNaN))continue;
+    const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
+    const x=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+    total+=2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+  }
+  return total;
+}
+function _renderLiveTrackPreview(track,catches){
+  const route=(Array.isArray(track)?track:[]).map(p=>({lat:parseFloat(p.lat),lon:parseFloat(p.lon)})).filter(p=>!isNaN(p.lat)&&!isNaN(p.lon));
+  const pins=(Array.isArray(catches)?catches:[]).map(c=>({lat:parseFloat(c.lat||c._lat),lon:parseFloat(c.lon||c._lon),type:c.type,length:c.length})).filter(p=>!isNaN(p.lat)&&!isNaN(p.lon));
+  const all=[...route,...pins];
+  const dist=_liveDistanceKm(route);
+  const meta=[route.length?`${route.length} Punkte`:null,dist?`${dist.toFixed(2)} km`:null,pins.length?`${pins.length} Fangpins`:null].filter(Boolean).join(' · ')||'Noch keine GPS-Daten';
+  if(!all.length){
+    return`<div class="live-track-card">
+      <div class="live-track-head"><div class="live-track-title">${_liveIcon('map')}Strecke</div><div class="live-track-meta">${meta}</div></div>
+      <div class="live-track-empty">Keine Route verfügbar. Wenn GPS erlaubt ist, erscheinen hier Strecke und Fangpins.</div>
+    </div>`;
+  }
+  const minLat=Math.min(...all.map(p=>p.lat)),maxLat=Math.max(...all.map(p=>p.lat));
+  const minLon=Math.min(...all.map(p=>p.lon)),maxLon=Math.max(...all.map(p=>p.lon));
+  const pad=18,w=360,h=150;
+  const sx=p=>pad+((p.lon-minLon)/((maxLon-minLon)||0.0001))*(w-pad*2);
+  const sy=p=>h-pad-((p.lat-minLat)/((maxLat-minLat)||0.0001))*(h-pad*2);
+  const poly=route.map(p=>`${sx(p).toFixed(1)},${sy(p).toFixed(1)}`).join(' ');
+  const pinSvg=pins.map(p=>`<circle cx="${sx(p).toFixed(1)}" cy="${sy(p).toFixed(1)}" r="5" fill="#C4963A" stroke="#fff" stroke-width="2"/>`).join('');
+  return`<div class="live-track-card">
+    <div class="live-track-head"><div class="live-track-title">${_liveIcon('map')}Strecke</div><div class="live-track-meta">${meta}</div></div>
+    <div class="live-track-preview"><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <defs><pattern id="live-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(45,74,53,.08)" stroke-width="1"/></pattern></defs>
+      <rect width="${w}" height="${h}" fill="url(#live-grid)"/>
+      ${route.length>1?`<polyline points="${poly}" fill="none" stroke="#2D4A35" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:''}
+      ${pinSvg}
+    </svg></div>
+  </div>`;
+}
+function _renderLiveEndCatches(catches){
+  if(!Array.isArray(catches)||!catches.length)return'';
+  return`<div class="live-end-catches">
+    <div class="live-track-title" style="margin-bottom:4px;">${_liveIcon('plus')}Fänge</div>
+    ${catches.map(c=>`<div class="live-end-catch-row">
+      ${_liveCatchThumb(c,'live-end-catch-thumb')}
+      <div class="live-end-catch-body">
+        <div class="live-end-catch-name">${_esc(c.type||'Fisch')}${c.length?' · '+c.length+' cm':''}</div>
+        <div class="live-end-catch-meta">${_esc(c.time||'')}${c.bait?' · '+_esc(c.bait):''}</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
 // ── Live Session Start: Full Overlay öffnen ──
 function startLiveSession(){
   const wxEl=document.getElementById('ls-wx-content');
-  if(_lastWx){
-    wxEl.innerHTML=`${_lastWx.weather||'🌤️'} ${_lastWx.temp!=null?_lastWx.temp+'°C':'–'} · Wind ${_lastWx.windSpeed||'–'} km/h · ${_lastWx.humidity||'–'}% Feuchte`;
-  } else {
-    wxEl.textContent='🌤️ Wetter nicht verfügbar (offline)';
-  }
+  if(wxEl)wxEl.innerHTML=_liveWeatherStartHtml();
   document.getElementById('ls-track-toggle').classList.add('on');
   // Gewässer/Spot leeren
   const lsW=document.getElementById('ls-water');if(lsW)lsW.value='';
   const lsS=document.getElementById('ls-spot');if(lsS)lsS.value='';
+  const lsN=document.getElementById('ls-note');if(lsN)lsN.value='';
   openFs('live-start');
+  requestAnimationFrame(()=>{
+    document.querySelector('#fs-live-start .fsov-scroll')?.scrollTo?.(0,0);
+    try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+  });
+  setTimeout(()=>{try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}},120);
 }
 
 function closeLiveStartOv(){closeFs('live-start');}
@@ -15023,52 +15615,29 @@ function _doStartLive(){
   const trackOn=document.getElementById('ls-track-toggle').classList.contains('on');
   const lsWater=document.getElementById('ls-water')?.value?.trim()||'';
   const lsSpot=document.getElementById('ls-spot')?.value?.trim()||'';
+  const lsNote=document.getElementById('ls-note')?.value?.trim()||'';
 
   _liveSession={
     startTime:Date.now(),
     catches:[],
     gpsTrack:[],
+    events:[],
     water:lsWater,
     spot:lsSpot,
+    note:lsNote,
     paused:false,
     trackGps:trackOn
   };
+  _ensureLiveEvents().push({kind:'start',text:'Session gestartet',ts:_liveSession.startTime,time:_liveClock(_liveSession.startTime)});
+  if(lsNote)_ensureLiveEvents().push({kind:'note',text:lsNote,ts:_liveSession.startTime+1,time:_liveClock(_liveSession.startTime)});
   // Favs aktualisieren
   if(lsWater)addFav('waters',lsWater);
   if(lsSpot)addFav('spots',lsSpot);
+  if(lsNote&&lsNote.length>=2)dictAdd('notes',lsNote);
   localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
 
   // AP4: GPS-Punkte filtern – Noise + Duplikate raus, nur high-quality Samples
-  if(typeof window._pushLiveGpsPoint!=='function'){
-    window._pushLiveGpsPoint=function(pos){
-      if(!_liveSession||!pos||!pos.coords)return;
-      const lat=pos.coords.latitude,lon=pos.coords.longitude;
-      const acc=pos.coords.accuracy||999;
-      // Ignoriere Samples mit sehr schlechter Genauigkeit (>35m)
-      if(acc>35)return;
-      const last=_liveSession.gpsTrack[_liveSession.gpsTrack.length-1];
-      // Mindestabstand zum letzten Punkt ≥ 3m (Haversine approximiert)
-      if(last){
-        const dLat=(lat-parseFloat(last.lat))*111320;
-        const dLon=(lon-parseFloat(last.lon))*111320*Math.cos(lat*Math.PI/180);
-        const dist=Math.sqrt(dLat*dLat+dLon*dLon);
-        if(dist<3)return;
-        // Extreme Sprünge ablehnen (>200m/s ist unrealistisch)
-        const dt=(Date.now()-(last.ts||0))/1000;
-        if(dt>0&&dist/dt>200)return;
-      }
-      const coord={lat:lat.toFixed(6),lon:lon.toFixed(6),ts:Date.now(),acc:Math.round(acc)};
-      _liveSession.gpsTrack.push(coord);
-      gpsCoords={lat:coord.lat,lon:coord.lon};
-      const el=document.getElementById('live-coords');
-      if(el)el.textContent=`📍 ${coord.lat}, ${coord.lon} · ±${coord.acc}m`;
-      // Throttle localStorage-Write
-      if(!window._liveSaveThrottle||Date.now()-window._liveSaveThrottle>2000){
-        localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
-        window._liveSaveThrottle=Date.now();
-      }
-    };
-  }
+  _ensureLiveGpsHelper();
 
   if(trackOn&&navigator.geolocation){
     _liveGpsWatch=navigator.geolocation.watchPosition(pos=>{
@@ -15084,21 +15653,21 @@ function _doStartLive(){
   _liveTimer=setInterval(_updateLiveTimer,1000);
 
   // UI: FAB + Dot + Live-Button anzeigen
-  document.getElementById('live-fab').style.display='block';
+  document.getElementById('live-fab').style.display='flex';
   document.getElementById('hdr-live-dot').style.display='block';
   const liveBtn=document.getElementById('hdr-live-btn');
-  if(liveBtn){liveBtn.classList.add('active');liveBtn.textContent='⏹ Live';}
+  if(liveBtn){liveBtn.classList.add('active');liveBtn.textContent='Live';}
 
   // Petri Heil! Animation
   const ph=document.createElement('div');
   ph.className='petri-heil';
-  ph.innerHTML='<div class="ph-ico">🎣</div><div class="ph-txt">Petri Heil!</div>';
+  ph.innerHTML='<div class="ph-ico"><svg class="ic" style="width:64px;height:64px;"><use href="#i-hook"/></svg></div><div class="ph-txt">Petri Heil!</div>';
   document.body.appendChild(ph);
   setTimeout(()=>ph.remove(),2200);
 
   setTimeout(()=>{
     openLiveOv();
-    showToast('🔴','Live Session gestartet!');
+    showToast('','Live Session gestartet!');
   },1200);
 }
 
@@ -15116,16 +15685,18 @@ function pauseLiveSession(){
         _pushLiveGpsPoint(pos);
       },()=>{},{enableHighAccuracy:true,maximumAge:1000,timeout:20000});
     }
-    localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
-    showToast('▶️','Session fortgesetzt');
+    _addLiveEvent('resume','Session fortgesetzt');
+    _renderLiveStatus();
+    showToast('','Session fortgesetzt');
   } else {
     // Pause
     _liveSession.paused=true;
     _liveSession._elapsedAtPause=Date.now()-_liveSession.startTime;
     if(_liveTimer){clearInterval(_liveTimer);_liveTimer=null;}
     if(_liveGpsWatch){navigator.geolocation.clearWatch(_liveGpsWatch);_liveGpsWatch=null;}
-    localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
-    showToast('⏸','Session pausiert');
+    _addLiveEvent('pause','Session pausiert');
+    _renderLiveStatus();
+    showToast('','Session pausiert');
   }
 }
 
@@ -15141,16 +15712,25 @@ function confirmEndLive(){
   const hasCatches=_liveSession.catches.length>0;
   if(!hasCatches){
     // Schneider-Vorfrage zuerst
+    _setLiveEndHeader('Live Session beenden','Schneider-Session prüfen');
     const card=document.getElementById('ls-end-card');
     card.innerHTML=`
-      <h3>🤔 Schneider?</h3>
-      <div class="le-sub">Du hast noch keinen Fang eingetragen.</div>
+      <div class="live-end-note-card">
+        <div class="live-track-title" style="margin-bottom:6px;">${_liveIcon('info')}Schneider?</div>
+        Du hast noch keinen Fang eingetragen. Du kannst die Session trotzdem sauber speichern.
+      </div>
+      ${_renderLiveTrackPreview(_liveSession.gpsTrack||[],_liveSession.catches||[])}
       <div class="le-actions">
         <button class="ls-end-btn primary" onclick="_renderEndSessionFinal(true)">Ja, Schneider</button>
         <button class="ls-end-btn ghost" onclick="closeLiveEndOv();openLiveCatchOv()">Nein, Fang eintragen</button>
         <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>
       </div>`;
     document.getElementById('ls-end-ov').classList.add('on');
+    requestAnimationFrame(()=>document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0));
+    setTimeout(()=>{
+      document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0);
+      try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+    },140);
     return;
   }
   // Direkt Recap+Share zeigen (kein Schneider-Fall)
@@ -15163,10 +15743,15 @@ function _renderEndSessionFinal(isSkunked){
   // Share-State zurücksetzen (frische Modal-Öffnung)
   _endShareState={enabled:false,groupIds:[]};
 
-  const timer=document.getElementById('live-timer')?.textContent||'--:--:--';
+  _setLiveEndHeader('Live Session beenden','Zusammenfassung prüfen');
+  const timer=_liveTimerText();
   const catches=_liveSession.catches||[];
   const water=_liveSession.water||'–';
   const spot=_liveSession.spot||'';
+  const bites=_ensureLiveEvents().filter(e=>e.kind==='bite').length;
+  const startLabel=_liveClock(_liveSession.startTime);
+  const endLabel=_liveClock(Date.now());
+  const note=_liveSession.note||'';
 
   // Vorab-Bewertung: welche Standort-Stufe hat die Session?
   const previewLoc=_resolveSessLocation({
@@ -15179,8 +15764,11 @@ function _renderEndSessionFinal(isSkunked){
   const recap=`
     <div class="le-recap">
       <div class="le-recap-cell"><div class="lbl">Dauer</div><div class="val">${timer}</div></div>
-      <div class="le-recap-cell"><div class="lbl">Fänge</div><div class="val">${catches.length}${isSkunked?' (Schneider)':''}</div></div>
-      <div class="le-recap-cell" style="grid-column:span 2;"><div class="lbl">Gewässer</div><div class="val">${_esc(water)}${spot?' · '+_esc(spot):''}</div></div>
+      <div class="le-recap-cell"><div class="lbl">Fänge</div><div class="val">${catches.length}</div></div>
+      <div class="le-recap-cell"><div class="lbl">Bisse</div><div class="val">${bites}</div></div>
+      <div class="le-recap-cell wide"><div class="live-input-icon">${_liveIcon('clock')}</div><div><div class="lbl">Start / Ende</div><div class="val">${startLabel} - ${endLabel}</div></div></div>
+      <div class="le-recap-cell wide"><div class="live-input-icon">${_liveIcon('water')}</div><div><div class="lbl">Gewässer</div><div class="val">${_esc(water)}</div></div></div>
+      <div class="le-recap-cell wide"><div class="live-input-icon">${_liveIcon('pin')}</div><div><div class="lbl">Spot</div><div class="val">${_esc(spot||'Kein Spot')}</div></div></div>
     </div>`;
 
   const shareSection=_renderShareSection({
@@ -15188,6 +15776,7 @@ function _renderEndSessionFinal(isSkunked){
     locInfo:previewLoc,
     hasCatches
   });
+  const noteHtml=note?`<div class="live-end-note-card"><div class="live-track-title" style="margin-bottom:6px;">${_liveIcon('edit')}Notizen</div>${_esc(note)}</div>`:'';
 
   const card=document.getElementById('ls-end-card');
   card.innerHTML=`
@@ -15195,13 +15784,21 @@ function _renderEndSessionFinal(isSkunked){
     <div class="le-sub">${hasCatches?'Bitte bestätige die Session':'Schneider-Session — wirklich abschließen?'}</div>
     <div class="le-body">
       ${recap}
+      ${_renderLiveTrackPreview(_liveSession.gpsTrack||[],catches)}
+      ${noteHtml}
+      ${_renderLiveEndCatches(catches)}
       ${shareSection}
     </div>
     <div class="le-actions">
-      <button class="ls-end-btn primary" onclick="_finalizeLive(${isSkunked})">✅ Speichern & Beenden</button>
+      <button class="ls-end-btn primary" onclick="_finalizeLive(${isSkunked})">Speichern & Beenden</button>
       <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>
     </div>`;
   document.getElementById('ls-end-ov').classList.add('on');
+  requestAnimationFrame(()=>document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0));
+  setTimeout(()=>{
+    document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0);
+    try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+  },140);
   _initShareSectionListeners();
 }
 
@@ -15221,7 +15818,7 @@ function _renderShareSection(opts){
   }
   if(!groups.length){
     return `<div class="share-section"><div class="share-toggle-row" style="cursor:default;opacity:.6;">
-      <div class="ico">👥</div>
+      <div class="ico">${_liveIcon('users')}</div>
       <div class="body">
         <div class="ttl">In Gruppe teilen</div>
         <div class="sub">Du bist noch in keiner Gruppe — erstelle oder tritt zuerst einer Gruppe bei.</div>
@@ -15263,7 +15860,7 @@ function _renderShareSection(opts){
 
   return `<div class="share-section${expanded}" id="share-section">
     <div class="share-toggle-row" onclick="_endToggleShare()">
-      <div class="ico">👥</div>
+      <div class="ico">${_liveIcon('users')}</div>
       <div class="body">
         <div class="ttl">In Gruppe teilen</div>
         <div class="sub">${groups.length===1?'1 Gruppe verfügbar':groups.length+' Gruppen — wähle eine oder mehrere'}</div>
@@ -15279,10 +15876,10 @@ function _renderShareSection(opts){
 function _shareLocationBanner(locInfo){
   if(!locInfo)return'';
   const k=locInfo.kind;
-  if(k==='exact')return `<div class="share-loc-banner exact"><span class="ico">📍</span><span>GPS exakt verfügbar — Smart-Map zeigt den Fangspot präzise.</span></div>`;
-  if(k==='spot')return `<div class="share-loc-banner spot"><span class="ico">📌</span><span>Spot-Approximation aus deiner Spot-Bibliothek — Smart-Map zeigt grobe Position (≈400 m).</span></div>`;
-  if(k==='water')return `<div class="share-loc-banner water"><span class="ico">🗺️</span><span>Nur Gewässer-Approximation — Smart-Map zeigt Region (≈1.5 km).</span></div>`;
-  return `<div class="share-loc-banner none"><span class="ico">📍</span><span>Keine Position verfügbar — Smart-Map wird leer angezeigt.</span></div>`;
+  if(k==='exact')return `<div class="share-loc-banner exact"><span class="ico">${_liveIcon('pin')}</span><span>GPS exakt verfügbar — Smart-Map zeigt den Fangspot präzise.</span></div>`;
+  if(k==='spot')return `<div class="share-loc-banner spot"><span class="ico">${_liveIcon('pin')}</span><span>Spot-Approximation aus deiner Spot-Bibliothek — Smart-Map zeigt grobe Position (≈400 m).</span></div>`;
+  if(k==='water')return `<div class="share-loc-banner water"><span class="ico">${_liveIcon('map')}</span><span>Nur Gewässer-Approximation — Smart-Map zeigt Region (≈1.5 km).</span></div>`;
+  return `<div class="share-loc-banner none"><span class="ico">${_liveIcon('pin')}</span><span>Keine Position verfügbar — Smart-Map wird leer angezeigt.</span></div>`;
 }
 
 function _initShareSectionListeners(){
@@ -15352,19 +15949,20 @@ function closeLiveEndOv(){
 
 function _updateLiveTimer(){
   if(!_liveSession)return;
-  const elapsed=Date.now()-_liveSession.startTime;
-  const h=Math.floor(elapsed/3600000);
-  const m=Math.floor((elapsed%3600000)/60000);
-  const s=Math.floor((elapsed%60000)/1000);
-  const timer=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  const el=document.getElementById('live-timer');
-  if(el)el.textContent=timer;
+  _renderLiveStatus();
 }
 
 function openLiveOv(){
   if(!_liveSession){startLiveSession();return;}
   document.getElementById('live-ov')?.classList.add('on');
+  requestAnimationFrame(()=>{
+    document.querySelector('#live-ov .live-body')?.scrollTo?.(0,0);
+    try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+  });
+  setTimeout(()=>{try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}},120);
+  _renderLiveStatus();
   _renderLiveCatches();
+  _renderLiveTimeline();
 }
 
 function closeLiveOv(){
@@ -15377,38 +15975,38 @@ function liveQuickCatch(){
   const len=parseFloat(prompt('Länge (cm):')||'0');
   const t=new Date();
   const time=t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0');
-  const c={type:fish.trim(),length:len||0,time,taken:false,bait:'',baitNote:'',score:fScore(fish.trim(),len||0),photoKey:null,inputMode:'raub'};
+  const c={type:fish.trim(),length:len||0,time,ts:Date.now(),taken:false,bait:'',baitNote:'',score:fScore(fish.trim(),len||0),photoKey:null,inputMode:'raub'};
   _liveSession.catches.push(c);
   localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));
   _renderLiveCatches();
-  showToast('🐟',`${fish} ${len?len+'cm ':''} hinzugefügt!`);
+  showToast('',`${fish} ${len?len+'cm ':''}hinzugefügt!`);
 }
 
 function _renderLiveCatches(){
   const el=document.getElementById('live-catches-list');
   if(!el||!_liveSession)return;
   if(!_liveSession.catches.length){
-    el.innerHTML='<div style="text-align:center;padding:24px;color:rgba(255,255,255,.6);font-size:12px;">Noch keine Fänge – nutze den Button unten</div>';
+    el.innerHTML='<div class="live-empty">Noch keine Fänge gespeichert.</div>';
+    _renderLiveStatus();
+    _renderLiveTimeline();
     return;
   }
-  // Deduplizierte Zusammenfassung (Chips) oben
-  const fishCounts={};
-  _liveSession.catches.forEach(c=>{fishCounts[c.type]=(fishCounts[c.type]||0)+1;});
-  const chips=Object.entries(fishCounts).map(([f,n])=>`<span style="display:inline-block;padding:3px 10px;background:rgba(255,255,255,.15);border-radius:12px;font-size:11px;font-weight:600;color:#fff;margin:2px;">${fIco(f)} ${f}${n>1?' ×'+n:''}</span>`).join('');
   // AP1: Einzelne Fänge mit Edit/Delete-Aktionen rechts
   const cards=_liveSession.catches.map((c,i)=>`
     <div class="live-catch-card">
-      <div class="live-catch-ico">${fIco(c.type)}</div>
+      ${_liveCatchThumb(c)}
       <div class="live-catch-info">
-        <div class="live-catch-name">${_esc?_esc(c.type):c.type}${c.length?' · '+c.length+'cm':''}</div>
-        <div class="live-catch-meta">${c.time||''}${c.bait?' · '+(_esc?_esc(c.bait):c.bait):''}</div>
+        <div class="live-catch-name">${_esc?_esc(c.type):c.type}${c.length?' · '+c.length+' cm':''}</div>
+        <div class="live-catch-meta">${c.time||''}${c.bait?' · '+(_esc?_esc(c.bait):c.bait):''}${c.baitColor?' · '+_esc(c.baitColor):''}</div>
       </div>
       <div class="live-catch-actions">
-        <button class="live-catch-act-btn" onclick="_editLiveCatch(${i})" title="Bearbeiten" aria-label="Fang bearbeiten">✏️</button>
-        <button class="live-catch-act-btn" onclick="_deleteLiveCatch(${i})" title="Löschen" aria-label="Fang löschen">🗑️</button>
+        <button class="live-catch-act-btn" onclick="_editLiveCatch(${i})" title="Bearbeiten" aria-label="Fang bearbeiten"><svg class="ic"><use href="#i-edit"/></svg></button>
+        <button class="live-catch-act-btn" onclick="_deleteLiveCatch(${i})" title="Löschen" aria-label="Fang löschen"><svg class="ic"><use href="#i-trash"/></svg></button>
       </div>
     </div>`).join('');
-  el.innerHTML=`<div style="margin-bottom:8px;">${chips}</div>${cards}`;
+  el.innerHTML=cards;
+  _renderLiveStatus();
+  _renderLiveTimeline();
 }
 
 // AP1: Live-Catch bearbeiten — öffnet Live-Catch-Overlay mit prefilled Werten
@@ -15418,7 +16016,7 @@ function _editLiveCatch(idx){
   _editingLiveCatchIdx=idx;
   // Overlay öffnen — openLiveCatchOv liest _editingLiveCatchIdx und füllt entsprechend
   openLiveCatchOv();
-  showToast('✏️','Fang bearbeiten');
+  showToast('','Fang bearbeiten');
 }
 
 // AP1: Live-Catch löschen mit Confirm
@@ -15433,7 +16031,9 @@ async function _deleteLiveCatch(idx){
   _liveSession.catches.splice(idx,1);
   try{localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));}catch(e){}
   _renderLiveCatches();
-  showToast('🗑️','Fang gelöscht');
+  _renderLiveStatus();
+  _renderLiveTimeline();
+  showToast('','Fang gelöscht');
 }
 
 async function endLiveSession(){
@@ -15471,6 +16071,9 @@ async function _finalizeLive(isSkunked){
     skunked:isSkunked||!_liveSession.catches.length,
     autoSkunked:isSkunked||!_liveSession.catches.length,
     catches:_liveSession.catches,
+    note:_liveSession.note||'',
+    events:_liveSession.events||[],
+    bites:(_liveSession.events||[]).filter(e=>e.kind==='bite').length,
     pressure:null,windSpeed:null,windDir:null,humidity:null,clouds:null,precip:null,
     saved:new Date().toISOString(),
     liveTrack:_liveSession.gpsTrack
@@ -15521,8 +16124,8 @@ async function _finalizeLive(isSkunked){
   // direkt nach dem Speichern in alle ausgewählten Gruppen teilen.
   if(_endShareState.enabled&&_endShareState.groupIds.length){
     try{
-      await _shareSessionToGroups(sess,_endShareState.groupIds);
-      showToast('👥',`Session in ${_endShareState.groupIds.length} Gruppe${_endShareState.groupIds.length>1?'n':''} geteilt`);
+      await _shareLiveSessionToGroups(sess,_endShareState.groupIds);
+      showToast('',`Session in ${_endShareState.groupIds.length} Gruppe${_endShareState.groupIds.length>1?'n':''} geteilt`);
     }catch(e){console.warn('Share nach Live-End:',e);}
   }
   _endShareState={enabled:false,groupIds:[]};
@@ -15533,13 +16136,89 @@ async function _finalizeLive(isSkunked){
   document.getElementById('live-fab').style.display='none';
   document.getElementById('hdr-live-dot').style.display='none';
   const liveBtnEnd=document.getElementById('hdr-live-btn');
-  if(liveBtnEnd){liveBtnEnd.classList.remove('active');liveBtnEnd.textContent='🔴 Live';}
+  if(liveBtnEnd){liveBtnEnd.classList.remove('active');liveBtnEnd.textContent='Live';}
   closeLiveOv();
   rndrFangbuch();
 
   // v45: Fitness-App-Style Summary statt einfachem Toast
   _showLsSummary(sess);
   showPage('fangbuch');
+}
+
+async function _liveGetPhotoData(photoKey){
+  if(!photoKey)return null;
+  try{
+    const idbPhoto=await getPhoto(photoKey);
+    if(idbPhoto)return idbPhoto;
+  }catch(e){}
+  try{return localStorage.getItem('fb_photo_'+photoKey)||null;}catch(e){return null;}
+}
+
+async function _shareLiveSessionToGroups(sess,groupIds){
+  if(!Array.isArray(groupIds)||!groupIds.length)return 0;
+  if(!_sb||!_sbUser){showToast('⚠️','Cloud-Login nötig um zu teilen');return 0;}
+  const myName=profile?.name||profile?.vorname||'Angler';
+  const myId=_sbUser.id;
+  const loc=_resolveSessLocation({water:sess.water,spot:sess.spot,lat:sess.lat,lon:sess.lon});
+  const catches=Array.isArray(sess.catches)?sess.catches:[];
+
+  let totalShared=0;
+  for(const gId of groupIds){
+    const g=_groups.find(x=>x.id===gId);
+    if(!g)continue;
+
+    const catchSummaries=[];
+    for(const c of catches){
+      let photoUrl=null;
+      if(c.photoKey){
+        try{
+          const dataUrl=await _liveGetPhotoData(c.photoKey);
+          if(dataUrl)photoUrl=await _grpUploadPhoto(gId,dataUrl,'session_'+(sess.id||Date.now())+'_'+c.photoKey);
+        }catch(e){console.warn('live session photo upload:',e);}
+      }
+      catchSummaries.push({
+        type:c.type,length:c.length,weight:c.weight,time:c.time,
+        bait:c.bait,baitColor:c.baitColor,baitSize:c.baitSize||c.baitLen,
+        note:c.note,photoUrl
+      });
+    }
+
+    const biggest=catchSummaries.slice().sort((a,b)=>(b.length||0)-(a.length||0))[0]||null;
+    const photoUrls=catchSummaries
+      .filter(c=>c.photoUrl)
+      .sort((a,b)=>(b.length||0)-(a.length||0))
+      .map(c=>c.photoUrl);
+    const duration=calcDur(sess.start,sess.end)||'--';
+    const sessionData={
+      kind:'session',
+      sessionId:String(sess.id||''),
+      water:sess.water,spot:sess.spot,date:sess.date,start:sess.start,end:sess.end,duration,
+      catchCount:catches.length,biteCount:sess.bites||0,skunked:!!sess.skunked,
+      note:sess.note||'',summary:`${catches.length} Fänge${sess.bites?` · ${sess.bites} Bisse`:''}`,
+      catches:catchSummaries,biggestFish:biggest,
+      photoUrls,bestPhotoUrl:photoUrls[0]||null,
+      shareGps:loc.kind!=='none',lat:loc.lat,lon:loc.lon,locKind:loc.kind,
+      pressure:sess.pressure??null,windSpeed:sess.windSpeed??null,windDir:sess.windDir??null,
+      temp:sess.temp??null,humidity:sess.humidity??null,clouds:sess.clouds??null,precip:sess.precip??null,
+      weather:sess.weather||null,moonPhase:sess.moonPhase||null,moonIllum:sess.moonIllum??null
+    };
+
+    try{
+      await _sb.from('group_messages').insert({
+        group_id:gId,user_id:myId,type:'session',
+        text:`${myName} hat eine Live-Session geteilt.`,
+        catch_data:sessionData,
+        photo_url:sessionData.bestPhotoUrl,
+        display_name:myName
+      });
+      totalShared++;
+      sess.sharedToGroups=sess.sharedToGroups||[];
+      if(!sess.sharedToGroups.includes(gId))sess.sharedToGroups.push(gId);
+    }catch(e){console.warn('share live session:',e);}
+  }
+  await saveOneSess(sess);
+  if(_activeGroupId&&groupIds.includes(_activeGroupId))_grpRefreshActive();
+  return totalShared;
 }
 
 // v54: Multi-Group-Share-Helper — schreibt jetzt in echte Supabase-Tabellen
@@ -15622,13 +16301,15 @@ function _resumeLiveSession(){
   if(!saved)return;
   try{
     _liveSession=JSON.parse(saved);
-    document.getElementById('live-fab').style.display='block';
+    document.getElementById('live-fab').style.display='flex';
     document.getElementById('hdr-live-dot').style.display='block';
     const lbResume=document.getElementById('hdr-live-btn');
-    if(lbResume){lbResume.classList.add('active');lbResume.textContent='⏹ Live';}
+    if(lbResume){lbResume.classList.add('active');lbResume.textContent='Live';}
+    _ensureLiveEvents();
+    _ensureLiveGpsHelper();
     _liveTimer=setInterval(_updateLiveTimer,1000);
     // GPS Tracking wiederaufnehmen (AP4: high accuracy mit Filter)
-    if(navigator.geolocation){
+    if(_liveSession.trackGps&&navigator.geolocation){
       _liveGpsWatch=navigator.geolocation.watchPosition(pos=>{
         _pushLiveGpsPoint(pos);
       },()=>{},{enableHighAccuracy:true,maximumAge:1000,timeout:20000});
@@ -15690,7 +16371,7 @@ function openLiveCatchOv(){
     // CR-Flag (taken=false → C&R aktiv)
     const crEl=document.getElementById('lc-cr');
     if(crEl)crEl.checked=!editing.taken;
-    document.getElementById('lc-time-hint').textContent=`✏️ Bearbeite Fang · Original-Zeit: ${editing.time||'--'}`;
+    document.getElementById('lc-time-hint').textContent=`Bearbeite Fang · Original-Zeit: ${editing.time||'--'}`;
   } else {
     // Normaler Add-Mode: Fischart + Köder aus vorherigem Fang vorausfüllen (Carryover)
     const prevCatch=_liveSession.catches[_liveSession.catches.length-1];
@@ -15711,11 +16392,19 @@ function openLiveCatchOv(){
     const now=new Date();
     const hh=String(now.getHours()).padStart(2,'0');
     const mm=String(now.getMinutes()).padStart(2,'0');
-    document.getElementById('lc-time-hint').textContent=`⏱️ Uhrzeit: ${hh}:${mm} (automatisch)`;
+    document.getElementById('lc-time-hint').textContent=`Uhrzeit: ${hh}:${mm} (automatisch)`;
   }
 
   // Overlay öffnen
   document.getElementById('fs-live-catch')?.classList.add('on');
+  requestAnimationFrame(()=>{
+    document.querySelector('#fs-live-catch .fsov-scroll')?.scrollTo?.(0,0);
+    try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+  });
+  setTimeout(()=>{
+    document.querySelector('#fs-live-catch .fsov-scroll')?.scrollTo?.(0,0);
+    try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+  },120);
   // AP2: Spot-FAB ausblenden während Live-Catch-Overlay offen
   if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();
 }
@@ -15861,8 +16550,8 @@ function trigLivePhoto(){
   sheet.style.cssText='position:absolute;inset:0;z-index:260;display:flex;align-items:flex-end;background:rgba(15,25,18,.6);';
   sheet.innerHTML=`<div style="width:100%;background:var(--cream);border-radius:20px 20px 0 0;padding:20px 18px 32px;display:flex;flex-direction:column;gap:10px;">
     <div style="font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:4px;text-align:center;">Foto hinzufügen</div>
-    <button onclick="document.getElementById('lc-photo-gal').click();document.getElementById('photo-choice-sheet').remove();" style="width:100%;padding:14px;background:var(--green-deep);border:none;border-radius:var(--rs);color:#fff;font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;">🖼️ Aus Mediathek wählen</button>
-    <button onclick="document.getElementById('lc-photo-input').click();document.getElementById('photo-choice-sheet').remove();" style="width:100%;padding:14px;background:var(--cream-dark);border:none;border-radius:var(--rs);color:var(--text-dark);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;">📷 Kamera aufnehmen</button>
+    <button onclick="document.getElementById('lc-photo-gal').click();document.getElementById('photo-choice-sheet').remove();" style="width:100%;padding:14px;background:var(--green-deep);border:none;border-radius:var(--rs);color:#fff;font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;">Aus Mediathek wählen</button>
+    <button onclick="document.getElementById('lc-photo-input').click();document.getElementById('photo-choice-sheet').remove();" style="width:100%;padding:14px;background:var(--cream-dark);border:none;border-radius:var(--rs);color:var(--text-dark);font-size:14px;font-weight:600;font-family:var(--fa);cursor:pointer;">Kamera aufnehmen</button>
     <button onclick="document.getElementById('photo-choice-sheet').remove();" style="width:100%;padding:12px;background:transparent;border:none;color:var(--text-light);font-size:13px;font-family:var(--fa);cursor:pointer;">Abbrechen</button>
   </div>`;
   document.getElementById('frame').appendChild(sheet);
@@ -15923,8 +16612,9 @@ function saveLiveCatch(){
   }
   // Im Edit-Mode Original-Zeit beibehalten
   const finalTime=editingOrig?(editingOrig.time||time):time;
+  const finalTs=editingOrig?(editingOrig.ts||Date.now()):Date.now();
 
-  const c={type:fish,length:len,weight:wt,note,time:finalTime,taken:!isCR,bait,baitLen,baitColor,baitNote:'',score:fScore(fish,len),photoKey,inputMode:_inputMode,lat:catchLat,lon:catchLon,_lat:catchLat?parseFloat(catchLat):null,_lon:catchLon?parseFloat(catchLon):null};
+  const c={type:fish,length:len,weight:wt,note,time:finalTime,ts:finalTs,taken:!isCR,bait,baitLen,baitColor,baitNote:'',score:fScore(fish,len),photoKey,inputMode:_inputMode,lat:catchLat,lon:catchLon,_lat:catchLat?parseFloat(catchLat):null,_lon:catchLon?parseFloat(catchLon):null};
 
   if(editingIdx!==null&&_liveSession.catches[editingIdx]){
     _liveSession.catches[editingIdx]=c;
@@ -15937,7 +16627,7 @@ function saveLiveCatch(){
   _renderLiveCatches();
 
   closeLiveCatch();
-  showToast(editingOrig?'✅':'🐟',`${fish}${len?' · '+len+'cm':''} ${editingOrig?'aktualisiert':'hinzugefügt'}!`);
+  showToast('',`${fish}${len?' · '+len+'cm':''} ${editingOrig?'aktualisiert':'hinzugefügt'}!`);
   // AP3: Alle Eingaben ins globale Chip-Wörterbuch
   dictAdd('fish',fish);
   if(bait)dictAdd('bait',bait);
@@ -17109,6 +17799,92 @@ function _maybeAppendFeedMessage(msg){
   _rndrGroupFeed();
 }
 
+function _sessionPostPhotos(data){
+  const photos=Array.isArray(data?.photoUrls)?data.photoUrls.filter(Boolean):[];
+  if(data?.bestPhotoUrl&&!photos.includes(data.bestPhotoUrl))photos.unshift(data.bestPhotoUrl);
+  return photos;
+}
+function _sessionPostHero(data,variant='card'){
+  const photos=_sessionPostPhotos(data);
+  const biggest=data?.biggestFish;
+  const label=biggest?`${biggest.type||'Fisch'}${biggest.length?' · '+biggest.length+' cm':''}`:(data?.catchCount?`${data.catchCount} Fänge`:'Live Session');
+  if(photos.length){
+    return`<div class="session-post-hero ${variant}">
+      <div class="session-post-gallery">
+        ${photos.map((p,i)=>`<div class="session-post-slide"><img src="${_esc(p)}" alt="Sessionfoto ${i+1}" loading="lazy"></div>`).join('')}
+      </div>
+      <div class="session-post-hero-overlay">
+        <div class="session-post-kicker">Session</div>
+        <div class="session-post-title">${_esc(label)}</div>
+      </div>
+      ${photos.length>1?`<div class="session-post-dots">${photos.map((_,i)=>`<span${i===0?' class="on"':''}></span>`).join('')}</div>`:''}
+    </div>`;
+  }
+  return`<div class="session-post-placeholder ${variant}">
+    <div class="session-post-placeholder-icon">${_liveIcon('water')}</div>
+    <div>
+      <div class="session-post-kicker">Session</div>
+      <div class="session-post-title">${_esc(label)}</div>
+    </div>
+  </div>`;
+}
+function _sessionPostChips(data){
+  const chips=[];
+  if(data?.duration)chips.push(`<span class="catch-card-chip">${_liveIcon('clock')}${_esc(data.duration)}</span>`);
+  chips.push(`<span class="catch-card-chip">${_liveIcon('plus')}${data?.catchCount||0} Fänge</span>`);
+  if(data?.biteCount)chips.push(`<span class="catch-card-chip">${_liveIcon('hook')}${data.biteCount} Bisse</span>`);
+  if(data?.water)chips.push(`<span class="catch-card-chip">${_liveIcon('water')}${_esc(data.water)}</span>`);
+  return chips.join('');
+}
+function _openGroupSessionDetail(gId,msgId){
+  const g=_groups.find(x=>x.id===gId);
+  if(!g)return;
+  const item=g.feed?.find(x=>String(x.id)===String(msgId));
+  const data=item?.catchData;
+  if(!data)return;
+  _activeCatchDetailId=null;
+  openFs('catch-detail');
+  const title=document.getElementById('cd-hdr-title');
+  if(title)title.innerHTML=`${_liveIcon('list')}Session-Details`;
+  const meta=document.getElementById('cd-hdr-meta');
+  if(meta)meta.textContent=[data.water,data.spot,data.date].filter(Boolean).join(' · ');
+  const member=g.members?.find(m=>m.id===item.userId)||{name:item._userName||'Angler'};
+  const color=_userColor(item.userId);
+  const catches=Array.isArray(data.catches)?data.catches:[];
+  const catchRows=catches.length?`<div class="cd-card">
+    <div class="cd-card-label">${_liveIcon('plus')}Fänge der Session</div>
+    ${catches.map(c=>`<div class="live-end-catch-row">
+      <div class="live-end-catch-thumb">${c.photoUrl?`<img src="${_esc(c.photoUrl)}" alt="Fangfoto">`:fSvgInline(c.type||'Fisch',26,17)}</div>
+      <div class="live-end-catch-body">
+        <div class="live-end-catch-name">${_esc(c.type||'Fisch')}${c.length?' · '+c.length+' cm':''}</div>
+        <div class="live-end-catch-meta">${_esc(c.time||'')}${c.bait?' · '+_esc(c.bait):''}${c.baitColor?' · '+_esc(c.baitColor):''}</div>
+      </div>
+    </div>`).join('')}
+  </div>`:`<div class="cd-card"><div class="cd-card-label">Fänge</div><div class="cd-card-value">Schneider-Session</div></div>`;
+  const wxCells=[];
+  if(data.temp!=null)wxCells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">${_liveIcon('thermo')}</div><div class="cd-wx-val">${Math.round(data.temp)}°C</div><div class="cd-wx-lbl">Temp</div></div>`);
+  if(data.pressure!=null)wxCells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">${_liveIcon('pressure')}</div><div class="cd-wx-val">${Math.round(data.pressure)}</div><div class="cd-wx-lbl">hPa</div></div>`);
+  if(data.windSpeed!=null)wxCells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">${_liveIcon('wind')}</div><div class="cd-wx-val">${Math.round(data.windSpeed)} <small>km/h</small></div><div class="cd-wx-lbl">Wind</div></div>`);
+  const wxHtml=wxCells.length?`<div class="cd-card"><div class="cd-card-label">${_liveIcon('cloud-sun')}Bedingungen</div><div class="cd-wx-grid">${wxCells.join('')}</div></div>`:'';
+  document.getElementById('catch-detail-content').innerHTML=`
+    ${_sessionPostHero(data,'detail')}
+    <div class="cd-body">
+      <div class="cd-user-row">
+        <div class="catch-card-avatar" style="background:${color};">${(member.name||'?').charAt(0)}</div>
+        <div><div class="cd-user-name">${_esc(member.name||'?')}</div><div class="cd-user-meta">${data.date||''}${data.start&&data.end?' · '+data.start+'-'+data.end:''}</div></div>
+      </div>
+      <div class="cd-grid-2">
+        <div class="cd-card"><div class="cd-card-label">Gewässer</div><div class="cd-card-value">${_esc(data.water||'–')}</div></div>
+        <div class="cd-card"><div class="cd-card-label">Spot</div><div class="cd-card-value">${_esc(data.spot||'–')}</div></div>
+      </div>
+      <div class="cd-card"><div class="cd-card-label">Zusammenfassung</div><div class="catch-card-chips">${_sessionPostChips(data)}</div>${data.note?`<div class="catch-card-desc">${_esc(data.note)}</div>`:''}</div>
+      ${wxHtml}
+      ${catchRows}
+    </div>`;
+  const bar=document.getElementById('cd-comment-bar');
+  if(bar)bar.style.display='none';
+}
+
 function _grpUpdateLikeBtn(catchId,sc){
   const myId=_sbUser?.id||'me';
   const btn=document.getElementById('like-btn-'+catchId);
@@ -17184,6 +17960,24 @@ function _rndrGroupFeed(){
         <div class="feed-live-pulse"></div>
         <div class="feed-live-info"><strong>${_esc(memberName)}</strong> ist jetzt am Wasser!${item.text?' · '+_esc(item.text):''}</div>
         <div style="font-size:10px;opacity:.6;">${timeStr}</div>
+      </div>`;
+    }
+    else if(item.type==='session'&&item.catchData){
+      const s=item.catchData;
+      html+=`<div class="session-post-card" onclick="_openGroupSessionDetail('${g.id}','${item.id}')">
+        ${_sessionPostHero(s)}
+        <div class="catch-card-body">
+          <div class="catch-card-user">
+            <div class="catch-card-avatar" style="background:${color};">${memberName.charAt(0).toUpperCase()}</div>
+            <div class="catch-card-user-info">
+              <div class="catch-card-uname">${_esc(memberName)}</div>
+              <div class="catch-card-utime">${dateStr} · ${timeStr}</div>
+            </div>
+          </div>
+          <div class="session-post-name">${_esc(s.water||'Live Session')}${s.spot?' · '+_esc(s.spot):''}</div>
+          <div class="catch-card-chips">${_sessionPostChips(s)}</div>
+          ${s.note?`<div class="catch-card-desc">${_esc(s.note)}</div>`:''}
+        </div>
       </div>`;
     }
     else if(item.type==='catch'&&item.catchData){
@@ -19309,13 +20103,13 @@ function _showLsSummary(sess){
 
   // Hero
   const lsCnt=_totalCatchCount(sess.catches);
-  const badge=lsCnt>3?'🏆':lsCnt>0?'🎣':'🪝';
-  document.getElementById('ls-sum-badge').textContent=badge;
-  document.getElementById('ls-sum-title').textContent=lsCnt?`${lsCnt} Fänge!`:'Schneider – nächstes Mal!';
+  const badge=lsCnt>3?'trophy':'hook';
+  document.getElementById('ls-sum-badge').innerHTML=_liveIcon(badge);
+  document.getElementById('ls-sum-title').textContent=lsCnt?(lsCnt===1?'1 Fang!':`${lsCnt} Fänge!`):'Schneider – nächstes Mal!';
   document.getElementById('ls-sum-sub').textContent=`${sess.water||'Unbekannt'}${sess.spot?' · '+sess.spot:''}`;
 
   // Stats
-  const duration=calcHrs(sess.start,sess.end);
+  const duration=sess.start===sess.end?0:calcHrs(sess.start,sess.end);
   const dH=Math.floor(duration),dM=Math.round((duration-dH)*60);
   const pauseMin=sess._pauseMin||0;
   const totalMin=dH*60+dM-pauseMin;
@@ -19354,7 +20148,7 @@ function _showLsSummary(sess){
   if(sess.catches.length){
     catchesEl.innerHTML=`<div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;opacity:.5;margin-bottom:8px;">Fänge</div>`+
       sess.catches.map(c=>`<div class="ls-sum-catch">
-        <div class="ls-sum-catch-ico">${fIco(c.type)}</div>
+        <div class="ls-sum-catch-ico">${_liveIcon('hook')}</div>
         <div class="ls-sum-catch-info">
           <div class="ls-sum-catch-name">${c.type}${c.length?' · '+c.length+'cm':''}</div>
           <div class="ls-sum-catch-meta">${c.time||''}${c.bait?' · '+c.bait:''}${c.taken?'':' · C&R'}</div>
