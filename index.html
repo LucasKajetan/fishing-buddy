@@ -4482,6 +4482,7 @@ input[type=file]{display:none;}
 .live-bottom-actions .ls-end-btn .ic{width:17px;height:17px;}
 .live-bottom-actions .ls-end-btn.warn{background:#C43629;box-shadow:0 6px 14px rgba(196,54,41,.22);}
 .live-bottom-actions .ls-end-btn.ghost{background:#fff;color:var(--green-deep);border:1px solid var(--line);}
+.live-bottom-actions .ls-end-btn.ghost.is-resume{background:var(--green-mist);border-color:var(--green-pale);color:var(--green-deep);}
 
 .ls-end-ov{
   position:absolute;inset:0;z-index:131;background:#f7f5ef;display:none;
@@ -5466,23 +5467,24 @@ input[type=file]{display:none;}
 }
 #fs-live-start > .dw-content-hdr,
 #fs-live-catch > .dw-content-hdr{margin-top:62px!important;}
-#fs-live-catch > .hdr-bar.dw-green-hdr{display:none!important;}
+#fs-live-catch > .hdr-bar.dw-green-hdr{display:flex!important;}
 #fs-live-catch > .dw-content-hdr.live-catch-head{
-  margin-top:0!important;
+  margin-top:62px!important;
   padding:0!important;
   border-bottom:1px solid rgba(45,74,53,.08);
-  background:transparent;
+  background:#fff;
 }
 #fs-live-catch .live-catch-top{
   height:62px!important;
   min-height:62px!important;
   padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px!important;
   background:var(--green-deep)!important;
+  display:none!important;
 }
-#fs-live-catch .live-catch-title-wrap{background:#fff;padding:0;}
+#fs-live-catch .live-catch-title-wrap{background:#fff;padding:0;position:relative;}
 #fs-live-catch .live-catch-visible-top{
   height:62px;min-height:62px;background:var(--green-deep);padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px;
-  display:flex;align-items:center;justify-content:space-between;position:relative;
+  display:none!important;align-items:center;justify-content:space-between;position:relative;
 }
 #fs-live-catch .live-catch-visible-top .hlogo{color:#fff;}
 #fs-live-catch .live-catch-visible-top .bbtn{
@@ -5495,7 +5497,28 @@ input[type=file]{display:none;}
   width:34px!important;height:34px!important;background:#C94040!important;color:#fff!important;border:none!important;border-radius:50%!important;
 }
 #fs-live-catch .live-catch-visible-top .dw-close-btn .ic{width:16px;height:16px;color:#fff;}
-#fs-live-catch .live-catch-white-title{padding:14px 16px 10px;background:#fff;}
+#fs-live-catch > .hdr-bar.dw-green-hdr{display:none!important;}
+#fs-live-catch .live-catch-inline-old{display:none!important;}
+#fs-live-catch .live-catch-active-header{display:none!important;}
+#fs-live-catch .live-catch-inline-active{
+  display:flex!important;position:relative!important;top:auto!important;left:auto!important;right:auto!important;z-index:35!important;box-sizing:border-box;
+}
+#fs-live-catch .live-catch-white-title{padding:0!important;background:#fff;}
+#fs-live-catch .live-catch-white-title .hlogo{
+  position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;
+  display:inline-flex!important;align-items:baseline!important;justify-content:center!important;
+  font-family:var(--fa);line-height:1;pointer-events:none;color:#fff!important;
+}
+#fs-live-catch .live-catch-white-title .hlogo .hlogo-t{font-size:25px!important;font-weight:800!important;color:#fff!important;letter-spacing:0!important;text-shadow:none!important;}
+#fs-live-catch .live-catch-white-title .hlogo .hlogo-p{font-size:25px!important;font-weight:800!important;color:var(--gold)!important;letter-spacing:0!important;text-shadow:none!important;}
+#fs-live-catch > .hdr-bar.dw-green-hdr{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  flex:0 0 62px!important;
+}
+#fs-live-catch > .dw-content-hdr.live-catch-head{margin-top:0!important;}
 .dw-content-hdr .dw-hdr-summary{
   display:flex;align-items:center;gap:8px;flex-wrap:wrap;
   font-size:13px;color:var(--text-mid);
@@ -5730,7 +5753,7 @@ input[type=file]{display:none;}
     <div class="live-timeline" id="live-timeline"></div>
 
     <div class="live-bottom-actions">
-      <button class="ls-end-btn ghost" onclick="pauseLiveSession()"><svg class="ic"><use href="#i-clock"/></svg><span>Pausieren</span></button>
+      <button class="ls-end-btn ghost" id="live-pause-btn" onclick="pauseLiveSession()"><svg class="ic"><use href="#i-clock"/></svg><span id="live-pause-label">Pausieren</span></button>
       <button class="ls-end-btn warn" onclick="closeLiveOv();confirmEndLive()"><svg class="ic"><use href="#i-x"/></svg><span>Session beenden</span></button>
     </div>
   </div>
@@ -6667,20 +6690,39 @@ input[type=file]{display:none;}
     <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
   </div>
   <div class="dw-content-hdr live-content-hdr live-catch-head">
-    <div class="hdr-bar dw-green-hdr live-catch-top">
-      <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
-      <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
-      <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
+    <div class="live-catch-headbar" style="display:none!important;">
+      <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü" style="width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;padding:0;"><svg class="ic" style="width:18px;height:18px;color:#fff;"><use href="#i-menu"/></svg></button>
+      <div class="hlogo" style="color:#fff;"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+      <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen" style="width:34px;height:34px;background:#C94040;color:#fff;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg class="ic" style="width:16px;height:16px;color:#fff;"><use href="#i-x"/></svg></button>
     </div>
-    <div class="live-catch-title-wrap">
+    <div class="live-catch-title-wrap" style="position:relative;background:#fff;padding:0;margin-top:62px;">
       <div class="live-catch-visible-top">
         <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
         <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
         <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
       </div>
-      <div class="live-catch-white-title">
-        <div class="dw-hdr-date">Fang hinzufügen</div>
-        <div class="dw-hdr-sub">Schnellfang in der Live Session</div>
+      <div class="live-catch-inline-header live-catch-inline-old" style="display:none!important;">
+        <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü" style="width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;padding:0;"><svg class="ic" style="width:18px;height:18px;color:#fff;"><use href="#i-menu"/></svg></button>
+        <div class="hlogo" style="color:#fff;"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+        <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen" style="width:34px;height:34px;background:#C94040;color:#fff;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg class="ic" style="width:16px;height:16px;color:#fff;"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="live-catch-white-title" style="padding:0;background:#fff;">
+        <div class="live-catch-active-header" style="height:62px;min-height:62px;background:var(--green-deep);padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:35;box-sizing:border-box;">
+          <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü" style="width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;padding:0;"><svg class="ic" style="width:18px;height:18px;color:#fff;"><use href="#i-menu"/></svg></button>
+          <div class="hlogo" style="color:#fff;"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+          <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen" style="width:34px;height:34px;background:#C94040;color:#fff;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg class="ic" style="width:16px;height:16px;color:#fff;"><use href="#i-x"/></svg></button>
+        </div>
+        <div style="padding:0;background:#fff;">
+          <div style="height:62px;min-height:62px;background:var(--green-deep);padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px;display:flex;align-items:center;justify-content:space-between;position:relative;box-sizing:border-box;">
+            <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü" style="width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;padding:0;"><svg class="ic" style="width:18px;height:18px;color:#fff;"><use href="#i-menu"/></svg></button>
+            <div class="hlogo" style="color:#fff;"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+            <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen" style="width:34px;height:34px;background:#C94040;color:#fff;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg class="ic" style="width:16px;height:16px;color:#fff;"><use href="#i-x"/></svg></button>
+          </div>
+          <div style="padding:14px 16px 10px;background:#fff;">
+            <div class="dw-hdr-date">Fang hinzufügen</div>
+            <div class="dw-hdr-sub">Schnellfang in der Live Session</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -7617,7 +7659,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v87-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v88-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -10498,7 +10540,8 @@ function rndrFangbuch(){
       const daySess=byDate[dateKey];
       const allCatches=daySess.flatMap(s=>s.catches);
       const totalCnt=_totalCatchCount(allCatches);
-      const isSkunked=totalCnt===0&&daySess.every(s=>s.skunked||!s.catches.length);
+      const totalBites=daySess.reduce((sum,s)=>sum+_sessionBiteCount(s),0);
+      const isSkunked=totalCnt===0&&totalBites===0&&daySess.every(s=>s.skunked||!s.catches.length);
       const waters=[...new Set(daySess.map(s=>s.water).filter(Boolean))];
       const spots=[...new Set(daySess.map(s=>s.spot).filter(Boolean))];
       const waterLabel=waters.length===1?waters[0]+(spots.length===1?' · '+spots[0]:''):waters.length>1?waters[0]+' +'+(waters.length-1):'–';
@@ -10512,6 +10555,8 @@ function rndrFangbuch(){
       let fishLabel='';
       if(isSkunked){
         fishLabel='Schneider';
+      } else if(totalCnt===0&&totalBites>0){
+        fishLabel=`${totalBites} Biss${totalBites!==1?'e':''}`;
       } else {
         const freq={};allCatches.forEach(c=>{const n=_getFishCountForStats(c);if(c.type)freq[c.type]=(freq[c.type]||0)+n;});
         fishLabel=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([f])=>f).join(' · ');
@@ -10519,8 +10564,8 @@ function rndrFangbuch(){
 
       const indClass=isSkunked?'skunked':'success';
       const cntClass=isSkunked?'fb-cnt skunked-cnt':'fb-cnt';
-      const cntContent=isSkunked?'–':totalCnt;
-      const cntLbl=isSkunked?'':('Fang'+(totalCnt!==1?'e':''));
+      const cntContent=isSkunked?'–':(totalCnt||totalBites);
+      const cntLbl=isSkunked?'':(totalCnt?('Fang'+(totalCnt!==1?'e':'')):('Biss'+(totalBites!==1?'e':'')));
       const [,mo2,dy]=dateKey.split('-');
       const MON_S=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
       const dateLabel=fmtDow(dateKey)+', '+parseInt(dy)+'. '+MON_S[parseInt(mo2)-1];
@@ -10601,7 +10646,8 @@ function rndrCalendar(){
       const dayDate=new Date(yr,mo-1,d);dayDate.setHours(0,0,0,0);
       const daySess=byDate[dk]||[];
       const hasCatch=daySess.some(s=>!s.skunked&&s.catches.length>0);
-      const isSkunked=daySess.length>0&&!hasCatch;
+      const hasBite=daySess.some(s=>_sessionBiteCount(s)>0);
+      const isSkunked=daySess.length>0&&!hasCatch&&!hasBite;
       const isToday=dayDate.getTime()===today.getTime();
       const isFuture=dayDate>today;
       let cls='fb-cal-day';
@@ -10665,7 +10711,8 @@ async function openDayDetail(dateKey){
   const allCatches=daySess.flatMap(s=>s.catches.map(c=>({...c,_sessId:s.id,_sessWater:s.water,_sessSpot:s.spot}))).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
 
   const totalCnt=_totalCatchCount(allCatches);
-  const isSkunked=totalCnt===0&&daySess.every(s=>s.skunked||!s.catches.length);
+  const totalBites=daySess.reduce((sum,s)=>sum+_sessionBiteCount(s),0);
+  const isSkunked=totalCnt===0&&totalBites===0&&daySess.every(s=>s.skunked||!s.catches.length);
   const waters=[...new Set(daySess.map(s=>s.water).filter(Boolean))];
   const spots=[...new Set(daySess.map(s=>s.spot).filter(Boolean))];
   const waterLabel=waters.length===1?waters[0]+(spots.length===1?' · '+spots[0]:''):waters.length>1?`${waters[0]} +${waters.length-1}`:'–';
@@ -10737,11 +10784,12 @@ async function openDayDetail(dateKey){
     daySess.forEach(s=>{
       const sCatches=allCatches.filter(c=>String(c._sessId)===String(s.id));
       const dur=calcDur(s.start,s.end);
-      const sessTimeLabel=`${s.start||'–'}–${s.end||'?'} Uhr · ${dur}`;
+      const sBites=_sessionBiteCount(s);
+      const sessTimeLabel=`${s.start||'–'}–${s.end||'?'} Uhr · ${dur}${sBites?` · ${sBites} Biss${sBites!==1?'e':''}`:''}`;
 
       let catchRows='';
       if(s.skunked||!sCatches.length){
-        catchRows=`<div class="dd-session-tile-empty">Kein Fang</div>`;
+        catchRows=`<div class="dd-session-tile-empty">${sBites?`${sBites} Biss${sBites!==1?'e':''} · kein Fang`:'Kein Fang'}</div>`;
       } else {
         catchRows=sCatches.map((c,i)=>{
           const mm=chkMM(c.type,c.length);
@@ -10801,20 +10849,24 @@ async function openDayDetail(dateKey){
     <div class="dd-stats-card">
       <div class="dd-stats-info">
         <div class="dd-stats-time"><svg class="ic"><use href="#i-clock"/></svg>${timeSpan}</div>
-        ${!isSkunked?`<div class="dd-stats-row">
+        ${totalCnt>0?`<div class="dd-stats-row">
           <div class="dd-stats-stat"><div class="dd-stats-stat-val">${avgLen}<span style="font-size:11px;font-weight:500;color:rgba(255,255,255,.55);margin-left:1px;">cm</span></div><div class="dd-stats-stat-lbl">Ø Länge</div></div>
           <div class="dd-stats-stat"><div class="dd-stats-stat-val">${maxLen}<span style="font-size:11px;font-weight:500;color:rgba(255,255,255,.55);margin-left:1px;">cm</span></div><div class="dd-stats-stat-lbl">Rekord</div></div>
           <div class="dd-stats-stat"><div class="dd-stats-stat-val">${takenCnt}</div><div class="dd-stats-stat-lbl">Entnommen</div></div>
+        </div>`:totalBites>0?`<div class="dd-stats-row">
+          <div class="dd-stats-stat"><div class="dd-stats-stat-val">${totalBites}</div><div class="dd-stats-stat-lbl">Bisse</div></div>
+          <div class="dd-stats-stat"><div class="dd-stats-stat-val">0</div><div class="dd-stats-stat-lbl">Fänge</div></div>
+          <div class="dd-stats-stat"><div class="dd-stats-stat-val">aktiv</div><div class="dd-stats-stat-lbl">Session</div></div>
         </div>`:''}
       </div>
       <div class="dd-stats-cnt-wrap">
-        <div class="dd-stats-cnt">${isSkunked?'–':totalCnt}</div>
-        <div class="dd-stats-cnt-lbl">${isSkunked?'Schneider':totalCnt===1?'Fang':'Fänge'}</div>
+        <div class="dd-stats-cnt">${isSkunked?'–':(totalCnt||totalBites)}</div>
+        <div class="dd-stats-cnt-lbl">${isSkunked?'Schneider':totalCnt?(totalCnt===1?'Fang':'Fänge'):(totalBites===1?'Biss':'Bisse')}</div>
       </div>
     </div>
     <div class="dd-body-pad">
     ${wxHtml}
-    <div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#f-default"/></svg>Fänge</div>
+    <div class="slbl"><svg class="ic" style="width:13px;height:13px;color:var(--forest);"><use href="#f-default"/></svg>${totalBites?'Fänge & Bisse':'Fänge'}</div>
     ${sessionsHtml}
     </div>`;
 
@@ -11809,6 +11861,7 @@ function showDetail(id,returnPage){
   const lens=s.catches.map(c=>c.length);
   const maxL=lens.length?Math.max(...lens):0;
   const avgL=lens.length?(lens.reduce((a,b)=>a+b,0)/lens.length).toFixed(1):'–';
+  const biteCnt=_sessionBiteCount(s);
   // v53: Bug6 — Edit/Close-Icons inline auf gleicher Höhe wie das Datum (statt absolut über App-Header)
   document.getElementById('detail-hdr').innerHTML=`
     <div class="dhdr">
@@ -11826,10 +11879,10 @@ function showDetail(id,returnPage){
       <div class="dmeta">${s.water}${s.spot?' · '+s.spot:''} · ${s.weather}${s.temp!=null?' · '+s.temp+'°C':''}${s.pressure?` · ${Math.round(s.pressure)}hPa`:''}${s.lat?' · 📍':''}</div>
       <div class="dmeta">${s.start}–${s.end||'?'} Uhr · ${dur}${s.clarity?` · ${s.clarity}`:''}</div>
       ${s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:12px;font-weight:600;">💡 Automatisch als Schneider erkannt</div>`:''}
-      ${s.skunked&&!s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:14px;font-weight:600;">🪝 Schneider</div>`:!s.skunked?`<div class="sg3" style="grid-template-columns:repeat(3,1fr);"><div class="sm"><div class="sv">${_totalCatchCount(s.catches)}</div><div class="sl">Fänge</div></div><div class="sm"><div class="sv">${avgL}cm</div><div class="sl">Ø Länge</div></div><div class="sm"><div class="sv">${maxL}cm</div><div class="sl">Rekord</div></div></div>`:''}
+      ${s.skunked&&!s.autoSkunked?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:14px;font-weight:600;">${biteCnt?`${biteCnt} Biss${biteCnt!==1?'e':''} · kein Fang`:'🪝 Schneider'}</div>`:!s.skunked?`<div class="sg3" style="grid-template-columns:repeat(3,1fr);"><div class="sm"><div class="sv">${_totalCatchCount(s.catches)}</div><div class="sl">Fänge</div></div><div class="sm"><div class="sv">${biteCnt}</div><div class="sl">Bisse</div></div><div class="sm"><div class="sv">${maxL}cm</div><div class="sl">Rekord</div></div></div>`:biteCnt?`<div style="margin-top:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:10px 12px;font-size:14px;font-weight:600;">${biteCnt} Biss${biteCnt!==1?'e':''} · kein Fang</div>`:''}
     </div>`;
   const body=document.getElementById('detail-body');
-  if(s.skunked||!s.catches.length){body.innerHTML=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-hook"/></svg></div><div class="empty-t">Kein Fang</div></div><div style="padding:0 2px;display:flex;flex-direction:column;gap:10px;">${!s.lat?`<button class="btn" onclick="_openSessGpsMap('${s.id}')" style="background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);">📍 Standort nachtragen</button>`:''}<button class="btn" onclick="_patchedEditSess('${s.id}')">✏️ Bearbeiten</button><button class="btn danger" onclick="delSess('${s.id}')">Löschen</button></div>`;return;}
+  if(s.skunked||!s.catches.length){body.innerHTML=`<div class="empty"><div class="empty-ico"><svg class="ic"><use href="#i-hook"/></svg></div><div class="empty-t">${biteCnt?`${biteCnt} Biss${biteCnt!==1?'e':''}`:'Kein Fang'}</div><div class="empty-s">${biteCnt?'Aktivität ohne gelandeten Fisch':'Kein Fang in dieser Session'}</div></div><div style="padding:0 2px;display:flex;flex-direction:column;gap:10px;">${!s.lat?`<button class="btn" onclick="_openSessGpsMap('${s.id}')" style="background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-pale);">📍 Standort nachtragen</button>`:''}<button class="btn" onclick="_patchedEditSess('${s.id}')">✏️ Bearbeiten</button><button class="btn danger" onclick="delSess('${s.id}')">Löschen</button></div>`;return;}
   // AP5: Wetter-Sektion für Session-Detail (historisch via API)
   let wxDetailHtml='';
   if(s.pressure||s.windSpeed!=null||s.temp!=null){
@@ -15310,12 +15363,13 @@ function _calcMins(s,e){
   if(!s||!e)return null;
   const[sh,sm]=s.split(':').map(Number),[eh,em]=e.split(':').map(Number);
   let mins=(eh*60+em)-(sh*60+sm);
-  if(mins<=0)mins+=24*60; // Mitternacht-Übergang
+  if(mins<0)mins+=24*60; // Mitternacht-Übergang
   return mins;
 }
 function calcDur(s,e){
   const mins=_calcMins(s,e);
-  if(!mins||mins<=0)return'–';
+  if(mins==null||mins<0)return'–';
+  if(mins===0)return'0min';
   const h=Math.floor(mins/60),min=mins%60;
   return h>0?`${h}h${min>0?` ${min}min`:''}` :`${min}min`;
 }
@@ -15420,6 +15474,20 @@ function _ensureLiveEvents(){
   if(!Array.isArray(_liveSession.events))_liveSession.events=[];
   return _liveSession.events;
 }
+function _sessionBiteCount(s){
+  if(!s)return 0;
+  if(Number.isFinite(Number(s.bites)))return Number(s.bites)||0;
+  const ev=Array.isArray(s.events)?s.events:[];
+  return ev.filter(e=>e&&e.kind==='bite').length;
+}
+function _syncLivePauseButton(){
+  const btn=document.getElementById('live-pause-btn');
+  const lbl=document.getElementById('live-pause-label');
+  if(!btn||!lbl||!_liveSession)return;
+  const paused=!!_liveSession.paused;
+  lbl.textContent=paused?'Fortsetzen':'Pausieren';
+  btn.classList.toggle('is-resume',paused);
+}
 function _addLiveEvent(kind,text,data={}){
   if(!_liveSession)return;
   const ev={kind,text,ts:data.ts||Date.now(),time:data.time||_liveClock(data.ts||Date.now()),...data};
@@ -15437,6 +15505,7 @@ function _liveCatchThumb(c,cls='live-catch-ico'){
 }
 function _renderLiveStatus(){
   if(!_liveSession)return;
+  _syncLivePauseButton();
   const timer=_liveTimerText();
   const water=_liveSession.water||'Noch nicht gesetzt';
   const spot=_liveSession.spot||'Kein Spot';
@@ -15491,9 +15560,35 @@ function liveAddBite(){
   _renderLiveStatus();
   showToast('','Biss notiert');
 }
-function liveAddNote(){
+function _liveAskNote(){
+  return new Promise(resolve=>{
+    let ov=document.getElementById('live-note-prompt');
+    if(!ov){
+      ov=document.createElement('div');
+      ov.id='live-note-prompt';
+      document.querySelector('.phone')?.appendChild(ov);
+    }
+    ov.style.cssText='position:absolute;inset:0;z-index:190;background:rgba(12,24,18,.38);display:flex;align-items:flex-end;justify-content:center;padding:16px;';
+    ov.innerHTML=`<div style="width:100%;background:#fff;border-radius:20px;padding:16px;box-shadow:0 18px 48px rgba(0,0,0,.22);">
+      <div style="font-size:18px;font-weight:800;color:var(--text-dark);margin-bottom:4px;">Notiz hinzufügen</div>
+      <div style="font-size:13px;color:var(--text-light);margin-bottom:12px;">Kurze Beobachtung zur Live Session</div>
+      <textarea id="live-note-prompt-input" class="if" rows="3" placeholder="z.B. Baitfish gesehen, Wind dreht, Spotwechsel ..." style="resize:none;min-height:92px;line-height:1.45;"></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+        <button id="live-note-prompt-cancel" style="padding:12px;border-radius:14px;border:1px solid var(--line);background:#fff;color:var(--text-mid);font-weight:700;font-family:var(--fa);">Abbrechen</button>
+        <button id="live-note-prompt-ok" style="padding:12px;border-radius:14px;border:none;background:var(--green-deep);color:#fff;font-weight:800;font-family:var(--fa);">Speichern</button>
+      </div>
+    </div>`;
+    const done=val=>{ov.remove();resolve(val);};
+    const input=ov.querySelector('#live-note-prompt-input');
+    ov.querySelector('#live-note-prompt-cancel').onclick=()=>done('');
+    ov.querySelector('#live-note-prompt-ok').onclick=()=>done(input.value||'');
+    input.onkeydown=e=>{if(e.key==='Escape')done('');if((e.metaKey||e.ctrlKey)&&e.key==='Enter')done(input.value||'');};
+    setTimeout(()=>input.focus(),50);
+  });
+}
+async function liveAddNote(){
   if(!_liveSession)return;
-  const txt=prompt('Notiz zur Live-Session:');
+  const txt=await _liveAskNote();
   if(!txt||!txt.trim())return;
   _addLiveEvent('note',txt.trim());
   showToast('','Notiz gespeichert');
@@ -16124,9 +16219,13 @@ async function _finalizeLive(isSkunked){
   // direkt nach dem Speichern in alle ausgewählten Gruppen teilen.
   if(_endShareState.enabled&&_endShareState.groupIds.length){
     try{
-      await _shareLiveSessionToGroups(sess,_endShareState.groupIds);
-      showToast('',`Session in ${_endShareState.groupIds.length} Gruppe${_endShareState.groupIds.length>1?'n':''} geteilt`);
-    }catch(e){console.warn('Share nach Live-End:',e);}
+      const sharedCount=await _shareLiveSessionToGroups(sess,_endShareState.groupIds);
+      if(sharedCount>0)showToast('',`Session in ${sharedCount} Gruppe${sharedCount>1?'n':''} geteilt`);
+      else showToast('⚠️','Session gespeichert, aber nicht geteilt',true);
+    }catch(e){
+      console.warn('Share nach Live-End:',e);
+      showToast('⚠️','Session gespeichert, Teilen fehlgeschlagen',true);
+    }
   }
   _endShareState={enabled:false,groupIds:[]};
 
@@ -16156,16 +16255,17 @@ async function _liveGetPhotoData(photoKey){
 
 async function _shareLiveSessionToGroups(sess,groupIds){
   if(!Array.isArray(groupIds)||!groupIds.length)return 0;
-  if(!_sb||!_sbUser){showToast('⚠️','Cloud-Login nötig um zu teilen');return 0;}
+  if(!_sb||!_sbUser)throw new Error('Cloud-Login nötig um zu teilen');
   const myName=profile?.name||profile?.vorname||'Angler';
   const myId=_sbUser.id;
   const loc=_resolveSessLocation({water:sess.water,spot:sess.spot,lat:sess.lat,lon:sess.lon});
   const catches=Array.isArray(sess.catches)?sess.catches:[];
 
   let totalShared=0;
+  let lastShareError=null;
   for(const gId of groupIds){
     const g=_groups.find(x=>x.id===gId);
-    if(!g)continue;
+    if(!g){lastShareError=new Error('Gruppe nicht gefunden');continue;}
 
     const catchSummaries=[];
     for(const c of catches){
@@ -16204,20 +16304,22 @@ async function _shareLiveSessionToGroups(sess,groupIds){
     };
 
     try{
-      await _sb.from('group_messages').insert({
+      const {error}=await _sb.from('group_messages').insert({
         group_id:gId,user_id:myId,type:'session',
         text:`${myName} hat eine Live-Session geteilt.`,
         catch_data:sessionData,
         photo_url:sessionData.bestPhotoUrl,
         display_name:myName
       });
+      if(error)throw error;
       totalShared++;
       sess.sharedToGroups=sess.sharedToGroups||[];
       if(!sess.sharedToGroups.includes(gId))sess.sharedToGroups.push(gId);
-    }catch(e){console.warn('share live session:',e);}
+    }catch(e){lastShareError=e;console.warn('share live session:',e);}
   }
   await saveOneSess(sess);
-  if(_activeGroupId&&groupIds.includes(_activeGroupId))_grpRefreshActive();
+  if(_activeGroupId&&groupIds.includes(_activeGroupId))await _grpRefreshActive();
+  if(totalShared===0&&lastShareError)throw lastShareError;
   return totalShared;
 }
 
