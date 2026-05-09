@@ -4515,7 +4515,7 @@ input[type=file]{display:none;}
   background:#fff;
   border-bottom:1px solid rgba(45,74,53,.08);
   position:fixed;
-  top:24px;
+  top:62px;
   left:50%;
   width:390px;
   max-width:calc(100vw - 32px);
@@ -5687,6 +5687,357 @@ input[type=file]{display:none;}
 }
 #fs-live-catch .live-catch-visible-head .dw-close-btn .ic{width:16px;height:16px;color:#fff;}
 #fs-live-catch .live-catch-title-copy{padding:14px 16px 10px;background:#fff;}
+/* v90: Live-Fang und Live-Ende wieder auf ein einziges festes Header-Pattern reduzieren. */
+#fs-live-catch > .hdr-bar.dw-green-hdr{
+  display:none!important;
+  height:62px!important;
+  min-height:62px!important;
+  flex:0 0 62px!important;
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  z-index:60!important;
+  background:var(--green-deep)!important;
+}
+#fs-live-catch > .dw-content-hdr.live-catch-head{
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  height:auto!important;
+  min-height:0!important;
+  flex:0 0 auto!important;
+  background:#fff!important;
+  border-bottom:1px solid rgba(45,74,53,.08)!important;
+}
+#fs-live-catch .live-catch-headbar{
+  height:62px;
+  min-height:62px;
+  background:var(--green-deep);
+  padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:fixed;
+  top:62px;
+  left:50%;
+  width:390px;
+  max-width:calc(100vw - 32px);
+  transform:translateX(-50%);
+  z-index:620;
+  border-radius:40px 40px 0 0;
+  box-sizing:border-box;
+}
+#fs-live-catch .live-catch-headbar .bbtn{
+  width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;
+  display:flex;align-items:center;justify-content:center;padding:0;
+}
+#fs-live-catch .live-catch-headbar .bbtn .ic{width:18px;height:18px;color:#fff;}
+#fs-live-catch .live-catch-headbar .hlogo{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:inline-flex;align-items:baseline;justify-content:center;
+}
+#fs-live-catch .live-catch-headbar .hlogo-t{font-family:var(--fa);font-size:21px;font-weight:500;color:#A8D5B5;letter-spacing:-.015em;}
+#fs-live-catch .live-catch-headbar .hlogo-p{font-family:var(--fa);font-size:21px;font-weight:600;color:var(--gold);margin-left:1px;letter-spacing:-.015em;}
+#fs-live-catch .live-catch-headbar .dw-close-btn{
+  position:absolute!important;right:16px!important;top:50%!important;transform:translateY(-50%)!important;
+  width:34px!important;height:34px!important;background:#C94040!important;color:#fff!important;border:none!important;border-radius:50%!important;
+}
+#fs-live-catch .live-catch-headbar .dw-close-btn .ic{width:16px;height:16px;color:#fff;}
+#fs-live-catch .live-catch-copy{padding:76px 16px 10px!important;background:#fff;}
+#fs-live-catch .live-catch-title-inline{
+  margin:-16px -16px 12px;
+  padding:14px 16px 10px;
+  background:#fff;
+  border-bottom:1px solid rgba(45,74,53,.08);
+}
+#fs-live-catch .live-catch-title-inline .dw-hdr-date{
+  font-family:var(--f-edit);font-size:18px;font-weight:700;color:var(--text-dark);line-height:1.2;margin-bottom:4px;
+}
+#fs-live-catch .live-catch-title-inline .dw-hdr-sub{
+  font-size:13px;color:var(--text-mid);line-height:1.25;
+}
+@media (max-width:440px),(display-mode:standalone),(display-mode:fullscreen){
+  #fs-live-catch .live-catch-headbar{
+    top:0;
+    left:0;
+    width:100%;
+    max-width:none;
+    transform:none;
+    border-radius:0;
+  }
+}
+#fs-live-catch .live-catch-local-head,
+#fs-live-catch .live-catch-visible-head,
+#fs-live-catch .live-catch-title-block{display:none!important;}
+#fs-live-catch > .fsov-scroll{
+  margin:0!important;
+  padding:16px 16px max(20px,var(--nav-clearance))!important;
+}
+#fs-live-catch .crow{
+  width:100%;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  align-items:center;
+}
+#fs-live-catch .crow[style*="display:none"]{display:none!important;}
+#fs-live-catch .live-full-chips{
+  margin:-4px 0 10px;
+  max-width:100%;
+}
+#fs-live-catch #lc-fc,
+#fs-live-catch #lc-note-chips{margin-top:8px;}
+#fs-live-catch .crow .chip,
+#fs-live-catch .crow .fav-btn{
+  flex:0 1 auto;
+  max-width:100%;
+  white-space:normal;
+}
+#fs-live-catch:has(#lc-len:not(:placeholder-shown)):has(#lc-bait:focus) #lc-bait-chips,
+#fs-live-catch:has(#lc-bait:not(:placeholder-shown)):has(#lc-bait-col:focus) #lc-col-chips,
+#fs-live-catch:has(#lc-bait:not(:placeholder-shown)):has(#lc-bait-len:focus) #lc-sz-chips,
+#fs-live-catch:has(#lc-bait-col:not(:placeholder-shown)):has(#lc-bait-len:focus) #lc-sz-chips,
+#fs-live-catch:has(#lc-note:focus) #lc-note-chips{
+  display:flex!important;
+}
+#ls-end-ov{
+  position:absolute!important;
+  inset:0!important;
+  top:0!important;
+  left:0!important;
+  width:auto!important;
+  height:auto!important;
+  transform:none!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+  background:#f7f5ef!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+}
+#ls-end-ov.on{display:flex!important;}
+#ls-end-ov > .hdr-bar.dw-green-hdr{
+  display:flex!important;
+  height:62px!important;
+  min-height:62px!important;
+  flex:0 0 62px!important;
+  position:fixed!important;
+  top:24px!important;
+  left:50%!important;
+  right:auto!important;
+  width:390px!important;
+  max-width:calc(100vw - 32px)!important;
+  transform:translateX(-50%)!important;
+  z-index:650!important;
+  border-radius:40px 40px 0 0!important;
+  background:var(--green-deep)!important;
+}
+#ls-end-ov > .dw-content-hdr{
+  display:block!important;
+  margin:0!important;
+  padding:14px 16px 10px!important;
+  background:#fff!important;
+  border-bottom:1px solid rgba(45,74,53,.08)!important;
+  position:fixed!important;
+  top:86px!important;
+  left:50%!important;
+  width:390px!important;
+  max-width:calc(100vw - 32px)!important;
+  transform:translateX(-50%)!important;
+  z-index:640!important;
+  box-sizing:border-box!important;
+}
+#ls-end-ov .live-end-visible-header{display:none!important;}
+#ls-end-ov .ls-end-scroll{
+  position:fixed!important;
+  top:154px!important;
+  left:50%!important;
+  width:390px!important;
+  max-width:calc(100vw - 32px)!important;
+  transform:translateX(-50%)!important;
+  right:auto!important;
+  bottom:0!important;
+  flex:none!important;
+  overflow-y:auto!important;
+  padding:10px 16px max(24px,var(--nav-clearance))!important;
+}
+#ls-end-ov .ls-end-card{
+  width:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  display:block!important;
+}
+#ls-end-ov .ls-end-card>h3,
+#ls-end-ov .ls-end-card>.le-sub{display:none!important;}
+#ls-end-ov .ls-end-card .le-body{
+  overflow:visible!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+}
+#ls-end-ov .ls-end-card .le-actions{
+  padding-top:12px!important;
+  margin-top:12px!important;
+  border-top:1px solid var(--line)!important;
+}
+#ls-end-ov .le-recap{
+  display:grid!important;
+  grid-template-columns:repeat(6,1fr)!important;
+  gap:8px!important;
+  margin-bottom:0!important;
+  position:fixed!important;
+  top:154px!important;
+  left:50%!important;
+  width:358px!important;
+  max-width:calc(100vw - 64px)!important;
+  transform:translateX(-50%)!important;
+  z-index:630!important;
+}
+#ls-end-ov .le-recap-cell{grid-column:span 2!important;}
+#ls-end-ov .le-recap-cell.half{
+  grid-column:span 3!important;
+  text-align:left!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:13px 14px!important;
+}
+#ls-end-ov .le-recap-cell.half .live-input-icon{
+  width:38px;height:38px;flex-shrink:0;
+}
+#ls-end-ov .le-recap-cell.half .val{
+  font-size:14px!important;
+  line-height:1.25;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#ls-end-ov .live-track-empty{
+  min-height:150px;
+  background:
+    radial-gradient(circle at 22% 28%, rgba(196,150,58,.16), transparent 22%),
+    linear-gradient(135deg, rgba(74,124,89,.14), rgba(255,255,255,.92)),
+    repeating-linear-gradient(45deg, rgba(45,74,53,.06) 0 1px, transparent 1px 22px);
+  color:var(--text-mid);
+}
+#ls-end-ov .le-recap{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  width:auto!important;
+  max-width:none!important;
+  transform:none!important;
+  z-index:auto!important;
+  margin:0 0 12px!important;
+}
+#ls-end-ov .le-recap::before{
+  content:none!important;
+}
+#ls-end-ov .live-track-card{margin-top:0!important;}
+/* v90: Aktive Live-Session lokal auf festes Header-Pattern bringen. */
+#live-ov{
+  position:absolute!important;
+  inset:0!important;
+  overflow:hidden!important;
+  background:#f7f5ef!important;
+}
+#live-ov > .hdr-bar.dw-green-hdr{
+  display:flex!important;
+  height:62px!important;
+  min-height:62px!important;
+  position:fixed!important;
+  top:24px!important;
+  left:50%!important;
+  width:390px!important;
+  max-width:calc(100vw - 32px)!important;
+  transform:translateX(-50%)!important;
+  z-index:610!important;
+  border-radius:40px 40px 0 0!important;
+  background:var(--green-deep)!important;
+}
+#live-ov > .dw-content-hdr{
+  display:block!important;
+  position:fixed!important;
+  top:86px!important;
+  left:50%!important;
+  width:390px!important;
+  max-width:calc(100vw - 32px)!important;
+  transform:translateX(-50%)!important;
+  z-index:600!important;
+  margin:0!important;
+  padding:14px 16px 10px!important;
+  background:#fff!important;
+  border-bottom:1px solid rgba(45,74,53,.08)!important;
+  box-sizing:border-box!important;
+}
+#live-ov .live-body{
+  position:absolute!important;
+  top:126px!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  flex:none!important;
+  overflow-y:auto!important;
+  padding:16px 16px max(24px,var(--nav-clearance))!important;
+}
+@media (max-width:440px),(display-mode:standalone),(display-mode:fullscreen){
+  #live-ov > .hdr-bar.dw-green-hdr{
+    top:0!important;
+    left:0!important;
+    width:100%!important;
+    max-width:none!important;
+    transform:none!important;
+    border-radius:0!important;
+  }
+  #live-ov > .dw-content-hdr{
+    top:62px!important;
+    left:0!important;
+    width:100%!important;
+    max-width:none!important;
+    transform:none!important;
+  }
+  #ls-end-ov > .hdr-bar.dw-green-hdr{
+    top:0!important;
+    left:0!important;
+    width:100%!important;
+    max-width:none!important;
+    transform:none!important;
+    border-radius:0!important;
+  }
+  #ls-end-ov > .dw-content-hdr{
+    top:62px!important;
+    left:0!important;
+    width:100%!important;
+    max-width:none!important;
+    transform:none!important;
+  }
+  #ls-end-ov .ls-end-scroll{
+    position:fixed!important;
+    top:126px!important;
+    left:0!important;
+    right:0!important;
+    width:auto!important;
+    max-width:none!important;
+    transform:none!important;
+    bottom:0!important;
+  }
+  #ls-end-ov .le-recap{
+    position:relative!important;
+    top:auto!important;
+    left:auto!important;
+    right:auto!important;
+    width:auto!important;
+    max-width:none!important;
+    transform:none!important;
+  }
+}
 .dw-content-hdr .dw-hdr-summary{
   display:flex;align-items:center;gap:8px;flex-wrap:wrap;
   font-size:13px;color:var(--text-mid);
@@ -5990,17 +6341,6 @@ input[type=file]{display:none;}
     <div class="dw-hdr-sub" id="ls-end-sub">Zusammenfassung prüfen</div>
   </div>
   <div class="ls-end-scroll">
-    <div class="live-end-visible-header">
-      <div class="live-end-visible-top">
-        <button class="bbtn" onclick="closeLiveEndOv()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
-        <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
-        <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveEndOv()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
-      </div>
-      <div class="live-end-visible-copy">
-        <div class="dw-hdr-date" id="ls-end-title-inline">Live Session beenden</div>
-        <div class="dw-hdr-sub" id="ls-end-sub-inline">Zusammenfassung prüfen</div>
-      </div>
-    </div>
     <div class="ls-end-card" id="ls-end-card">
       <!-- Content filled dynamically -->
     </div>
@@ -6869,23 +7209,20 @@ input[type=file]{display:none;}
     <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
   </div>
   <div class="dw-content-hdr live-content-hdr live-catch-head">
-    <div class="live-catch-local-head">
+    <div class="live-catch-headbar">
       <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
       <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
       <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
     </div>
+    <div class="live-catch-copy">
+      <div class="dw-hdr-date">Fang hinzufügen</div>
+      <div class="dw-hdr-sub">Schnellfang in der Live Session</div>
+    </div>
   </div>
   <div class="fsov-scroll" style="padding:16px;">
-    <div class="live-catch-title-block">
-      <div class="live-catch-visible-head">
-        <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
-        <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
-        <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
-      </div>
-      <div class="live-catch-title-copy">
-        <div class="dw-hdr-date">Fang hinzufügen</div>
-        <div class="dw-hdr-sub">Schnellfang in der Live Session</div>
-      </div>
+    <div class="live-catch-title-inline">
+      <div class="dw-hdr-date">Fang hinzufügen</div>
+      <div class="dw-hdr-sub">Schnellfang in der Live Session</div>
     </div>
     <div style="font-size:11px;color:var(--text-light);margin-bottom:12px;text-align:center;" id="lc-time-hint">Uhrzeit wird automatisch erfasst</div>
 
@@ -6893,7 +7230,7 @@ input[type=file]{display:none;}
       <label class="il" for="lc-fish">Fischart</label>
       <input type="text" list="lc-fdl" class="if" id="lc-fish" placeholder="z.B. Zander" autocomplete="off"
         data-prev-fish=""
-        onfocus="rndrLcFishChips(this.value)" oninput="rndrLcFishChips(this.value)" onchange="_lcMaybeClearBait(this.value)" onblur="setTimeout(()=>dHide('lc-fc'),150)">
+        onfocus="rndrLcFishChips('')" onclick="rndrLcFishChips(this.value)" oninput="rndrLcFishChips(this.value)" onchange="_lcMaybeClearBait(this.value)" onblur="setTimeout(()=>dHide('lc-fc'),150)">
       <datalist id="lc-fdl"></datalist>
       <div class="crow" id="lc-fc" style="display:none;" role="listbox"></div>
     </div>
@@ -6914,21 +7251,36 @@ input[type=file]{display:none;}
       <div class="ig">
         <label class="il" for="lc-bait">Köder</label>
         <input type="text" class="if" id="lc-bait" placeholder="Gummifisch" autocomplete="off"
-          onfocus="_rndrLcBaitChips()" oninput="_rndrLcBaitChips(this.value)" onblur="setTimeout(()=>dHide('lc-bait-chips'),150)">
-        <div class="crow" id="lc-bait-chips" style="display:none;" role="listbox"></div>
+          onfocus="_rndrLcBaitChips('')" onclick="_rndrLcBaitChips(this.value)" oninput="_rndrLcBaitChips(this.value)" onblur="setTimeout(()=>dHide('lc-bait-chips'),150)">
       </div>
       <div class="ig">
         <label class="il" for="lc-bait-col">Farbe</label>
         <input type="text" class="if" id="lc-bait-col" placeholder="Motoroil" autocomplete="off"
-          onfocus="_rndrLcColChips()" oninput="_rndrLcColChips(this.value)" onblur="setTimeout(()=>dHide('lc-col-chips'),150)">
-        <div class="crow" id="lc-col-chips" style="display:none;" role="listbox"></div>
+          onfocus="_rndrLcColChips('')" onclick="_rndrLcColChips(this.value)" oninput="_rndrLcColChips(this.value)" onblur="setTimeout(()=>dHide('lc-col-chips'),150)">
       </div>
       <div class="ig">
         <label class="il" for="lc-bait-len">Größe</label>
         <input type="text" class="if" id="lc-bait-len" placeholder="12cm" autocomplete="off"
-          onfocus="_rndrLcSzChips()" oninput="_rndrLcSzChips(this.value)" onblur="setTimeout(()=>dHide('lc-sz-chips'),150)">
-        <div class="crow" id="lc-sz-chips" style="display:none;" role="listbox"></div>
+          onfocus="_rndrLcSzChips('')" onclick="_rndrLcSzChips(this.value)" oninput="_rndrLcSzChips(this.value)" onblur="setTimeout(()=>dHide('lc-sz-chips'),150)">
       </div>
+    </div>
+    <div class="crow live-full-chips" id="lc-bait-chips" style="display:none;" role="listbox">
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait').value='Gummifisch';dHide('lc-bait-chips');">Gummifisch</button>
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait').value='Easy Shiner';dHide('lc-bait-chips');">Easy Shiner</button>
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait').value='Ricky the Roach';dHide('lc-bait-chips');">Ricky the Roach</button>
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait').value='Spinnerbait';dHide('lc-bait-chips');">Spinnerbait</button>
+    </div>
+    <div class="crow live-full-chips" id="lc-col-chips" style="display:none;" role="listbox">
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait-col').value='Motoroil';dHide('lc-col-chips');">Motoroil</button>
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait-col').value='Hugo';dHide('lc-col-chips');">Hugo</button>
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait-col').value='Albino';dHide('lc-col-chips');">Albino</button>
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait-col').value='Clear Rudd';dHide('lc-col-chips');">Clear Rudd</button>
+    </div>
+    <div class="crow live-full-chips" id="lc-sz-chips" style="display:none;" role="listbox">
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait-len').value='8cm';dHide('lc-sz-chips');">8cm</button>
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait-len').value='10cm';dHide('lc-sz-chips');">10cm</button>
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait-len').value='12cm';dHide('lc-sz-chips');">12cm</button>
+      <button class="chip cc" onmousedown="document.getElementById('lc-bait-len').value='14cm';dHide('lc-sz-chips');">14cm</button>
     </div>
 
     <!-- v45: C&R Toggle (AP3-Fix: volles State-Update) -->
@@ -6946,8 +7298,13 @@ input[type=file]{display:none;}
       <div class="ig" style="margin-bottom:10px;" id="lc-note-wrap2">
         <label class="il" for="lc-note">Notizen</label>
       <input type="text" class="if" id="lc-note" placeholder="z.B. Am Grund, Steinpackung" autocomplete="off"
-        onfocus="_rndrLcNoteChips(this.value)" oninput="_rndrLcNoteChips(this.value)" onblur="setTimeout(()=>dHide('lc-note-chips'),150)">
-      <div class="crow" id="lc-note-chips" style="display:none;" role="listbox"></div>
+        onfocus="_rndrLcNoteChips(this.value)" onclick="_rndrLcNoteChips(this.value)" oninput="_rndrLcNoteChips(this.value)" onblur="setTimeout(()=>dHide('lc-note-chips'),150)">
+      <div class="crow" id="lc-note-chips" style="display:none;" role="listbox">
+        <button class="chip cc" onmousedown="document.getElementById('lc-note').value='Schilfkante';dHide('lc-note-chips');">Schilfkante</button>
+        <button class="chip cc" onmousedown="document.getElementById('lc-note').value='Kante';dHide('lc-note-chips');">Kante</button>
+        <button class="chip cc" onmousedown="document.getElementById('lc-note').value='Grundnah';dHide('lc-note-chips');">Grundnah</button>
+        <button class="chip cc" onmousedown="document.getElementById('lc-note').value='Biss in der Absinkphase';dHide('lc-note-chips');">Biss in der Absinkphase</button>
+      </div>
     </div>
 
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
@@ -7821,7 +8178,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v89-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v90-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -16044,9 +16401,10 @@ function _renderEndSessionFinal(isSkunked){
       <div class="le-recap-cell"><div class="lbl">Dauer</div><div class="val">${timer}</div></div>
       <div class="le-recap-cell"><div class="lbl">Fänge</div><div class="val">${catches.length}</div></div>
       <div class="le-recap-cell"><div class="lbl">Bisse</div><div class="val">${bites}</div></div>
-      <div class="le-recap-cell wide"><div class="live-input-icon">${_liveIcon('clock')}</div><div><div class="lbl">Start / Ende</div><div class="val">${startLabel} - ${endLabel}</div></div></div>
-      <div class="le-recap-cell wide"><div class="live-input-icon">${_liveIcon('water')}</div><div><div class="lbl">Gewässer</div><div class="val">${_esc(water)}</div></div></div>
-      <div class="le-recap-cell wide"><div class="live-input-icon">${_liveIcon('pin')}</div><div><div class="lbl">Spot</div><div class="val">${_esc(spot||'Kein Spot')}</div></div></div>
+      <div class="le-recap-cell half"><div class="live-input-icon">${_liveIcon('clock')}</div><div><div class="lbl">Start</div><div class="val">${startLabel}</div></div></div>
+      <div class="le-recap-cell half"><div class="live-input-icon">${_liveIcon('clock')}</div><div><div class="lbl">Ende</div><div class="val">${endLabel}</div></div></div>
+      <div class="le-recap-cell half"><div class="live-input-icon">${_liveIcon('water')}</div><div><div class="lbl">Gewässer</div><div class="val">${_esc(water)}</div></div></div>
+      <div class="le-recap-cell half"><div class="live-input-icon">${_liveIcon('pin')}</div><div><div class="lbl">Spot</div><div class="val">${_esc(spot||'Kein Spot')}</div></div></div>
     </div>`;
 
   const shareSection=_renderShareSection({
@@ -16072,12 +16430,13 @@ function _renderEndSessionFinal(isSkunked){
       <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>
     </div>`;
   document.getElementById('ls-end-ov').classList.add('on');
-  requestAnimationFrame(()=>{document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0);_resetLiveViewport();});
+  requestAnimationFrame(()=>{_resetLiveEndScroll();_resetLiveViewport();_resetLiveEndScroll();});
   setTimeout(()=>{
-    document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0);
+    _resetLiveEndScroll();
     _resetLiveViewport();
+    _resetLiveEndScroll();
   },140);
-  setTimeout(_resetLiveViewport,360);
+  setTimeout(()=>{_resetLiveViewport();_resetLiveEndScroll();},360);
   _initShareSectionListeners();
 }
 
@@ -16226,6 +16585,15 @@ function _resolveSessLocation({water,spot,lat,lon}){
 
 function closeLiveEndOv(){
   document.getElementById('ls-end-ov').classList.remove('on');
+}
+
+function _resetLiveEndScroll(){
+  try{
+    const sc=document.querySelector('#ls-end-ov .ls-end-scroll');
+    const body=document.querySelector('#ls-end-ov .le-body');
+    if(sc){sc.scrollTop=0;sc.scrollLeft=0;sc.scrollTo?.(0,0);}
+    if(body){body.scrollTop=0;body.scrollLeft=0;body.scrollTo?.(0,0);}
+  }catch(e){}
 }
 
 function _updateLiveTimer(){
@@ -16542,8 +16910,10 @@ async function _shareLiveSessionToGroups(sess,groupIds){
       if(!sess.sharedToGroups.includes(gId))sess.sharedToGroups.push(gId);
     }catch(e){lastShareError=e;console.warn('share live session:',e);}
   }
-  await saveOneSess(sess);
-  if(_activeGroupId&&groupIds.includes(_activeGroupId))await _grpRefreshActive();
+  try{await saveOneSess(sess);}catch(e){console.warn('share live session save marker:',e);}
+  try{
+    if(_activeGroupId&&groupIds.includes(_activeGroupId))await _grpRefreshActive();
+  }catch(e){console.warn('share live session refresh:',e);}
   if(totalShared===0&&lastShareError)throw lastShareError;
   return totalShared;
 }
@@ -16780,7 +17150,7 @@ function _rndrLcBaitChips(fv){
   const el=document.getElementById('lc-bait-chips');if(!el)return;
   _hideLiveCatchChips('lc-bait-chips');
   const lenVal=document.getElementById('lc-len')?.value?.trim()||'';
-  if(document.activeElement?.id!=='lc-bait'||!lenVal){el.style.display='none';return;}
+  if(!lenVal){el.style.display='none';return;}
   const q=((fv!==undefined?fv:document.getElementById('lc-bait')?.value)||'').toLowerCase();
   let chips=dictTop('bait','',6);
   // Fallback aus sessions wenn dict leer
@@ -16789,6 +17159,7 @@ function _rndrLcBaitChips(fv){
     (sessions||[]).forEach(s=>(s.catches||[]).forEach(c=>{if(c.bait)map[c.bait]=(map[c.bait]||0)+1;}));
     chips=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6).map(e=>e[0]);
   }
+  if(!chips.length)chips=['Gummifisch','Easy Shiner','Ricky the Roach','Spinnerbait'];
   chips=[...new Set(chips)];
   if(q)chips=chips.filter(b=>b.toLowerCase().includes(q));
   if(!chips.length){el.style.display='none';return;}
@@ -16801,7 +17172,6 @@ function _rndrLcBaitChips(fv){
 function _rndrLcColChips(fv){
   const el=document.getElementById('lc-col-chips');if(!el)return;
   _hideLiveCatchChips('lc-col-chips');
-  if(document.activeElement?.id!=='lc-bait-col'){el.style.display='none';return;}
   const q=((fv!==undefined?fv:document.getElementById('lc-bait-col')?.value)||'').toLowerCase();
   const curBait=document.getElementById('lc-bait')?.value?.trim()||'';
   if(!curBait){el.style.display='none';return;}
@@ -16819,6 +17189,7 @@ function _rndrLcColChips(fv){
     (sessions||[]).forEach(s=>(s.catches||[]).forEach(c=>{if(c.baitColor)m2[c.baitColor]=(m2[c.baitColor]||0)+1;}));
     chips=Object.entries(m2).sort((a,b)=>b[1]-a[1]).slice(0,6).map(e=>e[0]);
   }
+  if(!chips.length)chips=['Motoroil','Hugo','Albino','Clear Rudd'];
   chips=[...new Set(chips)];
   if(q)chips=chips.filter(c=>c.toLowerCase().includes(q));
   if(!chips.length){el.style.display='none';return;}
@@ -16831,7 +17202,6 @@ function _rndrLcColChips(fv){
 function _rndrLcSzChips(fv){
   const el=document.getElementById('lc-sz-chips');if(!el)return;
   _hideLiveCatchChips('lc-sz-chips');
-  if(document.activeElement?.id!=='lc-bait-len'){el.style.display='none';return;}
   const q=((fv!==undefined?fv:document.getElementById('lc-bait-len')?.value)||'').toLowerCase();
   const curBait=document.getElementById('lc-bait')?.value?.trim()||'';
   const curCol=document.getElementById('lc-bait-col')?.value?.trim()||'';
@@ -16852,6 +17222,7 @@ function _rndrLcSzChips(fv){
     }));
     chips=Object.entries(m2).sort((a,b)=>b[1]-a[1]).slice(0,6).map(e=>e[0]);
   }
+  if(!chips.length)chips=['8cm','10cm','12cm','14cm'];
   chips=[...new Set(chips)];
   if(q)chips=chips.filter(c=>c.toLowerCase().includes(q));
   if(!chips.length){el.style.display='none';return;}
@@ -16864,9 +17235,9 @@ function _rndrLcSzChips(fv){
 function _rndrLcNoteChips(fv){
   const el=document.getElementById('lc-note-chips');if(!el)return;
   _hideLiveCatchChips('lc-note-chips');
-  if(document.activeElement?.id!=='lc-note'){el.style.display='none';return;}
   const q=((fv!==undefined?fv:document.getElementById('lc-note')?.value)||'').toLowerCase();
   let chips=dictTop('notes','',6);
+  if(!chips.length)chips=['Schilfkante','Kante','Grundnah','Biss in der Absinkphase'];
   chips=[...new Set(chips)].filter(n=>!q||n.toLowerCase().includes(q)).slice(0,6);
   if(!chips.length){el.style.display='none';return;}
   el.style.display='flex';
@@ -16881,7 +17252,6 @@ function rndrLcFishChips(val){
   const con=document.getElementById('lc-fc');
   if(!con)return;
   _hideLiveCatchChips('lc-fc');
-  if(document.activeElement?.id!=='lc-fish'){con.style.display='none';return;}
   const v=(val||'').toLowerCase();
   // Priorität: globalDict (gelerntes Wörterbuch) → dann FISH-Fallback
   let list=dictTop('fish',v,8);
@@ -18163,6 +18533,12 @@ function _maybeAppendFeedMessage(msg){
 
 function _sessionPostPhotos(data){
   const photos=Array.isArray(data?.photoUrls)?data.photoUrls.filter(Boolean):[];
+  if(!photos.length&&Array.isArray(data?.catches)){
+    data.catches
+      .filter(c=>c&&c.photoUrl)
+      .sort((a,b)=>(b.length||0)-(a.length||0))
+      .forEach(c=>photos.push(c.photoUrl));
+  }
   if(data?.bestPhotoUrl&&!photos.includes(data.bestPhotoUrl))photos.unshift(data.bestPhotoUrl);
   return photos;
 }
