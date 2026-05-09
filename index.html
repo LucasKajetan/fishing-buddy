@@ -4482,14 +4482,86 @@ input[type=file]{display:none;}
 .live-bottom-actions .ls-end-btn .ic{width:17px;height:17px;}
 .live-bottom-actions .ls-end-btn.warn{background:#C43629;box-shadow:0 6px 14px rgba(196,54,41,.22);}
 .live-bottom-actions .ls-end-btn.ghost{background:#fff;color:var(--green-deep);border:1px solid var(--line);}
-.live-bottom-actions .ls-end-btn.ghost.is-resume{background:var(--green-mist);border-color:var(--green-pale);color:var(--green-deep);}
+.live-bottom-actions .ls-end-btn.ghost.is-resume{
+  background:linear-gradient(135deg,var(--green-deep),#1f6a42);
+  border-color:transparent;color:#fff;box-shadow:0 7px 16px rgba(31,106,66,.24);
+}
+.live-bottom-actions .ls-end-btn.ghost.is-resume .ic{color:#fff;}
 
 .ls-end-ov{
   position:absolute;inset:0;z-index:131;background:#f7f5ef;display:none;
   flex-direction:column;align-items:stretch;justify-content:flex-start;font-family:var(--fa);
 }
 .ls-end-ov.on{display:flex;}
-.ls-end-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px max(24px,var(--nav-clearance));}
+@media (min-width:441px){
+  .ls-end-ov.on{
+    position:fixed!important;
+    inset:auto!important;
+    top:24px!important;
+    left:50%!important;
+    width:390px!important;
+    height:844px!important;
+    transform:translateX(-50%)!important;
+    border-radius:40px!important;
+    overflow:hidden!important;
+    box-shadow:0 30px 80px rgba(0,0,0,.18);
+  }
+}
+.ls-end-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:126px 16px max(24px,var(--nav-clearance));}
+#ls-end-ov > .hdr-bar.dw-green-hdr,
+#ls-end-ov > .dw-content-hdr{display:none!important;}
+.live-end-visible-header{
+  margin:0;
+  background:#fff;
+  border-bottom:1px solid rgba(45,74,53,.08);
+  position:fixed;
+  top:24px;
+  left:50%;
+  width:390px;
+  max-width:calc(100vw - 32px);
+  transform:translateX(-50%);
+  z-index:500;
+  border-radius:40px 40px 0 0;
+  overflow:hidden;
+}
+.live-end-visible-top{
+  height:62px;
+  min-height:62px;
+  background:var(--green-deep);
+  padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:relative;
+  box-sizing:border-box;
+}
+.live-end-visible-top .bbtn{
+  width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;
+  display:flex;align-items:center;justify-content:center;padding:0;
+}
+.live-end-visible-top .bbtn .ic{width:18px;height:18px;color:#fff;}
+.live-end-visible-top .hlogo{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:inline-flex;align-items:baseline;justify-content:center;
+}
+.live-end-visible-top .hlogo-t{font-family:var(--fa);font-size:21px;font-weight:500;color:#A8D5B5;letter-spacing:-.015em;}
+.live-end-visible-top .hlogo-p{font-family:var(--fa);font-size:21px;font-weight:600;color:var(--gold);margin-left:1px;letter-spacing:-.015em;}
+.live-end-visible-top .dw-close-btn{
+  position:absolute!important;right:16px!important;top:50%!important;transform:translateY(-50%)!important;
+  width:34px!important;height:34px!important;background:#C94040!important;color:#fff!important;border:none!important;border-radius:50%!important;
+}
+.live-end-visible-top .dw-close-btn .ic{width:16px;height:16px;color:#fff;}
+.live-end-visible-copy{padding:14px 16px 10px;background:#fff;}
+@media (max-width:440px),(display-mode:standalone),(display-mode:fullscreen){
+  .live-end-visible-header{
+    top:0;
+    left:0;
+    width:100%;
+    max-width:none;
+    transform:none;
+    border-radius:0;
+  }
+}
 .ls-end-card{
   background:transparent;width:100%;max-width:none;max-height:none;border-radius:0;padding:0;box-shadow:none;
   display:flex;flex-direction:column;overflow:visible;text-align:left;
@@ -5519,6 +5591,102 @@ input[type=file]{display:none;}
   flex:0 0 62px!important;
 }
 #fs-live-catch > .dw-content-hdr.live-catch-head{margin-top:0!important;}
+#fs-live-catch > .hdr-bar.dw-green-hdr{display:none!important;}
+#fs-live-catch > .dw-content-hdr.live-catch-head{
+  margin-top:0!important;padding:0!important;background:#fff!important;
+  border-bottom:1px solid rgba(45,74,53,.08)!important;
+}
+#fs-live-catch .live-catch-local-head{
+  height:62px;min-height:62px;background:var(--green-deep);
+  padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px;
+  display:flex;align-items:center;justify-content:space-between;position:absolute!important;top:0!important;left:0!important;right:0!important;z-index:50!important;box-sizing:border-box;
+}
+#fs-live-catch .live-catch-local-head .bbtn{
+  width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;
+  display:flex;align-items:center;justify-content:center;padding:0;
+}
+#fs-live-catch .live-catch-local-head .bbtn .ic{width:18px;height:18px;color:#fff;}
+#fs-live-catch .live-catch-local-head .hlogo{color:#fff;}
+#fs-live-catch .live-catch-local-head .hlogo-t{font-family:var(--fa);font-size:21px;font-weight:500;color:#A8D5B5;letter-spacing:-.015em;}
+#fs-live-catch .live-catch-local-head .hlogo-p{font-family:var(--fa);font-size:21px;font-weight:600;color:var(--gold);margin-left:1px;letter-spacing:-.015em;}
+#fs-live-catch .live-catch-local-head .dw-close-btn{
+  right:16px!important;width:34px!important;height:34px!important;background:#C94040!important;color:#fff!important;border:none!important;border-radius:50%!important;
+}
+#fs-live-catch .live-catch-local-title{padding:62px 0 0;background:#fff;position:relative;}
+#fs-live-catch .live-catch-local-copy{padding:14px 16px 10px;background:#fff;}
+/* v89 final: Live-Fang nutzt genau einen sichtbaren Overlay-Header im Inhaltsblock. */
+#fs-live-catch > .hdr-bar.dw-green-hdr{
+  display:none!important;
+  height:62px!important;
+  min-height:62px!important;
+  flex:0 0 62px!important;
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  z-index:60!important;
+  background:var(--green-deep)!important;
+}
+#fs-live-catch > .dw-content-hdr.live-catch-head{
+  margin-top:0!important;
+  padding:0!important;
+  height:62px!important;
+  min-height:62px!important;
+  flex:0 0 62px!important;
+  background:var(--green-deep)!important;
+  border-bottom:none!important;
+}
+#fs-live-catch .live-catch-local-title{padding:0!important;background:#fff!important;}
+#fs-live-catch .live-catch-local-head{
+  display:flex!important;
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  z-index:1!important;
+  height:62px!important;
+  min-height:62px!important;
+  background:var(--green-deep)!important;
+  padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  width:100%!important;
+}
+#fs-live-catch .live-catch-local-copy{padding:14px 16px 10px!important;background:#fff!important;}
+#fs-live-catch .live-catch-title-block{
+  margin:-16px -16px 12px;
+  padding:0;
+  background:#fff;
+  border-bottom:1px solid rgba(45,74,53,.08);
+}
+#fs-live-catch .live-catch-visible-head{
+  height:62px;
+  min-height:62px;
+  background:var(--green-deep);
+  padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:relative;
+  box-sizing:border-box;
+}
+#fs-live-catch .live-catch-visible-head .bbtn{
+  width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;
+  display:flex;align-items:center;justify-content:center;padding:0;
+}
+#fs-live-catch .live-catch-visible-head .bbtn .ic{width:18px;height:18px;color:#fff;}
+#fs-live-catch .live-catch-visible-head .hlogo{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:inline-flex;align-items:baseline;justify-content:center;
+}
+#fs-live-catch .live-catch-visible-head .hlogo-t{font-family:var(--fa);font-size:21px;font-weight:500;color:#A8D5B5;letter-spacing:-.015em;}
+#fs-live-catch .live-catch-visible-head .hlogo-p{font-family:var(--fa);font-size:21px;font-weight:600;color:var(--gold);margin-left:1px;letter-spacing:-.015em;}
+#fs-live-catch .live-catch-visible-head .dw-close-btn{
+  position:absolute!important;right:16px!important;top:50%!important;transform:translateY(-50%)!important;
+  width:34px!important;height:34px!important;background:#C94040!important;color:#fff!important;border:none!important;border-radius:50%!important;
+}
+#fs-live-catch .live-catch-visible-head .dw-close-btn .ic{width:16px;height:16px;color:#fff;}
+#fs-live-catch .live-catch-title-copy{padding:14px 16px 10px;background:#fff;}
 .dw-content-hdr .dw-hdr-summary{
   display:flex;align-items:center;gap:8px;flex-wrap:wrap;
   font-size:13px;color:var(--text-mid);
@@ -5822,6 +5990,17 @@ input[type=file]{display:none;}
     <div class="dw-hdr-sub" id="ls-end-sub">Zusammenfassung prüfen</div>
   </div>
   <div class="ls-end-scroll">
+    <div class="live-end-visible-header">
+      <div class="live-end-visible-top">
+        <button class="bbtn" onclick="closeLiveEndOv()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+        <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+        <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveEndOv()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="live-end-visible-copy">
+        <div class="dw-hdr-date" id="ls-end-title-inline">Live Session beenden</div>
+        <div class="dw-hdr-sub" id="ls-end-sub-inline">Zusammenfassung prüfen</div>
+      </div>
+    </div>
     <div class="ls-end-card" id="ls-end-card">
       <!-- Content filled dynamically -->
     </div>
@@ -6690,43 +6869,24 @@ input[type=file]{display:none;}
     <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
   </div>
   <div class="dw-content-hdr live-content-hdr live-catch-head">
-    <div class="live-catch-headbar" style="display:none!important;">
-      <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü" style="width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;padding:0;"><svg class="ic" style="width:18px;height:18px;color:#fff;"><use href="#i-menu"/></svg></button>
-      <div class="hlogo" style="color:#fff;"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
-      <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen" style="width:34px;height:34px;background:#C94040;color:#fff;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg class="ic" style="width:16px;height:16px;color:#fff;"><use href="#i-x"/></svg></button>
+    <div class="live-catch-local-head">
+      <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
+      <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
+      <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
     </div>
-    <div class="live-catch-title-wrap" style="position:relative;background:#fff;padding:0;margin-top:62px;">
-      <div class="live-catch-visible-top">
+  </div>
+  <div class="fsov-scroll" style="padding:16px;">
+    <div class="live-catch-title-block">
+      <div class="live-catch-visible-head">
         <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
         <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
         <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
       </div>
-      <div class="live-catch-inline-header live-catch-inline-old" style="display:none!important;">
-        <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü" style="width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;padding:0;"><svg class="ic" style="width:18px;height:18px;color:#fff;"><use href="#i-menu"/></svg></button>
-        <div class="hlogo" style="color:#fff;"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
-        <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen" style="width:34px;height:34px;background:#C94040;color:#fff;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg class="ic" style="width:16px;height:16px;color:#fff;"><use href="#i-x"/></svg></button>
-      </div>
-      <div class="live-catch-white-title" style="padding:0;background:#fff;">
-        <div class="live-catch-active-header" style="height:62px;min-height:62px;background:var(--green-deep);padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:35;box-sizing:border-box;">
-          <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü" style="width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;padding:0;"><svg class="ic" style="width:18px;height:18px;color:#fff;"><use href="#i-menu"/></svg></button>
-          <div class="hlogo" style="color:#fff;"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
-          <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen" style="width:34px;height:34px;background:#C94040;color:#fff;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg class="ic" style="width:16px;height:16px;color:#fff;"><use href="#i-x"/></svg></button>
-        </div>
-        <div style="padding:0;background:#fff;">
-          <div style="height:62px;min-height:62px;background:var(--green-deep);padding:max(14px, env(safe-area-inset-top, 14px)) 16px 10px;display:flex;align-items:center;justify-content:space-between;position:relative;box-sizing:border-box;">
-            <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü" style="width:38px;height:38px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;display:flex;align-items:center;justify-content:center;padding:0;"><svg class="ic" style="width:18px;height:18px;color:#fff;"><use href="#i-menu"/></svg></button>
-            <div class="hlogo" style="color:#fff;"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
-            <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen" style="width:34px;height:34px;background:#C94040;color:#fff;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;"><svg class="ic" style="width:16px;height:16px;color:#fff;"><use href="#i-x"/></svg></button>
-          </div>
-          <div style="padding:14px 16px 10px;background:#fff;">
-            <div class="dw-hdr-date">Fang hinzufügen</div>
-            <div class="dw-hdr-sub">Schnellfang in der Live Session</div>
-          </div>
-        </div>
+      <div class="live-catch-title-copy">
+        <div class="dw-hdr-date">Fang hinzufügen</div>
+        <div class="dw-hdr-sub">Schnellfang in der Live Session</div>
       </div>
     </div>
-  </div>
-  <div class="fsov-scroll" style="padding:16px;">
     <div style="font-size:11px;color:var(--text-light);margin-bottom:12px;text-align:center;" id="lc-time-hint">Uhrzeit wird automatisch erfasst</div>
 
     <div class="ig" style="margin-bottom:10px;">
@@ -6783,9 +6943,11 @@ input[type=file]{display:none;}
       </label>
     </div>
 
-    <div class="ig" style="margin-bottom:10px;" id="lc-note-wrap2">
-      <label class="il" for="lc-note">Notizen</label>
-      <input type="text" class="if" id="lc-note" placeholder="z.B. Am Grund, Steinpackung" autocomplete="off">
+      <div class="ig" style="margin-bottom:10px;" id="lc-note-wrap2">
+        <label class="il" for="lc-note">Notizen</label>
+      <input type="text" class="if" id="lc-note" placeholder="z.B. Am Grund, Steinpackung" autocomplete="off"
+        onfocus="_rndrLcNoteChips(this.value)" oninput="_rndrLcNoteChips(this.value)" onblur="setTimeout(()=>dHide('lc-note-chips'),150)">
+      <div class="crow" id="lc-note-chips" style="display:none;" role="listbox"></div>
     </div>
 
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
@@ -7659,7 +7821,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v88-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v89-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -15596,8 +15758,12 @@ async function liveAddNote(){
 function _setLiveEndHeader(title,sub){
   const t=document.getElementById('ls-end-title');
   const s=document.getElementById('ls-end-sub');
+  const ti=document.getElementById('ls-end-title-inline');
+  const si=document.getElementById('ls-end-sub-inline');
   if(t)t.textContent=title;
   if(s)s.textContent=sub;
+  if(ti)ti.textContent=title;
+  if(si)si.textContent=sub;
 }
 function _liveDistanceKm(track){
   if(!Array.isArray(track)||track.length<2)return 0;
@@ -15655,6 +15821,22 @@ function _renderLiveEndCatches(catches){
   </div>`;
 }
 
+function _resetLiveViewport(){
+  try{
+    document.querySelectorAll('#fs-live-start .fsov-scroll,#fs-live-catch .fsov-scroll,#live-ov .live-body,#ls-end-ov .ls-end-scroll').forEach(el=>{
+      el.scrollTop=0;
+      el.scrollLeft=0;
+      el.scrollTo?.(0,0);
+    });
+    const phone=document.querySelector('.phone');
+    phone?.scrollIntoView?.({block:'start',inline:'nearest'});
+    window.scrollTo?.({top:0,left:0,behavior:'instant'});
+    if(document.scrollingElement)document.scrollingElement.scrollTop=0;
+    document.documentElement.scrollTop=0;
+    document.body.scrollTop=0;
+  }catch(e){}
+}
+
 // ── Live Session Start: Full Overlay öffnen ──
 function startLiveSession(){
   const wxEl=document.getElementById('ls-wx-content');
@@ -15667,9 +15849,9 @@ function startLiveSession(){
   openFs('live-start');
   requestAnimationFrame(()=>{
     document.querySelector('#fs-live-start .fsov-scroll')?.scrollTo?.(0,0);
-    try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+    _resetLiveViewport();
   });
-  setTimeout(()=>{try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}},120);
+  setTimeout(_resetLiveViewport,120);
 }
 
 function closeLiveStartOv(){closeFs('live-start');}
@@ -15821,11 +16003,12 @@ function confirmEndLive(){
         <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>
       </div>`;
     document.getElementById('ls-end-ov').classList.add('on');
-    requestAnimationFrame(()=>document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0));
+    requestAnimationFrame(()=>{document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0);_resetLiveViewport();});
     setTimeout(()=>{
       document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0);
-      try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+      _resetLiveViewport();
     },140);
+    setTimeout(_resetLiveViewport,360);
     return;
   }
   // Direkt Recap+Share zeigen (kein Schneider-Fall)
@@ -15889,11 +16072,12 @@ function _renderEndSessionFinal(isSkunked){
       <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>
     </div>`;
   document.getElementById('ls-end-ov').classList.add('on');
-  requestAnimationFrame(()=>document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0));
+  requestAnimationFrame(()=>{document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0);_resetLiveViewport();});
   setTimeout(()=>{
     document.querySelector('#ls-end-ov .ls-end-scroll')?.scrollTo?.(0,0);
-    try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+    _resetLiveViewport();
   },140);
+  setTimeout(_resetLiveViewport,360);
   _initShareSectionListeners();
 }
 
@@ -15930,11 +16114,12 @@ function _renderShareSection(opts){
   if(groups.length===1){
     // Auto-select (Single-Group-Fast-Path)
     if(startEnabled&&!_endShareState.groupIds.length)_endShareState.groupIds=[groups[0].id];
-    groupListHtml=`<div class="share-group-list" style="display:flex;">
-      <div class="share-grp-pick on" data-gid="${groups[0].id}" onclick="_endToggleGroupPick('${groups[0].id}')">
+    const singleSelected=_endShareState.groupIds.includes(groups[0].id);
+    groupListHtml=`<div class="share-group-list">
+      <div class="share-grp-pick${singleSelected?' on':''}" data-gid="${groups[0].id}" onclick="_endToggleGroupPick('${groups[0].id}')">
         <div class="ico">${groups[0].iconText||'🎣'}</div>
         <div class="nm">${_esc(groups[0].name||'Gruppe')}</div>
-        <div class="chk">✓</div>
+        <div class="chk">${singleSelected?'✓':''}</div>
       </div>
     </div>`;
   }else{
@@ -15986,11 +16171,10 @@ function _endToggleShare(){
   const sec=document.getElementById('share-section');
   const sw=document.getElementById('share-toggle-sw');
   if(!sec||!sw)return;
-  sec.classList.toggle('expanded',_endShareState.enabled);
-  sw.classList.toggle('on',_endShareState.enabled);
   // Bei Single-Group: automatisch ankreuzen wenn aktiviert
   if(_endShareState.enabled&&_groups.length===1)_endShareState.groupIds=[_groups[0].id];
   if(!_endShareState.enabled)_endShareState.groupIds=[];
+  _syncEndShareDom();
 }
 
 function _endToggleGroupPick(gId){
@@ -16002,20 +16186,22 @@ function _endToggleGroupPick(gId){
   const idx=_endShareState.groupIds.indexOf(gId);
   if(idx>=0)_endShareState.groupIds.splice(idx,1);
   else _endShareState.groupIds.push(gId);
-  // DOM only
-  const row=document.querySelector(`.share-grp-pick[data-gid="${gId}"]`);
-  if(row){
+  if(!_endShareState.groupIds.length)_endShareState.enabled=false;
+  _syncEndShareDom();
+}
+
+function _syncEndShareDom(){
+  const sec=document.getElementById('share-section');
+  const sw=document.getElementById('share-toggle-sw');
+  if(sec)sec.classList.toggle('expanded',_endShareState.enabled);
+  if(sw)sw.classList.toggle('on',_endShareState.enabled);
+  document.querySelectorAll('.share-grp-pick[data-gid]').forEach(row=>{
+    const gId=row.getAttribute('data-gid');
     const on=_endShareState.groupIds.includes(gId);
     row.classList.toggle('on',on);
     const chk=row.querySelector('.chk');
     if(chk)chk.textContent=on?'✓':'';
-  }
-  // Wenn alle abgewählt sind: Toggle ausschalten
-  if(!_endShareState.groupIds.length){
-    _endShareState.enabled=false;
-    document.getElementById('share-section')?.classList.remove('expanded');
-    document.getElementById('share-toggle-sw')?.classList.remove('on');
-  }
+  });
 }
 
 // v52 AP1: GPS-Pragmatismus — beste verfügbare Position auflösen.
@@ -16052,9 +16238,9 @@ function openLiveOv(){
   document.getElementById('live-ov')?.classList.add('on');
   requestAnimationFrame(()=>{
     document.querySelector('#live-ov .live-body')?.scrollTo?.(0,0);
-    try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+    _resetLiveViewport();
   });
-  setTimeout(()=>{try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}},120);
+  setTimeout(_resetLiveViewport,120);
   _renderLiveStatus();
   _renderLiveCatches();
   _renderLiveTimeline();
@@ -16137,6 +16323,35 @@ async function endLiveSession(){
   confirmEndLive();
 }
 
+function _normalizeLiveCatchForSession(c){
+  const len=Number(c?.length)||0;
+  const wt=Number(c?.weight)||0;
+  const baitLen=c?.baitLen||c?.baitSize||'';
+  const baitSize=c?.baitSize||(baitLen?`${baitLen}`:'');
+  return{
+    ...c,
+    type:(c?.type||'Fisch').trim(),
+    length:len,
+    weight:wt,
+    time:c?.time||_liveClock(c?.ts||Date.now()),
+    ts:c?.ts||Date.now(),
+    taken:!!c?.taken,
+    bait:c?.bait||'',
+    baitLen,
+    baitSize,
+    baitColor:c?.baitColor||'',
+    baitNote:c?.baitNote||'',
+    note:c?.note||'',
+    photoKey:c?.photoKey||null,
+    inputMode:c?.inputMode||_inputMode||'raub',
+    lat:c?.lat||c?._lat||null,
+    lon:c?.lon||c?._lon||null,
+    _lat:c?._lat||(c?.lat?parseFloat(c.lat):null),
+    _lon:c?._lon||(c?.lon?parseFloat(c.lon):null),
+    score:c?.score||fScore(c?.type||'Fisch',len)
+  };
+}
+
 async function _finalizeLive(isSkunked){
   closeLiveEndOv();
   if(!_liveSession)return;
@@ -16148,6 +16363,7 @@ async function _finalizeLive(isSkunked){
   // Gewässername aus Live-Session oder Fallback
   const waterName=_liveSession.water||'Live-Session';
   const spotName=_liveSession.spot||'';
+  const liveCatches=(_liveSession.catches||[]).map(_normalizeLiveCatchForSession);
 
   // Session-Objekt bauen
   const start=new Date(_liveSession.startTime);
@@ -16163,9 +16379,9 @@ async function _finalizeLive(isSkunked){
     lon:_liveSession.gpsTrack[0]?.lon||null,
     ...getMoon(start.toISOString().split('T')[0]),
     moonIllum:getMoon(start.toISOString().split('T')[0]).illum,
-    skunked:isSkunked||!_liveSession.catches.length,
-    autoSkunked:isSkunked||!_liveSession.catches.length,
-    catches:_liveSession.catches,
+    skunked:isSkunked||!liveCatches.length,
+    autoSkunked:isSkunked||!liveCatches.length,
+    catches:liveCatches,
     note:_liveSession.note||'',
     events:_liveSession.events||[],
     bites:(_liveSession.events||[]).filter(e=>e.kind==='bite').length,
@@ -16224,7 +16440,8 @@ async function _finalizeLive(isSkunked){
       else showToast('⚠️','Session gespeichert, aber nicht geteilt',true);
     }catch(e){
       console.warn('Share nach Live-End:',e);
-      showToast('⚠️','Session gespeichert, Teilen fehlgeschlagen',true);
+      const msg=(e&&e.message)?e.message:String(e||'unbekannter Fehler');
+      showToast('⚠️','Teilen fehlgeschlagen: '+msg.slice(0,90),true);
     }
   }
   _endShareState={enabled:false,groupIds:[]};
@@ -16239,9 +16456,8 @@ async function _finalizeLive(isSkunked){
   closeLiveOv();
   rndrFangbuch();
 
-  // v45: Fitness-App-Style Summary statt einfachem Toast
-  _showLsSummary(sess);
   showPage('fangbuch');
+  showToast('','Live Session gespeichert');
 }
 
 async function _liveGetPhotoData(photoKey){
@@ -16304,13 +16520,22 @@ async function _shareLiveSessionToGroups(sess,groupIds){
     };
 
     try{
-      const {error}=await _sb.from('group_messages').insert({
+      const payload={
         group_id:gId,user_id:myId,type:'session',
         text:`${myName} hat eine Live-Session geteilt.`,
         catch_data:sessionData,
         photo_url:sessionData.bestPhotoUrl,
         display_name:myName
-      });
+      };
+      let {error}=await _sb.from('group_messages').insert(payload);
+      if(error){
+        // Manche bestehende group_messages-Schemas erlauben nur bekannte Chat-Typen.
+        // In dem Fall bleibt es ein einzelner Feed-Eintrag, wird aber als msg gespeichert
+        // und über catch_data.kind === "session" wieder als Session-Post gerendert.
+        const fallback={...payload,type:'msg'};
+        const retry=await _sb.from('group_messages').insert(fallback);
+        error=retry.error;
+      }
       if(error)throw error;
       totalShared++;
       sess.sharedToGroups=sess.sharedToGroups||[];
@@ -16498,14 +16723,15 @@ function openLiveCatchOv(){
   }
 
   // Overlay öffnen
+  _hideLiveCatchChips();
   document.getElementById('fs-live-catch')?.classList.add('on');
   requestAnimationFrame(()=>{
     document.querySelector('#fs-live-catch .fsov-scroll')?.scrollTo?.(0,0);
-    try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+    _resetLiveViewport();
   });
   setTimeout(()=>{
     document.querySelector('#fs-live-catch .fsov-scroll')?.scrollTo?.(0,0);
-    try{window.scrollTo(0,0);document.scrollingElement.scrollTop=0;}catch(e){}
+    _resetLiveViewport();
   },120);
   // AP2: Spot-FAB ausblenden während Live-Catch-Overlay offen
   if(typeof _updateSpotMarkVisibility==='function')_updateSpotMarkVisibility();
@@ -16540,16 +16766,22 @@ function _lcMaybeClearBait(newFish){
     const el=document.getElementById(id);
     if(el)el.value='';
   });
-  // Chips ggf. neu einblenden mit globalen Top-Chips
-  const baitEl=document.getElementById('lc-bait');
-  if(baitEl&&baitEl===document.activeElement)_rndrLcBaitChips('');
+  _hideLiveCatchChips('lc-fc');
 }
 
 // AP8: Live-Session — Top-Chips für Köder, Farbe, Größe
 // Quelle: globales Dict + bisherige Sessions (bait+color+size lernen)
+function _hideLiveCatchChips(keepId=''){
+  ['lc-fc','lc-bait-chips','lc-col-chips','lc-sz-chips','lc-note-chips'].forEach(id=>{
+    if(id!==keepId)dHide(id);
+  });
+}
 function _rndrLcBaitChips(fv){
   const el=document.getElementById('lc-bait-chips');if(!el)return;
-  const q=(fv||'').toLowerCase();
+  _hideLiveCatchChips('lc-bait-chips');
+  const lenVal=document.getElementById('lc-len')?.value?.trim()||'';
+  if(document.activeElement?.id!=='lc-bait'||!lenVal){el.style.display='none';return;}
+  const q=((fv!==undefined?fv:document.getElementById('lc-bait')?.value)||'').toLowerCase();
   let chips=dictTop('bait','',6);
   // Fallback aus sessions wenn dict leer
   if(!chips.length){
@@ -16563,13 +16795,16 @@ function _rndrLcBaitChips(fv){
   el.style.display='flex';
   el.innerHTML=chips.map(b=>{
     const s=b.replace(/'/g,"\\'");
-    return `<button class="chip cc" onmousedown="document.getElementById('lc-bait').value='${s}';dHide('lc-bait-chips');_rndrLcColChips('');_rndrLcSzChips('');">${b}</button>`;
+    return `<button class="chip cc" onmousedown="document.getElementById('lc-bait').value='${s}';dHide('lc-bait-chips');">${b}</button>`;
   }).join('');
 }
 function _rndrLcColChips(fv){
   const el=document.getElementById('lc-col-chips');if(!el)return;
-  const q=(fv||'').toLowerCase();
+  _hideLiveCatchChips('lc-col-chips');
+  if(document.activeElement?.id!=='lc-bait-col'){el.style.display='none';return;}
+  const q=((fv!==undefined?fv:document.getElementById('lc-bait-col')?.value)||'').toLowerCase();
   const curBait=document.getElementById('lc-bait')?.value?.trim()||'';
+  if(!curBait){el.style.display='none';return;}
   // Lernen aus Sessions: häufigste Farben — gefiltert auf aktuellen Köder wenn vorhanden
   const map={};
   (sessions||[]).forEach(s=>(s.catches||[]).forEach(c=>{
@@ -16595,8 +16830,12 @@ function _rndrLcColChips(fv){
 }
 function _rndrLcSzChips(fv){
   const el=document.getElementById('lc-sz-chips');if(!el)return;
-  const q=(fv||'').toLowerCase();
+  _hideLiveCatchChips('lc-sz-chips');
+  if(document.activeElement?.id!=='lc-bait-len'){el.style.display='none';return;}
+  const q=((fv!==undefined?fv:document.getElementById('lc-bait-len')?.value)||'').toLowerCase();
   const curBait=document.getElementById('lc-bait')?.value?.trim()||'';
+  const curCol=document.getElementById('lc-bait-col')?.value?.trim()||'';
+  if(!curBait&&!curCol){el.style.display='none';return;}
   const map={};
   (sessions||[]).forEach(s=>(s.catches||[]).forEach(c=>{
     const sz=c.baitSize||(c.baitLen?(c.baitLen+'cm'):'');
@@ -16622,22 +16861,41 @@ function _rndrLcSzChips(fv){
     return `<button class="chip cc" onmousedown="document.getElementById('lc-bait-len').value='${s}';dHide('lc-sz-chips');">${c}</button>`;
   }).join('');
 }
+function _rndrLcNoteChips(fv){
+  const el=document.getElementById('lc-note-chips');if(!el)return;
+  _hideLiveCatchChips('lc-note-chips');
+  if(document.activeElement?.id!=='lc-note'){el.style.display='none';return;}
+  const q=((fv!==undefined?fv:document.getElementById('lc-note')?.value)||'').toLowerCase();
+  let chips=dictTop('notes','',6);
+  chips=[...new Set(chips)].filter(n=>!q||n.toLowerCase().includes(q)).slice(0,6);
+  if(!chips.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=chips.map(n=>{
+    const s=n.replace(/'/g,"\\'");
+    return `<button class="chip cc" onmousedown="document.getElementById('lc-note').value='${s}';dHide('lc-note-chips');">${n}</button>`;
+  }).join('');
+}
 
 // AP3: Live Session – Fisch-Chips aus globalDict (Multi-Word safe)
 function rndrLcFishChips(val){
   const con=document.getElementById('lc-fc');
   if(!con)return;
+  _hideLiveCatchChips('lc-fc');
+  if(document.activeElement?.id!=='lc-fish'){con.style.display='none';return;}
   const v=(val||'').toLowerCase();
   // Priorität: globalDict (gelerntes Wörterbuch) → dann FISH-Fallback
   let list=dictTop('fish',v,8);
   if(!list.length&&v){
     list=FISH.filter(f=>f.toLowerCase().includes(v)).slice(0,8);
   }
+  if(!list.length&&!v){
+    list=FISH.slice(0,8);
+  }
   if(!list.length){con.style.display='none';return;}
   con.style.display='flex';
   con.innerHTML=list.map(f=>{
     const s=f.replace(/'/g,"\\'");
-    return`<button class="fav-btn" ${_chipAttr('fish',f)} onmousedown="_lcMaybeClearBait('${s}');document.getElementById('lc-fish').value='${s}';dHide('lc-fc');_rndrLcBaitChips('');">${f}</button>`;
+    return`<button class="fav-btn" ${_chipAttr('fish',f)} onmousedown="_lcMaybeClearBait('${s}');document.getElementById('lc-fish').value='${s}';dHide('lc-fc');">${f}</button>`;
   }).join('');
 }
 
@@ -17342,12 +17600,14 @@ async function _loadGroupDetail(gId){
 
 // Mapt eine group_messages-Zeile aus der DB auf das v53-Feed-Format
 function _grpMapMessageRow(m){
+  const cd=m.catch_data;
+  const mappedType=(m.type==='session'||cd?.kind==='session')?'session':(m.type||'msg');
   return{
     id:m.id,
-    type:m.type||'msg',
+    type:mappedType,
     text:m.text,
     photoUrl:m.photo_url,
-    catchData:m.catch_data,
+    catchData:cd,
     replyTo:m.reply_to,
     replyToText:m.reply_to_text,
     replyToUserName:m.reply_to_user_name,
