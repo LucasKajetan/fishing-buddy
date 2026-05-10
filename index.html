@@ -6038,6 +6038,311 @@ input[type=file]{display:none;}
     transform:none!important;
   }
 }
+
+/* v91 App-Shell-Konsolidierung: Gruppen und Live-Session laufen technisch weiter
+   als Overlays, wirken aber wie feste Fullscreen-Seiten ohne Bottom-Sheet-Schub. */
+#fs-group-hub,
+#fs-group-detail,
+#fs-live-start,
+#fs-live-catch{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  transform:none!important;
+  transition:none!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:#f7f5ef!important;
+}
+#fs-group-hub:not(.on),
+#fs-group-detail:not(.on),
+#fs-live-start:not(.on),
+#fs-live-catch:not(.on){
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+#fs-group-hub.on,
+#fs-group-detail.on,
+#fs-live-start.on,
+#fs-live-catch.on{
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transform:none!important;
+}
+#fs-group-hub > .hdr-bar.dw-green-hdr,
+#fs-group-detail > .hdr-bar.dw-green-hdr,
+#fs-live-start > .hdr-bar.dw-green-hdr,
+#fs-live-catch > .hdr-bar.dw-green-hdr{
+  display:flex!important;
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  width:auto!important;
+  max-width:none!important;
+  height:62px!important;
+  min-height:62px!important;
+  flex:0 0 62px!important;
+  transform:none!important;
+  border-radius:0!important;
+  z-index:4!important;
+  background:var(--green-deep)!important;
+  box-sizing:border-box!important;
+}
+html body #fs-live-catch.on > .hdr-bar.dw-green-hdr{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  order:0!important;
+}
+html body #fs-live-catch:not(.on) > .hdr-bar.dw-green-hdr{
+  display:none!important;
+}
+html body #fs-live-catch.on{
+  position:fixed!important;
+  top:24px!important;
+  left:50%!important;
+  right:auto!important;
+  width:390px!important;
+  max-width:calc(100vw - 32px)!important;
+  height:844px!important;
+  max-height:calc(100vh - 48px)!important;
+  transform:translateX(-50%)!important;
+  border-radius:40px!important;
+  overflow:hidden!important;
+  z-index:900!important;
+}
+@media (max-width:440px),(display-mode:standalone),(display-mode:fullscreen){
+  html body #fs-live-catch.on{
+    position:absolute!important;
+    inset:0!important;
+    width:100%!important;
+    max-width:none!important;
+    height:100%!important;
+    max-height:none!important;
+    transform:none!important;
+    border-radius:0!important;
+  }
+}
+html body #fs-group-hub.on,
+html body #fs-group-detail.on,
+html body #fs-live-start.on,
+html body #fs-live-catch.on,
+html body #live-ov.on,
+html body #ls-end-ov.on{
+  position:fixed!important;
+  top:24px!important;
+  left:50%!important;
+  right:auto!important;
+  width:390px!important;
+  max-width:calc(100vw - 32px)!important;
+  height:844px!important;
+  max-height:calc(100vh - 48px)!important;
+  transform:translateX(-50%)!important;
+  border-radius:40px!important;
+  overflow:hidden!important;
+  z-index:900!important;
+}
+@media (max-width:440px),(display-mode:standalone),(display-mode:fullscreen){
+  html body #fs-group-hub.on,
+  html body #fs-group-detail.on,
+  html body #fs-live-start.on,
+  html body #fs-live-catch.on,
+  html body #live-ov.on,
+  html body #ls-end-ov.on{
+    position:absolute!important;
+    inset:0!important;
+    width:100%!important;
+    max-width:none!important;
+    height:100%!important;
+    max-height:none!important;
+    transform:none!important;
+    border-radius:0!important;
+  }
+}
+#fs-group-hub > .dw-content-hdr,
+#fs-group-detail > .dw-content-hdr,
+#fs-live-start > .dw-content-hdr,
+#fs-live-catch > .dw-content-hdr{
+  display:block!important;
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  width:auto!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:14px 16px 10px!important;
+  height:auto!important;
+  min-height:0!important;
+  flex:0 0 auto!important;
+  transform:none!important;
+  border-radius:0!important;
+  z-index:3!important;
+  background:#fff!important;
+  border-bottom:1px solid rgba(45,74,53,.08)!important;
+  box-sizing:border-box!important;
+}
+#fs-group-hub > .fsov-scroll,
+#fs-group-detail > .fsov-scroll,
+#fs-live-start > .fsov-scroll,
+#fs-live-catch > .fsov-scroll{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:auto!important;
+  max-width:none!important;
+  min-height:0!important;
+  flex:1 1 auto!important;
+  margin:0!important;
+  transform:none!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+#fs-group-hub > .fsov-scroll{padding:8px 16px var(--nav-clearance)!important;}
+#fs-group-detail > .fsov-scroll{padding:16px 16px 72px!important;}
+#fs-group-detail.has-chat > .fsov-scroll{padding-bottom:134px!important;}
+#fs-live-start > .fsov-scroll,
+#fs-live-catch > .fsov-scroll{padding:16px 16px max(20px,var(--nav-clearance))!important;}
+
+#live-ov{
+  display:flex!important;
+  flex-direction:column!important;
+  transform:none!important;
+  transition:none!important;
+  visibility:hidden;
+  pointer-events:none;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+#live-ov.on{
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transform:none!important;
+}
+#live-ov > .hdr-bar.dw-green-hdr,
+#ls-end-ov > .hdr-bar.dw-green-hdr{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  width:auto!important;
+  max-width:none!important;
+  height:62px!important;
+  min-height:62px!important;
+  flex:0 0 62px!important;
+  transform:none!important;
+  border-radius:0!important;
+  z-index:4!important;
+}
+#live-ov > .dw-content-hdr,
+#ls-end-ov > .dw-content-hdr{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  width:auto!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:14px 16px 10px!important;
+  flex:0 0 auto!important;
+  transform:none!important;
+  z-index:3!important;
+  background:#fff!important;
+  border-bottom:1px solid rgba(45,74,53,.08)!important;
+  box-sizing:border-box!important;
+}
+#live-ov .live-body{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:auto!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  padding:16px 16px max(24px,var(--nav-clearance))!important;
+  transform:none!important;
+}
+#ls-end-ov{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  display:none;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  transform:none!important;
+  transition:none!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:#f7f5ef!important;
+}
+#ls-end-ov.on{display:flex!important;}
+#ls-end-ov .ls-end-scroll{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:auto!important;
+  max-width:none!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  transform:none!important;
+  overflow-y:auto!important;
+  padding:10px 16px max(24px,var(--nav-clearance))!important;
+}
+#ls-end-ov .le-recap{
+  position:relative!important;
+  top:auto!important;
+  left:auto!important;
+  width:auto!important;
+  max-width:none!important;
+  transform:none!important;
+  z-index:auto!important;
+}
+#fs-live-catch .live-catch-headbar,
+#fs-live-catch .live-catch-title-inline,
+#fs-live-catch .live-catch-local-head,
+#fs-live-catch .live-catch-visible-head,
+#fs-live-catch .live-catch-title-block,
+#ls-end-ov .live-end-visible-header{
+  display:none!important;
+}
+#fs-live-catch > .dw-content-hdr.live-catch-head{
+  padding:14px 16px 10px!important;
+}
+#fs-live-catch .live-catch-copy{padding:0!important;background:transparent!important;}
+#fs-group-hub > .dw-content-hdr .dw-hdr-sub,
+#fs-group-hub > .dw-content-hdr #grp-hub-meta,
+#fs-group-detail > .dw-content-hdr .dw-hdr-sub,
+#fs-group-detail > .dw-content-hdr #grp-detail-meta,
+#fs-live-start > .dw-content-hdr .dw-hdr-sub,
+#fs-live-catch > .dw-content-hdr .dw-hdr-sub,
+#live-ov > .dw-content-hdr .dw-hdr-sub,
+#ls-end-ov > .dw-content-hdr .dw-hdr-sub{
+  font-family:var(--fa)!important;
+  font-size:12px!important;
+  font-weight:400!important;
+  line-height:1.3!important;
+  color:var(--text-light)!important;
+  margin-top:2px!important;
+}
+.dw-content-hdr .live-pill,
+.dw-content-hdr .live-dot,
+#grp-detail-hdr .live-pill,
+#grp-detail-hdr .live-dot{
+  display:none!important;
+}
 .dw-content-hdr .dw-hdr-summary{
   display:flex;align-items:center;gap:8px;flex-wrap:wrap;
   font-size:13px;color:var(--text-mid);
@@ -7209,21 +7514,12 @@ input[type=file]{display:none;}
     <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
   </div>
   <div class="dw-content-hdr live-content-hdr live-catch-head">
-    <div class="live-catch-headbar">
-      <button class="bbtn" onclick="closeLiveCatch()" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
-      <div class="hlogo"><span class="hlogo-t">angeln</span><span class="hlogo-p">+</span></div>
-      <button class="pill-btn icon-only dw-close-btn" onclick="closeLiveCatch()" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
-    </div>
     <div class="live-catch-copy">
       <div class="dw-hdr-date">Fang hinzufügen</div>
       <div class="dw-hdr-sub">Schnellfang in der Live Session</div>
     </div>
   </div>
   <div class="fsov-scroll" style="padding:16px;">
-    <div class="live-catch-title-inline">
-      <div class="dw-hdr-date">Fang hinzufügen</div>
-      <div class="dw-hdr-sub">Schnellfang in der Live Session</div>
-    </div>
     <div style="font-size:11px;color:var(--text-light);margin-bottom:12px;text-align:center;" id="lc-time-hint">Uhrzeit wird automatisch erfasst</div>
 
     <div class="ig" style="margin-bottom:10px;">
@@ -8178,7 +8474,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v90-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v91-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
