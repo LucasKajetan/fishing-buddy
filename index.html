@@ -3488,6 +3488,20 @@ select.if{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.o
 #page-new .cc [style*="grid-template-columns"] > .ig:nth-child(3) .crow{
   width:calc(300% + 12px);margin-left:calc(-200% - 12px);
 }
+/* v95: Köder-Chips liegen wieder als eigene volle Zeile innerhalb der Fang-Kachel.
+   Die alten AP21-Breitzieher bleiben für andere Chip-Zeilen unberührt. */
+#page-new [id^="catch-bait-row-"] .bait-full-chips{
+  width:100%!important;
+  max-width:100%;
+  margin-left:0!important;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+#page-new [id^="catch-bait-row-"] .bait-full-chips .chip{
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 /* AP21: Sichttiefe/Trübung Chips volle Breite */
 #new-sicht-row [style*="grid-template-columns"]{overflow:visible;}
 #new-sicht-row [style*="grid-template-columns"] > .ig{overflow:visible;}
@@ -8510,7 +8524,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v94-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v95-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -10422,23 +10436,23 @@ function addCatch(){
           <input type="text" class="if" id="fb-${id}" placeholder="Gummifisch"
             value="${presetBait}"
             onfocus="_gatedBChips(${id})" oninput="rndrBChips(${id},this.value);updNoteChips(${id})" onblur="dHide('bc-${id}')" autocomplete="off">
-          <div class="crow" id="bc-${id}" style="display:none;" role="listbox"></div>
         </div>
         <div class="ig">
           <label class="il" for="fbcol-${id}">Farbe</label>
           <input type="text" class="if" id="fbcol-${id}" placeholder="Motoroil" autocomplete="off"
             value="${presetCol}"
             onfocus="_rndrColChips(${id})" onblur="dHide('colc-${id}')">
-          <div class="crow" id="colc-${id}" style="display:none;" role="listbox"></div>
         </div>
         <div class="ig">
           <label class="il" for="fbsz-${id}">Größe</label>
           <input type="text" class="if" id="fbsz-${id}" placeholder="12cm" autocomplete="off"
             value="${presetSz}"
             onfocus="_rndrSzChips(${id})" onblur="dHide('szc-${id}')">
-          <div class="crow" id="szc-${id}" style="display:none;" role="listbox"></div>
         </div>
       </div>
+      <div class="crow bait-full-chips" id="bc-${id}" style="display:none;" role="listbox"></div>
+      <div class="crow bait-full-chips" id="colc-${id}" style="display:none;" role="listbox"></div>
+      <div class="crow bait-full-chips" id="szc-${id}" style="display:none;" role="listbox"></div>
     </div>
 
     <!-- Notizen – nur im Raubfisch-Modus -->
@@ -16961,6 +16975,37 @@ function _groupShareLocationPayload(loc,shareGps){
   return{shareGps:true,lat,lon,locKind:loc.kind};
 }
 
+function _cleanLiveTrack(points){
+  return (Array.isArray(points)?points:[])
+    .map(p=>({lat:parseFloat(p.lat??p[0]),lon:parseFloat(p.lon??p[1]),ts:p.ts||null}))
+    .filter(p=>isFinite(p.lat)&&isFinite(p.lon))
+    .map(p=>({lat:Number(p.lat.toFixed(6)),lon:Number(p.lon.toFixed(6)),ts:p.ts}));
+}
+
+function _cleanLiveCatchCoords(c){
+  const lat=parseFloat(c?.lat??c?._lat),lon=parseFloat(c?.lon??c?._lon);
+  if(!isFinite(lat)||!isFinite(lon))return{};
+  return{lat:Number(lat.toFixed(6)),lon:Number(lon.toFixed(6))};
+}
+
+const _shareInFlight=new Set();
+const _shareCompleted=new Set();
+function _shareKey(kind,sessId,groupIds){
+  return `${kind}:${String(sessId||'')}:${(groupIds||[]).map(String).sort().join(',')}`;
+}
+function _shareBegin(key){
+  if(_shareInFlight.has(key)||_shareCompleted.has(key))return false;
+  _shareInFlight.add(key);
+  return true;
+}
+function _shareFinish(key,ok){
+  _shareInFlight.delete(key);
+  if(ok)_shareCompleted.add(key);
+}
+function _shareDomId(id){
+  return String(id||'').replace(/[^a-z0-9_-]/gi,'_');
+}
+
 function closeLiveEndOv(){
   document.getElementById('ls-end-ov').classList.remove('on');
 }
@@ -17218,83 +17263,111 @@ async function _liveGetPhotoData(photoKey){
 async function _shareLiveSessionToGroups(sess,groupIds,opts={}){
   if(!Array.isArray(groupIds)||!groupIds.length)return 0;
   if(!_sb||!_sbUser)throw new Error('Cloud-Login nötig um zu teilen');
+  const shareKey=_shareKey('live-session',sess.id,groupIds);
+  if(!_shareBegin(shareKey)){showToast('⏳','Diese Session wird bereits geteilt');return 0;}
+  let shareOk=false;
   const myName=profile?.name||profile?.vorname||'Angler';
   const myId=_sbUser.id;
-  const loc=_resolveSessLocation({water:sess.water,spot:sess.spot,lat:sess.lat,lon:sess.lon});
-  const locPayload=_groupShareLocationPayload(loc,opts.shareGps===true);
+  const shareGps=opts.shareGps===true;
+  const liveTrack=shareGps?_cleanLiveTrack(sess.liveTrack||sess.gpsTrack):[];
+  const firstTrackPoint=liveTrack[0]||null;
+  const loc=_resolveSessLocation({water:sess.water,spot:sess.spot,lat:sess.lat||firstTrackPoint?.lat,lon:sess.lon||firstTrackPoint?.lon});
+  const locPayload=_groupShareLocationPayload(loc,shareGps);
   const catches=Array.isArray(sess.catches)?sess.catches:[];
 
   let totalShared=0;
   let lastShareError=null;
-  for(const gId of groupIds){
-    const g=_groups.find(x=>x.id===gId);
-    if(!g){lastShareError=new Error('Gruppe nicht gefunden');continue;}
-
-    const catchSummaries=[];
-    for(const c of catches){
-      let photoUrl=null;
-      if(c.photoKey){
-        try{
-          const dataUrl=await _liveGetPhotoData(c.photoKey);
-          if(dataUrl)photoUrl=await _grpUploadPhoto(gId,dataUrl,'session_'+(sess.id||Date.now())+'_'+c.photoKey);
-        }catch(e){console.warn('live session photo upload:',e);}
-      }
-      catchSummaries.push({
-        type:c.type,length:c.length,weight:c.weight,time:c.time,
-        bait:c.bait,baitColor:c.baitColor,baitSize:c.baitSize||c.baitLen,
-        note:c.note,photoUrl
-      });
-    }
-
-    const biggest=catchSummaries.slice().sort((a,b)=>(b.length||0)-(a.length||0))[0]||null;
-    const photoUrls=catchSummaries
-      .filter(c=>c.photoUrl)
-      .sort((a,b)=>(b.length||0)-(a.length||0))
-      .map(c=>c.photoUrl);
-    const duration=calcDur(sess.start,sess.end)||'--';
-    const sessionData={
-      kind:'session',
-      sessionId:String(sess.id||''),
-      water:sess.water,spot:sess.spot,date:sess.date,start:sess.start,end:sess.end,duration,
-      catchCount:catches.length,biteCount:sess.bites||0,skunked:!!sess.skunked,
-      note:sess.note||'',summary:`${catches.length} Fänge${sess.bites?` · ${sess.bites} Bisse`:''}`,
-      catches:catchSummaries,biggestFish:biggest,
-      photoUrls,bestPhotoUrl:photoUrls[0]||null,
-      ...locPayload,
-      pressure:sess.pressure??null,windSpeed:sess.windSpeed??null,windDir:sess.windDir??null,
-      temp:sess.temp??null,humidity:sess.humidity??null,clouds:sess.clouds??null,precip:sess.precip??null,
-      weather:sess.weather||null,moonPhase:sess.moonPhase||null,moonIllum:sess.moonIllum??null
-    };
-
-    try{
-      const payload={
-        group_id:gId,user_id:myId,type:'session',
-        text:`${myName} hat eine Live-Session geteilt.`,
-        catch_data:sessionData,
-        photo_url:sessionData.bestPhotoUrl,
-        display_name:myName
-      };
-      let {error}=await _sb.from('group_messages').insert(payload);
-      if(error){
-        // Manche bestehende group_messages-Schemas erlauben nur bekannte Chat-Typen.
-        // In dem Fall bleibt es ein einzelner Feed-Eintrag, wird aber als msg gespeichert
-        // und über catch_data.kind === "session" wieder als Session-Post gerendert.
-        const fallback={...payload,type:'msg'};
-        const retry=await _sb.from('group_messages').insert(fallback);
-        error=retry.error;
-      }
-      if(error)throw error;
-      totalShared++;
-      sess.sharedToGroups=sess.sharedToGroups||[];
-      if(!sess.sharedToGroups.includes(gId))sess.sharedToGroups.push(gId);
-    }catch(e){lastShareError=e;console.warn('share live session:',e);}
-  }
-  try{await saveOneSess(sess);}catch(e){console.warn('share live session save marker:',e);}
   try{
-    if(_activeGroupId&&groupIds.includes(_activeGroupId))await _grpRefreshActive();
-  }catch(e){console.warn('share live session refresh:',e);}
-  if(totalShared===0&&lastShareError)throw lastShareError;
-  return totalShared;
+    for(const gId of groupIds){
+      const g=_groups.find(x=>x.id===gId);
+      if(!g){lastShareError=new Error('Gruppe nicht gefunden');continue;}
+      if((sess.sharedToGroups||[]).includes(gId))continue;
+
+      const catchSummaries=[];
+      for(const c of catches){
+        let photoUrl=null;
+        if(c.photoKey){
+          try{
+            const dataUrl=await _liveGetPhotoData(c.photoKey);
+            if(dataUrl)photoUrl=await _grpUploadPhoto(gId,dataUrl,'session_'+(sess.id||Date.now())+'_'+c.photoKey);
+          }catch(e){console.warn('live session photo upload:',e);}
+        }
+        catchSummaries.push({
+          type:c.type,length:c.length,weight:c.weight,time:c.time,
+          bait:c.bait,baitColor:c.baitColor,baitSize:c.baitSize||c.baitLen,
+          note:c.note,photoUrl,
+          ...(shareGps?_cleanLiveCatchCoords(c):{})
+        });
+      }
+
+      const biggest=catchSummaries.slice().sort((a,b)=>(b.length||0)-(a.length||0))[0]||null;
+      const photoUrls=catchSummaries
+        .filter(c=>c.photoUrl)
+        .sort((a,b)=>(b.length||0)-(a.length||0))
+        .map(c=>c.photoUrl);
+      const duration=calcDur(sess.start,sess.end)||'--';
+      const sessionData={
+        kind:'session',
+        sessionId:String(sess.id||''),
+        water:sess.water,spot:sess.spot,date:sess.date,start:sess.start,end:sess.end,duration,
+        catchCount:catches.length,biteCount:sess.bites||0,skunked:!!sess.skunked,
+        note:sess.note||'',summary:`${catches.length} Fänge${sess.bites?` · ${sess.bites} Bisse`:''}`,
+        catches:catchSummaries,biggestFish:biggest,
+        photoUrls,bestPhotoUrl:photoUrls[0]||null,
+        ...locPayload,
+        ...(shareGps&&liveTrack.length?{liveTrack}:{}),
+        pressure:sess.pressure??null,windSpeed:sess.windSpeed??null,windDir:sess.windDir??null,
+        temp:sess.temp??null,humidity:sess.humidity??null,clouds:sess.clouds??null,precip:sess.precip??null,
+        weather:sess.weather||null,moonPhase:sess.moonPhase||null,moonIllum:sess.moonIllum??null
+      };
+
+      try{
+        const reactionData={...sessionData,shareGps:false};
+        ['lat','lon','locKind','liveTrack','track','route','pins','mapPoints'].forEach(k=>{delete reactionData[k];});
+        reactionData.catches=(reactionData.catches||[]).map(c=>{
+          const clean={...c};
+          ['lat','lon','_lat','_lon','catchLat','catchLon'].forEach(k=>{delete clean[k];});
+          return clean;
+        });
+        const{data:scRow,error:scErr}=await _sb.from('group_shared_catches').insert({
+          group_id:gId,user_id:myId,session_id:String(sess.id||''),
+          display_name:myName,catch_data:reactionData,photo_url:sessionData.bestPhotoUrl
+        }).select().single();
+        if(scErr)throw scErr;
+        sessionData.sharedCatchId=scRow.id;
+
+        const payload={
+          group_id:gId,user_id:myId,type:'session',
+          text:`${myName} hat eine Live-Session geteilt.`,
+          catch_data:sessionData,
+          photo_url:sessionData.bestPhotoUrl,
+          display_name:myName
+        };
+        let {error}=await _sb.from('group_messages').insert(payload);
+        if(error){
+          // Manche bestehende group_messages-Schemas erlauben nur bekannte Chat-Typen.
+          // In dem Fall bleibt es ein einzelner Feed-Eintrag, wird aber als msg gespeichert
+          // und über catch_data.kind === "session" wieder als Session-Post gerendert.
+          const fallback={...payload,type:'msg'};
+          const retry=await _sb.from('group_messages').insert(fallback);
+          error=retry.error;
+        }
+        if(error)throw error;
+        totalShared++;
+        sess.sharedToGroups=sess.sharedToGroups||[];
+        if(!sess.sharedToGroups.includes(gId))sess.sharedToGroups.push(gId);
+      }catch(e){lastShareError=e;console.warn('share live session:',e);}
+    }
+    try{await saveOneSess(sess);}catch(e){console.warn('share live session save marker:',e);}
+    try{
+      if(_activeGroupId&&groupIds.includes(_activeGroupId))await _grpRefreshActive();
+    }catch(e){console.warn('share live session refresh:',e);}
+    if(totalShared===0&&lastShareError)throw lastShareError;
+    shareOk=totalShared>0;
+    return totalShared;
+  } finally {
+    _shareFinish(shareKey,shareOk);
+  }
 }
 
 // v54: Multi-Group-Share-Helper — schreibt jetzt in echte Supabase-Tabellen
@@ -17302,73 +17375,82 @@ async function _shareLiveSessionToGroups(sess,groupIds,opts={}){
 async function _shareSessionToGroups(sess,groupIds,opts={}){
   if(!Array.isArray(groupIds)||!groupIds.length)return 0;
   if(!_sb||!_sbUser){showToast('⚠️','Cloud-Login nötig um zu teilen');return 0;}
+  const shareKey=_shareKey('session',sess.id,groupIds);
+  if(!_shareBegin(shareKey)){showToast('⏳','Diese Session wird bereits geteilt');return 0;}
+  let shareOk=false;
   const myName=profile?.name||profile?.vorname||'Angler';
   const myId=_sbUser.id;
   const loc=_resolveSessLocation({water:sess.water,spot:sess.spot,lat:sess.lat,lon:sess.lon});
   const locPayload=_groupShareLocationPayload(loc,opts.shareGps===true);
 
   let totalShared=0;
-  for(const gId of groupIds){
-    const g=_groups.find(x=>x.id===gId);
-    if(!g)continue;
+  try{
+    for(const gId of groupIds){
+      const g=_groups.find(x=>x.id===gId);
+      if(!g)continue;
+      if((sess.sharedToGroups||[]).includes(gId))continue;
 
-    // Schneider-Sessions als reiner System-Feed-Eintrag (ohne shared catch)
-    if(!sess.catches?.length||sess.skunked){
-      try{
-        await _sb.from('group_messages').insert({
-          group_id:gId,user_id:myId,type:'system',
-          text:`${myName} hat eine Schneider-Session am ${sess.water||'Wasser'} geteilt.`,
-          display_name:myName
-        });
-        totalShared++;
-      }catch(e){console.warn('share skunked:',e);}
-      continue;
-    }
-
-    for(const c of (sess.catches||[])){
-      // Foto hochladen falls vorhanden (lokales photoKey → public URL)
-      let photoUrl=null;
-      if(c.photoKey){
+      // Schneider-Sessions als reiner System-Feed-Eintrag (ohne shared catch)
+      if(!sess.catches?.length||sess.skunked){
         try{
-          const dataUrl=await getPhoto(c.photoKey);
-          if(dataUrl)photoUrl=await _grpUploadPhoto(gId,dataUrl,'catch_'+c.photoKey);
-        }catch(e){console.warn('photo upload:',e);}
+          await _sb.from('group_messages').insert({
+            group_id:gId,user_id:myId,type:'system',
+            text:`${myName} hat eine Schneider-Session am ${sess.water||'Wasser'} geteilt.`,
+            display_name:myName
+          });
+          totalShared++;
+        }catch(e){console.warn('share skunked:',e);}
+        continue;
       }
-      const catchData={
-        type:c.type,length:c.length,weight:c.weight,
-        bait:c.bait,baitNote:c.baitNote,baitColor:c.baitColor,baitSize:c.baitSize,
-        water:sess.water,spot:sess.spot,
-        date:sess.date,time:c.time||sess.start,
-        ...locPayload,
-        pressure:sess.pressure??null,windSpeed:sess.windSpeed??null,windDir:sess.windDir??null,
-        temp:sess.temp??null,humidity:sess.humidity??null,clouds:sess.clouds??null,precip:sess.precip??null,
-        weather:sess.weather||null,moonPhase:sess.moonPhase||null,moonIllum:sess.moonIllum??null,
-        photoUrl
-      };
-      try{
-        const{data:scRow,error:scErr}=await _sb.from('group_shared_catches').insert({
-          group_id:gId,user_id:myId,session_id:String(sess.id||''),
-          display_name:myName,catch_data:catchData,photo_url:photoUrl
-        }).select().single();
-        if(scErr)throw scErr;
-        // Feed-Message dazu (Catch-Card im Feed)
-        await _sb.from('group_messages').insert({
-          group_id:gId,user_id:myId,type:'catch',
-          text:`Hat einen ${c.length||'?'}cm ${c.type||'Fisch'} geteilt!`,
-          catch_data:{...catchData,sharedCatchId:scRow.id},
-          photo_url:photoUrl,display_name:myName
-        });
-        totalShared++;
-      }catch(e){console.warn('share catch:',e);}
-    }
-    // sess speichert die geteilt-Markierung pro Gruppe (lokales Mirror)
-    sess.sharedToGroups=sess.sharedToGroups||[];
-    if(!sess.sharedToGroups.includes(gId))sess.sharedToGroups.push(gId);
+
+      for(const c of (sess.catches||[])){
+        // Foto hochladen falls vorhanden (lokales photoKey → public URL)
+        let photoUrl=null;
+        if(c.photoKey){
+          try{
+            const dataUrl=await getPhoto(c.photoKey);
+            if(dataUrl)photoUrl=await _grpUploadPhoto(gId,dataUrl,'catch_'+c.photoKey);
+          }catch(e){console.warn('photo upload:',e);}
+        }
+        const catchData={
+          type:c.type,length:c.length,weight:c.weight,
+          bait:c.bait,baitNote:c.baitNote,baitColor:c.baitColor,baitSize:c.baitSize,
+          water:sess.water,spot:sess.spot,
+          date:sess.date,time:c.time||sess.start,
+          ...locPayload,
+          pressure:sess.pressure??null,windSpeed:sess.windSpeed??null,windDir:sess.windDir??null,
+          temp:sess.temp??null,humidity:sess.humidity??null,clouds:sess.clouds??null,precip:sess.precip??null,
+          weather:sess.weather||null,moonPhase:sess.moonPhase||null,moonIllum:sess.moonIllum??null,
+          photoUrl
+        };
+        try{
+          const{data:scRow,error:scErr}=await _sb.from('group_shared_catches').insert({
+            group_id:gId,user_id:myId,session_id:String(sess.id||''),
+            display_name:myName,catch_data:catchData,photo_url:photoUrl
+          }).select().single();
+          if(scErr)throw scErr;
+          // Feed-Message dazu (Catch-Card im Feed)
+          await _sb.from('group_messages').insert({
+            group_id:gId,user_id:myId,type:'catch',
+            text:`Hat einen ${c.length||'?'}cm ${c.type||'Fisch'} geteilt!`,
+            catch_data:{...catchData,sharedCatchId:scRow.id},
+            photo_url:photoUrl,display_name:myName
+          });
+          totalShared++;
+        }catch(e){console.warn('share catch:',e);}
+      }
+      // sess speichert die geteilt-Markierung pro Gruppe (lokales Mirror)
+      sess.sharedToGroups=sess.sharedToGroups||[];
+      if(!sess.sharedToGroups.includes(gId))sess.sharedToGroups.push(gId);
+      }
+    await saveOneSess(sess);
+    // Lokale Sicht refreshen falls Detail-View offen ist
+    if(_activeGroupId&&groupIds.includes(_activeGroupId))_grpRefreshActive();
+    shareOk=totalShared>0;
+    return totalShared;
+  } finally {
+    _shareFinish(shareKey,shareOk);
   }
-  await saveOneSess(sess);
-  // Lokale Sicht refreshen falls Detail-View offen ist
-  if(_activeGroupId&&groupIds.includes(_activeGroupId))_grpRefreshActive();
-  return totalShared;
 }
 
 function _resumeLiveSession(){
@@ -18033,7 +18115,7 @@ function _updateMapMarkers(){
   if(_mapLayer==='group'){
     _groups.forEach(g=>{
       (g.sharedCatches||[]).forEach(c=>{
-        if(c.shareGps&&c.lat&&c.lon)groupCatches.push({...c,_groupName:g.name,_color:_userColor(c.userId)});
+        if(c.kind!=='session'&&c.shareGps&&c.lat&&c.lon)groupCatches.push({...c,_groupName:g.name,_color:_userColor(c.userId)});
       });
     });
   }
@@ -18316,6 +18398,9 @@ async function _loadGroupDetail(gId){
       const cd=sc.catch_data||{};
       return{
         id:sc.id,userId:sc.user_id,userName:sc.display_name||'Angler',
+        kind:cd.kind||'catch',
+        sessionId:cd.sessionId||sc.session_id,
+        catchData:cd,
         type:cd.type,length:cd.length,weight:cd.weight,
         bait:cd.bait,baitNote:cd.baitNote,baitColor:cd.baitColor,baitSize:cd.baitSize,
         water:cd.water,spot:cd.spot,date:cd.date,time:cd.time,
@@ -18943,6 +19028,19 @@ function _sessionPostHero(data,variant='card'){
     </div>
   </div>`;
 }
+function _sessionPostMapHtml(data){
+  if(!data||data.shareGps!==true)return'';
+  const track=_cleanLiveTrack(data.liveTrack||data.track||data.route||[]);
+  let pins=(Array.isArray(data.catches)?data.catches:[])
+    .map(c=>({type:c.type,length:c.length,..._cleanLiveCatchCoords(c)}))
+    .filter(p=>p.lat!=null&&p.lon!=null);
+  if(!pins.length&&data.lat!=null&&data.lon!=null){
+    const lat=parseFloat(data.lat),lon=parseFloat(data.lon);
+    if(isFinite(lat)&&isFinite(lon))pins=[{lat,lon,type:'Session',length:null}];
+  }
+  if(!track.length&&!pins.length)return'';
+  return _renderLiveTrackPreview(track,pins);
+}
 function _sessionPostChips(data){
   const chips=[];
   if(data?.duration)chips.push(`<span class="catch-card-chip">${_liveIcon('clock')}${_esc(data.duration)}</span>`);
@@ -18957,7 +19055,9 @@ function _openGroupSessionDetail(gId,msgId){
   const item=g.feed?.find(x=>String(x.id)===String(msgId));
   const data=item?.catchData;
   if(!data)return;
-  _activeCatchDetailId=null;
+  const scId=data.sharedCatchId||'';
+  const sc=scId?(g.sharedCatches?.find(x=>x.id===scId)):null;
+  _activeCatchDetailId=scId||null;
   openFs('catch-detail');
   const title=document.getElementById('cd-hdr-title');
   if(title)title.innerHTML=`${_liveIcon('list')}Session-Details`;
@@ -18981,6 +19081,23 @@ function _openGroupSessionDetail(gId,msgId){
   if(data.pressure!=null)wxCells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">${_liveIcon('pressure')}</div><div class="cd-wx-val">${Math.round(data.pressure)}</div><div class="cd-wx-lbl">hPa</div></div>`);
   if(data.windSpeed!=null)wxCells.push(`<div class="cd-wx-cell"><div class="cd-wx-ico">${_liveIcon('wind')}</div><div class="cd-wx-val">${Math.round(data.windSpeed)} <small>km/h</small></div><div class="cd-wx-lbl">Wind</div></div>`);
   const wxHtml=wxCells.length?`<div class="cd-card"><div class="cd-card-label">${_liveIcon('cloud-sun')}Bedingungen</div><div class="cd-wx-grid">${wxCells.join('')}</div></div>`:'';
+  const mapHtml=_sessionPostMapHtml(data);
+  const actionHtml=scId?(()=>{
+    const comments=sc?.comments||[];
+    const liked=(sc?.likes||[]).includes(_sbUser?.id||'me');
+    const likeCount=sc?.likes?.length||0;
+    return `<div class="cd-action-card">
+      <div class="cd-action-row" style="margin-bottom:${comments.length?'12':'0'}px;">
+        <button class="catch-card-act${liked?' liked':''}" id="like-btn-${scId}" onclick="_grpLike('${gId}','${scId}')">
+          <svg class="ic"><use href="#i-heart"/></svg><span id="cd-like-count">${likeCount}</span>
+        </button>
+        <button class="catch-card-act" onclick="_cdShowCommentBar()">
+          <svg class="ic"><use href="#i-comment"/></svg><span id="cd-comment-count">${comments.length}</span> Kommentieren
+        </button>
+      </div>
+      <div id="cd-comment-list">${_cdRenderCommentsHtml(comments,g)}</div>
+    </div>`;
+  })():'';
   document.getElementById('catch-detail-content').innerHTML=`
     ${_sessionPostHero(data,'detail')}
     <div class="cd-body">
@@ -18993,11 +19110,20 @@ function _openGroupSessionDetail(gId,msgId){
         <div class="cd-card"><div class="cd-card-label">Spot</div><div class="cd-card-value">${_esc(data.spot||'–')}</div></div>
       </div>
       <div class="cd-card"><div class="cd-card-label">Zusammenfassung</div><div class="catch-card-chips">${_sessionPostChips(data)}</div>${data.note?`<div class="catch-card-desc">${_esc(data.note)}</div>`:''}</div>
+      ${mapHtml}
       ${wxHtml}
       ${catchRows}
+      ${actionHtml}
     </div>`;
   const bar=document.getElementById('cd-comment-bar');
-  if(bar)bar.style.display='none';
+  if(bar){
+    bar.style.display='none';
+    if(scId){bar.dataset.gId=gId;bar.dataset.catchId=scId;}
+    else{delete bar.dataset.gId;delete bar.dataset.catchId;}
+    const inp=document.getElementById('cd-comment-input');
+    if(inp){inp.value='';inp.style.height='auto';}
+    document.getElementById('cd-comment-clear')?.classList.remove('on');
+  }
 }
 
 function _grpUpdateLikeBtn(catchId,sc){
@@ -19007,7 +19133,15 @@ function _grpUpdateLikeBtn(catchId,sc){
   const liked=(sc.likes||[]).includes(myId);
   btn.classList.toggle('liked',liked);
   const ico=btn.querySelector('.cc-ico');if(ico)ico.textContent=liked?'❤️':'🤍';
-  const cnt=btn.querySelector('.like-cnt');if(cnt)cnt.textContent=(sc.likes?.length||'');
+  const cnt=btn.querySelector('.like-cnt,#cd-like-count');
+  if(cnt)cnt.textContent=(sc.likes?.length||'');
+  else{
+    const svg=btn.querySelector('svg');
+    if(svg){
+      while(svg.nextSibling)btn.removeChild(svg.nextSibling);
+      btn.append(String(sc.likes?.length||''));
+    }
+  }
 }
 
 // ── Tab-Wechsel ──
@@ -19079,8 +19213,14 @@ function _rndrGroupFeed(){
     }
     else if(item.type==='session'&&item.catchData){
       const s=item.catchData;
+      const scId=s.sharedCatchId||'';
+      const sc=scId?(g.sharedCatches?.find(x=>x.id===scId)):null;
+      const liked=(sc?.likes||[]).includes(myId);
+      const likeCount=sc?.likes?.length||0;
+      const commentCount=sc?.comments?.length||0;
       html+=`<div class="session-post-card" onclick="_openGroupSessionDetail('${g.id}','${item.id}')">
         ${_sessionPostHero(s)}
+        ${_sessionPostMapHtml(s)}
         <div class="catch-card-body">
           <div class="catch-card-user">
             <div class="catch-card-avatar" style="background:${color};">${memberName.charAt(0).toUpperCase()}</div>
@@ -19093,6 +19233,10 @@ function _rndrGroupFeed(){
           <div class="catch-card-chips">${_sessionPostChips(s)}</div>
           ${s.note?`<div class="catch-card-desc">${_esc(s.note)}</div>`:''}
         </div>
+        ${scId?`<div class="catch-card-actions" onclick="event.stopPropagation();">
+          <button class="catch-card-act${liked?' liked':''}" id="like-btn-${scId}" onclick="event.stopPropagation();_grpLike('${g.id}','${scId}')"><svg class="ic"><use href="#i-heart"/></svg>${likeCount||''}</button>
+          <button class="catch-card-act" onclick="event.stopPropagation();_grpComment('${g.id}','${scId}',event)"><svg class="ic"><use href="#i-comment"/></svg>${commentCount||''}</button>
+        </div>`:''}
       </div>`;
     }
     else if(item.type==='catch'&&item.catchData){
@@ -19375,10 +19519,10 @@ function _grpComment(gId,catchId,evt){
   }).join('');
 
   let card=null;
-  if(evt&&evt.target)card=evt.target.closest('.catch-card');
+  if(evt&&evt.target)card=evt.target.closest('.catch-card,.session-post-card');
   if(!card){
     const likeBtn=document.getElementById('like-btn-'+catchId);
-    card=likeBtn?.closest('.catch-card');
+    card=likeBtn?.closest('.catch-card,.session-post-card');
   }
   if(!card)return;
 
@@ -19457,7 +19601,7 @@ function _rndrGroupInsights(){
   const g=_groups.find(x=>x.id===_activeGroupId);
   if(!g)return;
   const el=document.getElementById('grp-detail-content');
-  const catches=g.sharedCatches||[];
+  const catches=(g.sharedCatches||[]).filter(c=>c.kind!=='session');
   const now=Date.now();
   const week=catches.filter(c=>c.date&&(now-new Date(c.date).getTime())<7*86400000);
 
@@ -19712,7 +19856,7 @@ function _insightsEmpty(msg){
 function _exportGroupData(gId){
   const g=_groups.find(x=>x.id===gId);
   if(!g)return;
-  const catches=g.sharedCatches||[];
+  const catches=(g.sharedCatches||[]).filter(c=>c.kind!=='session');
   let csv='Datum;Fischart;Laenge_cm;Koeder;Koeder_Detail;Gewaesser\n';
   catches.forEach(c=>{
     csv+=`${c.date||''};${c.type||''};${c.length||''};${c.bait||''};${c.baitNote||''};${c.water||''}\n`;
@@ -19732,7 +19876,7 @@ function _rndrGroupMap(){
   const el=document.getElementById('grp-detail-content');
   // AP9.1: Im Preview-Modus KEINE Spots zeigen
   const isPreview=!!g._isPreview;
-  const catches=isPreview?[]:(g.sharedCatches?.filter(c=>c.shareGps&&c.lat&&c.lon)||[]);
+  const catches=isPreview?[]:(g.sharedCatches?.filter(c=>c.kind!=='session'&&c.shareGps&&c.lat&&c.lon)||[]);
 
   // AP9.2: Map IMMER rendern (Container + Leaflet) — auch wenn keine Spots da sind.
   // Vorher wurde bei catches.length===0 nur ein Text gerendert → Karte leer/abwesend.
@@ -19830,7 +19974,7 @@ function _grpMapRender(catches){
 function _grpMapApplyFilter(){
   const g=_groups.find(x=>x.id===_activeGroupId);
   if(!g)return;
-  let catches=g.sharedCatches?.filter(c=>c.shareGps&&c.lat&&c.lon)||[];
+  let catches=g.sharedCatches?.filter(c=>c.kind!=='session'&&c.shareGps&&c.lat&&c.lon)||[];
   const fishF=document.getElementById('grp-map-f-fish')?.value;
   const memberF=document.getElementById('grp-map-f-member')?.value;
   const dateF=document.getElementById('grp-map-f-date')?.value;
@@ -20208,16 +20352,9 @@ function _openCatchDetail(gId,catchId){
 //   3. Gewässer-Approx aus profile.spotMap[water]
 //   4. nichts
 function _resolveCatchLocation(sc){
-  if(sc.shareGps&&sc.lat&&sc.lon){
-    return{lat:parseFloat(sc.lat),lon:parseFloat(sc.lon),kind:'exact'};
-  }
-  // Approximation aus eigener spotMap (Reverse-Lookup Gewässer+Spot → GPS)
-  if(typeof _lookupSpotGps==='function'){
-    const hit=_lookupSpotGps(sc.water||'',sc.spot||'');
-    if(hit&&hit.lat&&hit.lon){
-      const exactSpot=sc.spot&&_lookupSpotGps(sc.water,sc.spot);
-      return{lat:parseFloat(hit.lat),lon:parseFloat(hit.lon),kind:exactSpot?'spot':'water'};
-    }
+  if(sc.shareGps===true&&sc.lat&&sc.lon){
+    const lat=parseFloat(sc.lat),lon=parseFloat(sc.lon);
+    if(isFinite(lat)&&isFinite(lon))return{lat,lon,kind:sc.locKind||'exact'};
   }
   return{lat:null,lon:null,kind:'none'};
 }
@@ -20475,7 +20612,7 @@ function _openShareModal(sessId){
     return;
   }
 
-  list.innerHTML=_groups.map(g=>`<div class="share-grp-row" onclick="_shareToGroup('${g.id}','${id}')">
+  list.innerHTML=_groups.map(g=>`<div class="share-grp-row" id="share-row-${_shareDomId(g.id)}" onclick="_shareToGroup('${g.id}','${id}')">
     <div class="share-grp-ico" style="background:var(--green-mist);">${g.icon||'🎣'}</div>
     <div class="share-grp-name">${_esc(g.name)}</div>
     <div style="font-size:18px;">›</div>
@@ -20493,11 +20630,25 @@ async function _shareToGroup(gId,sessId){
   const g=_groups.find(x=>x.id===gId);
   const sess=sessions.find(s=>String(s.id)===String(sessId));
   if(!g||!sess)return;
+  if((sess.sharedToGroups||[]).includes(gId)){
+    showToast('ℹ️','Diese Session wurde bereits in diese Gruppe geteilt');
+    _closeShareModal();
+    return;
+  }
+  const row=document.getElementById('share-row-'+_shareDomId(gId));
+  if(row){row.style.pointerEvents='none';row.style.opacity='.55';}
   const toggle=document.getElementById('share-gps-toggle');
   const shareGpsToggleOn=!!(toggle&&toggle.classList.contains('on'));
-  const count=await _shareSessionToGroups(sess,[gId],{shareGps:shareGpsToggleOn});
-  _closeShareModal();
-  showToast('✅',`${count} Fang${count===1?'':'/Fänge'} in "${g.name}" geteilt!`);
+  try{
+    const count=await _shareSessionToGroups(sess,[gId],{shareGps:shareGpsToggleOn});
+    _closeShareModal();
+    if(count>0)showToast('✅',`${count} Fang${count===1?'':'/Fänge'} in "${g.name}" geteilt!`);
+    else showToast('ℹ️','Keine neuen Posts erstellt');
+  }catch(e){
+    console.warn('shareToGroup:',e);
+    if(row){row.style.pointerEvents='';row.style.opacity='';}
+    showToast('⚠️','Teilen fehlgeschlagen');
+  }
 }
 
 // ── Map Layer Toggle ──
