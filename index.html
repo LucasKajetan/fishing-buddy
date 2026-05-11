@@ -6147,6 +6147,25 @@ html body #ls-end-ov.on{
   overflow:hidden!important;
   z-index:900!important;
 }
+/* v93: Detail-Overlays, die aus dem Gruppenbereich geöffnet werden, müssen
+   über der v91-App-Shell-Ebene der Gruppe liegen. openFs bleibt unverändert. */
+html body #fs-member-profile.on,
+html body #fs-catch-detail.on{
+  position:fixed!important;
+  top:24px!important;
+  left:50%!important;
+  right:auto!important;
+  width:390px!important;
+  max-width:calc(100vw - 32px)!important;
+  height:844px!important;
+  max-height:calc(100vh - 48px)!important;
+  transform:translateX(-50%)!important;
+  border-radius:40px!important;
+  overflow:hidden!important;
+  z-index:930!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
 @media (max-width:440px),(display-mode:standalone),(display-mode:fullscreen){
   html body #fs-group-hub.on,
   html body #fs-group-detail.on,
@@ -6162,6 +6181,18 @@ html body #ls-end-ov.on{
     max-height:none!important;
     transform:none!important;
     border-radius:0!important;
+  }
+  html body #fs-member-profile.on,
+  html body #fs-catch-detail.on{
+    position:absolute!important;
+    inset:0!important;
+    width:100%!important;
+    max-width:none!important;
+    height:100%!important;
+    max-height:none!important;
+    transform:none!important;
+    border-radius:0!important;
+    z-index:930!important;
   }
 }
 #fs-group-hub > .dw-content-hdr,
@@ -8478,7 +8509,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v92-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v93-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
