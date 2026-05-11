@@ -8439,12 +8439,16 @@ async function syncProfileFromCloud(opts={}){
       // Legacy bundle.groups wird ignoriert — Migration findet ggf. one-shot statt.
       // ── PHOTOS ──
       if(bundle.photos&&typeof bundle.photos==='object'){
-        Object.keys(bundle.photos).forEach(pk=>{
+        for(const pk of Object.keys(bundle.photos)){
           const lsKey='fb_photo_'+pk;
-          if(authoritative||!localStorage.getItem(lsKey)){
-            try{localStorage.setItem(lsKey,bundle.photos[pk]);}catch(e){/* quota */}
+          let hasLocal=false;
+          try{hasLocal=!!localStorage.getItem(lsKey);}catch(e){}
+          if(authoritative||!hasLocal){
+            try{await savePhoto(pk,bundle.photos[pk]);}catch(e){/* quota */}
+          } else {
+            try{await idbP('photos',pk,{data:localStorage.getItem(lsKey)});}catch(e){}
           }
-        });
+        }
       }
       applyProf();
     } else {
@@ -8524,7 +8528,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v95-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v96-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -8758,8 +8762,36 @@ function _suggestBaitsForSpot(water,spot,limit=6){
   });
   return Object.entries(results).sort((a,b)=>b[1]-a[1]).slice(0,limit).map(([b])=>b);
 }
-async function savePhoto(k,b64){await idbP('photos',k,{data:b64});}
-async function getPhoto(k){if(!k)return null;const r=await idbG('photos',k);return r?.data||null;}
+function _photoLsKey(k){return'fb_photo_'+k;}
+function _photoMirrorLocal(k,b64){if(!k||!b64)return false;try{localStorage.setItem(_photoLsKey(k),b64);return true;}catch(e){return false;}}
+async function savePhoto(k,b64){
+  if(!k||!b64)return false;
+  let ok=false;
+  try{ok=await idbP('photos',k,{data:b64});}catch(e){ok=false;}
+  const lsOk=_photoMirrorLocal(k,b64);
+  if(!ok&&!lsOk)console.warn('Foto konnte nicht gespeichert werden:',k);
+  return !!(ok||lsOk);
+}
+async function getPhoto(k){
+  if(!k)return null;
+  try{
+    const r=await idbG('photos',k);
+    if(r?.data){
+      try{if(!localStorage.getItem(_photoLsKey(k)))_photoMirrorLocal(k,r.data);}catch(e){}
+      return r.data;
+    }
+  }catch(e){}
+  try{
+    const ls=localStorage.getItem(_photoLsKey(k));
+    if(ls){idbP('photos',k,{data:ls}).catch(()=>{});return ls;}
+  }catch(e){}
+  return null;
+}
+async function deletePhoto(k){
+  if(!k)return;
+  try{await idbD('photos',k);}catch(e){}
+  try{localStorage.removeItem(_photoLsKey(k));}catch(e){}
+}
 
 // ═══════════════════════════════════════════════════════════
 // STATE
@@ -10311,7 +10343,34 @@ function trigPhoto(id){
   document.getElementById('frame').appendChild(sheet);
   sheet.addEventListener('click',e=>{if(e.target===sheet)sheet.remove();});
 }
-function handlePhoto(e){const file=e.target.files[0];if(!file||!_curPhotoId)return;const reader=new FileReader();reader.onload=async ev=>{const b64=ev.target.result;const pk='photo_'+Date.now()+'_'+_curPhotoId;await savePhoto(pk,b64);window._pm=window._pm||{};window._pm[_curPhotoId]=pk;const pr=document.getElementById('pp-'+_curPhotoId);const ab=document.getElementById('pa-'+_curPhotoId);if(pr){pr.src=b64;pr.style.display='block';}if(ab)ab.style.display='none';showToast('📷','Foto gespeichert');_curPhotoId=null;};reader.readAsDataURL(file);e.target.value='';}
+function _setCatchPhotoPreview(id,b64){
+  ['pp-','ff-pp-'].forEach(prefix=>{const pr=document.getElementById(prefix+id);if(pr){pr.src=b64;pr.style.display='block';}});
+  ['pa-','ff-pa-'].forEach(prefix=>{const ab=document.getElementById(prefix+id);if(ab)ab.style.display='none';});
+}
+function handlePhoto(e){
+  const inp=e?.target;
+  const file=inp?.files?.[0];
+  if(!file||!_curPhotoId){if(inp)inp.value='';return;}
+  if(!file.type||!file.type.startsWith('image/')){showToast('⚠️','Bitte ein Bild auswählen',true);inp.value='';return;}
+  const targetId=_curPhotoId;
+  const reader=new FileReader();
+  reader.onerror=()=>{showToast('⚠️','Foto konnte nicht gelesen werden',true);_curPhotoId=null;if(inp)inp.value='';};
+  reader.onload=async ev=>{
+    const b64=ev.target.result;
+    const pk='photo_'+Date.now()+'_'+targetId;
+    const ok=await savePhoto(pk,b64);
+    if(!ok){showToast('⚠️','Foto konnte nicht gespeichert werden',true);_curPhotoId=null;if(inp)inp.value='';return;}
+    window._pm=window._pm||{};
+    const old=window._pm[targetId];
+    window._pm[targetId]=pk;
+    if(old&&old!==pk)deletePhoto(old).catch(()=>{});
+    _setCatchPhotoPreview(targetId,b64);
+    showToast('📷','Foto gespeichert');
+    _curPhotoId=null;
+    if(inp)inp.value='';
+  };
+  reader.readAsDataURL(file);
+}
 
 // ═══════════════════════════════════════════════════════════
 // ADD CATCH – v11: Memory, Auto-Focus, Permanent Chips, Favs
@@ -12930,10 +12989,7 @@ async function editSess(id){
       if(c.photoKey){
         const ph=await getPhoto(c.photoKey);
         if(ph){
-          const pr=document.getElementById('pp-'+cid);
-          const ab=document.getElementById('pa-'+cid);
-          if(pr){pr.src=ph;pr.style.display='block';}
-          if(ab)ab.style.display='none';
+          _setCatchPhotoPreview(cid,ph);
           window._pm=window._pm||{};window._pm[cid]=c.photoKey;
         }
       }
@@ -16385,11 +16441,19 @@ function _addLiveEvent(kind,text,data={}){
 }
 function _liveCatchThumb(c,cls='live-catch-ico'){
   let img='';
+  const pk=c?.photoKey||'';
   if(c?.photoKey){
     try{img=localStorage.getItem('fb_photo_'+c.photoKey)||'';}catch(e){}
   }
-  if(img)return`<div class="${cls}"><img src="${img}" alt="Fangfoto"></div>`;
-  return`<div class="${cls}">${fSvgInline(c?.type||'Fisch',30,20)}</div>`;
+  if(img)return`<div class="${cls} live-photo-thumb" data-photokey="${_esc(pk)}"><img src="${img}" alt="Fangfoto"></div>`;
+  return`<div class="${cls} live-photo-thumb" data-photokey="${_esc(pk)}">${fSvgInline(c?.type||'Fisch',30,20)}</div>`;
+}
+function _hydrateLocalPhotoThumbs(scope=document){
+  scope.querySelectorAll?.('.live-photo-thumb[data-photokey]').forEach(el=>{
+    const pk=el.getAttribute('data-photokey');
+    if(!pk||el.querySelector('img'))return;
+    getPhoto(pk).then(ph=>{if(ph)el.innerHTML=`<img src="${ph}" alt="Fangfoto">`;}).catch(()=>{});
+  });
 }
 function _renderLiveStatus(){
   if(!_liveSession)return;
@@ -16799,6 +16863,7 @@ function _renderEndSessionFinal(isSkunked){
       <button class="ls-end-btn ghost" onclick="closeLiveEndOv()">Zurück</button>
     </div>`;
   document.getElementById('ls-end-ov').classList.add('on');
+  _hydrateLocalPhotoThumbs(card);
   requestAnimationFrame(()=>{_resetLiveEndScroll();_resetLiveViewport();_resetLiveEndScroll();});
   setTimeout(()=>{
     _resetLiveEndScroll();
@@ -17077,6 +17142,7 @@ function _renderLiveCatches(){
       </div>
     </div>`).join('');
   el.innerHTML=cards;
+  _hydrateLocalPhotoThumbs(el);
   _renderLiveStatus();
   _renderLiveTimeline();
 }
@@ -17098,8 +17164,8 @@ async function _deleteLiveCatch(idx){
   const lbl=`${c.type||'Fang'}${c.length?' · '+c.length+'cm':''}`;
   const ok=await showConf('🗑️','Fang löschen?',`Soll "${lbl}" aus der Live-Session entfernt werden?`,'Ja, löschen','danger');
   if(!ok)return;
-  // Foto aus localStorage entfernen falls vorhanden
-  if(c.photoKey){try{localStorage.removeItem('fb_photo_'+c.photoKey);}catch(e){}}
+  // Foto aus lokalen Foto-Stores entfernen falls vorhanden
+  if(c.photoKey)await deletePhoto(c.photoKey);
   _liveSession.catches.splice(idx,1);
   try{localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));}catch(e){}
   _renderLiveCatches();
@@ -17277,6 +17343,7 @@ async function _shareLiveSessionToGroups(sess,groupIds,opts={}){
 
   let totalShared=0;
   let lastShareError=null;
+  let photoUploadFailed=false;
   try{
     for(const gId of groupIds){
       const g=_groups.find(x=>x.id===gId);
@@ -17290,7 +17357,7 @@ async function _shareLiveSessionToGroups(sess,groupIds,opts={}){
           try{
             const dataUrl=await _liveGetPhotoData(c.photoKey);
             if(dataUrl)photoUrl=await _grpUploadPhoto(gId,dataUrl,'session_'+(sess.id||Date.now())+'_'+c.photoKey);
-          }catch(e){console.warn('live session photo upload:',e);}
+          }catch(e){photoUploadFailed=true;console.warn('live session photo upload:',e);}
         }
         catchSummaries.push({
           type:c.type,length:c.length,weight:c.weight,time:c.time,
@@ -17362,6 +17429,7 @@ async function _shareLiveSessionToGroups(sess,groupIds,opts={}){
     try{
       if(_activeGroupId&&groupIds.includes(_activeGroupId))await _grpRefreshActive();
     }catch(e){console.warn('share live session refresh:',e);}
+    if(photoUploadFailed)showToast('⚠️','Ein Foto konnte nicht in die Gruppe geladen werden',true);
     if(totalShared===0&&lastShareError)throw lastShareError;
     shareOk=totalShared>0;
     return totalShared;
@@ -17384,6 +17452,7 @@ async function _shareSessionToGroups(sess,groupIds,opts={}){
   const locPayload=_groupShareLocationPayload(loc,opts.shareGps===true);
 
   let totalShared=0;
+  let photoUploadFailed=false;
   try{
     for(const gId of groupIds){
       const g=_groups.find(x=>x.id===gId);
@@ -17410,7 +17479,7 @@ async function _shareSessionToGroups(sess,groupIds,opts={}){
           try{
             const dataUrl=await getPhoto(c.photoKey);
             if(dataUrl)photoUrl=await _grpUploadPhoto(gId,dataUrl,'catch_'+c.photoKey);
-          }catch(e){console.warn('photo upload:',e);}
+          }catch(e){photoUploadFailed=true;console.warn('photo upload:',e);}
         }
         const catchData={
           type:c.type,length:c.length,weight:c.weight,
@@ -17446,6 +17515,7 @@ async function _shareSessionToGroups(sess,groupIds,opts={}){
     await saveOneSess(sess);
     // Lokale Sicht refreshen falls Detail-View offen ist
     if(_activeGroupId&&groupIds.includes(_activeGroupId))_grpRefreshActive();
+    if(photoUploadFailed)showToast('⚠️','Ein Foto konnte nicht in die Gruppe geladen werden',true);
     shareOk=totalShared>0;
     return totalShared;
   } finally {
@@ -17475,7 +17545,7 @@ function _resumeLiveSession(){
 }
 
 // ── Live-Catch Overlay (reduziert) ──────────────────────────
-let _lcPhotoData=null; // Base64-Fotodaten für Live-Catch
+let _lcPhotoData=null,_lcPhotoExistingKey=null,_lcPhotoChanged=false; // Base64-Fotodaten für Live-Catch
 
 function openLiveCatchOv(){
   if(!_liveSession){startLiveSession();return;}
@@ -17511,19 +17581,20 @@ function openLiveCatchOv(){
     if(editing.baitLen)document.getElementById('lc-bait-len').value=editing.baitLen;
     if(editing.baitColor)document.getElementById('lc-bait-col').value=editing.baitColor;
     if(editing.photoKey){
-      try{
-        const ph=localStorage.getItem('fb_photo_'+editing.photoKey);
+      _lcPhotoData=null;_lcPhotoExistingKey=editing.photoKey;_lcPhotoChanged=false;
+      getPhoto(editing.photoKey).then(ph=>{
+        if(_lcPhotoExistingKey!==editing.photoKey)return;
         if(ph){
           _lcPhotoData=ph;
           const pp=document.getElementById('lc-pp');pp.src=ph;pp.style.display='block';
           document.getElementById('lc-pa').style.display='none';
         }
-      }catch(e){}
+      }).catch(()=>{});
     } else {
       document.getElementById('lc-pp').style.display='none';
       document.getElementById('lc-pp').src='';
       document.getElementById('lc-pa').style.display='';
-      _lcPhotoData=null;
+      _lcPhotoData=null;_lcPhotoExistingKey=null;_lcPhotoChanged=false;
     }
     // CR-Flag (taken=false → C&R aktiv)
     const crEl=document.getElementById('lc-cr');
@@ -17544,7 +17615,7 @@ function openLiveCatchOv(){
     document.getElementById('lc-pp').style.display='none';
     document.getElementById('lc-pp').src='';
     document.getElementById('lc-pa').style.display='';
-    _lcPhotoData=null;
+    _lcPhotoData=null;_lcPhotoExistingKey=null;_lcPhotoChanged=false;
     // Uhrzeit-Hint aktualisieren
     const now=new Date();
     const hh=String(now.getHours()).padStart(2,'0');
@@ -17748,19 +17819,23 @@ function trigLivePhoto(){
 }
 
 function _handleLivePhoto(inp){
-  if(!inp.files||!inp.files[0])return;
+  if(!inp.files||!inp.files[0]){if(inp)inp.value='';return;}
   const file=inp.files[0];
+  if(!file.type||!file.type.startsWith('image/')){showToast('⚠️','Bitte ein Bild auswählen',true);inp.value='';return;}
   const reader=new FileReader();
   reader.onload=function(e){
     _lcPhotoData=e.target.result;
+    _lcPhotoChanged=true;
     const prev=document.getElementById('lc-pp');
     if(prev){prev.src=_lcPhotoData;prev.style.display='block';}
     document.getElementById('lc-pa').style.display='none';
+    inp.value='';
   };
+  reader.onerror=function(){showToast('⚠️','Foto konnte nicht gelesen werden',true);inp.value='';};
   reader.readAsDataURL(file);
 }
 
-function saveLiveCatch(){
+async function saveLiveCatch(){
   const fish=document.getElementById('lc-fish')?.value.trim();
   if(!fish){showToast('⚠️','Bitte Fischart eingeben!',true);return;}
   const len=parseFloat(document.getElementById('lc-len')?.value)||0;
@@ -17781,24 +17856,28 @@ function saveLiveCatch(){
     if(hit){catchLat=hit.lat;catchLon=hit.lon;}
   }
 
-  // Foto speichern wenn vorhanden
   let photoKey=null;
-  if(_lcPhotoData){
+  const editingIdx=_editingLiveCatchIdx;
+  const editingOrig=(editingIdx!==null&&_liveSession.catches[editingIdx])?_liveSession.catches[editingIdx]:null;
+
+  // Foto speichern wenn vorhanden; bestehendes Edit-Foto bleibt ohne neue Auswahl erhalten.
+  if(editingOrig&&editingOrig.photoKey&&!_lcPhotoChanged){
+    photoKey=editingOrig.photoKey;
+  } else if(_lcPhotoData){
     photoKey='live_'+Date.now();
-    try{localStorage.setItem('fb_photo_'+photoKey,_lcPhotoData);}catch(e){console.warn('Foto zu groß für localStorage');}
+    const ok=await savePhoto(photoKey,_lcPhotoData);
+    if(!ok){
+      photoKey=editingOrig?.photoKey||null;
+      showToast('⚠️','Live-Foto konnte nicht gespeichert werden',true);
+    } else if(editingOrig?.photoKey&&editingOrig.photoKey!==photoKey){
+      await deletePhoto(editingOrig.photoKey);
+    }
   }
 
   // v45: C&R toggle
   const isCR=document.getElementById('lc-cr')?.checked||false;
 
   // AP1: Edit-Mode — bestehenden Fang ersetzen statt neuen pushen
-  const editingIdx=_editingLiveCatchIdx;
-  const editingOrig=(editingIdx!==null&&_liveSession.catches[editingIdx])?_liveSession.catches[editingIdx]:null;
-
-  // Foto-Handling im Edit-Mode: alten Foto-Key NICHT verlieren wenn kein neues Foto gewählt
-  if(editingOrig&&!_lcPhotoData&&editingOrig.photoKey){
-    photoKey=editingOrig.photoKey;
-  }
   // Im Edit-Mode Original-Zeit beibehalten
   const finalTime=editingOrig?(editingOrig.time||time):time;
   const finalTs=editingOrig?(editingOrig.ts||Date.now()):Date.now();
@@ -17811,6 +17890,7 @@ function saveLiveCatch(){
     _liveSession.catches.push(c);
   }
   _editingLiveCatchIdx=null;
+  _lcPhotoData=null;_lcPhotoExistingKey=null;_lcPhotoChanged=false;
 
   try{localStorage.setItem('fb_live_session',JSON.stringify(_liveSession));}catch(e){}
   _renderLiveCatches();
@@ -20492,6 +20572,7 @@ function _grpHandlePhotoSelect(evt){
       _grpRenderPhotoPreview();
     }
   };
+  reader.onerror=()=>{showToast('⚠️','Foto konnte nicht gelesen werden',true);evt.target.value='';};
   reader.readAsDataURL(file);
   // Input zurücksetzen, damit dieselbe Datei erneut ausgewählt werden kann
   evt.target.value='';
