@@ -6836,7 +6836,7 @@ html body #fs-catch-detail.on{
     </div>
 
     <button class="obBtn" id="ob-btn" onclick="obNext()">Los geht's →</button>
-    <p style="font-size:11px;color:var(--text-light);margin-top:16px;line-height:1.6;text-align:center;">Alle Daten bleiben lokal auf deinem Gerät. <a href="#" onclick="showBurgSec('legal');finOb();return false;" style="color:var(--green-mid);">Datenschutz</a></p>
+    <p style="font-size:11px;color:var(--text-light);margin-top:16px;line-height:1.6;text-align:center;">Deine Daten starten lokal. Mit Login, Cloud-Sync oder Gruppen können ausgewählte Daten über Supabase synchronisiert oder geteilt werden. <a href="#" onclick="showBurgSec('legal');finOb();return false;" style="color:var(--green-mid);">Datenschutz</a></p>
   </div>
 </div>
 
@@ -6881,12 +6881,13 @@ html body #fs-catch-detail.on{
           <span class="bitem-ico" style="position:relative;"><svg class="ic"><use href="#i-share"/></svg><span id="backup-dot" style="display:none;position:absolute;top:-2px;right:-4px;width:8px;height:8px;background:var(--red);border-radius:50%;"></span></span>
           <div><div class="bitem-txt">Backup &amp; Export</div><div class="bitem-sub" id="backup-sub">JSON exportieren / importieren</div></div>
         </button>
-        <button class="bitem" onclick="showBurgSec('storage');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-stats"/></svg></span><div><div class="bitem-txt">Speicher-Info</div><div class="bitem-sub" id="burg-storasub">IndexedDB</div></div></button>
+        <button class="bitem" onclick="showBurgSec('storage');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-stats"/></svg></span><div><div class="bitem-txt">Speicher-Info</div><div class="bitem-sub" id="burg-storasub">Lokaler Browser-Speicher</div></div></button>
+        <button class="bitem" onclick="closeBurg();delAllData()"><span class="bitem-ico"><svg class="ic"><use href="#i-trash"/></svg></span><div><div class="bitem-txt">Alle lokalen Daten löschen</div><div class="bitem-sub">Gerät bereinigen, Cloud-Daten bleiben</div></div></button>
       </div>
       <div class="burg-sec">
         <div class="burg-slbl">Info &amp; Rechtliches</div>
         <button class="bitem" onclick="showBurgSec('schonzeiten');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-list"/></svg></span><div><div class="bitem-txt">Schonzeiten &amp; Verbände</div><div class="bitem-sub">Links zu Fischereibehörden</div></div></button>
-        <button class="bitem" onclick="showBurgSec('legal');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-info"/></svg></span><div><div class="bitem-txt">Impressum &amp; Datenschutz</div><div class="bitem-sub">DSGVO-konform</div></div></button>
+        <button class="bitem" onclick="showBurgSec('legal');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-info"/></svg></span><div><div class="bitem-txt">Impressum &amp; Datenschutz</div><div class="bitem-sub">Beta-Hinweise</div></div></button>
         <button class="bitem" onclick="showBurgSec('disclaimer');closeBurg()"><span class="bitem-ico"><svg class="ic"><use href="#i-info"/></svg></span><div><div class="bitem-txt">Haftungsausschluss</div><div class="bitem-sub">Schonzeit ohne Gewähr</div></div></button>
       </div>
     </div>
@@ -6943,7 +6944,7 @@ html body #fs-catch-detail.on{
     <button class="btn" onclick="saveProfileEdit()">Änderungen speichern ✓</button>
     <div class="profile-danger-section">
       <button class="btn danger" onclick="delAllData()">🗑️ Alle Daten löschen</button>
-      <div class="form-helper-text">Vorher Backup erstellen!</div>
+      <div class="form-helper-text">Löscht lokale Browserdaten auf diesem Gerät. Cloud-Daten werden dadurch nicht gelöscht.</div>
     </div>
   </div>
 </div>
@@ -8458,12 +8459,12 @@ async function syncProfileFromCloud(opts={}){
 }
 
 // Supabase Logout
-// v50-Fix: VORHER zwingender Force-Push aller lokalen Daten in die Cloud (mit Timeout-
-// Fallback). Kein Datenverlust beim Relogin auf einem anderen Gerät. Nach signOut
-// werden die localStorage-Mirrors gelöscht, damit ein anderer User der den Browser
-// teilt nicht plötzlich fremde Daten sieht.
+// Beendet nur die Cloud-Sitzung. Lokale Daten und AP19-Tombstones bleiben bewusst
+// erhalten; vollständiges Geräte-Cleanup läuft über delAllData().
 async function sbLogout(){
   if(!_sb)return;
+  const okLogout=await showConf('👋','Abmelden','Die Cloud-Sitzung wird beendet. Fangbuch, Fotos, Profil und ausstehende Delete-Syncs bleiben lokal auf diesem Gerät. Nutze "Alle lokalen Daten löschen", wenn dieses Gerät bereinigt werden soll.','Abmelden');
+  if(!okLogout)return;
   if(_sbUser&&_authMode==='online'){
     try{
       showToast('☁️','Sichere Daten in der Cloud…');
@@ -8475,14 +8476,14 @@ async function sbLogout(){
   try{await _sb.auth.signOut();}catch(e){console.warn('signOut:',e);}
   _sbUser=null;
   _authMode='offline';
-  // localStorage-Mirrors entfernen (Geräte-Sharing-Schutz)
-  _lsRemove(LS_SESSIONS);
-  _lsRemove(LS_PROFILE);
-  _lsRemove(LS_FAVS);
+  // Cloud-/Gruppen-Zustand aus der aktiven UI entfernen; lokale Fangbuchdaten bleiben.
   _lsRemove(LS_GROUPS);
   localStorage.removeItem('fb_skip_auth');
+  try{_groups=[];_activeGroupId=null;}catch(e){}
   document.getElementById('hdr-sub').textContent='Offline';
-  showToast('👋','Abgemeldet');
+  try{_updBurgLive();}catch(e){}
+  try{_renderAll();}catch(e){}
+  showToast('👋','Abgemeldet · lokale Daten bleiben auf diesem Gerät');
 }
 
 // Burger-Live-Button aktualisieren
@@ -8497,7 +8498,7 @@ function _updBurgLive(){
   const authIco=document.getElementById('burg-auth-ico');
   if(_sbUser){
     if(authTxt)authTxt.textContent='Abmelden';
-    if(authSub)authSub.textContent=_sbUser.email||'Eingeloggt';
+    if(authSub)authSub.textContent='Cloud-Sitzung beenden · lokale Daten bleiben';
     if(authIco)authIco.textContent='🔓';
   }else{
     if(authTxt)authTxt.textContent='Anmelden / Registrieren';
@@ -8509,7 +8510,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v93-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v94-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -10961,12 +10962,12 @@ async function saveSess(){
       try{
         const newGroupIds=_endShareState.groupIds.filter(gid=>!(sess.sharedToGroups||[]).includes(gid));
         if(newGroupIds.length){
-          await _shareSessionToGroups(sess,newGroupIds);
+          await _shareSessionToGroups(sess,newGroupIds,{shareGps:_endShareState.shareGps===true});
           showToast('👥',`Session in ${newGroupIds.length} Gruppe${newGroupIds.length>1?'n':''} geteilt`);
         }
       }catch(e){console.warn('Share nach Edit-Save:',e);}
     }
-    _endShareState={enabled:false,groupIds:[]};
+    _endShareState={enabled:false,groupIds:[],shareGps:false};
 
     // Bei Edit: kein Walkout, kein Overlay – einfach Toast + zurück ins Fangbuch
     if(wasEditing){
@@ -11004,7 +11005,7 @@ function resetForm(){
   // v52 AP1: Share-Section nur in Edit-Mode → bei Reset ausblenden
   const shareWrap=document.getElementById('edit-share-wrap');
   if(shareWrap){shareWrap.style.display='none';const h=document.getElementById('edit-share-host');if(h)h.innerHTML='';}
-  _endShareState={enabled:false,groupIds:[]};
+  _endShareState={enabled:false,groupIds:[],shareGps:false};
   // Seitentitel zurücksetzen
   const titleEl=document.getElementById('new-page-title');
   if(titleEl)titleEl.textContent='Fang melden';
@@ -11284,7 +11285,7 @@ function showBurgSec(sec){
   const titles={legal:'Impressum & Datenschutz',schonzeiten:'Schonzeiten & Verbände',disclaimer:'Haftungsausschluss',storage:'Speicher-Info'};
   document.getElementById('fs-info-title').textContent=titles[sec]||'Info';
   let html='';
-  if(sec==='legal'){html=`<div class="card"><h3 style="font-family:var(--fs);font-size:16px;font-weight:600;margin-bottom:10px;">Datenschutz</h3><p style="font-size:12px;color:var(--text-mid);line-height:1.7;">Alle Daten verbleiben ausschließlich im Gerätespeicher (IndexedDB). Keine Übertragung außer bei optionaler Wetter-API (Open-Meteo, DSGVO-konform) und Web Share.</p></div><div class="card" style="margin-top:8px;"><h3 style="font-family:var(--fs);font-size:16px;font-weight:600;margin-bottom:10px;">Impressum</h3><p style="font-size:12px;color:var(--text-mid);">Prototyp ohne kommerziellen Betrieb. Bei Veröffentlichung: vollständiges Impressum gem. § 5 TMG erforderlich.</p></div>`;}
+  if(sec==='legal'){html=`<div class="card"><h3 style="font-family:var(--fs);font-size:16px;font-weight:600;margin-bottom:10px;">Datenschutz Beta-Hinweis</h3><p style="font-size:12px;color:var(--text-mid);line-height:1.7;">Angeln+ speichert Fangbuch, Profil, Favoriten, Fotos und Live-Session-Daten lokal im Browser-Speicher (IndexedDB und localStorage). Wenn du dich anmeldest, werden Fangbuch- und Profildaten über Supabase synchronisiert. Gruppenfunktionen übertragen geteilte Sessions, Fänge, Nachrichten, Likes, Kommentare und optional Fotos an die ausgewählte Gruppe.</p><p style="font-size:12px;color:var(--text-mid);line-height:1.7;margin-top:8px;">Standortdaten entstehen nur, wenn du GPS, Karte, Spots, Wetter oder Live-Tracking nutzt. Exakte GPS-Koordinaten werden beim Teilen in Gruppen nur gesendet, wenn du GPS-Teilen bewusst aktivierst. Gewässer- und Spotnamen können als Text weitergegeben werden. Kamera, Mediathek und Mikrofon werden nur nach deiner Aktion angefragt. Wetter- und Kartendaten können über externe Dienste wie Open-Meteo, OpenStreetMap/Nominatim und Kartenkacheln geladen werden.</p><p style="font-size:12px;color:var(--text-mid);line-height:1.7;margin-top:8px;">Abmelden beendet die Cloud-Sitzung; lokale Daten bleiben auf diesem Gerät. Mit "Alle lokalen Daten löschen" kannst du den Browser-Speicher dieses Geräts bereinigen, ohne Cloud-Daten zu löschen.</p></div><div class="card" style="margin-top:8px;"><h3 style="font-family:var(--fs);font-size:16px;font-weight:600;margin-bottom:10px;">Impressum &amp; rechtlicher Hinweis</h3><p style="font-size:12px;color:var(--text-mid);line-height:1.7;">Diese Beta ersetzt noch keine finale Datenschutzerklärung, kein finales Impressum und keine Nutzungsbedingungen. Vor einem öffentlichen Start müssen die rechtlichen Texte juristisch geprüft und vollständig ergänzt werden.</p></div>`;}
   else if(sec==='schonzeiten'){
     html=`<div style="margin-bottom:12px;font-size:13px;color:var(--text-mid);background:var(--gold-l);border:1px solid #e8d4a0;border-radius:var(--rs);padding:12px 14px;">⚠️ <strong>Alle Angaben ohne Gewähr.</strong> Schonzeiten können sich jährlich ändern. Stets beim Landesfischereiverband prüfen.</div>`;
     html+=Object.entries(SZ).map(([bl,d])=>`<div class="info-btn" onclick="window.open('${d.link}','_blank')"><div class="info-btn-ico">🏛️</div><div><div class="info-btn-txt">${bl}</div><div class="info-btn-sub">${d.text.split('·')[0].trim()} · <span style="color:var(--blue-t);">${new URL(d.link).hostname}</span></div></div></div>`).join('');
@@ -12948,7 +12949,7 @@ async function editSess(id){
         water:s.water,spot:s.spot,lat:s.lat,lon:s.lon
       });
       const preselected=Array.isArray(s.sharedToGroups)?s.sharedToGroups.slice():[];
-      _endShareState={enabled:preselected.length>0,groupIds:preselected};
+      _endShareState={enabled:preselected.length>0,groupIds:preselected,shareGps:false};
       host.innerHTML=_renderShareSection({
         context:'edit',
         locInfo:loc,
@@ -16199,7 +16200,30 @@ function showConf(ico,tit,txt,okLbl='OK',style=''){return new Promise(r=>{_confR
 function confRes(v){document.getElementById('confov').classList.remove('on');if(_confRes){_confRes(v);_confRes=null;}}
 
 // DELETE ALL
-async function delAllData(){const ok=await showConf('⚠️','Alle Daten löschen','ALLE Daten werden gelöscht!\n\nVorher Backup erstellen!','Alles löschen','danger');if(!ok)return;await idbC('sessions');await idbC('profile');await idbC('favs');await idbC('photos');showToast('🗑️','Alle Daten gelöscht');setTimeout(()=>location.reload(),1000);}
+function _clearLocalPrivacyData(){
+  const fixedKeys=[
+    LS_SESSIONS,LS_PROFILE,LS_FAVS,LS_GROUPS,LS_DELETED_SESSIONS,
+    'fb_skip_auth','fb_live_session','fb_last_backup',
+    'fb_sessions_v8','fb_sessions_v7','fb_profile_v8','fb_profile_v7','fb_favs_v8','fb_favs_v7'
+  ];
+  fixedKeys.forEach(k=>{try{localStorage.removeItem(k);}catch(e){}});
+  try{
+    for(let i=localStorage.length-1;i>=0;i--){
+      const k=localStorage.key(i);
+      if(k&&k.startsWith('fb_photo_'))localStorage.removeItem(k);
+    }
+  }catch(e){}
+}
+async function delAllData(){
+  const ok=await showConf('⚠️','Lokale Daten löschen','Löscht Fangbuch, Profil, Favoriten, Fotos, Live-Session, lokale Sync-Mirrors und AP19-Delete-Tombstones aus diesem Browser. Cloud-Daten werden dadurch nicht gelöscht. Wenn du eingeloggt bist, wirst du auch abgemeldet, damit Cloud-Daten nicht direkt wieder geladen werden.\n\nVorher Backup erstellen!','Lokal löschen','danger');
+  if(!ok)return;
+  try{if(_sb)await _sb.auth.signOut();}catch(e){console.warn('local wipe signOut:',e);}
+  _sbUser=null;_authMode='offline';
+  await idbC('sessions');await idbC('profile');await idbC('favs');await idbC('photos');
+  _clearLocalPrivacyData();
+  showToast('🗑️','Lokale Daten gelöscht');
+  setTimeout(()=>location.reload(),1000);
+}
 
 // NOTIFICATIONS
 function reqNotif(){if('Notification'in window&&Notification.permission==='default')Notification.requestPermission().then(p=>{if(p==='granted')showToast('🔔','Benachrichtigungen aktiviert!');});}
@@ -16670,7 +16694,7 @@ function pauseLiveSession(){
 // ─────────────────────────────────────────────────────────
 
 // State für die zu teilende Session (während das Overlay offen ist)
-let _endShareState={enabled:false,groupIds:[]};
+let _endShareState={enabled:false,groupIds:[],shareGps:false};
 
 function confirmEndLive(){
   if(!_liveSession)return;
@@ -16707,7 +16731,7 @@ function confirmEndLive(){
 function _renderEndSessionFinal(isSkunked){
   if(!_liveSession)return;
   // Share-State zurücksetzen (frische Modal-Öffnung)
-  _endShareState={enabled:false,groupIds:[]};
+  _endShareState={enabled:false,groupIds:[],shareGps:false};
 
   _setLiveEndHeader('Live Session beenden','Zusammenfassung prüfen');
   const timer=_liveTimerText();
@@ -16796,6 +16820,14 @@ function _renderShareSection(opts){
   }
 
   const banner=_shareLocationBanner(opts.locInfo);
+  const canShareGps=!!(opts.locInfo&&opts.locInfo.kind&&opts.locInfo.kind!=='none');
+  if(!canShareGps)_endShareState.shareGps=false;
+  const gpsOn=canShareGps&&_endShareState.shareGps===true;
+  const gpsToggle=canShareGps?`<div class="share-gps-toggle" onclick="_endToggleGpsShare()" title="Exakte oder abgeleitete Koordinaten nur teilen, wenn aktiviert">
+      <svg class="ic" style="width:16px;height:16px;"><use href="#i-pin"/></svg>
+      <span style="flex:1;">GPS-Koordinaten teilen</span>
+      <button class="ls-toggle${gpsOn?' on':''}" id="share-gps-end-toggle" type="button"></button>
+    </div>`:'';
   const startEnabled=!!opts.preselectedEnabled;
   const expanded=startEnabled?' expanded':'';
   const swOn=startEnabled?' on':'';
@@ -16839,6 +16871,7 @@ function _renderShareSection(opts){
     </div>
     ${groupListHtml}
     ${banner}
+    ${gpsToggle}
     ${dimNoCatch}
   </div>`;
 }
@@ -16846,9 +16879,9 @@ function _renderShareSection(opts){
 function _shareLocationBanner(locInfo){
   if(!locInfo)return'';
   const k=locInfo.kind;
-  if(k==='exact')return `<div class="share-loc-banner exact"><span class="ico">${_liveIcon('pin')}</span><span>GPS exakt verfügbar — Smart-Map zeigt den Fangspot präzise.</span></div>`;
-  if(k==='spot')return `<div class="share-loc-banner spot"><span class="ico">${_liveIcon('pin')}</span><span>Spot-Approximation aus deiner Spot-Bibliothek — Smart-Map zeigt grobe Position (≈400 m).</span></div>`;
-  if(k==='water')return `<div class="share-loc-banner water"><span class="ico">${_liveIcon('map')}</span><span>Nur Gewässer-Approximation — Smart-Map zeigt Region (≈1.5 km).</span></div>`;
+  if(k==='exact')return `<div class="share-loc-banner exact"><span class="ico">${_liveIcon('pin')}</span><span>GPS exakt verfügbar — wird nur geteilt, wenn du GPS-Koordinaten aktivierst.</span></div>`;
+  if(k==='spot')return `<div class="share-loc-banner spot"><span class="ico">${_liveIcon('pin')}</span><span>Spot-Approximation verfügbar — wird nur geteilt, wenn du GPS-Koordinaten aktivierst.</span></div>`;
+  if(k==='water')return `<div class="share-loc-banner water"><span class="ico">${_liveIcon('map')}</span><span>Gewässer-Approximation verfügbar — wird nur geteilt, wenn du GPS-Koordinaten aktivierst.</span></div>`;
   return `<div class="share-loc-banner none"><span class="ico">${_liveIcon('pin')}</span><span>Keine Position verfügbar — Smart-Map wird leer angezeigt.</span></div>`;
 }
 
@@ -16864,6 +16897,11 @@ function _endToggleShare(){
   // Bei Single-Group: automatisch ankreuzen wenn aktiviert
   if(_endShareState.enabled&&_groups.length===1)_endShareState.groupIds=[_groups[0].id];
   if(!_endShareState.enabled)_endShareState.groupIds=[];
+  _syncEndShareDom();
+}
+
+function _endToggleGpsShare(){
+  _endShareState.shareGps=!(_endShareState.shareGps===true);
   _syncEndShareDom();
 }
 
@@ -16885,6 +16923,8 @@ function _syncEndShareDom(){
   const sw=document.getElementById('share-toggle-sw');
   if(sec)sec.classList.toggle('expanded',_endShareState.enabled);
   if(sw)sw.classList.toggle('on',_endShareState.enabled);
+  const gps=document.getElementById('share-gps-end-toggle');
+  if(gps)gps.classList.toggle('on',_endShareState.shareGps===true);
   document.querySelectorAll('.share-grp-pick[data-gid]').forEach(row=>{
     const gId=row.getAttribute('data-gid');
     const on=_endShareState.groupIds.includes(gId);
@@ -16912,6 +16952,13 @@ function _resolveSessLocation({water,spot,lat,lon}){
     }
   }
   return{kind:'none',lat:null,lon:null};
+}
+
+function _groupShareLocationPayload(loc,shareGps){
+  if(shareGps!==true||!loc||loc.kind==='none')return{shareGps:false};
+  const lat=parseFloat(loc.lat),lon=parseFloat(loc.lon);
+  if(!isFinite(lat)||!isFinite(lon))return{shareGps:false};
+  return{shareGps:true,lat,lon,locKind:loc.kind};
 }
 
 function closeLiveEndOv(){
@@ -17134,7 +17181,7 @@ async function _finalizeLive(isSkunked){
   // direkt nach dem Speichern in alle ausgewählten Gruppen teilen.
   if(_endShareState.enabled&&_endShareState.groupIds.length){
     try{
-      const sharedCount=await _shareLiveSessionToGroups(sess,_endShareState.groupIds);
+      const sharedCount=await _shareLiveSessionToGroups(sess,_endShareState.groupIds,{shareGps:_endShareState.shareGps===true});
       if(sharedCount>0)showToast('',`Session in ${sharedCount} Gruppe${sharedCount>1?'n':''} geteilt`);
       else showToast('⚠️','Session gespeichert, aber nicht geteilt',true);
     }catch(e){
@@ -17143,7 +17190,7 @@ async function _finalizeLive(isSkunked){
       showToast('⚠️','Teilen fehlgeschlagen: '+msg.slice(0,90),true);
     }
   }
-  _endShareState={enabled:false,groupIds:[]};
+  _endShareState={enabled:false,groupIds:[],shareGps:false};
 
   // Cleanup
   _liveSession=null;
@@ -17168,12 +17215,13 @@ async function _liveGetPhotoData(photoKey){
   try{return localStorage.getItem('fb_photo_'+photoKey)||null;}catch(e){return null;}
 }
 
-async function _shareLiveSessionToGroups(sess,groupIds){
+async function _shareLiveSessionToGroups(sess,groupIds,opts={}){
   if(!Array.isArray(groupIds)||!groupIds.length)return 0;
   if(!_sb||!_sbUser)throw new Error('Cloud-Login nötig um zu teilen');
   const myName=profile?.name||profile?.vorname||'Angler';
   const myId=_sbUser.id;
   const loc=_resolveSessLocation({water:sess.water,spot:sess.spot,lat:sess.lat,lon:sess.lon});
+  const locPayload=_groupShareLocationPayload(loc,opts.shareGps===true);
   const catches=Array.isArray(sess.catches)?sess.catches:[];
 
   let totalShared=0;
@@ -17212,7 +17260,7 @@ async function _shareLiveSessionToGroups(sess,groupIds){
       note:sess.note||'',summary:`${catches.length} Fänge${sess.bites?` · ${sess.bites} Bisse`:''}`,
       catches:catchSummaries,biggestFish:biggest,
       photoUrls,bestPhotoUrl:photoUrls[0]||null,
-      shareGps:loc.kind!=='none',lat:loc.lat,lon:loc.lon,locKind:loc.kind,
+      ...locPayload,
       pressure:sess.pressure??null,windSpeed:sess.windSpeed??null,windDir:sess.windDir??null,
       temp:sess.temp??null,humidity:sess.humidity??null,clouds:sess.clouds??null,precip:sess.precip??null,
       weather:sess.weather||null,moonPhase:sess.moonPhase||null,moonIllum:sess.moonIllum??null
@@ -17251,14 +17299,13 @@ async function _shareLiveSessionToGroups(sess,groupIds){
 
 // v54: Multi-Group-Share-Helper — schreibt jetzt in echte Supabase-Tabellen
 // (group_shared_catches + group_messages), Fotos werden via _grpUploadPhoto in Storage gehoben.
-async function _shareSessionToGroups(sess,groupIds){
+async function _shareSessionToGroups(sess,groupIds,opts={}){
   if(!Array.isArray(groupIds)||!groupIds.length)return 0;
   if(!_sb||!_sbUser){showToast('⚠️','Cloud-Login nötig um zu teilen');return 0;}
   const myName=profile?.name||profile?.vorname||'Angler';
   const myId=_sbUser.id;
   const loc=_resolveSessLocation({water:sess.water,spot:sess.spot,lat:sess.lat,lon:sess.lon});
-  const shareLat=loc.lat,shareLon=loc.lon;
-  const shareGps=loc.kind!=='none';
+  const locPayload=_groupShareLocationPayload(loc,opts.shareGps===true);
 
   let totalShared=0;
   for(const gId of groupIds){
@@ -17292,7 +17339,7 @@ async function _shareSessionToGroups(sess,groupIds){
         bait:c.bait,baitNote:c.baitNote,baitColor:c.baitColor,baitSize:c.baitSize,
         water:sess.water,spot:sess.spot,
         date:sess.date,time:c.time||sess.start,
-        shareGps,lat:shareLat,lon:shareLon,locKind:loc.kind,
+        ...locPayload,
         pressure:sess.pressure??null,windSpeed:sess.windSpeed??null,windDir:sess.windDir??null,
         temp:sess.temp??null,humidity:sess.humidity??null,clouds:sess.clouds??null,precip:sess.precip??null,
         weather:sess.weather||null,moonPhase:sess.moonPhase||null,moonIllum:sess.moonIllum??null,
@@ -20355,9 +20402,11 @@ function _grpClearPhotoPreview(){
 }
 
 // v54: Standort-Share — schickt eine Message mit Karten-Link in den Chat
-function _grpShareLocation(){
+async function _grpShareLocation(){
   if(!_sb||!_sbUser){showToast('⚠️','Login nötig');return;}
   if(!navigator.geolocation){showToast('⚠️','GPS nicht verfügbar');return;}
+  const ok=await showConf('📍','Standort teilen?','Dein aktueller GPS-Standort wird als Kartenpunkt in diese Gruppe gesendet. Teile ihn nur, wenn dieser Spot für die Gruppe sichtbar sein soll.','Standort teilen');
+  if(!ok)return;
   showToast('📍','GPS wird geholt…');
   navigator.geolocation.getCurrentPosition(async pos=>{
     const g=_groups.find(x=>x.id===_activeGroupId);
@@ -20419,6 +20468,7 @@ function _openShareModal(sessId){
   const id=sessId||_lastSavedId;
   const modal=document.getElementById('share-modal');
   const list=document.getElementById('share-grp-list');
+  document.getElementById('share-gps-toggle')?.classList.remove('on');
 
   if(!_groups.length){
     showToast('ℹ️','Erstelle oder tritt einer Gruppe bei, um Fänge zu teilen.');
@@ -20443,10 +20493,9 @@ async function _shareToGroup(gId,sessId){
   const g=_groups.find(x=>x.id===gId);
   const sess=sessions.find(s=>String(s.id)===String(sessId));
   if(!g||!sess)return;
-  const shareGpsToggleOn=document.getElementById('share-gps-toggle')?.classList.contains('on');
-  // shareGps-Toggle nur Hint — _shareSessionToGroups respektiert Resolver
-  if(!shareGpsToggleOn){sess._shareGpsHint=false;}
-  const count=await _shareSessionToGroups(sess,[gId]);
+  const toggle=document.getElementById('share-gps-toggle');
+  const shareGpsToggleOn=!!(toggle&&toggle.classList.contains('on'));
+  const count=await _shareSessionToGroups(sess,[gId],{shareGps:shareGpsToggleOn});
   _closeShareModal();
   showToast('✅',`${count} Fang${count===1?'':'/Fänge'} in "${g.name}" geteilt!`);
 }
