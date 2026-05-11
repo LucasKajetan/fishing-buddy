@@ -4783,7 +4783,7 @@ input[type=file]{display:none;}
 }
 .session-post-card:active{transform:scale(.99);}
 .session-post-card:hover{box-shadow:0 6px 18px rgba(31,61,46,.12);}
-.session-post-hero{position:relative;width:100%;aspect-ratio:4/3;background:#173523;overflow:hidden;}
+.session-post-hero{position:relative;width:100%;aspect-ratio:4/3;background:#1a1a1a;overflow:hidden;}
 .session-post-hero.detail{border-radius:0;aspect-ratio:4/3;}
 .session-post-gallery{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;}
 .session-post-gallery::-webkit-scrollbar{display:none;}
@@ -8528,7 +8528,7 @@ function _updBurgLive(){
 // ═══════════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════════
-if('serviceWorker'in navigator){const sw=`const C='angelnplus-v96-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
+if('serviceWorker'in navigator){const sw=`const C='angelnplus-v97-beta';const A=['https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'];self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(A).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||e.request.url.includes('open-meteo.com'))return;e.respondWith(caches.match(e.request).then(c=>{if(c)return c;return fetch(e.request).then(r=>{if(r&&r.status===200&&r.type!=='opaque'){const cl=r.clone();caches.open(C).then(x=>x.put(e.request,cl));}return r;}).catch(()=>c||new Response('Offline',{status:503}));}));});`;try{const b=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});}catch(e){}}
 
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB
@@ -8791,6 +8791,36 @@ async function deletePhoto(k){
   if(!k)return;
   try{await idbD('photos',k);}catch(e){}
   try{localStorage.removeItem(_photoLsKey(k));}catch(e){}
+}
+
+// AP v97: Zentrale Foto-Optimierung — Canvas-Rerender entfernt EXIF, skaliert und komprimiert
+function _optimizePhoto(dataUrl,maxDim,quality){
+  maxDim=maxDim||1600;quality=quality||0.82;
+  return new Promise((resolve,reject)=>{
+    if(!dataUrl||typeof dataUrl!=='string'){reject(new Error('no data'));return;}
+    const img=new Image();
+    img.onload=()=>{
+      try{
+        const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+        if(!w||!h){reject(new Error('invalid image'));return;}
+        const scale=Math.min(1,maxDim/Math.max(w,h));
+        const nw=Math.round(w*scale),nh=Math.round(h*scale);
+        const c=document.createElement('canvas');
+        c.width=nw;c.height=nh;
+        const ctx=c.getContext('2d');
+        // Weißer Hintergrund für Transparenz-Konvertierung zu JPEG
+        ctx.fillStyle='#fff';
+        ctx.fillRect(0,0,nw,nh);
+        ctx.drawImage(img,0,0,nw,nh);
+        const result=c.toDataURL('image/jpeg',quality);
+        // Plausibilitätscheck: Ergebnis muss gültige Data-URL sein
+        if(!result||result.length<100||!result.startsWith('data:image/')){reject(new Error('canvas export failed'));return;}
+        resolve(result);
+      }catch(e){reject(e);}
+    };
+    img.onerror=()=>reject(new Error('image load failed'));
+    img.src=dataUrl;
+  });
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -10356,7 +10386,9 @@ function handlePhoto(e){
   const reader=new FileReader();
   reader.onerror=()=>{showToast('⚠️','Foto konnte nicht gelesen werden',true);_curPhotoId=null;if(inp)inp.value='';};
   reader.onload=async ev=>{
-    const b64=ev.target.result;
+    let b64=ev.target.result;
+    // AP v97: Optimieren — skaliert, komprimiert, entfernt EXIF via Canvas-Rerender
+    try{b64=await _optimizePhoto(b64);}catch(err){console.warn('photo optimize fallback:',err);}
     const pk='photo_'+Date.now()+'_'+targetId;
     const ok=await savePhoto(pk,b64);
     if(!ok){showToast('⚠️','Foto konnte nicht gespeichert werden',true);_curPhotoId=null;if(inp)inp.value='';return;}
@@ -17823,8 +17855,11 @@ function _handleLivePhoto(inp){
   const file=inp.files[0];
   if(!file.type||!file.type.startsWith('image/')){showToast('⚠️','Bitte ein Bild auswählen',true);inp.value='';return;}
   const reader=new FileReader();
-  reader.onload=function(e){
-    _lcPhotoData=e.target.result;
+  reader.onload=async function(e){
+    let raw=e.target.result;
+    // AP v97: Optimieren — skaliert, komprimiert, entfernt EXIF via Canvas-Rerender
+    try{raw=await _optimizePhoto(raw);}catch(err){console.warn('live photo optimize fallback:',err);}
+    _lcPhotoData=raw;
     _lcPhotoChanged=true;
     const prev=document.getElementById('lc-pp');
     if(prev){prev.src=_lcPhotoData;prev.style.display='block';}
@@ -19300,7 +19335,6 @@ function _rndrGroupFeed(){
       const commentCount=sc?.comments?.length||0;
       html+=`<div class="session-post-card" onclick="_openGroupSessionDetail('${g.id}','${item.id}')">
         ${_sessionPostHero(s)}
-        ${_sessionPostMapHtml(s)}
         <div class="catch-card-body">
           <div class="catch-card-user">
             <div class="catch-card-avatar" style="background:${color};">${memberName.charAt(0).toUpperCase()}</div>
@@ -20563,7 +20597,7 @@ function _grpHandlePhotoSelect(evt){
   const reader=new FileReader();
   reader.onload=async(e)=>{
     try{
-      const compressed=await _grpCompressImage(e.target.result,1280,0.82);
+      const compressed=await _optimizePhoto(e.target.result,1280,0.82);
       _grpPendingPhoto={dataUrl:compressed,name:file.name};
       _grpRenderPhotoPreview();
     }catch(err){
